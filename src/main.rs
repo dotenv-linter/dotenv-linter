@@ -17,18 +17,16 @@ fn main() {
 
     for file in dotenv_files {
         let f = File::open(file.path()).unwrap();
-        let f = BufReader::new(f);
-        let mut line_number = 0;
+        let reader = BufReader::new(f);
 
-        for line in f.lines() {
+        for (index, line) in reader.lines().enumerate() {
             let line_string = line.unwrap();
-            line_number = line_number + 1;
 
             let captures = regexp.captures(&line_string).unwrap();
             let key = captures.get(1).unwrap().as_str();
             let value = captures.get(2).unwrap().as_str();
 
-            println!("{}:{} ({}:{})", file.path().file_name().unwrap().to_str().unwrap(), line_number, key, value);
+            println!("{}:{} ({}:{})", file.path().file_name().unwrap().to_str().unwrap(), index + 1, key, value);
         }
     }
 }
