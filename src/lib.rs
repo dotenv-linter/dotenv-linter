@@ -4,6 +4,7 @@ use std::fs::{File, DirEntry};
 use std::io::{BufRead, BufReader};
 
 const DOTENV_PREFIX: &str = ".env";
+const LEADING_SPACE_WARNING: &str = "Leading space detected";
 
 pub fn run() -> Result<(), Box<dyn Error>> {
     let files = dotenv_files()?;
@@ -12,8 +13,16 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         let f = File::open(file.path())?;
         let reader = BufReader::new(f);
 
-        for (_index, _line) in reader.lines().enumerate() {
-            // Run checks here...
+        for (index, line) in reader.lines().enumerate() {
+            if let Err(e) = check_leading_space(line?) {
+                println!(
+                    "{}:{} {}",
+                    // TODO: Get rid of unwrap()
+                    file.file_name().to_str().unwrap(),
+                    index + 1,
+                    e
+                );
+            }
         }
     }
 
@@ -34,4 +43,12 @@ fn dotenv_files() -> Result<Vec<DirEntry>, Box<dyn Error>> {
         .for_each(|f| dotenv_files.push(f));
 
     Ok(dotenv_files)
+}
+
+fn check_leading_space(line: String) -> Result<(),&'static str>{
+    if line.starts_with(" ") {
+        return Err(LEADING_SPACE_WARNING);
+    } else {
+        Ok(())
+    }
 }
