@@ -1,0 +1,13 @@
+name: Rust
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Check
+      run: cargo check --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Build
+      run: cargo build --verbose
