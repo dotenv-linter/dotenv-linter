@@ -1,6 +1,6 @@
 use std::env;
 use std::error::Error;
-use std::fs::{File, DirEntry};
+use std::fs::{DirEntry, File};
 use std::io::{BufRead, BufReader};
 
 const DOTENV_PREFIX: &str = ".env";
@@ -45,7 +45,7 @@ fn dotenv_files() -> Result<Vec<DirEntry>, Box<dyn Error>> {
     Ok(dotenv_files)
 }
 
-fn check_leading_space(line: String) -> Result<(),&'static str>{
+fn check_leading_space(line: String) -> Result<(), &'static str> {
     if line.starts_with(" ") {
         return Err(LEADING_SPACE_WARNING);
     } else {
