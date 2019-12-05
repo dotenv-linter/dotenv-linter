@@ -37,9 +37,9 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          components: rustfmt
       - name: Rust version
         run: rustc --version
-      - run: rustup component add rustfmt
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
@@ -53,13 +53,13 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          components: clippy
       - name: Rust version
         run: rustc --version
-      - run: rustup component add clippy
-      - uses: actions-rs/cargo@v1
+      - uses: actions-rs/clippy-check@v1
         with:
-          command: clippy
-          args: -- -D warnings
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features
 
   build:
     name: Build
