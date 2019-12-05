@@ -47,7 +47,7 @@ fn dotenv_files() -> Result<Vec<DirEntry>, Box<dyn Error>> {
 
 fn check_leading_space(line: String) -> Result<(), &'static str> {
     if line.starts_with(' ') {
-        return Err(LEADING_SPACE_WARNING);
+        Err(LEADING_SPACE_WARNING)
     } else {
         Ok(())
     }
