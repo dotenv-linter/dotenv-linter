@@ -56,10 +56,14 @@ jobs:
           components: clippy
       - name: Rust version
         run: rustc --version
+#      - uses: actions-rs/cargo@v1
+#        with:
+#          command: clippy
+#          args: -- -D warnings
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          args: -- -D warnings
+          args: --all-features -- -D warnings
 
   build:
     name: Build
