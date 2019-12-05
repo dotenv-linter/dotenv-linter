@@ -1,9 +1,9 @@
 name: Security audit
-on:
-  pull_request:
-    paths: 
-      - '**/Cargo.toml'
-      - '**/Cargo.lock'
+on: [pull_request]
+#   pull_request:
+#     paths: 
+#       - '**/Cargo.toml'
+#       - '**/Cargo.lock'
 jobs:
   security_audit:
     runs-on: ubuntu-latest
