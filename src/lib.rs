@@ -45,8 +45,7 @@ fn dotenv_files() -> Result<Vec<DirEntry>, Error> {
     Ok(files)
 }
 
-
-fn check_leading_space(line: &String) -> Result<(), String> {
+fn check_leading_space(line: &str) -> Result<(), String> {
     if line.starts_with(' ') {
         Err(String::from("Leading space detected"))
     } else {
