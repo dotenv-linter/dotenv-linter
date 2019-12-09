@@ -2,6 +2,8 @@ use std::env;
 use std::fs::{DirEntry, File};
 use std::io::{BufRead, BufReader, Error};
 
+mod checks;
+
 const DOTENV_PREFIX: &str = ".env";
 
 pub fn run() -> Result<(), Error> {
@@ -16,12 +18,10 @@ pub fn run() -> Result<(), Error> {
         };
 
         for (index, line) in reader.lines().enumerate() {
-            // Run checks here...
-
             let line = line?;
-            if let Err(e) = check_leading_space(&line) {
-                println!("{}:{} {}", file_name, index + 1, e);
-            }
+            checks::run(&line)
+                .iter()
+                .for_each(|w| println!("{}:{} {}", file_name, index + 1, w));
         }
     }
 
@@ -43,12 +43,4 @@ fn dotenv_files() -> Result<Vec<DirEntry>, Error> {
         .collect::<Vec<DirEntry>>();
 
     Ok(files)
-}
-
-fn check_leading_space(line: &str) -> Result<(), String> {
-    if line.starts_with(' ') {
-        Err(String::from("Leading space detected"))
-    } else {
-        Ok(())
-    }
 }
