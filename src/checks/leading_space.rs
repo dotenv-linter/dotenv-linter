@@ -5,20 +5,20 @@ pub(crate) struct LeadingSpaceChecker {
     warning: Warning,
 }
 
-impl LeadingSpaceChecker {
-    pub fn new() -> LeadingSpaceChecker {
-        LeadingSpaceChecker {
+impl Default for LeadingSpaceChecker {
+    fn default() -> Self {
+        Self {
             warning: Warning::new("Leading space detected"),
         }
     }
 }
 
 impl Check for LeadingSpaceChecker {
-    fn run(&self, line: &LineEntry) -> Result<(), Warning> {
+    fn run(&self, line: &LineEntry) -> Option<Warning> {
         if line.raw_string.starts_with(' ') {
-            Err(self.warning.clone())
+            Some(self.warning.clone())
         } else {
-            Ok(())
+            None
         }
     }
 }
@@ -29,17 +29,29 @@ mod tests {
 
     #[test]
     fn leading_space_check_run() {
-        let line = "DEBUG_HTTP=true";
-        assert_eq!(Ok(()), LeadingSpaceChecker.run(line));
+        let checker = LeadingSpaceChecker::default();
+        let line = &LineEntry {
+            number: 1,
+            raw_string: String::from("DEBUG_HTTP=true"),
+        };
+        assert_eq!(None, checker.run(line));
 
-        let warning = String::from("Leading space detected");
-        let line = " DEBUG_HTTP=true";
-        assert_eq!(Err(warning.to_owned()), LeadingSpaceChecker.run(line));
+        let line = &LineEntry {
+            number: 1,
+            raw_string: String::from(" DEBUG_HTTP=true"),
+        };
+        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
 
-        let line = "  DEBUG_HTTP=true";
-        assert_eq!(Err(warning.to_owned()), LeadingSpaceChecker.run(line));
+        let line = &LineEntry {
+            number: 1,
+            raw_string: String::from("  DEBUG_HTTP=true"),
+        };
+        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
 
-        let line = "    DEBUG_HTTP=true";
-        assert_eq!(Err(warning.to_owned()), LeadingSpaceChecker.run(line));
+        let line = &LineEntry {
+            number: 1,
+            raw_string: String::from("    DEBUG_HTTP=true"),
+        };
+        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
     }
 }
