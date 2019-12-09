@@ -6,6 +6,12 @@ mod checks;
 
 const DOTENV_PREFIX: &str = ".env";
 
+#[allow(dead_code)]
+pub struct LineEntry {
+    number: usize,
+    raw_string: String,
+}
+
 pub fn run() -> Result<(), Error> {
     let files = dotenv_files()?;
 
@@ -18,10 +24,12 @@ pub fn run() -> Result<(), Error> {
         };
 
         for (index, line) in reader.lines().enumerate() {
-            let line = line?;
-            checks::run(&line)
+            let raw_string = line?;
+            let number = index + 1;
+
+            checks::run(&LineEntry { number, raw_string })
                 .iter()
-                .for_each(|w| println!("{}:{} {}", file_name, index + 1, w));
+                .for_each(|w| println!("{}:{} {}", file_name, number, w));
         }
     }
 

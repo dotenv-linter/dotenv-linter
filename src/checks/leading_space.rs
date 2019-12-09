@@ -1,11 +1,22 @@
-use crate::checks::Check;
+use crate::checks::{Check, Warning};
+use crate::LineEntry;
 
-pub(crate) struct LeadingSpaceChecker;
+pub(crate) struct LeadingSpaceChecker {
+    warning: Warning,
+}
+
+impl LeadingSpaceChecker {
+    pub fn new() -> LeadingSpaceChecker {
+        LeadingSpaceChecker {
+            warning: Warning::new("Leading space detected"),
+        }
+    }
+}
 
 impl Check for LeadingSpaceChecker {
-    fn run(&self, line: &str) -> Result<(), String> {
-        if line.starts_with(' ') {
-            Err(String::from("Leading space detected"))
+    fn run(&self, line: &LineEntry) -> Result<(), Warning> {
+        if line.raw_string.starts_with(' ') {
+            Err(self.warning.clone())
         } else {
             Ok(())
         }
