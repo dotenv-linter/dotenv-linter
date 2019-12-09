@@ -23,12 +23,12 @@ mod tests {
 
         let warning = String::from("Leading space detected");
         let line = " DEBUG_HTTP=true";
-        assert_eq!(Err(warning), LeadingSpaceChecker.run(line));
+        assert_eq!(Err(warning.to_owned()), LeadingSpaceChecker.run(line));
 
         let line = "  DEBUG_HTTP=true";
-        assert_eq!(Err(warning), LeadingSpaceChecker.run(line));
+        assert_eq!(Err(warning.to_owned()), LeadingSpaceChecker.run(line));
 
         let line = "    DEBUG_HTTP=true";
-        assert_eq!(Err(warning), LeadingSpaceChecker.run(line));
+        assert_eq!(Err(warning.to_owned()), LeadingSpaceChecker.run(line));
     }
 }
