@@ -1,13 +1,11 @@
-use crate::checks::leading_space::LeadingSpaceCheck;
-
 mod leading_space;
 
-trait Lint {
+trait Check {
     fn run(&self, line: &str) -> Result<(), String>;
 }
 
-fn checklist() -> Vec<impl Lint> {
-    vec![LeadingSpaceCheck]
+fn checklist() -> Vec<impl Check> {
+    vec![leading_space::LeadingSpaceChecker]
 }
 
 pub fn run(line: &str) -> Vec<String> {

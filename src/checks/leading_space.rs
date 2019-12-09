@@ -1,8 +1,8 @@
-use crate::checks::Lint;
+use crate::checks::Check;
 
-pub struct LeadingSpaceCheck;
+pub(crate) struct LeadingSpaceChecker;
 
-impl Lint for LeadingSpaceCheck {
+impl Check for LeadingSpaceChecker {
     fn run(&self, line: &str) -> Result<(), String> {
         if line.starts_with(' ') {
             Err(String::from("Leading space detected"))
@@ -17,17 +17,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn run() {
+    fn leading_space_check_run() {
+        let line = "DEBUG_HTTP=true";
+        assert_eq!(Ok(()), LeadingSpaceChecker.run(line));
+
+        let warning = String::from("Leading space detected");
         let line = " DEBUG_HTTP=true";
-        assert_eq!(Err(String::from("Leading space detected")), LeadingSpaceCheck.run(line));
+        assert_eq!(Err(warning), LeadingSpaceChecker.run(line));
 
         let line = "  DEBUG_HTTP=true";
-        assert_eq!(Err(String::from("Leading space detected")), LeadingSpaceCheck.run(line));
+        assert_eq!(Err(warning), LeadingSpaceChecker.run(line));
 
         let line = "    DEBUG_HTTP=true";
-        assert_eq!(Err(String::from("Leading space detected")), LeadingSpaceCheck.run(line));
-
-        let line = "DEBUG_HTTP=true";
-        assert_eq!(Ok(()), LeadingSpaceCheck.run(line));
+        assert_eq!(Err(warning), LeadingSpaceChecker.run(line));
     }
 }
