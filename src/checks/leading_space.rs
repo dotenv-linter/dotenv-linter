@@ -28,7 +28,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn leading_space_check_run() {
+    fn leading_space_checker_run() {
         let checker = LeadingSpaceChecker::default();
         let line = &LineEntry {
             number: 1,

@@ -40,6 +40,79 @@ DEBUG_HTTP=true
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [ ] Create a GitHub Action for easily using `dotenv-linter`.
 
+## How to add a new check
+1. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`;
+2. Add a new struct for this check, for example:
+
+```rust
+pub(crate) struct ExampleChecker {
+    warning: Warning,
+}
+```
+
+3. Implement 2 methods for this struct: `default` and `run`, for example:
+
+```rust
+impl Default for ExampleChecker {
+    fn default() -> Self {
+        Self {
+            warning: Warning::new("Example detected"),
+        }
+    }
+}
+
+impl Check for ExampleChecker {
+    fn run(&self, line: &LineEntry) -> Option<Warning> {
+        // Write your check logic here...
+        if line.raw_string.starts_with("EXAMPLE") {
+            Some(self.warning.clone())
+        } else {
+            None
+        }
+    }
+}
+```
+
+4. Write tests for this check, for example:
+
+```rust
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn example_checker_run() {
+        let checker = ExampleChecker::default();
+        let line = &LineEntry {
+            number: 1,
+            raw_string: String::from("DEBUG_HTTP=true"),
+        };
+        assert_eq!(None, checker.run(line));
+
+        let line = &LineEntry {
+            number: 1,
+            raw_string: String::from("EXAMPLE=true"),
+        };
+        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
+    }
+}
+```
+
+5. Add a new check to the file `src/checks.rs`, for example:
+
+```rust
+mod example;
+//...
+fn checklist() -> Vec<impl Check> {
+    vec![
+        leading_space::LeadingSpaceChecker::default(),
+        example::ExampleChecker::default(),
+    ]
+}
+```
+
+6. That's all! You are awesome! ❤️
+
 ## Similar projects
 * [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
 
