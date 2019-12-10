@@ -27,7 +27,7 @@ Detects if a line starts with a space or a tab character:
 DEBUG_HTTP=true
 ```
 
-## Plans
+## Roadmap
 - [ ] Add more checks:
   - [x] Leading Space
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
@@ -41,7 +41,7 @@ DEBUG_HTTP=true
 - [ ] Create a GitHub Action for easily using `dotenv-linter`.
 
 ## How to add a new check
-1. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`;
+1. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`
 2. Add a new struct for this check, for example:
 
 ```rust
