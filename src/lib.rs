@@ -1,4 +1,5 @@
 use std::env;
+use std::fmt;
 use std::fs::{DirEntry, File};
 use std::io::{BufRead, BufReader, Error};
 
@@ -6,10 +7,19 @@ mod checks;
 
 const DOTENV_PREFIX: &str = ".env";
 
-#[allow(dead_code)]
 pub struct LineEntry {
     number: usize,
     raw_string: String,
+}
+
+impl fmt::Display for LineEntry {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "number: {}, raw_string: {}",
+            self.number, self.raw_string
+        )
+    }
 }
 
 pub fn run() -> Result<(), Error> {
