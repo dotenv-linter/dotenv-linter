@@ -42,8 +42,7 @@ mod tests {
             number: 1,
             raw_string: String::from("DEBUG-HTTP=true"),
         };
-        let expected =
-            Some(Warning::new("The DEBUG-HTTP key has incorrect delimiter"));
+        let expected = Some(Warning::new("The DEBUG-HTTP key has incorrect delimiter"));
         assert_eq!(expected, checker.run(line));
     }
 
