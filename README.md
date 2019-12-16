@@ -27,14 +27,25 @@ Detects if a line starts with a space or a tab character:
 DEBUG_HTTP=true
 ```
 
+### Incorrect delimiter
+
+Detects if a key does not use an underscore to sepearte words:
+```env
+# Wrong
+DB-NAME=testing
+
+# Correct
+DB_NAME=test
+```
+
 ## Roadmap
 - [ ] Add more checks:
   - [x] Leading Space
+  - [x] Incorrect delimiter
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] [Lowercase keys](https://github.com/mgrachev/dotenv-linter/issues/6);
   - [ ] [Keys without values](https://github.com/mgrachev/dotenv-linter/issues/7);
-  - [x] Incorrect delimiter
   - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
   - [ ] Other checks.
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
