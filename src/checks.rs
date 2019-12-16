@@ -4,6 +4,7 @@ use std::fmt;
 mod incorrect_delimiter;
 mod key_without_value;
 mod leading_space;
+mod lowercase_key;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Warning {
@@ -38,6 +39,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(leading_space::LeadingSpaceChecker::default()),
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
+        Box::new(lowercase_key::LowercaseKeyChecker::default()),
     ]
 }
 
