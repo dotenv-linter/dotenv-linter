@@ -34,7 +34,7 @@ DEBUG_HTTP=true
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] [Lowercase keys](https://github.com/mgrachev/dotenv-linter/issues/6);
   - [ ] [Keys without values](https://github.com/mgrachev/dotenv-linter/issues/7);
-  - [ ] [Incorrect delimiter](https://github.com/mgrachev/dotenv-linter/issues/8);
+  - [x] Incorrect delimiter
   - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
   - [ ] Other checks.
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
