@@ -19,6 +19,7 @@ $ ./dotenv-linter
 ### Leading Space
 
 Detects if a line starts with a space or a tab character:
+
 ```env
 # Wrong
  DEBUG_HTTP=true
@@ -30,6 +31,7 @@ DEBUG_HTTP=true
 ### Keys Without Values
 
 Detects if a line has a key without a value:
+
 ```env
 # Wrong
 RAILS_ENV
@@ -44,6 +46,7 @@ RAILS_ENV=development
 ### Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
+
 ```env
 # Wrong
 DB-NAME=testing
