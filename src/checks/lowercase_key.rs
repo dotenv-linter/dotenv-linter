@@ -5,7 +5,7 @@ pub(crate) struct LowercaseKeyChecker {}
 
 impl Check for LowercaseKeyChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
-        let line_str: Vec<&str> = line.raw_string.split("=").collect();
+        let line_str: Vec<&str> = line.raw_string.split('=').collect();
         let key = line_str[0];
         if key.to_uppercase() == key {
             None
