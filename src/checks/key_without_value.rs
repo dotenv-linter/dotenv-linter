@@ -16,7 +16,9 @@ impl Default for KeyWithoutValueChecker {
 impl Check for KeyWithoutValueChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
         if !line.raw_string.contains('=') {
-            Some(self.warning.clone())
+            Some(Warning {
+                message: self.warning.message.replace("{}", &line.raw_string),
+            })
         } else {
             None
         }
@@ -34,7 +36,10 @@ mod tests {
             number: 1,
             raw_string: String::from("RAILS_ENV"),
         };
-        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
+        let expected = Some(Warning::new(
+            "The RAILS_ENV key should be with a value or have an equal sign",
+        ));
+        assert_eq!(expected, checker.run(line));
 
         let line = &LineEntry {
             number: 1,
