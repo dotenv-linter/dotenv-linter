@@ -1,7 +1,17 @@
 use crate::checks::{Check, Warning};
 use crate::LineEntry;
 
-pub(crate) struct IncorrectDelimiterChecker {}
+pub(crate) struct IncorrectDelimiterChecker {
+    warning: Warning,
+}
+
+impl Default for IncorrectDelimiterChecker {
+    fn default() -> Self {
+        Self {
+            warning: Warning::new("The {} key has incorrect delimiter"),
+        }
+    }
+}
 
 impl Check for IncorrectDelimiterChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
@@ -13,7 +23,7 @@ impl Check for IncorrectDelimiterChecker {
         let key = line.raw_string.get(0..eq_index)?;
         if key.chars().any(|c| !c.is_alphabetic() && c != '_') {
             return Some(Warning {
-                message: format!("The {} key has incorrect delimiter", key),
+                message: self.warning.message.replace("{}", key),
             });
         }
 
@@ -27,7 +37,7 @@ mod tests {
 
     #[test]
     fn working_run() {
-        let checker = IncorrectDelimiterChecker {};
+        let checker = IncorrectDelimiterChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("DEBUG_HTTP=true"),
@@ -37,7 +47,7 @@ mod tests {
 
     #[test]
     fn failing_run() {
-        let checker = IncorrectDelimiterChecker {};
+        let checker = IncorrectDelimiterChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("DEBUG-HTTP=true"),
@@ -48,7 +58,7 @@ mod tests {
 
     #[test]
     fn unformated_run() {
-        let checker = IncorrectDelimiterChecker {};
+        let checker = IncorrectDelimiterChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("DEBUG-HTTPtrue"),
@@ -58,7 +68,7 @@ mod tests {
 
     #[test]
     fn leading_space_run() {
-        let checker = IncorrectDelimiterChecker {};
+        let checker = IncorrectDelimiterChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from(" DEBUG_HTTP=true"),
@@ -68,7 +78,7 @@ mod tests {
 
     #[test]
     fn empty_run() {
-        let checker = IncorrectDelimiterChecker {};
+        let checker = IncorrectDelimiterChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from(""),
@@ -78,7 +88,7 @@ mod tests {
 
     #[test]
     fn short_run() {
-        let checker = IncorrectDelimiterChecker {};
+        let checker = IncorrectDelimiterChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("A=short"),
