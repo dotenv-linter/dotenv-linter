@@ -8,7 +8,7 @@ pub(crate) struct KeyWithoutValueChecker {
 impl Default for KeyWithoutValueChecker {
     fn default() -> Self {
         Self {
-            warning: Warning::new("Key without value detected"),
+            warning: Warning::new("The {} key should be with a value or have an equal sign"),
         }
     }
 }
