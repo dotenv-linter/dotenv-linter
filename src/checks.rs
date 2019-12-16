@@ -1,6 +1,7 @@
 use crate::LineEntry;
 use std::fmt;
 
+mod key_without_value;
 mod leading_space;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -26,8 +27,11 @@ trait Check {
     fn run(&self, line: &LineEntry) -> Option<Warning>;
 }
 
-fn checklist() -> Vec<impl Check> {
-    vec![leading_space::LeadingSpaceChecker::default()]
+fn checklist() -> Vec<Box<dyn Check>> {
+    vec![
+        Box::new(leading_space::LeadingSpaceChecker::default()),
+        Box::new(key_without_value::KeyWithoutValueChecker::default()),
+    ]
 }
 
 pub fn run(line: &LineEntry) -> Vec<Warning> {
