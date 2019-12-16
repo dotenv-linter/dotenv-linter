@@ -30,7 +30,7 @@ trait Check {
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(leading_space::LeadingSpaceChecker::default()),
-        Box::new(incorrect_delimiter::IncorrectDelimiterChecker {}),
+        Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
     ]
 }
 
