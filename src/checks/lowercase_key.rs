@@ -1,25 +1,20 @@
 use crate::checks::{Check, Warning};
 use crate::LineEntry;
 
-pub(crate) struct LowercaseKeyChecker {
-    warning: Warning,
-}
-
-impl Default for LowercaseKeyChecker {
-    fn default() -> Self {
-        Self {
-            warning: Warning::new("Key contains lowercase chars"),
-        }
-    }
-}
+pub(crate) struct LowercaseKeyChecker {}
 
 impl Check for LowercaseKeyChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
         let line_str: Vec<&str> = line.raw_string.split("=").collect();
-        if line_str[0].to_uppercase() == line_str[0] {
+        let key = line_str[0];
+        if key.to_uppercase() == key {
             None
         } else {
-            Some(self.warning.clone())
+            Some(
+                Warning {
+                    message:  format!("The {} key should be in uppercase", key),
+                }
+            )
         }
     }
 }
@@ -30,7 +25,7 @@ mod tests {
 
     #[test]
     fn lowercase_key_checker_run() {
-        let checker = LowercaseKeyChecker::default();
+        let checker = LowercaseKeyChecker {};
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("DEBUG_HTTP=true"),
@@ -41,12 +36,12 @@ mod tests {
             number: 1,
             raw_string: String::from("debug_http=true"),
         };
-        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
+        assert_eq!(Some(Warning::new("The debug_http key should be in uppercase")), checker.run(line));
 
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("DEbUG_hTTP=true"),
         };
-        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
+        assert_eq!(Some(Warning::new("The DEbUG_hTTP key should be in uppercase")), checker.run(line));
     }
 }
