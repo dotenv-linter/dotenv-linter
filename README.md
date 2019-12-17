@@ -57,7 +57,7 @@ DB_NAME=test
 
 ### Lowercase key
 
-Detects if key has lowcase characters
+Detects if key has lowercase characters
 
 ````env
 # Wrong
@@ -88,6 +88,7 @@ DEBUG_HTTP=true
 pub(crate) struct ExampleChecker {
     template: String,
 }
+`
 ````
 
 1. Implement 2 methods for this struct: `default` and `run`, for example:
