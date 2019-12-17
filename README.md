@@ -43,7 +43,7 @@ RAILS_ENV=development
 
 ### Incorrect delimiter
 
-Detects if a key does not use an underscore to sepearte words:
+Detects if a key does not use an underscore to separate words:
 ```env
 # Wrong
 DB-NAME=testing
