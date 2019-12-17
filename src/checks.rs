@@ -1,6 +1,7 @@
 use crate::LineEntry;
 use std::fmt;
 
+mod incorrect_delimiter;
 mod key_without_value;
 mod leading_space;
 
@@ -31,6 +32,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(leading_space::LeadingSpaceChecker::default()),
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
+        Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
     ]
 }
 

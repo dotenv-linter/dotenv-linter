@@ -41,14 +41,25 @@ RAILS_ENV=
 RAILS_ENV=development
 ```
 
+### Incorrect delimiter
+
+Detects if a key does not use an underscore to separate words:
+```env
+# Wrong
+DB-NAME=testing
+
+# Correct
+DB_NAME=test
+```
+
 ## Roadmap
 - [ ] Add more checks:
   - [x] Leading Space
   - [x] Keys without values
+  - [x] Incorrect delimiter
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] [Lowercase keys](https://github.com/mgrachev/dotenv-linter/issues/6);
-  - [ ] [Incorrect delimiter](https://github.com/mgrachev/dotenv-linter/issues/8);
   - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
   - [ ] Other checks.
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
