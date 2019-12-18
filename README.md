@@ -54,9 +54,9 @@ DB_NAME=test
 
 ## Roadmap
 - [ ] Add more checks:
-  - [x] Leading Space
-  - [x] Keys without values
-  - [x] Incorrect delimiter
+  - [x] Leading Space;
+  - [x] Keys without values;
+  - [x] Incorrect delimiter;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] [Lowercase keys](https://github.com/mgrachev/dotenv-linter/issues/6);
@@ -71,7 +71,7 @@ DB_NAME=test
 
 ```rust
 pub(crate) struct ExampleChecker {
-    warning: Warning,
+    template: String,
 }
 ```
 
@@ -81,7 +81,7 @@ pub(crate) struct ExampleChecker {
 impl Default for ExampleChecker {
     fn default() -> Self {
         Self {
-            warning: Warning::new("Example detected"),
+            template: String::from("Example detected"),
         }
     }
 }
@@ -90,7 +90,7 @@ impl Check for ExampleChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
         // Write your check logic here...
         if line.raw_string.starts_with("EXAMPLE") {
-            Some(self.warning.clone())
+            Some(Warning::new(self.template.clone()))
         } else {
             None
         }
@@ -114,11 +114,12 @@ mod tests {
         };
         assert_eq!(None, checker.run(line));
 
+        let expected = Some(Warning::from("Example detected"));
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("EXAMPLE=true"),
         };
-        assert_eq!(Some(checker.warning.to_owned()), checker.run(line));
+        assert_eq!(expected, checker.run(line));
     }
 }
 ```
