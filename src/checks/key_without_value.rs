@@ -2,13 +2,13 @@ use crate::checks::{Check, Warning};
 use crate::LineEntry;
 
 pub(crate) struct KeyWithoutValueChecker {
-    warning: Warning,
+    template: String,
 }
 
 impl Default for KeyWithoutValueChecker {
     fn default() -> Self {
         Self {
-            warning: Warning::new("The {} key should be with a value or have an equal sign"),
+            template: String::from("The {} key should be with a value or have an equal sign"),
         }
     }
 }
@@ -16,9 +16,7 @@ impl Default for KeyWithoutValueChecker {
 impl Check for KeyWithoutValueChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
         if !line.raw_string.contains('=') {
-            Some(Warning {
-                message: self.warning.message.replace("{}", &line.raw_string),
-            })
+            Some(Warning::new(self.template.replace("{}", &line.raw_string)))
         } else {
             None
         }
@@ -36,20 +34,20 @@ mod tests {
             number: 1,
             raw_string: String::from("RAILS_ENV"),
         };
-        let expected = Some(Warning::new(
+        let expected = Some(Warning::from(
             "The RAILS_ENV key should be with a value or have an equal sign",
         ));
         assert_eq!(expected, checker.run(line));
 
         let line = &LineEntry {
             number: 1,
-            raw_string: String::from("RAILES_ENV="),
+            raw_string: String::from("RAILS_ENV="),
         };
         assert_eq!(None, checker.run(line));
 
         let line = &LineEntry {
             number: 1,
-            raw_string: String::from("RAILES_ENV=development"),
+            raw_string: String::from("RAILS_ENV=development"),
         };
         assert_eq!(None, checker.run(line));
     }
