@@ -2,13 +2,13 @@ use crate::checks::{Check, Warning};
 use crate::LineEntry;
 
 pub(crate) struct IncorrectDelimiterChecker {
-    warning: Warning,
+    template: String,
 }
 
 impl Default for IncorrectDelimiterChecker {
     fn default() -> Self {
         Self {
-            warning: Warning::new("The {} key has incorrect delimiter"),
+            template: String::from("The {} key has incorrect delimiter"),
         }
     }
 }
@@ -18,9 +18,7 @@ impl Check for IncorrectDelimiterChecker {
         let eq_index = line.raw_string.find('=')?;
         let key = line.raw_string.get(0..eq_index)?;
         if key.trim().chars().any(|c| !c.is_alphabetic() && c != '_') {
-            return Some(Warning {
-                message: self.warning.message.replace("{}", key),
-            });
+            return Some(Warning::new(self.template.replace("{}", key)));
         }
 
         None
@@ -48,7 +46,7 @@ mod tests {
             number: 1,
             raw_string: String::from("DEBUG-HTTP=true"),
         };
-        let expected = Some(Warning::new("The DEBUG-HTTP key has incorrect delimiter"));
+        let expected = Some(Warning::from("The DEBUG-HTTP key has incorrect delimiter"));
         assert_eq!(expected, checker.run(line));
     }
 
@@ -59,7 +57,7 @@ mod tests {
             number: 1,
             raw_string: String::from("DEBUG HTTP=true"),
         };
-        let expected = Some(Warning::new("The DEBUG HTTP key has incorrect delimiter"));
+        let expected = Some(Warning::from("The DEBUG HTTP key has incorrect delimiter"));
         assert_eq!(expected, checker.run(line));
     }
 

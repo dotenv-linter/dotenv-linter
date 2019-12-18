@@ -11,7 +11,12 @@ pub struct Warning {
 }
 
 impl Warning {
-    fn new(msg: &str) -> Self {
+    fn new(message: String) -> Self {
+        Self { message }
+    }
+
+    #[allow(dead_code)]
+    fn from(msg: &str) -> Self {
         Self {
             message: msg.to_string(),
         }
