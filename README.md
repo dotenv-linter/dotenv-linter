@@ -131,8 +131,8 @@ mod example;
 //...
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
-        leading_space::LeadingSpaceChecker::default(),
-        example::ExampleChecker::default(),
+        Box::new(leading_space::LeadingSpaceChecker::default()),
+        Box::new(example::ExampleChecker::default()),
     ]
 }
 ```
