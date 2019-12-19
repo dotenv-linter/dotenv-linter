@@ -129,7 +129,7 @@ mod tests {
 ```rust
 mod example;
 //...
-fn checklist() -> Vec<impl Check> {
+fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         leading_space::LeadingSpaceChecker::default(),
         example::ExampleChecker::default(),
