@@ -145,8 +145,8 @@ fn checklist() -> Vec<Box<dyn Check>> {
 ## Sponsor
 
 <p>
-  <a href="https://evrone.com/?utm_source=action-rubocop">
-    <img src="https://solovev.one/static/evrone-sponsored-300.png" 
+  <a href="https://evrone.com/?utm_source=dotenv-linter">
+    <img src="https://www.mgrachev.com/assets/static/evrone-sponsored-300.png" 
       alt="Sponsored by Evrone" width="210">
   </a>
 </p>
