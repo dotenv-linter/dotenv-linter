@@ -1,17 +1,27 @@
 use crate::checks::{Check, Warning};
 use crate::LineEntry;
 
-pub(crate) struct LowercaseKeyChecker {}
+pub(crate) struct LowercaseKeyChecker {
+    template: String,
+}
+
+impl Default for LowercaseKeyChecker {
+    fn default() -> Self {
+        Self {
+            template: String::from("The {} key should be in uppercase"),
+        }
+    }
+}
 
 impl Check for LowercaseKeyChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
         let line_str: Vec<&str> = line.raw_string.split('=').collect();
         let key = line_str[0];
-        if key.to_uppercase() == key {
+        if key.to_uppercase() == key.to_string() {
             None
         } else {
             Some(Warning {
-                message: format!("The {} key should be in uppercase", key),
+                message: self.template.replace("{}", key),
             })
         }
     }
@@ -23,7 +33,7 @@ mod tests {
 
     #[test]
     fn lowercase_key_checker_run() {
-        let checker = LowercaseKeyChecker {};
+        let checker = LowercaseKeyChecker::default();
         let line = &LineEntry {
             number: 1,
             raw_string: String::from("DEBUG_HTTP=true"),
