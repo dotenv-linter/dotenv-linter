@@ -17,7 +17,7 @@ impl Check for LowercaseKeyChecker {
     fn run(&self, line: &LineEntry) -> Option<Warning> {
         let line_str: Vec<&str> = line.raw_string.split('=').collect();
         let key = line_str[0];
-        if key.to_uppercase() == key.to_string() {
+        if key.to_uppercase() == key() {
             None
         } else {
             Some(Warning {
@@ -45,7 +45,7 @@ mod tests {
             raw_string: String::from("debug_http=true"),
         };
         assert_eq!(
-            Some(Warning::new("The debug_http key should be in uppercase")),
+            Some(Warning::from("The debug_http key should be in uppercase")),
             checker.run(line)
         );
 
@@ -54,7 +54,7 @@ mod tests {
             raw_string: String::from("DEbUG_hTTP=true"),
         };
         assert_eq!(
-            Some(Warning::new("The DEbUG_hTTP key should be in uppercase")),
+            Some(Warning::from("The DEbUG_hTTP key should be in uppercase")),
             checker.run(line)
         );
     }
