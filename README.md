@@ -19,7 +19,6 @@ $ ./dotenv-linter
 ### Leading Space
 
 Detects if a line starts with a space or a tab character:
-
 ```env
 # Wrong
  DEBUG_HTTP=true
@@ -31,7 +30,6 @@ DEBUG_HTTP=true
 ### Keys Without Values
 
 Detects if a line has a key without a value:
-
 ```env
 # Wrong
 RAILS_ENV
@@ -46,7 +44,6 @@ RAILS_ENV=development
 ### Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
-
 ```env
 # Wrong
 DB-NAME=testing
@@ -59,20 +56,21 @@ DB_NAME=test
 
 Detects if key has lowercase characters
 
-```` `env
+```env
 # Wrong
 DEbUG_hTTP=true
 debug_http=true
 
 # Correct
 DEBUG_HTTP=true
+```
 
 ## Roadmap
 - [ ] Add more checks:
   - [x] Leading Space;
   - [x] Keys without values;
   - [x] Incorrect delimiter;
-  - [x] Lowercase keys;
+  - [x] Lowercase keys
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
@@ -81,16 +79,16 @@ DEBUG_HTTP=true
 - [ ] Create a GitHub Action for easily using `dotenv-linter`.
 
 ## How to add a new check
-1\. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`
-2\. Add a new struct for this check, for example:
+1. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`
+2. Add a new struct for this check, for example:
 
 ```rust
 pub(crate) struct ExampleChecker {
     template: String,
 }
-````
+```
 
-1. Implement 2 methods for this struct: `default` and `run`, for example:
+3. Implement 2 methods for this struct: `default` and `run`, for example:
 
 ```rust
 impl Default for ExampleChecker {
@@ -113,7 +111,7 @@ impl Check for ExampleChecker {
 }
 ```
 
-1. Write tests for this check, for example:
+4. Write tests for this check, for example:
 
 ```rust
 #[cfg(test)]
@@ -139,7 +137,7 @@ mod tests {
 }
 ```
 
-1. Add a new check to the file `src/checks.rs`, for example:
+5. Add a new check to the file `src/checks.rs`, for example:
 
 ```rust
 mod example;
@@ -152,12 +150,16 @@ fn checklist() -> Vec<Box<dyn Check>> {
 }
 ```
 
-1. That's all! You are awesome! ❤️
+6. That's all! You are awesome! ❤️
 
 ## Similar projects
-
-- [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
+* [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
 
 ## Sponsor
 
-[![Sponsored by Evrone](https://www.mgrachev.com/assets/static/evrone-sponsored-300.png)](https://evrone.com/?utm_source=dotenv-linter)
+<p>
+  <a href="https://evrone.com/?utm_source=dotenv-linter">
+    <img src="https://www.mgrachev.com/assets/static/evrone-sponsored-300.png"
+      alt="Sponsored by Evrone" width="210">
+  </a>
+</p>
