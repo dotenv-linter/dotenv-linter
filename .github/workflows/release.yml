@@ -10,8 +10,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: build
         run: |
-          cargo build --release --out-dir .
-          mv dotenv-linter dotenv-linter-linux
+          cargo build --release
+          mv target/release/dotenv-linter ./dotenv-linter-linux
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -28,8 +28,8 @@ jobs:
           toolchain: stable
       - name: build
         run: |
-          cargo build --release --out-dir .
-          mv dotenv-linter dotenv-linter-macos
+          cargo build --release
+          mv target/release/dotenv-linter ./dotenv-linter-macos
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -43,8 +43,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: build
         run: |
-          cargo build --release --out-dir .
-          mv dotenv-linter dotenv-linter-windows
+          cargo build --release
+          mv target/release/dotenv-linter ./dotenv-linter-windows
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
