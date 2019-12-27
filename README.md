@@ -52,14 +52,27 @@ DB-NAME=testing
 DB_NAME=test
 ```
 
+### Lowercase key
+
+Detects if key has lowercase characters
+
+```env
+# Wrong
+DEbUG_hTTP=true
+debug_http=true
+
+# Correct
+DEBUG_HTTP=true
+```
+
 ## Roadmap
 - [ ] Add more checks:
   - [x] Leading Space;
   - [x] Keys without values;
   - [x] Incorrect delimiter;
+  - [x] Lowercase keys
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
-  - [ ] [Lowercase keys](https://github.com/mgrachev/dotenv-linter/issues/6);
   - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
   - [ ] Other checks.
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
@@ -146,7 +159,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
 
 <p>
   <a href="https://evrone.com/?utm_source=dotenv-linter">
-    <img src="https://www.mgrachev.com/assets/static/evrone-sponsored-300.png" 
+    <img src="https://www.mgrachev.com/assets/static/evrone-sponsored-300.png"
       alt="Sponsored by Evrone" width="210">
   </a>
 </p>
