@@ -1,3 +1,0 @@
-[target.x86_64-apple-darwin]
-linker = "x86_64-apple-darwin15-gcc"
-ar = "x86_64-apple-darwin15-ar"
