@@ -28,7 +28,6 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
     for path in paths {
         let f = File::open(&path)?;
         let reader = BufReader::new(f);
-
         let file_name = match path.file_name() {
             Some(s) => s.to_str().unwrap_or("undefined").to_string(),
             None => continue,
@@ -99,7 +98,7 @@ fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
 }
 
 pub fn extract_key(input: &str) -> String {
-    if input.len() == 0 {
+    if input.is_empty() {
         return "".to_owned();
     }
 

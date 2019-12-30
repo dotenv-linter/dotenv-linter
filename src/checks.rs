@@ -1,6 +1,7 @@
 use crate::{FileEntry, LineEntry};
 use std::fmt;
 
+mod duplicated_keys;
 mod incorrect_delimiter;
 mod key_without_value;
 mod leading_space;
@@ -29,10 +30,17 @@ impl fmt::Display for Warning {
     }
 }
 
+// This trait is used for checks which needs to know of only a single line
 trait Check {
     fn run(&mut self, line: LineEntry) -> Option<Warning>;
 }
 
+// This trait is used for checks which needs to know of every line
+trait GlobalCheck {
+    fn run(&self, lines: Vec<LineEntry>) -> Vec<Warning>;
+}
+
+// Checklist for checks which needs to know of only a single line
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
