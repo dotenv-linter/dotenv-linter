@@ -97,3 +97,40 @@ fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
 
     Ok(paths)
 }
+
+pub fn extract_key(input: &str) -> String {
+    if input.len() == 0 {
+        return "".to_owned();
+    }
+
+    let has_equal_sign = input.find('=');
+
+    match has_equal_sign {
+        Some(index) => input[..index].to_owned(),
+        None => "".to_owned(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn extract_key_test() {
+        let input = "";
+        let expected = "";
+        assert_eq!(expected, extract_key(input));
+
+        let input = "RAILS_ENV=abc";
+        let expected = "RAILS_ENV";
+        assert_eq!(expected, extract_key(input));
+
+        let input = "RAILS_ENV=";
+        let expected = "RAILS_ENV";
+        assert_eq!(expected, extract_key(input));
+
+        let input = "RAILS_ENVabc";
+        let expected = "";
+        assert_eq!(expected, extract_key(input));
+    }
+}
