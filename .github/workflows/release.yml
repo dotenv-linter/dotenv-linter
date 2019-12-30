@@ -28,9 +28,7 @@ jobs:
           args: --release --target x86_64-unknown-linux-gnu
       - name: linux list
         run: |
-          ls -la target/*
-          tree target/*
-          ls -la target/x86_64-unknown-linux-gnu/*
+          ls -laR target/*
 
       - name: alpine build
         uses: actions-rs/cargo@v1
