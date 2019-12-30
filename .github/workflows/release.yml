@@ -8,42 +8,86 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: build
-        run: |
-          env
-          cargo build --release
-          ls -la
-          mv target/release/dotenv-linter ./dotenv-linter-linux
-          ls -la
-          cargo build --release --target x86_64-unknown-linux-musl
-          mv target/release/dotenv-linter ./dotenv-linter-alpine
-      - name: publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  macos-release:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: build
-        run: |
-          env
-          cargo build --release
-          ls -la
-          mv target/release/dotenv-linter ./dotenv-linter-macos
-          ls -la
+          override: true
+      - name: target list
+        run: rustc --print target-list
+
+      - name: linux build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target x86_64-unknown-linux-gnu
+      - name: linux list
+        run: ls -la  target/release/
+
+      - name: darwin build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target x86_64-apple-darwin
+      - name: darwin list
+        run: ls -la  target/release/
+
+      - name: windows build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target x86_64-pc-windows-gnu
+      - name: windows list
+        run: ls -la  target/release/
+
+      - name: alpine build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target x86_64-unknown-linux-musl
+      - name: alpine list
+        run: ls -la  target/release/
+
+#      - name: build
+#        run: |
+#          env
+#          cargo build --release
+#          ls -la
+#          mv target/release/dotenv-linter ./dotenv-linter-linux
+#          ls -la
+#          cargo build --release --target x86_64-unknown-linux-musl
+#          mv target/release/dotenv-linter ./dotenv-linter-alpine
+
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
-          files: dotenv-linter-macos
+          files: target/release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#  macos-release:
+#    runs-on: macos-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - uses: actions-rs/toolchain@v1
+#        with:
+#          toolchain: stable
+#      - name: build
+#        run: |
+#          env
+#          cargo build --release
+#          ls -la
+#          mv target/release/dotenv-linter ./dotenv-linter-macos
+#          ls -la
+#      - name: publish release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: dotenv-linter-macos
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #  windows-release:
 #    runs-on: windows-latest
