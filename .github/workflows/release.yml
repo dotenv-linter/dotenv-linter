@@ -12,8 +12,14 @@ jobs:
         with:
           toolchain: stable
           override: true
-      - name: target list
-        run: rustc --print target-list
+
+      - name: install targets
+        run: |
+          rustup target add x86_64-apple-darwin
+          rustup target add x86_64-pc-windows-gnu
+          rustup target add x86_64-unknown-linux-gnu
+          rustup target add x86_64-unknown-linux-musl
+
 
       - name: linux build
         uses: actions-rs/cargo@v1
@@ -22,7 +28,11 @@ jobs:
           command: build
           args: --release --target x86_64-unknown-linux-gnu
       - name: linux list
-        run: ls -la  target/release/
+        run: |
+          ls -la .
+          ls -la target/*
+          ls -la target/release/*
+          ls -la target/release/build/*
 
       - name: darwin build
         uses: actions-rs/cargo@v1
@@ -31,7 +41,11 @@ jobs:
           command: build
           args: --release --target x86_64-apple-darwin
       - name: darwin list
-        run: ls -la  target/release/
+        run: |
+          ls -la .
+          ls -la target/*
+          ls -la target/release/*
+          ls -la target/release/build/*
 
       - name: windows build
         uses: actions-rs/cargo@v1
@@ -40,7 +54,11 @@ jobs:
           command: build
           args: --release --target x86_64-pc-windows-gnu
       - name: windows list
-        run: ls -la  target/release/
+        run: |
+          ls -la .
+          ls -la target/*
+          ls -la target/release/*
+          ls -la target/release/build/*
 
       - name: alpine build
         uses: actions-rs/cargo@v1
@@ -49,7 +67,11 @@ jobs:
           command: build
           args: --release --target x86_64-unknown-linux-musl
       - name: alpine list
-        run: ls -la  target/release/
+        run: |
+          ls -la .
+          ls -la target/*
+          ls -la target/release/*
+          ls -la target/release/build/*
 
 #      - name: build
 #        run: |
