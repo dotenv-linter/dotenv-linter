@@ -4,7 +4,7 @@ on:
     tags:
       - '*.*.*'
 jobs:
-  linux-release:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -26,8 +26,6 @@ jobs:
           use-cross: true
           command: build
           args: --release --target x86_64-unknown-linux-gnu
-      - name: linux list
-        run: mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter-linux-x86_64
 
       - name: alpine build
         uses: actions-rs/cargo@v1
@@ -35,21 +33,6 @@ jobs:
           use-cross: true
           command: build
           args: --release --target x86_64-unknown-linux-musl
-      - name: alpine list
-        run: mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter-alpine-x86_64
-
-#      - name: darwin build
-#        uses: actions-rs/cargo@v1
-#        with:
-#          use-cross: true
-#          command: build
-#          args: --release --target x86_64-apple-darwin
-#      - name: darwin list
-#        run: |
-#          ls -la .
-#          ls -la target/*
-#          ls -la target/release/*
-#          ls -la target/release/build/*
 
       - name: windows build
         uses: actions-rs/cargo@v1
@@ -57,9 +40,22 @@ jobs:
           use-cross: true
           command: build
           args: --release --target x86_64-pc-windows-gnu
-      - name: windows list
+
+      - name: darwin build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target x86_64-apple-darwin
+      - name: darwin list
         run: |
-          ls -laR .
+          ls -laR target/*
+
+      - name: Rename builds
+        run: |
+          mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter-linux-x86_64
+          mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter-alpine-x86_64
+          mv target/x86_64-pc-windows-gnu/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
 
 #      - name: build
 #        run: |
