@@ -1,8 +1,8 @@
 name: Release
-on: [pull_request]
-#  push:
-#    tags:
-#      - '*.*.*'
+on:
+  push:
+    tags:
+      - '*.*.*'
 jobs:
   linux-release:
     runs-on: ubuntu-latest
