@@ -37,17 +37,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  windows-release:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: build
-        run: |
-          cargo build --release
-          mv target/release/dotenv-linter ./dotenv-linter-windows
-      - name: publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-windows
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#  windows-release:
+#    runs-on: windows-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - name: build
+#        run: |
+#          cargo build --release
+#          mv target/release/dotenv-linter ./dotenv-linter-windows
+#      - name: publish release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: dotenv-linter-windows
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
