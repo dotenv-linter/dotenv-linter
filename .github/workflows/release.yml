@@ -10,8 +10,11 @@ jobs:
       - uses: actions/checkout@v1
       - name: build
         run: |
-          cargo build --release
+          env
+          cargo build --release --verbose
+          ls -la
           mv target/release/dotenv-linter ./dotenv-linter-linux
+          ls -la
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -19,23 +22,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  macos-release:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - name: build
-        run: |
-          cargo build --release
-          mv target/release/dotenv-linter ./dotenv-linter-macos
-      - name: publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-macos
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#  macos-release:
+#    runs-on: macos-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - uses: actions-rs/toolchain@v1
+#        with:
+#          toolchain: stable
+#      - name: build
+#        run: |
+#          cargo build --release
+#          mv target/release/dotenv-linter ./dotenv-linter-macos
+#      - name: publish release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: dotenv-linter-macos
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #  windows-release:
 #    runs-on: windows-latest
