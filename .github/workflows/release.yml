@@ -11,14 +11,16 @@ jobs:
       - name: build
         run: |
           env
-          cargo build --release --verbose
+          cargo build --release
           ls -la
           mv target/release/dotenv-linter ./dotenv-linter-linux
           ls -la
+          cargo build --release --target x86_64-unknown-linux-musl
+          mv target/release/dotenv-linter ./dotenv-linter-alpine
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
-          files: dotenv-linter-linux
+          files: dotenv-linter-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
