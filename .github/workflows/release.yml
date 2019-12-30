@@ -15,8 +15,6 @@ jobs:
           ls -la
           mv target/release/dotenv-linter ./dotenv-linter-linux
           ls -la
-          export GITHUB_REF=refs/tags/v0.1.0
-          env
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -24,23 +22,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#  macos-release:
-#    runs-on: macos-latest
-#    steps:
-#      - uses: actions/checkout@v1
-#      - uses: actions-rs/toolchain@v1
-#        with:
-#          toolchain: stable
-#      - name: build
-#        run: |
-#          cargo build --release
-#          mv target/release/dotenv-linter ./dotenv-linter-macos
-#      - name: publish release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          files: dotenv-linter-macos
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  macos-release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: build
+        run: |
+          env
+          cargo build --release
+          ls -la
+          mv target/release/dotenv-linter ./dotenv-linter-macos
+          ls -la
+      - name: publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dotenv-linter-macos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #  windows-release:
 #    runs-on: windows-latest
