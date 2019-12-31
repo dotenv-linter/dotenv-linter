@@ -75,8 +75,7 @@ jobs:
       - name: build
         run: |
           cargo build --release --target x86_64-pc-windows-msvc
-          ls -la
-#          mv target/x86_64-pc-windows-gnu/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
+          mv target/x86_64-pc-windows-msvc/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
       - name: publish release
         uses: softprops/action-gh-release@v1
         with:
