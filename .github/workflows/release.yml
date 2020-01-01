@@ -15,11 +15,13 @@ jobs:
           cargo build --release --target x86_64-unknown-linux-musl
           mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter-linux-x86_64
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter-alpine-x86_64
+          chmod +x dotenv-linter-linux-x86_64 dotenv-linter-alpine-x86_64
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
           files: dotenv-linter-*
           draft: true
+          body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -34,11 +36,13 @@ jobs:
         run: |
           cargo build --release --target x86_64-apple-darwin
           mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter-darwin-x86_64
+          chmod +x dotenv-linter-darwin-x86_64
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
           files: dotenv-linter-*
           draft: true
+          body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -55,6 +59,7 @@ jobs:
         with:
           files: dotenv-linter-*
           draft: true
+          body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
