@@ -4,20 +4,18 @@ on:
     tags:
       - '*.*.*'
 jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release Drafter
+        uses: release-drafter/release-drafter@v5.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   release-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-#      - uses: actions-rs/toolchain@v1
-#        with:
-#          toolchain: stable
-#          override: true
-
-#      - name: install targets
-#        run: |
-#          rustup target add x86_64-apple-darwin
-#          rustup target add x86_64-pc-windows-gnu
-
       - name: build
         run: |
           rustup target add x86_64-unknown-linux-musl
@@ -31,42 +29,6 @@ jobs:
           files: dotenv-linter-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#        uses: actions-rs/cargo@v1
-#        with:
-#          use-cross: true
-#          command: build
-#          args: --release --target x86_64-unknown-linux-gnu
-
-#      - name: alpine build
-#        uses: actions-rs/cargo@v1
-#        with:
-#          use-cross: true
-#          command: build
-#          args: --release --target x86_64-unknown-linux-musl
-
-#      - name: windows build
-#        uses: actions-rs/cargo@v1
-#        with:
-#          use-cross: true
-#          command: build
-#          args: --release --target x86_64-pc-windows-gnu
-
-#      - name: darwin build
-#        uses: actions-rs/cargo@v1
-#        with:
-#          use-cross: true
-#          command: build
-#          args: --release --target x86_64-apple-darwin
-#      - name: darwin list
-#        run: |
-#          ls -laR target/*
-#
-#      - name: Rename builds
-#        run: |
-#          mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter-linux-x86_64
-#          mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter-alpine-x86_64
-#          mv target/x86_64-pc-windows-gnu/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
 
   release-windows:
     runs-on: windows-latest
@@ -83,23 +45,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: build
-#        run: |
-#          env
-#          cargo build --release
-#          ls -la
-#          mv target/release/dotenv-linter ./dotenv-linter-linux
-#          ls -la
-#          cargo build --release --target x86_64-unknown-linux-musl
-#          mv target/release/dotenv-linter ./dotenv-linter-alpine
-
-#      - name: publish release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          files: dotenv-linter-*
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   release-darwin:
     runs-on: macos-latest
     steps:
@@ -110,7 +55,6 @@ jobs:
       - name: build
         run: |
           cargo build --release --target x86_64-apple-darwin
-          ls -laR target/*
           mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter-darwin-x86_64
       - name: publish release
         uses: softprops/action-gh-release@v1
