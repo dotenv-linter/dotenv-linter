@@ -8,13 +8,13 @@ Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.doc
 
 ```bash
 # Linux
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v0.1.24/dotenv-linter-v0.1.24-linux-x86_64.tar.gz -sSfL | tar -xzf - 
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-linux-x86_64.tar.gz -sSfL | tar -xzf - 
 
 # Alpine Linux
-$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v0.1.24/dotenv-linter-v0.1.24-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v0.1.24/dotenv-linter-v0.1.24-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ## Usage
