@@ -53,3 +53,20 @@ jobs:
           body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+
+          docker login docker.pkg.github.com --username mgrachev --password ${{ secrets.GITHUB_TOKEN }}
+          docker build -t docker.pkg.github.com/mgrachev/dotenv-linter/dotenv-linter:${GIT_TAG} .
+          docker push docker.pkg.github.com/mgrachev/dotenv-linter/dotenv-linter:${GIT_TAG}
