@@ -27,52 +27,55 @@ $ ./dotenv-linter
 
 ## Checks
 
-### Leading Space
+### ✔️ Leading Space
 
 Detects if a line starts with a space or a tab character:
+
 ```env
-# Wrong
+❌Wrong
  DEBUG_HTTP=true
 
-# Correct
+✅Correct
 DEBUG_HTTP=true
 ```
 
-### Keys Without Values
+### ✔️Keys Without Values
 
 Detects if a line has a key without a value:
 ```env
-# Wrong
+❌Wrong
 RAILS_ENV
 
-# Correct
+✅Correct
 RAILS_ENV=
 
-# Correct
+✅Correct
 RAILS_ENV=development
 ```
 
-### Incorrect delimiter
+### ✔️ Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
 ```env
-# Wrong
+❌Wrong
 DB-NAME=testing
 
-# Correct
+✅Correct
 DB_NAME=test
 ```
 
-### Lowercase key
+### ✔️Lowercase key
 
 Detects if a key has lowercase characters:
 
 ```env
-# Wrong
+❌Wrong
 DEbUG_hTTP=true
+
+❌Wrong
 debug_http=true
 
-# Correct
+✅Correct
 DEBUG_HTTP=true
 ```
 
