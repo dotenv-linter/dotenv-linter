@@ -53,24 +53,3 @@ jobs:
           body_path: CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Build
-        run: |
-          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          cargo build --release --target x86_64-pc-windows-msvc
-          mv target/x86_64-pc-windows-msvc/release/dotenv-linter.exe ./dotenv-linter
-          tar -czf dotenv-linter-${GIT_TAG}-windows-x86_64.tar.gz dotenv-linter
-      - name: Publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-*
-          draft: true
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
