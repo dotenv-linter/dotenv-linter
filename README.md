@@ -1,6 +1,6 @@
 # ✌️dotenv-linter
 
-Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.docker`.
+✅Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.docker`.
 
 ## Installation
 
