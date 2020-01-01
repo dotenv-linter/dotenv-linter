@@ -27,7 +27,7 @@ $ ./dotenv-linter
 
 ## Checks
 
-### ✔️Leading Space
+### ✔️Leading space
 
 Detects if a line starts with a space or a tab character:
 
@@ -39,7 +39,7 @@ Detects if a line starts with a space or a tab character:
 DEBUG_HTTP=true
 ```
 
-### ✔️Keys Without Values
+### ✔️Keys without values
 
 Detects if a line has a key without a value:
 ```env
