@@ -4,46 +4,31 @@ on:
     tags:
       - '*.*.*'
 jobs:
-  draft-release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Release Drafter
-        uses: release-drafter/release-drafter@v5.4.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   release-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: build
+      - name: Build
         run: |
           rustup target add x86_64-unknown-linux-musl
           cargo build --release --target x86_64-unknown-linux-gnu
           cargo build --release --target x86_64-unknown-linux-musl
           mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter-linux-x86_64
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter-alpine-x86_64
-      - name: publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-*
+      - name: Release
+        uses: anton-yurchenko/git-release@v2.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: build
-        run: |
-          cargo build --release --target x86_64-pc-windows-msvc
-          mv target/x86_64-pc-windows-msvc/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
-      - name: publish release
-        uses: softprops/action-gh-release@v1
         with:
-          files: dotenv-linter-*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          args: |
+            dotenv-linter-linux-x86_64
+            dotenv-linter-alpine-x86_64
+#      - name: publish release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: dotenv-linter-*
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-darwin:
     runs-on: macos-latest
@@ -52,15 +37,44 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: build
+      - name: Build
         run: |
           cargo build --release --target x86_64-apple-darwin
           mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter-darwin-x86_64
-      - name: publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-*
+      - name: Release
+        uses: anton-yurchenko/git-release@v2.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: |
+            dotenv-linter-darwin-x86_64
+#      - name: publish release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: dotenv-linter-*
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          cargo build --release --target x86_64-pc-windows-msvc
+          mv target/x86_64-pc-windows-msvc/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
+      - name: Release
+        uses: anton-yurchenko/git-release@v2.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: |
+            dotenv-linter-windows-x86_64.exe
+#      - name: publish release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: dotenv-linter-*
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
