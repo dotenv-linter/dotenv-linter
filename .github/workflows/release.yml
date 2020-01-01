@@ -15,20 +15,13 @@ jobs:
           cargo build --release --target x86_64-unknown-linux-musl
           mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter-linux-x86_64
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter-alpine-x86_64
-      - name: Release
-        uses: anton-yurchenko/git-release@v2.0.2
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dotenv-linter-*
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: |
-            dotenv-linter-linux-x86_64
-            dotenv-linter-alpine-x86_64
-#      - name: publish release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          files: dotenv-linter-*
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-darwin:
     runs-on: macos-latest
@@ -41,19 +34,13 @@ jobs:
         run: |
           cargo build --release --target x86_64-apple-darwin
           mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter-darwin-x86_64
-      - name: Release
-        uses: anton-yurchenko/git-release@v2.0.2
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dotenv-linter-*
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: |
-            dotenv-linter-darwin-x86_64
-#      - name: publish release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          files: dotenv-linter-*
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-windows:
     runs-on: windows-latest
@@ -63,18 +50,12 @@ jobs:
         run: |
           cargo build --release --target x86_64-pc-windows-msvc
           mv target/x86_64-pc-windows-msvc/release/dotenv-linter.exe ./dotenv-linter-windows-x86_64.exe
-      - name: Release
-        uses: anton-yurchenko/git-release@v2.0.2
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dotenv-linter-*
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: |
-            dotenv-linter-windows-x86_64.exe
-#      - name: publish release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          files: dotenv-linter-*
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
