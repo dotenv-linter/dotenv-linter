@@ -1,10 +1,21 @@
-# [WIP] dotenv-linter
+# dotenv-linter ✌️
 
 Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.docker`.
 
 ## Installation
 
-`$ cargo install dotenv-linter`
+### Binary
+
+```bash
+# Linux
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-linux-x86_64.tar.gz -sSfL | tar -xzf - 
+
+# Alpine Linux
+$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+
+# macOS
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+```
 
 ## Usage
 
@@ -54,7 +65,7 @@ DB_NAME=test
 
 ### Lowercase key
 
-Detects if key has lowercase characters
+Detects if a key has lowercase characters:
 
 ```env
 # Wrong
@@ -70,7 +81,7 @@ DEBUG_HTTP=true
   - [x] Leading Space;
   - [x] Keys without values;
   - [x] Incorrect delimiter;
-  - [x] Lowercase keys
+  - [x] Lowercase keys;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
@@ -78,79 +89,9 @@ DEBUG_HTTP=true
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [ ] Create a GitHub Action for easily using `dotenv-linter`.
 
-## How to add a new check
-1. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`
-2. Add a new struct for this check, for example:
+## Contributing
 
-```rust
-pub(crate) struct ExampleChecker {
-    template: String,
-}
-```
-
-3. Implement 2 methods for this struct: `default` and `run`, for example:
-
-```rust
-impl Default for ExampleChecker {
-    fn default() -> Self {
-        Self {
-            template: String::from("Example detected"),
-        }
-    }
-}
-
-impl Check for ExampleChecker {
-    fn run(&self, line: &LineEntry) -> Option<Warning> {
-        // Write your check logic here...
-        if line.raw_string.starts_with("EXAMPLE") {
-            Some(Warning::new(self.template.clone()))
-        } else {
-            None
-        }
-    }
-}
-```
-
-4. Write tests for this check, for example:
-
-```rust
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn example_checker_run() {
-        let checker = ExampleChecker::default();
-        let line = &LineEntry {
-            number: 1,
-            raw_string: String::from("DEBUG_HTTP=true"),
-        };
-        assert_eq!(None, checker.run(line));
-
-        let expected = Some(Warning::from("Example detected"));
-        let line = &LineEntry {
-            number: 1,
-            raw_string: String::from("EXAMPLE=true"),
-        };
-        assert_eq!(expected, checker.run(line));
-    }
-}
-```
-
-5. Add a new check to the file `src/checks.rs`, for example:
-
-```rust
-mod example;
-//...
-fn checklist() -> Vec<Box<dyn Check>> {
-    vec![
-        Box::new(leading_space::LeadingSpaceChecker::default()),
-        Box::new(example::ExampleChecker::default()),
-    ]
-}
-```
-
-6. That's all! You are awesome! ❤️
+[How to add a new check](/CONTRIBUTING.md#how-to-add-a-new-check)
 
 ## Similar projects
 * [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)

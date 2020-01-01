@@ -1,0 +1,72 @@
+name: Release
+on:
+  push:
+    tags:
+      - '*.*.*'
+jobs:
+  release-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          cargo build --release --target x86_64-unknown-linux-gnu
+          mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+          tar -czf dotenv-linter-${GIT_TAG}-linux-x86_64.tar.gz dotenv-linter
+          rm dotenv-linter
+
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+          tar -czf dotenv-linter-${GIT_TAG}-alpine-x86_64.tar.gz dotenv-linter
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dotenv-linter-*
+          draft: true
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-darwin:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        run: |
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          cargo build --release --target x86_64-apple-darwin
+          mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+          tar -czf dotenv-linter-${GIT_TAG}-darwin-x86_64.tar.gz dotenv-linter
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dotenv-linter-*
+          draft: true
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+
+          docker login docker.pkg.github.com --username mgrachev --password ${{ secrets.GITHUB_TOKEN }}
+          docker build -t docker.pkg.github.com/mgrachev/dotenv-linter/dotenv-linter:${GIT_TAG} .
+          docker push docker.pkg.github.com/mgrachev/dotenv-linter/dotenv-linter:${GIT_TAG}
