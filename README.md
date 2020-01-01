@@ -1,4 +1,4 @@
-# dotenv-linter ✌️
+# dotenv-linter✌️
 
 Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.docker`.
 
@@ -27,7 +27,7 @@ $ ./dotenv-linter
 
 ## Checks
 
-### ✔️ Leading Space
+### ✔️Leading Space
 
 Detects if a line starts with a space or a tab character:
 
@@ -53,7 +53,7 @@ RAILS_ENV=
 RAILS_ENV=development
 ```
 
-### ✔️ Incorrect delimiter
+### ✔️Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
 ```env
