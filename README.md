@@ -167,15 +167,12 @@ FOO=BAR
 ## 📋 Roadmap
 - [ ] Add more checks:
   - [x] Duplicated keys;
-  - [x] Leading Space;
-  - [x] Keys without values;
   - [x] Incorrect delimiter;
   - [x] Keys without values;
   - [x] Leading Space;
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
-  - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
   - [ ] Other checks.
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.
