@@ -5,6 +5,7 @@ mod incorrect_delimiter;
 mod key_without_value;
 mod leading_space;
 mod lowercase_key;
+mod spaces_around_equal;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Warning {
@@ -40,6 +41,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
+        Box::new(spaces_around_equal::SpacesAroundEqualChecker::default()),
     ]
 }
 
