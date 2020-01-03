@@ -83,15 +83,29 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
+### Spaces around equal sign
+
+Detects lines with a whitespace around equal sign character `=`:
+
+```env
+# Wrong
+DEBUG_HTTP =true
+DEBUG_HTTP= true
+DEBUG_HTTP = true
+
+# Correct
+DEBUG_HTTP=true
+```
+
 ## Roadmap
 - [ ] Add more checks:
   - [x] Leading Space;
   - [x] Keys without values;
   - [x] Incorrect delimiter;
   - [x] Lowercase keys;
+  - [x] Spaces around equal sign;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
-  - [ ] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
   - [ ] Other checks.
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [ ] Create a GitHub Action for easily using `dotenv-linter`.
