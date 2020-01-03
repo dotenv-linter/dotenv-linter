@@ -33,7 +33,7 @@ $ ./dotenv-linter
 
 ### Leading space
 
-⚠️ Detects if a line starts with a space or a tab character:
+Detects if a line starts with a space or a tab character:
 
 ```env
 ❌Wrong
@@ -45,7 +45,7 @@ FOO=BAR
 
 ### Keys without values
 
-⚠️ Detects if a line has a key without a value:
+Detects if a line has a key without a value:
 ```env
 ❌Wrong
 FOO
@@ -59,7 +59,7 @@ FOO=BAR
 
 ### Incorrect delimiter
 
-⚠️ Detects if a key does not use an underscore to separate words:
+Detects if a key does not use an underscore to separate words:
 ```env
 ❌Wrong
 FOO-BAR=FOOBAR
@@ -70,7 +70,7 @@ FOO_BAR=FOOBAR
 
 ### Lowercase key
 
-⚠️ Detects if a key has lowercase characters:
+Detects if a key has lowercase characters:
 
 ```env
 ❌Wrong
