@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
-- Add skipping of commented or empty lines [#36](https://github.com/mgrachev/dotenv-linter/pull/36) ([@mstruebing](https://github.com/mstruebing))
+- Add skipping of commented or empty lines [#37](https://github.com/mgrachev/dotenv-linter/pull/37) ([@mstruebing](https://github.com/mstruebing))
 
 ## [v1.0.0] - 2020-01-01
 ### 🚀 Added
