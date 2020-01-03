@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add skipping of commented or empty lines [#37](https://github.com/mgrachev/dotenv-linter/pull/37) ([@mstruebing](https://github.com/mstruebing))
-- Add check: Spaces before or after the character = (equals) [#35](https://github.com/mgrachev/dotenv-linter/pull/35) ([@artem-russkikh](https://github.com/artem-russkikh))
+- Add check: Spaces around equal sign [#35](https://github.com/mgrachev/dotenv-linter/pull/35) ([@artem-russkikh](https://github.com/artem-russkikh))
 
 ## [v1.0.0] - 2020-01-01
 ### 🚀 Added

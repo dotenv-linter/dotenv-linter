@@ -103,7 +103,7 @@ DEBUG_HTTP=true
   - [x] Keys without values;
   - [x] Incorrect delimiter;
   - [x] Lowercase keys;
-  - [x] [Spaces before or after the character `=`](https://github.com/mgrachev/dotenv-linter/issues/9);
+  - [x] Spaces around equal sign;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] Other checks.
