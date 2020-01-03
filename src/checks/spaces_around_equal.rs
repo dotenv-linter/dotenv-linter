@@ -8,7 +8,7 @@ pub(crate) struct SpacesAroundEqualChecker {
 impl Default for SpacesAroundEqualChecker {
     fn default() -> Self {
         Self {
-            template: String::from("Space detected {} equal sign character"),
+            template: String::from("The line has spaces around equal sign"),
         }
     }
 }
@@ -18,12 +18,8 @@ impl Check for SpacesAroundEqualChecker {
         let line_splitted = line.raw_string.split('=').collect::<Vec<&str>>();
 
         if let [key, value] = &line_splitted[..] {
-            if key.trim_start().contains(' ') {
-                return Some(Warning::new(self.template.replace("{}", "before")));
-            }
-
-            if value.trim_end().contains(' ') {
-                return Some(Warning::new(self.template.replace("{}", "after")));
+            if key.ends_with(' ') || value.starts_with(' ') {
+                return Some(Warning::new(self.template.clone()));
             }
         }
 
@@ -92,7 +88,7 @@ mod tests {
             number: 1,
             raw_string: String::from("DEBUG-HTTP = true"),
         };
-        let expected = Some(Warning::from("Space detected before equal sign character"));
+        let expected = Some(Warning::from("The line has spaces around equal sign"));
         assert_eq!(expected, checker.run(line));
     }
 
@@ -103,7 +99,7 @@ mod tests {
             number: 1,
             raw_string: String::from("DEBUG-HTTP =true"),
         };
-        let expected = Some(Warning::from("Space detected before equal sign character"));
+        let expected = Some(Warning::from("The line has spaces around equal sign"));
         assert_eq!(expected, checker.run(line));
     }
 
@@ -114,7 +110,7 @@ mod tests {
             number: 1,
             raw_string: String::from("DEBUG-HTTP= true"),
         };
-        let expected = Some(Warning::from("Space detected after equal sign character"));
+        let expected = Some(Warning::from("The line has spaces around equal sign"));
         assert_eq!(expected, checker.run(line));
     }
 }
