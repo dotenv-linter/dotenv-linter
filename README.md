@@ -1,5 +1,9 @@
 # ✌️dotenv-linter
 
+![](https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg)
+![](https://img.shields.io/github/license/mgrachev/dotenv-linter)
+![](https://img.shields.io/github/v/release/mgrachev/dotenv-linter)
+
 Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.docker`.
 
 ## Installation
@@ -27,56 +31,56 @@ $ ./dotenv-linter
 
 ## Checks
 
-### ✔️Leading space
+### ⚠️ Leading space
 
 Detects if a line starts with a space or a tab character:
 
 ```env
 ❌Wrong
- DEBUG_HTTP=true
+ FOO=BAR
 
 ✅Correct
-DEBUG_HTTP=true
+FOO=BAR
 ```
 
-### ✔️Keys without values
+### ⚠️ Keys without values
 
 Detects if a line has a key without a value:
 ```env
 ❌Wrong
-RAILS_ENV
+FOO
 
 ✅Correct
-RAILS_ENV=
+FOO=
 
 ✅Correct
-RAILS_ENV=development
+FOO=BAR
 ```
 
-### ✔️Incorrect delimiter
+### ⚠️ Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
 ```env
 ❌Wrong
-DB-NAME=testing
+FOO-BAR=FOOBAR
 
 ✅Correct
-DB_NAME=test
+FOO_BAR=FOOBAR
 ```
 
-### ✔️Lowercase key
+### ⚠️ Lowercase key
 
 Detects if a key has lowercase characters:
 
 ```env
 ❌Wrong
-DEbUG_hTTP=true
+FOo_BAR=FOOBAR
 
 ❌Wrong
-debug_http=true
+foo_bar=FOOBAR
 
 ✅Correct
-DEBUG_HTTP=true
+FOO_BAR=FOOBAR
 ```
 
 ## Roadmap
