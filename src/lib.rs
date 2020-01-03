@@ -37,7 +37,8 @@ pub fn run() -> Result<(), Error> {
             let raw_string = line?;
 
             // A comment or empty line should just be skipped
-            if raw_string.starts_with('#') || raw_string.trim().is_empty() {
+            let trimmed_string = raw_string.trim();
+            if trimmed_string.starts_with('#') || trimmed_string.is_empty() {
                 continue;
             }
 
