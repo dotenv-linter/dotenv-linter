@@ -35,6 +35,12 @@ pub fn run() -> Result<(), Error> {
 
         for (index, line) in reader.lines().enumerate() {
             let raw_string = line?;
+
+            // A comment or empty line should just be skipped
+            if raw_string.starts_with('#') || raw_string.trim().is_empty() {
+                continue;
+            }
+
             let number = index + 1;
 
             checks::run(&LineEntry { number, raw_string })
