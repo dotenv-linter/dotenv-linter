@@ -83,18 +83,22 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### Spaces around equal sign
+### ⭐ Spaces around equal sign
 
 Detects lines with a whitespace around equal sign character `=`:
 
 ```env
-# Wrong
-DEBUG_HTTP =true
-DEBUG_HTTP= true
-DEBUG_HTTP = true
+❌Wrong
+FOO =BAR
 
-# Correct
-DEBUG_HTTP=true
+❌Wrong
+FOO= BAR
+
+❌Wrong
+FOO = BAR
+
+✅Correct
+FOO=BAR
 ```
 
 ## Roadmap
