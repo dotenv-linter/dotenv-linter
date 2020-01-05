@@ -23,10 +23,26 @@ $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv
 
 ## Usage
 
+By default, `dotenv-linter` checks all files with the `.env` prefix:
+
 ```bash
-$ ./dotenv-linter
-.env.test:4 Leading space detected
-.env:2 Leading space detected
+$ dotenv-linter
+.env:1 Leading space detected
+.env:2 The FOO-BAR key has incorrect delimiter
+.env:3 The FOo_BAR key should be in uppercase
+.env:4 The line has spaces around equal sign
+.env.test:5 The foo_bar key should be in uppercase
+.env.test:6 The FOO key should be with a value or have an equal sign
+```
+
+If you want to include a file with a specific name to check,
+you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAME`:
+
+```bash
+$ dotenv-linter -i test.env --include .my-env-file
+.env:1 Leading space detected
+test.env:2 The FOO-BAR key has incorrect delimiter
+.my-env-file:3 The line has spaces around equal sign
 ```
 
 ## Checks
