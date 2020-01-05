@@ -1,7 +1,9 @@
 use std::env;
 use std::fmt;
-use std::fs::{DirEntry, File};
+use std::fs;
+use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
+use std::path::PathBuf;
 
 mod checks;
 
@@ -22,14 +24,15 @@ impl fmt::Display for LineEntry {
     }
 }
 
-pub fn run() -> Result<(), Error> {
-    let files = dotenv_files()?;
+pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
+    let paths = dotenv_files(matches)?;
 
-    for file in files {
-        let f = File::open(file.path())?;
+    for path in paths {
+        let f = File::open(&path)?;
         let reader = BufReader::new(f);
-        let file_name = match file.file_name().to_str() {
-            Some(s) => s.to_string(),
+
+        let file_name = match path.file_name() {
+            Some(s) => s.to_str().unwrap_or("undefined"),
             None => continue,
         };
 
@@ -53,11 +56,11 @@ pub fn run() -> Result<(), Error> {
     Ok(())
 }
 
-fn dotenv_files() -> Result<Vec<DirEntry>, Error> {
+fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
     let current_dir = env::current_dir()?;
     let entries = current_dir.read_dir()?;
 
-    let files = entries
+    let mut paths: Vec<PathBuf> = entries
         .filter_map(Result::ok)
         .filter(|f| {
             f.file_name()
@@ -65,7 +68,19 @@ fn dotenv_files() -> Result<Vec<DirEntry>, Error> {
                 .filter(|s| s.starts_with(DOTENV_PREFIX))
                 .is_some()
         })
-        .collect::<Vec<DirEntry>>();
+        .map(|f| f.path())
+        .collect();
 
-    Ok(files)
+    if let Some(includes) = matches.values_of("include") {
+        let files = includes.collect::<Vec<&str>>();
+
+        for file in files {
+            // Returns the full path to the file and checks if the file exists
+            if let Ok(path) = fs::canonicalize(file) {
+                paths.push(path);
+            }
+        }
+    }
+
+    Ok(paths)
 }
