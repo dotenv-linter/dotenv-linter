@@ -45,7 +45,7 @@ test.env:2 The FOO-BAR key has incorrect delimiter
 .my-env-file:3 The line has spaces around equal sign
 ```
 
-If you want to exclude a file with a specific name to check,
+If you want to exclude a file with a specific name from check,
 you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAME`:
 
 ```bash
