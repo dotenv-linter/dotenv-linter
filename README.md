@@ -49,7 +49,7 @@ If you want to exclude a file with a specific name to check,
 you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAME`:
 
 ```bash
-$ dotenv-linter -e test.env --exclude .my-env-file
+$ dotenv-linter -e .env --exclude .env.test
 ```
 
 ## Checks
