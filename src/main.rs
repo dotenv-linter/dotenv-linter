@@ -19,6 +19,15 @@ fn main() {
                 .multiple(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("exclude")
+                .short("e")
+                .long("exclude")
+                .value_name("FILE_NAME")
+                .help("Excludes a file from check")
+                .multiple(true)
+                .takes_value(true),
+        )
         .get_matches();
 
     if let Err(e) = dotenv_linter::run(matches) {

@@ -82,5 +82,13 @@ fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
         }
     }
 
+    // Removes files from paths vector if they should be excluded
+    if let Some(excludes) = matches.values_of("exclude") {
+        let exclude_paths: Vec<PathBuf> =
+            excludes.filter_map(|f| fs::canonicalize(f).ok()).collect();
+
+        paths.retain(|p| !exclude_paths.contains(p));
+    }
+
     Ok(paths)
 }
