@@ -1,5 +1,4 @@
 use std::env;
-use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
@@ -9,19 +8,15 @@ mod checks;
 
 const DOTENV_PREFIX: &str = ".env";
 
-pub struct LineEntry {
-    number: usize,
-    raw_string: String,
+pub struct FileEntry {
+    lines: Vec<LineEntry>,
 }
 
-impl fmt::Display for LineEntry {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "number: {}, raw_string: {}",
-            self.number, self.raw_string
-        )
-    }
+#[derive(Clone, Debug, PartialEq)]
+pub struct LineEntry {
+    number: usize,
+    file_name: String,
+    raw_string: String,
 }
 
 pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
@@ -32,25 +27,26 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
         let reader = BufReader::new(f);
 
         let file_name = match path.file_name() {
-            Some(s) => s.to_str().unwrap_or("undefined"),
+            Some(s) => s.to_str().unwrap_or("undefined").to_string(),
             None => continue,
         };
 
+        // TODO: Initialize a vector with a capacity equal to the number of lines
+        let mut lines: Vec<LineEntry> = Vec::new();
         for (index, line) in reader.lines().enumerate() {
+            let number = index + 1;
             let raw_string = line?;
 
-            // A comment or empty line should just be skipped
-            let trimmed_string = raw_string.trim();
-            if trimmed_string.starts_with('#') || trimmed_string.is_empty() {
-                continue;
-            }
-
-            let number = index + 1;
-
-            checks::run(&LineEntry { number, raw_string })
-                .iter()
-                .for_each(|w| println!("{}:{} {}", file_name, number, w));
+            lines.push(LineEntry {
+                file_name: file_name.clone(),
+                number,
+                raw_string,
+            })
         }
+
+        let warnings = checks::run(FileEntry { lines });
+        warnings.iter().for_each(|w| println!("{}", w));
+        // TODO: Exit with the code 1 if there is at least one warning
     }
 
     Ok(())
@@ -60,6 +56,8 @@ fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
     let current_dir = env::current_dir()?;
     let entries = current_dir.read_dir()?;
 
+    // TODO: Use HashSet to store unique paths
+    // https://doc.rust-lang.org/std/collections/struct.HashSet.html
     let mut paths: Vec<PathBuf> = entries
         .filter_map(Result::ok)
         .filter(|f| {

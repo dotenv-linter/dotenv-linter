@@ -14,15 +14,13 @@ impl Default for LowercaseKeyChecker {
 }
 
 impl Check for LowercaseKeyChecker {
-    fn run(&self, line: &LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: LineEntry) -> Option<Warning> {
         let line_str: Vec<&str> = line.raw_string.split('=').collect();
         let key = line_str[0];
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning {
-                message: self.template.replace("{}", key),
-            })
+            Some(Warning::new(line.clone(), self.template.replace("{}", key)))
         }
     }
 }
@@ -32,30 +30,43 @@ mod tests {
     use super::*;
 
     #[test]
-    fn lowercase_key_checker_run() {
-        let checker = LowercaseKeyChecker::default();
-        let line = &LineEntry {
+    fn working_run() {
+        let mut checker = LowercaseKeyChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(line));
+    }
 
-        let line = &LineEntry {
+    #[test]
+    fn failing_run_with_lowercase_key() {
+        let mut checker = LowercaseKeyChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("debug_http=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("foo_bar=FOOBAR"),
         };
-        assert_eq!(
-            Some(Warning::from("The debug_http key should be in uppercase")),
-            checker.run(line)
-        );
+        let expected = Some(Warning::new(
+            line.clone(),
+            String::from("The foo_bar key should be in uppercase"),
+        ));
+        assert_eq!(expected, checker.run(line));
+    }
 
-        let line = &LineEntry {
+    #[test]
+    fn failing_run_with_lowercase_letter() {
+        let mut checker = LowercaseKeyChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEbUG_hTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOo_BAR=FOOBAR"),
         };
-        assert_eq!(
-            Some(Warning::from("The DEbUG_hTTP key should be in uppercase")),
-            checker.run(line)
-        );
+        let expected = Some(Warning::new(
+            line.clone(),
+            String::from("The FOo_BAR key should be in uppercase"),
+        ));
+        assert_eq!(expected, checker.run(line));
     }
 }

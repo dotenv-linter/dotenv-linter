@@ -14,11 +14,11 @@ impl Default for IncorrectDelimiterChecker {
 }
 
 impl Check for IncorrectDelimiterChecker {
-    fn run(&self, line: &LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: LineEntry) -> Option<Warning> {
         let eq_index = line.raw_string.find('=')?;
         let key = line.raw_string.get(0..eq_index)?;
         if key.trim().chars().any(|c| !c.is_alphabetic() && c != '_') {
-            return Some(Warning::new(self.template.replace("{}", key)));
+            return Some(Warning::new(line.clone(), self.template.replace("{}", key)));
         }
 
         None
@@ -31,71 +31,84 @@ mod tests {
 
     #[test]
     fn working_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO_BAR=FOOBAR"),
         };
         assert_eq!(None, checker.run(line));
     }
 
     #[test]
     fn failing_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG-HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO-BAR=FOOBAR"),
         };
-        let expected = Some(Warning::from("The DEBUG-HTTP key has incorrect delimiter"));
+        let expected = Some(Warning::new(
+            line.clone(),
+            String::from("The FOO-BAR key has incorrect delimiter"),
+        ));
         assert_eq!(expected, checker.run(line));
     }
 
     #[test]
-    fn failing_with_whitepsace_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+    fn failing_with_whitespace_run() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO BAR=FOOBAR"),
         };
-        let expected = Some(Warning::from("The DEBUG HTTP key has incorrect delimiter"));
+        let expected = Some(Warning::new(
+            line.clone(),
+            String::from("The FOO BAR key has incorrect delimiter"),
+        ));
         assert_eq!(expected, checker.run(line));
     }
 
     #[test]
-    fn unformated_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+    fn unformatted_run() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG-HTTPtrue"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO-BAR"),
         };
         assert_eq!(None, checker.run(line));
     }
 
     #[test]
     fn leading_space_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from(" DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from(" FOO=FOOBAR"),
         };
         assert_eq!(None, checker.run(line));
     }
 
     #[test]
     fn trailing_space_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG_HTTP =true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO_BAR =FOOBAR"),
         };
         assert_eq!(None, checker.run(line));
     }
 
     #[test]
     fn empty_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
+            file_name: String::from(".env"),
             raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(line));
@@ -103,10 +116,11 @@ mod tests {
 
     #[test]
     fn short_run() {
-        let checker = IncorrectDelimiterChecker::default();
-        let line = &LineEntry {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("A=short"),
+            file_name: String::from(".env"),
+            raw_string: String::from("F=BAR"),
         };
         assert_eq!(None, checker.run(line));
     }

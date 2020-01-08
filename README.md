@@ -54,16 +54,15 @@ $ dotenv-linter -e .env --exclude .env.test
 
 ## Checks
 
-### ⭐️ Leading space
+### ⭐️ Incorrect delimiter
 
-Detects if a line starts with a space or a tab character:
-
+Detects if a key does not use an underscore to separate words:
 ```env
 ❌Wrong
- FOO=BAR
+FOO-BAR=FOOBAR
 
 ✅Correct
-FOO=BAR
+FOO_BAR=FOOBAR
 ```
 
 ### ⭐️ Keys without values
@@ -80,15 +79,16 @@ FOO=
 FOO=BAR
 ```
 
-### ⭐️ Incorrect delimiter
+### ⭐️ Leading space
 
-Detects if a key does not use an underscore to separate words:
+Detects if a line starts with a space or a tab character:
+
 ```env
 ❌Wrong
-FOO-BAR=FOOBAR
+ FOO=BAR
 
 ✅Correct
-FOO_BAR=FOOBAR
+FOO=BAR
 ```
 
 ### ⭐️ Lowercase key
@@ -126,9 +126,9 @@ FOO=BAR
 
 ## Roadmap
 - [ ] Add more checks:
-  - [x] Leading Space;
-  - [x] Keys without values;
   - [x] Incorrect delimiter;
+  - [x] Keys without values;
+  - [x] Leading Space;
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);

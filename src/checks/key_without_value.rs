@@ -14,9 +14,12 @@ impl Default for KeyWithoutValueChecker {
 }
 
 impl Check for KeyWithoutValueChecker {
-    fn run(&self, line: &LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: LineEntry) -> Option<Warning> {
         if !line.raw_string.contains('=') {
-            Some(Warning::new(self.template.replace("{}", &line.raw_string)))
+            Some(Warning::new(
+                line.clone(),
+                self.template.replace("{}", &line.raw_string),
+            ))
         } else {
             None
         }
@@ -28,27 +31,39 @@ mod tests {
     use super::*;
 
     #[test]
-    fn key_without_value_checker_run() {
-        let checker = KeyWithoutValueChecker::default();
-        let line = &LineEntry {
+    fn working_run_with_value() {
+        let mut checker = KeyWithoutValueChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("RAILS_ENV"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO=BAR"),
         };
-        let expected = Some(Warning::from(
-            "The RAILS_ENV key should be with a value or have an equal sign",
+        assert_eq!(None, checker.run(line));
+    }
+
+    #[test]
+    fn working_run_without_value() {
+        let mut checker = KeyWithoutValueChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO="),
+        };
+        assert_eq!(None, checker.run(line));
+    }
+
+    #[test]
+    fn failing_run() {
+        let mut checker = KeyWithoutValueChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO"),
+        };
+        let expected = Some(Warning::new(
+            line.clone(),
+            String::from("The FOO key should be with a value or have an equal sign"),
         ));
         assert_eq!(expected, checker.run(line));
-
-        let line = &LineEntry {
-            number: 1,
-            raw_string: String::from("RAILS_ENV="),
-        };
-        assert_eq!(None, checker.run(line));
-
-        let line = &LineEntry {
-            number: 1,
-            raw_string: String::from("RAILS_ENV=development"),
-        };
-        assert_eq!(None, checker.run(line));
     }
 }
