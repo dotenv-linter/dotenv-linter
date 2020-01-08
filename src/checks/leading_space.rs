@@ -14,9 +14,10 @@ impl Default for LeadingSpaceChecker {
 }
 
 impl Check for LeadingSpaceChecker {
-    fn run(&self, line: &LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+        // FIXME: Doesn't check a tab character
         if line.raw_string.starts_with(' ') {
-            Some(Warning::new(self.template.clone()))
+            Some(Warning::new(line, self.template.clone()))
         } else {
             None
         }
@@ -27,33 +28,40 @@ impl Check for LeadingSpaceChecker {
 mod tests {
     use super::*;
 
+    const MESSAGE: &str = "Leading space detected";
+
     #[test]
-    fn leading_space_checker_run() {
-        let checker = LeadingSpaceChecker::default();
-        let line = &LineEntry {
+    fn working_run() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(line));
+    }
 
-        let expected = Some(Warning::from("Leading space detected"));
-
-        let line = &LineEntry {
+    #[test]
+    fn failing_run_with_one_leading_space() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from(" DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from(" FOO=BAR"),
         };
+        let expected = Some(Warning::new(line, MESSAGE.to_string()));
         assert_eq!(expected, checker.run(line));
+    }
 
-        let line = &LineEntry {
+    #[test]
+    fn failing_run_with_two_leading_spaces() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
             number: 1,
-            raw_string: String::from("  DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("  FOO=BAR"),
         };
-        assert_eq!(expected, checker.run(line));
-
-        let line = &LineEntry {
-            number: 1,
-            raw_string: String::from("    DEBUG_HTTP=true"),
-        };
+        let expected = Some(Warning::new(line, MESSAGE.to_string()));
         assert_eq!(expected, checker.run(line));
     }
 }
