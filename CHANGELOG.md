@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add check: Spaces around equal sign [#35](https://github.com/mgrachev/dotenv-linter/pull/35) ([@artem-russkikh](https://github.com/artem-russkikh))
 - Add skipping of commented or empty lines [#37](https://github.com/mgrachev/dotenv-linter/pull/37) ([@mstruebing](https://github.com/mstruebing))
 
+### 🔧 Changed
+- Add mutability support for checks [#52](https://github.com/mgrachev/dotenv-linter/pull/52)
+
 ## [v1.0.0] - 2020-01-01
 ### 🚀 Added
 - Add check: Keys without values [#22](https://github.com/mgrachev/dotenv-linter/pull/22) ([@mstruebing](https://github.com/mstruebing))

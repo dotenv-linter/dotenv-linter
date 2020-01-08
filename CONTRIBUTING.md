@@ -23,10 +23,10 @@ impl Default for ExampleChecker {
 }
 
 impl Check for ExampleChecker {
-    fn run(&self, line: &LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: LineEntry) -> Option<Warning> {
         // Write your check logic here...
         if line.raw_string.starts_with("EXAMPLE") {
-            Some(Warning::new(self.template.clone()))
+            Some(Warning::new(line.clone(), self.template.clone()))
         } else {
             None
         }
@@ -42,19 +42,25 @@ mod tests {
     use super::*;
 
     #[test]
-    fn example_checker_run() {
-        let checker = ExampleChecker::default();
+    fn working_run() {
+        let mut checker = ExampleChecker::default();
         let line = &LineEntry {
             number: 1,
-            raw_string: String::from("DEBUG_HTTP=true"),
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(line));
+    }
 
-        let expected = Some(Warning::from("Example detected"));
-        let line = &LineEntry {
+    #[test]
+    fn failing_run() {
+        let mut checker = ExampleChecker::default();
+        let line = LineEntry {
             number: 1,
+            file_name: String::from(".env"),
             raw_string: String::from("EXAMPLE=true"),
         };
+        let expected = Some(Warning::new(line.clone(), String::from("Example detected")));
         assert_eq!(expected, checker.run(line));
     }
 }
