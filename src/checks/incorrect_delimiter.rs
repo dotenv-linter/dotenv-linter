@@ -49,7 +49,7 @@ mod tests {
             raw_string: String::from("FOO-BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(
-            line,
+            line.clone(),
             String::from("The FOO-BAR key has incorrect delimiter"),
         ));
         assert_eq!(expected, checker.run(line));
@@ -64,7 +64,7 @@ mod tests {
             raw_string: String::from("FOO BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(
-            line,
+            line.clone(),
             String::from("The FOO BAR key has incorrect delimiter"),
         ));
         assert_eq!(expected, checker.run(line));

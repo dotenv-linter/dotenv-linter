@@ -49,7 +49,7 @@ mod tests {
             raw_string: String::from("foo_bar=FOOBAR"),
         };
         let expected = Some(Warning::new(
-            line,
+            line.clone(),
             String::from("The foo_bar key should be in uppercase"),
         ));
         assert_eq!(expected, checker.run(line));
@@ -64,7 +64,7 @@ mod tests {
             raw_string: String::from("FOo_BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(
-            line,
+            line.clone(),
             String::from("The FOo_BAR key should be in uppercase"),
         ));
         assert_eq!(expected, checker.run(line));

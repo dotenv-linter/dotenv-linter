@@ -96,7 +96,7 @@ mod tests {
             file_name: String::from(".env"),
             raw_string: String::from("DEBUG-HTTP = true"),
         };
-        let expected = Some(Warning::new(line, MESSAGE.to_string()));
+        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
         assert_eq!(expected, checker.run(line));
     }
 
@@ -108,7 +108,7 @@ mod tests {
             file_name: String::from(".env"),
             raw_string: String::from("DEBUG-HTTP =true"),
         };
-        let expected = Some(Warning::new(line, MESSAGE.to_string()));
+        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
         assert_eq!(expected, checker.run(line));
     }
 
@@ -120,7 +120,7 @@ mod tests {
             file_name: String::from(".env"),
             raw_string: String::from("DEBUG-HTTP= true"),
         };
-        let expected = Some(Warning::new(line, MESSAGE.to_string()));
+        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
         assert_eq!(expected, checker.run(line));
     }
 }

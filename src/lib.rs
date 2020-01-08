@@ -12,7 +12,7 @@ pub struct FileEntry {
     lines: Vec<LineEntry>,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
     number: usize,
     file_name: String,

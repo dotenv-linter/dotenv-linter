@@ -7,7 +7,7 @@ mod leading_space;
 mod lowercase_key;
 mod spaces_around_equal;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
     line: LineEntry,
     message: String,

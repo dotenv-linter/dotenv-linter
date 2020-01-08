@@ -61,7 +61,7 @@ mod tests {
             raw_string: String::from("FOO"),
         };
         let expected = Some(Warning::new(
-            line,
+            line.clone(),
             String::from("The FOO key should be with a value or have an equal sign"),
         ));
         assert_eq!(expected, checker.run(line));
