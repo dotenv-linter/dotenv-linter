@@ -6,7 +6,7 @@
 
 > Linter for `.env` files. Written in Rust 🦀
 
-## 🤞 Installation
+## 👨‍💻 Installation
 
 ### Binary
 
