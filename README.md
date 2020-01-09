@@ -139,7 +139,8 @@ FOO=BAR
 
 ## 🤝 Contributing
 
-[How to add a new check](/CONTRIBUTING.md#how-to-add-a-new-check)
+* [How to set up the project](/CONTRIBUTING.md#how-to-set-up-the-project)
+* [How to add a new check](/CONTRIBUTING.md#how-to-add-a-new-check)
 
 ## 👍 Similar projects
 * [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
