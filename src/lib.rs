@@ -47,7 +47,9 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
 
         let warnings = checks::run(FileEntry { lines });
         warnings.iter().for_each(|w| println!("{}", w));
-        if warnings.len() > 0 { process::exit(1); }
+        if !warnings.is_empty() {
+            process::exit(1);
+        }
     }
 
     Ok(())
