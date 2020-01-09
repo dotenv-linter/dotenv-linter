@@ -4,9 +4,9 @@
 ![](https://img.shields.io/github/license/mgrachev/dotenv-linter)
 ![](https://img.shields.io/github/v/release/mgrachev/dotenv-linter)
 
-Linter for files with prefix `.env`. For example: `.env`, `.env.test`, `.env.docker`.
+> Linter for `.env` files. Written in Rust 🦀
 
-## Installation
+## 👨‍💻 Installation
 
 ### Binary
 
@@ -21,9 +21,9 @@ $ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv
 $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
-## Usage
+## 🚀 Usage
 
-By default, `dotenv-linter` checks all files with the `.env` prefix:
+By default, `dotenv-linter` checks all files with the `.env` prefix. For example: `.env`, `.env.test`, `.env.qa`:
 
 ```bash
 $ dotenv-linter
@@ -52,9 +52,9 @@ you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAM
 $ dotenv-linter -e .env --exclude .env.test
 ```
 
-## Checks
+## ✅ Checks
 
-### ⭐️ Incorrect delimiter
+### Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
 ```env
@@ -65,7 +65,7 @@ FOO-BAR=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### ⭐️ Keys without values
+### Keys without values
 
 Detects if a line has a key without a value:
 ```env
@@ -79,7 +79,7 @@ FOO=
 FOO=BAR
 ```
 
-### ⭐️ Leading space
+### Leading space
 
 Detects if a line starts with a space or a tab character:
 
@@ -91,7 +91,7 @@ Detects if a line starts with a space or a tab character:
 FOO=BAR
 ```
 
-### ⭐️ Lowercase key
+### Lowercase key
 
 Detects if a key has lowercase characters:
 
@@ -106,7 +106,7 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### ⭐ Spaces around equal sign
+### Spaces around equal sign
 
 Detects lines with a whitespace around equal sign character `=`:
 
@@ -124,7 +124,7 @@ FOO = BAR
 FOO=BAR
 ```
 
-## Roadmap
+## 📋 Roadmap
 - [ ] Add more checks:
   - [x] Incorrect delimiter;
   - [x] Keys without values;
@@ -137,14 +137,14 @@ FOO=BAR
 - [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [ ] Create a GitHub Action for easily using `dotenv-linter`.
 
-## Contributing
+## 🤝 Contributing
 
 [How to add a new check](/CONTRIBUTING.md#how-to-add-a-new-check)
 
-## Similar projects
+## 👍 Similar projects
 * [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
 
-## Sponsor
+## ♥️ Sponsor
 
 <p>
   <a href="https://evrone.com/?utm_source=dotenv-linter">
@@ -152,3 +152,8 @@ FOO=BAR
       alt="Sponsored by Evrone" width="210">
   </a>
 </p>
+
+
+## 📃 License
+
+[MIT](https://choosealicense.com/licenses/mit)
