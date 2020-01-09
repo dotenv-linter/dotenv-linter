@@ -3,6 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader, Error};
 use std::path::PathBuf;
+use std::process;
 
 mod checks;
 
@@ -46,7 +47,7 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
 
         let warnings = checks::run(FileEntry { lines });
         warnings.iter().for_each(|w| println!("{}", w));
-        // TODO: Exit with the code 1 if there is at least one warning
+        if warnings.len() > 0 { process::exit(1); }
     }
 
     Ok(())
