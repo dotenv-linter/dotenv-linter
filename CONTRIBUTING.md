@@ -1,21 +1,21 @@
 # 🤝 Contributing
 
-## How to set up the project
+## 👨‍💻 How to set up the project
 
-### Install Rust via [rustup](https://rustup.rs)
+### 🦀 Install Rust via [rustup](https://rustup.rs)
 
 ```bash
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ``` 
 
-### Install [clippy](https://github.com/rust-lang/rust-clippy) and [rustfmt](https://github.com/rust-lang/rustfmt)
+### 🚀 Install [clippy](https://github.com/rust-lang/rust-clippy) and [rustfmt](https://github.com/rust-lang/rustfmt)
 
 ```bash
 $ rustup component add clippy
 $ rustup component add rustfmt
 ```
 
-### Useful commands
+### 🖖 Useful commands
 
 ```bash
 # Run the project
@@ -31,7 +31,7 @@ $ cargo clippy
 $ cargo fmt
 ```
 
-## How to add a new check
+## ✅ How to add a new check
 
 1. Create a new file in the `src/checks` directory. The file name should contain the name of the check, for example: `src/checks/example.rs`
 2. Add a new struct for this check, for example:
