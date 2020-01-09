@@ -1,4 +1,35 @@
-# Contributing
+# 🤝 Contributing
+
+## How to set up the project
+
+### 🦀 Install Rust via [rustup](https://rustup.rs)
+
+```bash
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+``` 
+
+### 🚀 Install [clippy](https://github.com/rust-lang/rust-clippy) and [rustfmt](https://github.com/rust-lang/rustfmt)
+
+```bash
+$ rustup component add clippy
+$ rustup component add rustfmt
+```
+
+### 🖖 Useful commands
+
+```bash
+# Run the project
+$ cargo run
+
+# Run tests
+$ cargo test
+
+# Run linters
+$ cargo clippy
+
+# Run rustfmt
+$ cargo fmt
+```
 
 ## How to add a new check
 
