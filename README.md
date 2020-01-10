@@ -42,6 +42,12 @@ jobs:
           github_token: ${{ secrets.github_token }}
 ```
 
+### Docker
+
+```bash
+$ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
+```
+
 ## 🚀 Usage
 
 By default, `dotenv-linter` checks all files with the `.env` prefix. For example: `.env`, `.env.test`, `.env.qa`:
