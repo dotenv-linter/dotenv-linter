@@ -21,6 +21,27 @@ $ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv
 $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv-linter-v1.0.0-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
+### GitHub Action
+
+Use [mgrachev/action-dotenv-linter](https://github.com/mgrachev/action-dotenv-linter) to run `dotenv-linter`:
+
+```yml
+# .github/workflows/dotenv_linter.yml
+name: reviewdog
+on: [pull_request]
+jobs:
+  dotenv-linter:
+    name: runner / dotenv-linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: dotenv-linter
+        uses: mgrachev/action-dotenv-linter@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+```
+
 ## 🚀 Usage
 
 By default, `dotenv-linter` checks all files with the `.env` prefix. For example: `.env`, `.env.test`, `.env.qa`:
@@ -134,8 +155,8 @@ FOO=BAR
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
   - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] Other checks.
-- [ ] Support [reviewdog](https://github.com/reviewdog/reviewdog);
-- [ ] Create a GitHub Action for easily using `dotenv-linter`.
+- [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
+- [x] Create a GitHub Action for easily using `dotenv-linter`.
 
 ## 🤝 Contributing
 
