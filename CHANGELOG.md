@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add exit with the code 1 on warnings found [#58](https://github.com/mgrachev/dotenv-linter/pull/58) ([@Louis-Lesage](https://github.com/Louis-Lesage))
 - Add exclude argument to exclude specific files [#49](https://github.com/mgrachev/dotenv-linter/pull/49) ([@mstruebing](https://github.com/mstruebing))
 - Add the ability to include files to check [#48](https://github.com/mgrachev/dotenv-linter/pull/48)
 - Add check: Spaces around equal sign [#35](https://github.com/mgrachev/dotenv-linter/pull/35) ([@artem-russkikh](https://github.com/artem-russkikh))
 - Add skipping of commented or empty lines [#37](https://github.com/mgrachev/dotenv-linter/pull/37) ([@mstruebing](https://github.com/mstruebing))
-- Add exit with the code 1 on warnings found [#58](https://github.com/mgrachev/dotenv-linter/pull/58) (@[Louis-Lesage](https://github.com/Louis-Lesage))
 
 ### 🔧 Changed
 - Add mutability support for checks [#52](https://github.com/mgrachev/dotenv-linter/pull/52)

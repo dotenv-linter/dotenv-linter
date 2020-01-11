@@ -67,6 +67,6 @@ jobs:
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
           chmod +x dotenv-linter
 
-          docker login --u ${{ secrets.DOCKER_USERNAME }} --p ${{ secrets.DOCKER_PASSWORD }}
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t mgrachev/dotenv-linter:${GIT_TAG} .
           docker push mgrachev/dotenv-linter:${GIT_TAG}
