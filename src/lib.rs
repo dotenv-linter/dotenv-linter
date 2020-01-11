@@ -1,3 +1,4 @@
+use crate::checks::Warning;
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -23,6 +24,7 @@ pub struct LineEntry {
 pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
     let paths = dotenv_files(matches)?;
 
+    let mut warnings: Vec<Warning> = Vec::new();
     for path in paths {
         let f = File::open(&path)?;
         let reader = BufReader::new(f);
@@ -45,11 +47,13 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
             })
         }
 
-        let warnings = checks::run(FileEntry { lines });
+        let result = checks::run(FileEntry { lines });
+        warnings.extend(result);
+    }
+
+    if !warnings.is_empty() {
         warnings.iter().for_each(|w| println!("{}", w));
-        if !warnings.is_empty() {
-            process::exit(1);
-        }
+        process::exit(1);
     }
 
     Ok(())
