@@ -35,11 +35,6 @@ trait Check {
     fn run(&mut self, line: LineEntry) -> Option<Warning>;
 }
 
-// This trait is used for checks which needs to know of every line
-trait GlobalCheck {
-    fn run(&self, lines: Vec<LineEntry>) -> Vec<Warning>;
-}
-
 // Checklist for checks which needs to know of only a single line
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
