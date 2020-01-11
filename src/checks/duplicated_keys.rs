@@ -1,5 +1,4 @@
 use crate::checks::{Check, Warning};
-use crate::extract_key;
 use crate::LineEntry;
 
 pub(crate) struct DuplicatedKeysChecker {
@@ -18,7 +17,7 @@ impl Default for DuplicatedKeysChecker {
 
 impl Check for DuplicatedKeysChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
-        let key = extract_key(&line.raw_string);
+        let key = line.extract_key()?;
 
         if self.keys.contains(&key) {
             let warning = Warning::new(line, self.template.replace("{}", &key));
