@@ -83,7 +83,7 @@ $ dotenv-linter -e .env --exclude .env.test
 
 ### Duplicated Keys
 
-Detects if key isn't unique
+Detects if a key is not unique:
 
 ```env
 ❌Wrong
