@@ -33,11 +33,18 @@ impl Check for DuplicatedKeysChecker {
 mod tests {
     use super::*;
 
-    #[test]
-    fn duplicated_keys_checker_run() {
+    fn run_tests(tests: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = DuplicatedKeysChecker::default();
 
-        let checks = vec![
+        for check in tests {
+            let (input, output) = check;
+            assert_eq!(checker.run(input), output);
+        }
+    }
+
+    #[test]
+    fn with_one_duplicated_key_test() {
+        let tests = vec![
             (
                 LineEntry {
                     number: 1,
@@ -63,15 +70,12 @@ mod tests {
             ),
         ];
 
-        for check in checks {
-            let (input, output) = check;
-            assert_eq!(checker.run(input), output);
-        }
+        run_tests(tests);
+    }
 
-        // To clear the already saved keys
-        let mut checker = DuplicatedKeysChecker::default();
-
-        let checks = vec![
+    #[test]
+    fn with_two_unique_keys_test() {
+        let tests = vec![
             (
                 LineEntry {
                     number: 1,
@@ -90,15 +94,12 @@ mod tests {
             ),
         ];
 
-        for check in checks {
-            let (input, output) = check;
-            assert_eq!(checker.run(input), output);
-        }
+        run_tests(tests);
+    }
 
-        // To clear the already saved keys
-        let mut checker = DuplicatedKeysChecker::default();
-
-        let checks = vec![
+    #[test]
+    fn with_two_duplicated_keys_test() {
+        let tests = vec![
             (
                 LineEntry {
                     number: 1,
@@ -147,15 +148,12 @@ mod tests {
             ),
         ];
 
-        for check in checks {
-            let (input, output) = check;
-            assert_eq!(checker.run(input), output);
-        }
+        run_tests(tests);
+    }
 
-        // To clear the already saved keys
-        let mut checker = DuplicatedKeysChecker::default();
-
-        let checks = vec![
+    #[test]
+    fn one_duplicated_and_one_unique_key_test() {
+        let tests = vec![
             (
                 LineEntry {
                     number: 1,
@@ -189,9 +187,6 @@ mod tests {
             ),
         ];
 
-        for check in checks {
-            let (input, output) = check;
-            assert_eq!(checker.run(input), output);
-        }
+        run_tests(tests);
     }
 }
