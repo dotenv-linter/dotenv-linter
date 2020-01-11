@@ -66,7 +66,7 @@ jobs:
           chmod +x dotenv-linter
       - name: Build and push image
         run: |
-          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t mgrachev/dotenv-linter:${GIT_TAG} .
           docker push mgrachev/dotenv-linter:${GIT_TAG}
