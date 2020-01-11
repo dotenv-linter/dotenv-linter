@@ -81,6 +81,19 @@ $ dotenv-linter -e .env --exclude .env.test
 
 ## ✅ Checks
 
+### Duplicated Keys
+
+Detects if a key is not unique:
+
+```env
+❌Wrong
+RAILS_ENV=true
+RAILS_ENV=false
+
+✅Correct
+RAILS_ENV=true
+```
+
 ### Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
@@ -153,13 +166,13 @@ FOO=BAR
 
 ## 📋 Roadmap
 - [ ] Add more checks:
+  - [x] Duplicated keys;
   - [x] Incorrect delimiter;
   - [x] Keys without values;
   - [x] Leading Space;
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
-  - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] Other checks.
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.

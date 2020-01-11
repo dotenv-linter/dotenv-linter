@@ -21,6 +21,21 @@ pub struct LineEntry {
     raw_string: String,
 }
 
+impl LineEntry {
+    fn extract_key(&self) -> Option<String> {
+        if self.raw_string.is_empty() {
+            return None;
+        }
+
+        let has_equal_sign = self.raw_string.find('=');
+
+        match has_equal_sign {
+            Some(index) => Some(self.raw_string[..index].to_owned()),
+            None => None,
+        }
+    }
+}
+
 pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
     let paths = dotenv_files(matches)?;
 
@@ -28,7 +43,6 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
     for path in paths {
         let f = File::open(&path)?;
         let reader = BufReader::new(f);
-
         let file_name = match path.file_name() {
             Some(s) => s.to_str().unwrap_or("undefined").to_string(),
             None => continue,
@@ -96,4 +110,57 @@ fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
     }
 
     Ok(paths)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn extract_key_for_empty_line_test() {
+        let input = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from(""),
+        };
+        let expected = None;
+
+        assert_eq!(expected, input.extract_key());
+    }
+
+    #[test]
+    fn extract_key_for_correct_line_test() {
+        let input = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("RAILS_ENV=abc"),
+        };
+        let expected = Some(String::from("RAILS_ENV"));
+
+        assert_eq!(expected, input.extract_key());
+    }
+
+    #[test]
+    fn extract_key_for_line_without_value_test() {
+        let input = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("RAILS_ENV="),
+        };
+        let expected = Some(String::from("RAILS_ENV"));
+
+        assert_eq!(expected, input.extract_key());
+    }
+
+    #[test]
+    fn extract_key_with_missing_value_and_equal_sign_test() {
+        let input = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("RAILS_ENVabc"),
+        };
+        let expected = None;
+
+        assert_eq!(expected, input.extract_key());
+    }
 }
