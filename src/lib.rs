@@ -22,7 +22,8 @@ pub struct LineEntry {
 }
 
 pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
-    let paths = dotenv_files(matches)?;
+    let mut paths = dotenv_files(matches)?;
+    paths.dedup();
 
     let mut warnings: Vec<Warning> = Vec::new();
     for path in paths {
