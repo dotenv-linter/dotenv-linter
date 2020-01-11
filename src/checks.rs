@@ -48,6 +48,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(spaces_around_equal::SpacesAroundEqualChecker::default()),
+        Box::new(duplicated_keys::DuplicatedKeysChecker::default()),
     ]
 }
 

@@ -1,55 +1,32 @@
-use std::collections::HashMap;
-
-use crate::checks::{GlobalCheck, Warning};
+use crate::checks::{Check, Warning};
 use crate::extract_key;
 use crate::LineEntry;
 
-#[derive(Debug)]
 pub(crate) struct DuplicatedKeysChecker {
     template: String,
+    keys: Vec<String>,
 }
 
 impl Default for DuplicatedKeysChecker {
     fn default() -> Self {
         Self {
+            keys: Vec::new(),
             template: String::from("The {} key is duplicated"),
         }
     }
 }
 
-impl GlobalCheck for DuplicatedKeysChecker {
-    fn run(&self, lines: Vec<LineEntry>) -> Vec<Warning> {
-        let mut keys: Vec<String> = Vec::new();
-        let mut warnings: Vec<Warning> = Vec::new();
+impl Check for DuplicatedKeysChecker {
+    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+        let key = extract_key(&line.raw_string);
 
-        for line in lines {
-            let key = extract_key(&line.raw_string);
-            if key == "" {
-                continue;
-            }
-
-            keys.push(key)
+        if self.keys.contains(&key) {
+            let warning = Warning::new(line, self.template.replace("{}", &key));
+            return Some(warning);
         }
 
-        let mut keyed = HashMap::new();
-        for key in &keys {
-            keyed.entry(key).or_insert_with(|| vec![]).push(key)
-        }
-
-        for v in keyed.values() {
-            if v.len() > 1 {
-                warnings.push(Warning::new(
-                    LineEntry {
-                        number: 1,
-                        file_name: "current".to_string(),
-                        raw_string: "bla".to_string(),
-                    },
-                    self.template.replace("{}", v[0]),
-                ))
-            }
-        }
-
-        warnings
+        self.keys.push(key);
+        None
     }
 }
 
@@ -59,74 +36,163 @@ mod tests {
 
     #[test]
     fn duplicated_keys_checker_run() {
-        let checker = DuplicatedKeysChecker::default();
-        let lines = vec![
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
+        let mut checker = DuplicatedKeysChecker::default();
+
+        let checks = vec![
+            (
+                LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 2,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                Some(Warning::new(
+                    LineEntry {
+                        number: 2,
+                        file_name: String::from(".env"),
+                        raw_string: String::from("RAILS_ENV=abc"),
+                    },
+                    String::from("The RAILS_ENV key is duplicated"),
+                )),
+            ),
         ];
 
-        let expected = vec![Warning::from("The RAILS_ENV key is duplicated")];
-        assert_eq!(expected, checker.run(lines));
+        for check in checks {
+            let (input, output) = check;
+            assert_eq!(checker.run(input), output);
+        }
 
-        let lines = vec![
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("SOME_ENV=abc"),
-            },
+        // To clear the already saved keys
+        let mut checker = DuplicatedKeysChecker::default();
+
+        let checks = vec![
+            (
+                LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 2,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("SOME_ENV=abc"),
+                },
+                None,
+            ),
         ];
 
-        let expected: Vec<Warning> = vec![];
-        assert_eq!(expected, checker.run(lines));
+        for check in checks {
+            let (input, output) = check;
+            assert_eq!(checker.run(input), output);
+        }
 
-        let lines = vec![
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("NODE_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("NODE_ENV=abc"),
-            },
+        // To clear the already saved keys
+        let mut checker = DuplicatedKeysChecker::default();
+
+        let checks = vec![
+            (
+                LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 2,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                Some(Warning::new(
+                    LineEntry {
+                        number: 2,
+                        file_name: String::from(".env"),
+                        raw_string: String::from("RAILS_ENV=abc"),
+                    },
+                    String::from("The RAILS_ENV key is duplicated"),
+                )),
+            ),
+            (
+                LineEntry {
+                    number: 3,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("NODE_ENV=abc"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 4,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("NODE_ENV=abc"),
+                },
+                Some(Warning::new(
+                    LineEntry {
+                        number: 4,
+                        file_name: String::from(".env"),
+                        raw_string: String::from("NODE_ENV=abc"),
+                    },
+                    String::from("The NODE_ENV key is duplicated"),
+                )),
+            ),
         ];
 
-        // the order isn't predictable, so we only test for the length here
-        let expected = 2;
-        assert_eq!(expected, checker.run(lines).len());
+        for check in checks {
+            let (input, output) = check;
+            assert_eq!(checker.run(input), output);
+        }
 
-        let lines = vec![
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("RAILS_ENV=abc"),
-            },
-            LineEntry {
-                number: 1,
-                raw_string: String::from("NODE_ENV=abc"),
-            },
+        // To clear the already saved keys
+        let mut checker = DuplicatedKeysChecker::default();
+
+        let checks = vec![
+            (
+                LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 2,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("RAILS_ENV=abc"),
+                },
+                Some(Warning::new(
+                    LineEntry {
+                        number: 2,
+                        file_name: String::from(".env"),
+                        raw_string: String::from("RAILS_ENV=abc"),
+                    },
+                    String::from("The RAILS_ENV key is duplicated"),
+                )),
+            ),
+            (
+                LineEntry {
+                    number: 3,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("NODE_ENV=abc"),
+                },
+                None,
+            ),
         ];
 
-        let expected = vec![Warning::from("The RAILS_ENV key is duplicated")];
-        assert_eq!(expected, checker.run(lines));
+        for check in checks {
+            let (input, output) = check;
+            assert_eq!(checker.run(input), output);
+        }
     }
 }
