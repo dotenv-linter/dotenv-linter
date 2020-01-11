@@ -1,4 +1,5 @@
 use crate::checks::Warning;
+use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -22,8 +23,7 @@ pub struct LineEntry {
 }
 
 pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
-    let mut paths = dotenv_files(matches)?;
-    paths.dedup();
+    let paths = dotenv_files(matches)?;
 
     let mut warnings: Vec<Warning> = Vec::new();
     for path in paths {
@@ -60,13 +60,11 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
     Ok(())
 }
 
-fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
+fn dotenv_files(matches: clap::ArgMatches) -> Result<HashSet<PathBuf>, Error> {
     let current_dir = env::current_dir()?;
     let entries = current_dir.read_dir()?;
 
-    // TODO: Use HashSet to store unique paths
-    // https://doc.rust-lang.org/std/collections/struct.HashSet.html
-    let mut paths: Vec<PathBuf> = entries
+    let mut paths: HashSet<PathBuf> = entries
         .filter_map(Result::ok)
         .filter(|f| {
             f.file_name()
@@ -83,7 +81,7 @@ fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
         for file in files {
             // Returns the full path to the file and checks if the file exists
             if let Ok(path) = fs::canonicalize(file) {
-                paths.push(path);
+                paths.insert(path);
             }
         }
     }
