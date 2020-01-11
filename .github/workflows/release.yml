@@ -58,15 +58,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Build and push
+      - name: Build dotenv-linter
         run: |
-          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-
           rustup target add x86_64-unknown-linux-musl
           cargo build --release --target x86_64-unknown-linux-musl
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
           chmod +x dotenv-linter
-
+      - name: Build and push image
+        run: |
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t mgrachev/dotenv-linter:${GIT_TAG} .
           docker push mgrachev/dotenv-linter:${GIT_TAG}
