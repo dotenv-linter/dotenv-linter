@@ -28,6 +28,15 @@ fn main() {
                 .multiple(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("path")
+                .short("p")
+                .long("path")
+                .value_name("DIRECTORY_PATH")
+                .help("Specify the path of the directory where to run dotenv-linter")
+                .multiple(false)
+                .takes_value(true),
+        )
         .get_matches();
 
     if let Err(e) = dotenv_linter::run(matches) {
