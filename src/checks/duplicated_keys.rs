@@ -1,5 +1,5 @@
-use crate::checks::{Check, Warning};
-use crate::LineEntry;
+use crate::checks::Check;
+use crate::common::*;
 
 pub(crate) struct DuplicatedKeysChecker {
     template: String,
@@ -17,7 +17,7 @@ impl Default for DuplicatedKeysChecker {
 
 impl Check for DuplicatedKeysChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
-        let key = line.extract_key()?;
+        let key = line.get_key()?;
 
         if self.keys.contains(&key) {
             let warning = Warning::new(line, self.template.replace("{}", &key));
@@ -49,7 +49,7 @@ mod tests {
                 LineEntry {
                     number: 1,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 None,
             ),
@@ -57,15 +57,15 @@ mod tests {
                 LineEntry {
                     number: 2,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
                         file_name: String::from(".env"),
-                        raw_string: String::from("RAILS_ENV=abc"),
+                        raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The RAILS_ENV key is duplicated"),
+                    String::from("The FOO key is duplicated"),
                 )),
             ),
         ];
@@ -80,7 +80,7 @@ mod tests {
                 LineEntry {
                     number: 1,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 None,
             ),
@@ -88,7 +88,7 @@ mod tests {
                 LineEntry {
                     number: 2,
                     file_name: String::from(".env"),
-                    raw_string: String::from("SOME_ENV=abc"),
+                    raw_string: String::from("BAR=FOO"),
                 },
                 None,
             ),
@@ -104,7 +104,7 @@ mod tests {
                 LineEntry {
                     number: 1,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 None,
             ),
@@ -112,22 +112,22 @@ mod tests {
                 LineEntry {
                     number: 2,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
                         file_name: String::from(".env"),
-                        raw_string: String::from("RAILS_ENV=abc"),
+                        raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The RAILS_ENV key is duplicated"),
+                    String::from("The FOO key is duplicated"),
                 )),
             ),
             (
                 LineEntry {
                     number: 3,
                     file_name: String::from(".env"),
-                    raw_string: String::from("NODE_ENV=abc"),
+                    raw_string: String::from("BAR=FOO"),
                 },
                 None,
             ),
@@ -135,15 +135,15 @@ mod tests {
                 LineEntry {
                     number: 4,
                     file_name: String::from(".env"),
-                    raw_string: String::from("NODE_ENV=abc"),
+                    raw_string: String::from("BAR=FOO"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 4,
                         file_name: String::from(".env"),
-                        raw_string: String::from("NODE_ENV=abc"),
+                        raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The NODE_ENV key is duplicated"),
+                    String::from("The BAR key is duplicated"),
                 )),
             ),
         ];
@@ -158,7 +158,7 @@ mod tests {
                 LineEntry {
                     number: 1,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 None,
             ),
@@ -166,22 +166,22 @@ mod tests {
                 LineEntry {
                     number: 2,
                     file_name: String::from(".env"),
-                    raw_string: String::from("RAILS_ENV=abc"),
+                    raw_string: String::from("FOO=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
                         file_name: String::from(".env"),
-                        raw_string: String::from("RAILS_ENV=abc"),
+                        raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The RAILS_ENV key is duplicated"),
+                    String::from("The FOO key is duplicated"),
                 )),
             ),
             (
                 LineEntry {
                     number: 3,
                     file_name: String::from(".env"),
-                    raw_string: String::from("NODE_ENV=abc"),
+                    raw_string: String::from("BAR=FOO"),
                 },
                 None,
             ),

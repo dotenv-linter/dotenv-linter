@@ -1,5 +1,4 @@
-use crate::{FileEntry, LineEntry};
-use std::fmt;
+use crate::common::*;
 
 mod duplicated_keys;
 mod incorrect_delimiter;
@@ -7,28 +6,6 @@ mod key_without_value;
 mod leading_space;
 mod lowercase_key;
 mod spaces_around_equal;
-
-#[derive(Clone, Debug, PartialEq)]
-pub struct Warning {
-    line: LineEntry,
-    message: String,
-}
-
-impl Warning {
-    fn new(line: LineEntry, message: String) -> Self {
-        Self { line, message }
-    }
-}
-
-impl fmt::Display for Warning {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "{}:{} {}",
-            self.line.file_name, self.line.number, self.message
-        )
-    }
-}
 
 // This trait is used for checks which needs to know of only a single line
 trait Check {
