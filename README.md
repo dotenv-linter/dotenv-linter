@@ -94,11 +94,12 @@ Detects if a key is not unique:
 
 ```env
 ❌Wrong
-RAILS_ENV=true
-RAILS_ENV=false
+FOO=BAR
+FOO=BAR
 
 ✅Correct
-RAILS_ENV=true
+FOO=BAR
+BAR=FOO
 ```
 
 ### Incorrect delimiter
