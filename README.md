@@ -86,7 +86,6 @@ you can use the argument `--path DIRECTORY_PATH` or its short version `-p DIRECT
 $ dotenv-linter -p /directory/where/to/run
 ```
 
-
 ## ✅ Checks
 
 ### Duplicated Keys
