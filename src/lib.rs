@@ -37,10 +37,15 @@ impl LineEntry {
 }
 
 pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
-    let paths = dotenv_files(matches)?;
+    let dir_path = match matches.value_of("path") {
+        Some(fpath) => PathBuf::from(fpath),
+        None => env::current_dir()?,
+    };
+
+    let file_paths = dotenv_files(matches, dir_path)?;
 
     let mut warnings: Vec<Warning> = Vec::new();
-    for path in paths {
+    for path in file_paths {
         let f = File::open(&path)?;
         let reader = BufReader::new(f);
         let file_name = match path.file_name() {
@@ -73,9 +78,8 @@ pub fn run(matches: clap::ArgMatches) -> Result<(), Error> {
     Ok(())
 }
 
-fn dotenv_files(matches: clap::ArgMatches) -> Result<Vec<PathBuf>, Error> {
-    let current_dir = env::current_dir()?;
-    let entries = current_dir.read_dir()?;
+fn dotenv_files(matches: clap::ArgMatches, dir_path: PathBuf) -> Result<Vec<PathBuf>, Error> {
+    let entries = dir_path.read_dir()?;
 
     // TODO: Use HashSet to store unique paths
     // https://doc.rust-lang.org/std/collections/struct.HashSet.html

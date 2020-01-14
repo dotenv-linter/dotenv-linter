@@ -79,6 +79,13 @@ you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAM
 $ dotenv-linter -e .env --exclude .env.test
 ```
 
+If you want to specify the directory where to run dotenv-linter,
+you can use the argument `--path DIRECTORY_PATH` or its short version `-p DIRECTORY_PATH`:
+
+```bash
+$ dotenv-linter -p /directory/where/to/run
+```
+
 ## ✅ Checks
 
 ### Duplicated Keys
