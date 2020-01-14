@@ -1,5 +1,5 @@
-use crate::checks::{Check, Warning};
-use crate::LineEntry;
+use crate::checks::Check;
+use crate::common::*;
 
 pub(crate) struct KeyWithoutValueChecker {
     template: String,
