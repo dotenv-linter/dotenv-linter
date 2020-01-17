@@ -82,26 +82,3 @@ jobs:
     - uses: actions-rs/cargo@v1
       with:
         command: build
-
-  integration:
-    name: Integration
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-    - name: Rust version
-      run: rustc --version
-    - uses: actions-rs/cargo@v1
-      with:
-        command: build
-    - name: Run Integration test
-      run: |
-        cd test 
-        if [ $(cargo run | wc -l) -ne 4 ] 
-        then 
-            exit 1 
-        else 
-          exit 0 
-        fi
