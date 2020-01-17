@@ -90,6 +90,7 @@ impl<'a> DotenvLinter<'a> {
     }
 
     /// Returns `Result<Vec<FileEntry>` of files with the the `.env` prefix
+    #[allow(clippy::redundant_closure)]
     fn dotenv_files(&self, dir_path: PathBuf) -> Result<Vec<FileEntry>, Error> {
         let entries = dir_path.read_dir()?;
 
