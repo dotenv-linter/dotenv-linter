@@ -1,6 +1,6 @@
-use std::collections::HashSet;
 use crate::common::*;
 use clap::Arg;
+use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::fs::File;
