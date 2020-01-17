@@ -79,7 +79,28 @@ you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAM
 $ dotenv-linter -e .env --exclude .env.test
 ```
 
+If you want to specify the directory where to run dotenv-linter,
+you can use the argument `--path DIRECTORY_PATH` or its short version `-p DIRECTORY_PATH`:
+
+```bash
+$ dotenv-linter -p /directory/where/to/run
+```
+
 ## ✅ Checks
+
+### Duplicated Keys
+
+Detects if a key is not unique:
+
+```env
+❌Wrong
+FOO=BAR
+FOO=BAR
+
+✅Correct
+FOO=BAR
+BAR=FOO
+```
 
 ### Incorrect delimiter
 
@@ -153,13 +174,13 @@ FOO=BAR
 
 ## 📋 Roadmap
 - [ ] Add more checks:
+  - [x] Duplicated keys;
   - [x] Incorrect delimiter;
   - [x] Keys without values;
   - [x] Leading Space;
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
   - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
-  - [ ] [Duplicated keys](https://github.com/mgrachev/dotenv-linter/issues/5);
   - [ ] Other checks.
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.
