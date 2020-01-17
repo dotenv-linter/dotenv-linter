@@ -1,5 +1,6 @@
 use crate::common::*;
 use clap::Arg;
+use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -95,12 +96,10 @@ impl<'a> DotenvLinter<'a> {
         Ok(warnings)
     }
 
-    fn dotenv_files(&self, dir_path: PathBuf) -> Result<Vec<PathBuf>, Error> {
+    fn dotenv_files(&self, dir_path: PathBuf) -> Result<HashSet<PathBuf>, Error> {
         let entries = dir_path.read_dir()?;
 
-        // TODO: Use HashSet to store unique paths
-        // https://doc.rust-lang.org/std/collections/struct.HashSet.html
-        let mut paths: Vec<PathBuf> = entries
+        let mut paths: HashSet<PathBuf> = entries
             .filter_map(Result::ok)
             .filter(|f| {
                 f.file_name()
@@ -117,7 +116,7 @@ impl<'a> DotenvLinter<'a> {
             for file in files {
                 // Returns the full path to the file and checks if the file exists
                 if let Ok(path) = fs::canonicalize(file) {
-                    paths.push(path);
+                    paths.insert(path);
                 }
             }
         }

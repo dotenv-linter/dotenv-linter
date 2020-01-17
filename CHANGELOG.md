@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add skipping of commented or empty lines [#37](https://github.com/mgrachev/dotenv-linter/pull/37) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
+- Remove multiple checks of the same file [#62](https://github.com/mgrachev/dotenv-linter/pull/62) ([@mstruebing](https://github.com/mstruebing))
 - Add mutability support for checks [#52](https://github.com/mgrachev/dotenv-linter/pull/52)
 
 ## [v1.0.0] - 2020-01-01
