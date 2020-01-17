@@ -1,4 +1,5 @@
 use std::fmt;
+use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
@@ -22,8 +23,33 @@ impl fmt::Display for Warning {
     }
 }
 
+#[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FileEntry {
-    pub lines: Vec<LineEntry>,
+    pub path: PathBuf,
+    pub file_name: String,
+}
+
+impl FileEntry {
+    /// Converts `PathBuf` to `FileEntry`
+    pub fn from(path: PathBuf) -> Option<Self> {
+        let file_name = match path.file_name() {
+            Some(s) => s,
+            None => return None,
+        };
+
+        let file_name = match file_name.to_str() {
+            Some(s) => s.to_string(),
+            None => return None,
+        };
+
+        Some(FileEntry { path, file_name })
+    }
+
+    /// Checks a file name with the `.env` pattern
+    pub fn is_env_file(&self) -> bool {
+        let pattern = ".env";
+        self.file_name.starts_with(pattern) || self.file_name.ends_with(pattern)
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -50,55 +76,110 @@ impl LineEntry {
 mod tests {
     use super::*;
 
-    mod get_key {
+    mod file_entry {
         use super::*;
 
-        #[test]
-        fn empty_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file_name: String::from(".env"),
-                raw_string: String::from(""),
-            };
-            let expected = None;
+        mod from {
+            use super::*;
 
-            assert_eq!(expected, input.get_key());
+            #[test]
+            fn path_without_file_test() {
+                let f = FileEntry::from(PathBuf::from("/"));
+                assert_eq!(None, f);
+            }
+
+            #[test]
+            fn path_with_file_test() {
+                let path = PathBuf::from(".env");
+                let file_name = String::from(".env");
+                let f = FileEntry::from(path.clone());
+                assert_eq!(Some(FileEntry { path, file_name }), f);
+            }
         }
 
         #[test]
-        fn correct_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file_name: String::from(".env"),
-                raw_string: String::from("FOO=BAR"),
-            };
-            let expected = Some(String::from("FOO"));
+        fn is_env_file_test() {
+            let assertions = vec![
+                (".env", true),
+                ("foo.env", true),
+                (".env.foo", true),
+                ("env", false),
+                ("env.foo", false),
+                ("foo_env", false),
+                ("foo-env", false),
+                (".my-env-file", false),
+            ];
 
-            assert_eq!(expected, input.get_key());
+            for (file_name, expected) in assertions {
+                let f = FileEntry {
+                    path: PathBuf::new(),
+                    file_name: String::from(file_name),
+                };
+
+                assert_eq!(
+                    expected,
+                    f.is_env_file(),
+                    "Expected {} for the file name {}",
+                    expected,
+                    file_name
+                )
+            }
         }
+    }
 
-        #[test]
-        fn line_without_value_test() {
-            let input = LineEntry {
-                number: 1,
-                file_name: String::from(".env"),
-                raw_string: String::from("FOO="),
-            };
-            let expected = Some(String::from("FOO"));
+    mod line_entry {
+        use super::*;
 
-            assert_eq!(expected, input.get_key());
-        }
+        mod get_key {
+            use super::*;
 
-        #[test]
-        fn missing_value_and_equal_sign_test() {
-            let input = LineEntry {
-                number: 1,
-                file_name: String::from(".env"),
-                raw_string: String::from("FOOBAR"),
-            };
-            let expected = None;
+            #[test]
+            fn empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from(""),
+                };
+                let expected = None;
 
-            assert_eq!(expected, input.get_key());
+                assert_eq!(expected, input.get_key());
+            }
+
+            #[test]
+            fn correct_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("FOO=BAR"),
+                };
+                let expected = Some(String::from("FOO"));
+
+                assert_eq!(expected, input.get_key());
+            }
+
+            #[test]
+            fn line_without_value_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("FOO="),
+                };
+                let expected = Some(String::from("FOO"));
+
+                assert_eq!(expected, input.get_key());
+            }
+
+            #[test]
+            fn missing_value_and_equal_sign_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("FOOBAR"),
+                };
+                let expected = None;
+
+                assert_eq!(expected, input.get_key());
+            }
         }
     }
 }

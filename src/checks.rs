@@ -24,11 +24,11 @@ fn checklist() -> Vec<Box<dyn Check>> {
     ]
 }
 
-pub fn run(file: FileEntry) -> Vec<Warning> {
+pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
     let mut checks = checklist();
     let mut warnings: Vec<Warning> = Vec::new();
 
-    for line in file.lines {
+    for line in lines {
         // TODO: Move to a method
         // A comment or empty line should just be skipped
         let trimmed_string = line.raw_string.trim();

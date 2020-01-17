@@ -1,6 +1,5 @@
 use crate::common::*;
 use clap::Arg;
-use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -9,8 +8,6 @@ use std::path::PathBuf;
 
 mod checks;
 mod common;
-
-const DOTENV_PREFIX: &str = ".env";
 
 fn new_app<'a, 'b>() -> clap::App<'a, 'b> {
     clap::App::new(env!("CARGO_PKG_NAME"))
@@ -65,16 +62,12 @@ impl<'a> DotenvLinter<'a> {
             None => env::current_dir()?,
         };
 
-        let file_paths = self.dotenv_files(dir_path)?;
+        let files = self.dotenv_files(dir_path)?;
 
         let mut warnings: Vec<Warning> = Vec::new();
-        for path in file_paths {
-            let f = File::open(&path)?;
+        for file in files {
+            let f = File::open(&file.path)?;
             let reader = BufReader::new(f);
-            let file_name = match path.file_name() {
-                Some(s) => s.to_str().unwrap_or("undefined").to_string(),
-                None => continue,
-            };
 
             // TODO: Initialize a vector with a capacity equal to the number of lines
             let mut lines: Vec<LineEntry> = Vec::new();
@@ -83,51 +76,47 @@ impl<'a> DotenvLinter<'a> {
                 let raw_string = line?;
 
                 lines.push(LineEntry {
-                    file_name: file_name.clone(),
+                    file_name: file.file_name.clone(),
                     number,
                     raw_string,
                 })
             }
 
-            let result = checks::run(FileEntry { lines });
+            let result = checks::run(lines);
             warnings.extend(result);
         }
 
         Ok(warnings)
     }
 
-    fn dotenv_files(&self, dir_path: PathBuf) -> Result<HashSet<PathBuf>, Error> {
+    /// Returns `Result<Vec<FileEntry>` of files with the the `.env` prefix
+    fn dotenv_files(&self, dir_path: PathBuf) -> Result<Vec<FileEntry>, Error> {
         let entries = dir_path.read_dir()?;
 
-        let mut paths: HashSet<PathBuf> = entries
+        let mut paths: Vec<FileEntry> = entries
             .filter_map(Result::ok)
-            .filter(|f| {
-                f.file_name()
-                    .to_str()
-                    .filter(|s| s.starts_with(DOTENV_PREFIX))
-                    .is_some()
-            })
-            .map(|f| f.path())
+            .filter_map(|e| FileEntry::from(e.path()))
+            .filter(|f| f.is_env_file())
             .collect();
 
-        if let Some(includes) = self.args.values_of("include") {
-            let files = includes.collect::<Vec<&str>>();
-
-            for file in files {
-                // Returns the full path to the file and checks if the file exists
-                if let Ok(path) = fs::canonicalize(file) {
-                    paths.insert(path);
-                }
-            }
+        // Adds files to paths if they should be included
+        if let Some(included) = self.args.values_of("include") {
+            included
+                .filter_map(|f| fs::canonicalize(f).ok())
+                .filter_map(|p| FileEntry::from(p))
+                .for_each(|f| paths.push(f));
         }
 
-        // Removes files from paths vector if they should be excluded
-        if let Some(excludes) = self.args.values_of("exclude") {
-            let exclude_paths: Vec<PathBuf> =
-                excludes.filter_map(|f| fs::canonicalize(f).ok()).collect();
+        // Removes files from paths if they should be excluded
+        if let Some(excluded) = self.args.values_of("exclude") {
+            let excluded_paths: Vec<PathBuf> =
+                excluded.filter_map(|f| fs::canonicalize(f).ok()).collect();
 
-            paths.retain(|p| !exclude_paths.contains(p));
+            paths.retain(|f| !excluded_paths.contains(&f.path));
         }
+
+        paths.sort();
+        paths.dedup();
 
         Ok(paths)
     }
