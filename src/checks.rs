@@ -46,3 +46,75 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
 
     warnings
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn run_with_empty_vec_test() {
+        let empty: Vec<LineEntry> = Vec::new();
+        let expected: Vec<Warning> = Vec::new();
+
+        assert_eq!(expected, run(empty));
+    }
+
+    #[test]
+    fn run_with_empty_line_test() {
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from(""),
+        };
+
+        let lines: Vec<LineEntry> = vec![line];
+        let expected: Vec<Warning> = Vec::new();
+
+        assert_eq!(expected, run(lines));
+    }
+
+    #[test]
+    fn run_with_comment_line_test() {
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("# Comment"),
+        };
+
+        let lines: Vec<LineEntry> = vec![line];
+        let expected: Vec<Warning> = Vec::new();
+
+        assert_eq!(expected, run(lines));
+    }
+
+    #[test]
+    fn run_with_valid_line_test() {
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO=BAR"),
+        };
+
+        let lines: Vec<LineEntry> = vec![line];
+        let expected: Vec<Warning> = Vec::new();
+
+        assert_eq!(expected, run(lines));
+    }
+
+    #[test]
+    fn run_with_invalid_line_test() {
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO"),
+        };
+        let warning = Warning::new(
+            line.clone(),
+            String::from("The FOO key should be with a value or have an equal sign"),
+        );
+        let lines: Vec<LineEntry> = vec![line];
+        let expected: Vec<Warning> = vec![warning];
+
+        assert_eq!(expected, run(lines));
+    }
+}

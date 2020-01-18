@@ -76,6 +76,18 @@ impl LineEntry {
 mod tests {
     use super::*;
 
+    #[test]
+    fn warning_fmt_test() {
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("FOO=BAR"),
+        };
+        let warning = Warning::new(line, String::from("The FOO key is duplicated"));
+
+        assert_eq!(".env:1 The FOO key is duplicated", format!("{}", warning));
+    }
+
     mod file_entry {
         use super::*;
 
