@@ -3,6 +3,7 @@
 ![](https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg)
 ![](https://img.shields.io/github/license/mgrachev/dotenv-linter)
 ![](https://img.shields.io/github/v/release/mgrachev/dotenv-linter)
+[![](https://codecov.io/gh/mgrachev/dotenv-linter/branch/master/graph/badge.svg)](https://codecov.io/gh/mgrachev/dotenv-linter)
 
 > Linter for `.env` files. Written in Rust 🦀
 
