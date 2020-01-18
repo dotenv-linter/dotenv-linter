@@ -13,22 +13,18 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - name: Rust version
-      run: rustc --version
     - uses: actions-rs/cargo@v1
       with:
         command: check
 
   test:
-    name: Test Suite
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: Rust version
-        run: rustc --version
       - uses: actions-rs/cargo@v1
         with:
           command: test
@@ -42,8 +38,6 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt
-      - name: Rust version
-        run: rustc --version
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
@@ -58,8 +52,6 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-      - name: Rust version
-        run: rustc --version
       - uses: actions-rs/cargo@v1
         with:
           command: clippy
@@ -77,8 +69,30 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-    - name: Rust version
-      run: rustc --version
     - uses: actions-rs/cargo@v1
       with:
         command: build
+
+  coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build kcov
+        run: |
+          sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
+          wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz
+          tar xzf master.tar.gz || true
+          cd kcov-master && mkdir build && cd build && cmake .. && make
+          make install DESTDIR=../../kcov-build && cd ../.. && rm -rf kcov-master && rm -rf master.tar.gz
+      - name: Push test coverage to codecov
+        run: |
+          cargo clean
+          cargo test --no-run
+
+          for file in target/debug/*-*; do mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov \
+          --exclude-pattern=/.cargo,/usr/local --verify "target/cov/$(basename $file)" "$file"; done || true
+          bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
