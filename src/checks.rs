@@ -6,6 +6,7 @@ mod key_without_value;
 mod leading_space;
 mod lowercase_key;
 mod spaces_around_equal;
+mod unordered_keys;
 
 // This trait is used for checks which needs to know of only a single line
 trait Check {
@@ -21,6 +22,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(spaces_around_equal::SpacesAroundEqualChecker::default()),
+        Box::new(unordered_keys::UnorderedKeysChecker::default()),
     ]
 }
 

@@ -173,6 +173,20 @@ FOO = BAR
 FOO=BAR
 ```
 
+### Unordered Keys
+
+Detects if a key is not alphabetically ordered:
+
+```env
+❌Wrong
+FOO=BAR
+BAR=FOO
+
+✅Correct
+BAR=FOO
+FOO=BAR
+```
+
 ## 📋 Roadmap
 
 - [ ] Add more checks:
@@ -182,7 +196,7 @@ FOO=BAR
   - [x] Leading Space;
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
-  - [ ] [Unordered keys](https://github.com/mgrachev/dotenv-linter/issues/4);
+  - [x] Unordered keys;
   - [ ] Other checks.
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.
