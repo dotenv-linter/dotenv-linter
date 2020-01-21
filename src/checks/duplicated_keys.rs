@@ -33,18 +33,18 @@ impl Check for DuplicatedKeysChecker {
 mod tests {
     use super::*;
 
-    fn run_tests(tests: Vec<(LineEntry, Option<Warning>)>) {
+    fn run_duplicated_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = DuplicatedKeysChecker::default();
 
-        for check in tests {
-            let (input, output) = check;
+        for assert in asserts {
+            let (input, output) = assert;
             assert_eq!(checker.run(input), output);
         }
     }
 
     #[test]
     fn with_one_duplicated_key_test() {
-        let tests = vec![
+        let asserts = vec![
             (
                 LineEntry {
                     number: 1,
@@ -70,12 +70,12 @@ mod tests {
             ),
         ];
 
-        run_tests(tests);
+        run_duplicated_tests(asserts);
     }
 
     #[test]
     fn with_two_unique_keys_test() {
-        let tests = vec![
+        let asserts = vec![
             (
                 LineEntry {
                     number: 1,
@@ -94,12 +94,12 @@ mod tests {
             ),
         ];
 
-        run_tests(tests);
+        run_duplicated_tests(asserts);
     }
 
     #[test]
     fn with_two_duplicated_keys_test() {
-        let tests = vec![
+        let asserts = vec![
             (
                 LineEntry {
                     number: 1,
@@ -148,12 +148,12 @@ mod tests {
             ),
         ];
 
-        run_tests(tests);
+        run_duplicated_tests(asserts);
     }
 
     #[test]
     fn one_duplicated_and_one_unique_key_test() {
-        let tests = vec![
+        let asserts = vec![
             (
                 LineEntry {
                     number: 1,
@@ -187,6 +187,6 @@ mod tests {
             ),
         ];
 
-        run_tests(tests);
+        run_duplicated_tests(asserts);
     }
 }
