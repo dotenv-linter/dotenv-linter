@@ -24,7 +24,7 @@ $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.0.0/dotenv
 
 ### GitHub Action
 
-Use [mgrachev/action-dotenv-linter](https://github.com/mgrachev/action-dotenv-linter) to run `dotenv-linter`:
+Use [action-dotenv-linter](https://github.com/mgrachev/action-dotenv-linter) to run `dotenv-linter`:
 
 ```yml
 # .github/workflows/dotenv_linter.yml
@@ -189,7 +189,7 @@ FOO=BAR
 
 ## 📋 Roadmap
 
-- [ ] Add more checks:
+- [x] Add more checks:
   - [x] Duplicated keys;
   - [x] Incorrect delimiter;
   - [x] Keys without values;
@@ -197,7 +197,6 @@ FOO=BAR
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
   - [x] Unordered keys;
-  - [ ] Other checks.
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.
 
