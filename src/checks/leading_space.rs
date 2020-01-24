@@ -8,7 +8,7 @@ pub(crate) struct LeadingSpaceChecker {
 impl Default for LeadingSpaceChecker {
     fn default() -> Self {
         Self {
-            template: String::from("Leading space detected"),
+            template: String::from("Invalid leading character detected"),
         }
     }
 }
@@ -30,7 +30,7 @@ impl Check for LeadingSpaceChecker {
 mod tests {
     use super::*;
 
-    const MESSAGE: &str = "Leading space detected";
+    const MESSAGE: &str = "Invalid leading character detected";
 
     #[test]
     fn normal() {
