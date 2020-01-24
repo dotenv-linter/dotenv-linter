@@ -3,7 +3,7 @@ use crate::common::*;
 mod duplicated_keys;
 mod incorrect_delimiter;
 mod key_without_value;
-mod leading_space;
+mod leading_character;
 mod lowercase_key;
 mod spaces_around_equal;
 mod unordered_keys;
@@ -18,7 +18,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(duplicated_keys::DuplicatedKeysChecker::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
-        Box::new(leading_space::LeadingSpaceChecker::default()),
+        Box::new(leading_character::LeadingCharacterChecker::default()),
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(spaces_around_equal::SpacesAroundEqualChecker::default()),

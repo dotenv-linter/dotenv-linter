@@ -1,11 +1,11 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct LeadingSpaceChecker {
+pub(crate) struct LeadingCharacterChecker {
     template: String,
 }
 
-impl Default for LeadingSpaceChecker {
+impl Default for LeadingCharacterChecker {
     fn default() -> Self {
         Self {
             template: String::from("Invalid leading character detected"),
@@ -13,7 +13,7 @@ impl Default for LeadingSpaceChecker {
     }
 }
 
-impl Check for LeadingSpaceChecker {
+impl Check for LeadingCharacterChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
         if line
             .raw_string
@@ -34,7 +34,7 @@ mod tests {
 
     #[test]
     fn normal() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -45,7 +45,7 @@ mod tests {
 
     #[test]
     fn leading_underscore() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn leading_dot() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn leading_asterisk() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn leading_number() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -98,7 +98,7 @@ mod tests {
 
     #[test]
     fn leading_space() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -110,7 +110,7 @@ mod tests {
 
     #[test]
     fn two_leading_spaces() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
@@ -122,7 +122,7 @@ mod tests {
 
     #[test]
     fn leading_tab() {
-        let mut checker = LeadingSpaceChecker::default();
+        let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
