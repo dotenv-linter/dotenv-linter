@@ -130,7 +130,7 @@ FOO=BAR
 
 ### Leading character
 
-Detects if a line starts with an allowed character (characters from a to z and `_` (underscore) are allowed)
+Detects if a line starts with an unallowed character (characters from `A` to `Z` and `_` (underscore) are allowed):
 
 ```env
 ❌Wrong
