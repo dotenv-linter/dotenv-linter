@@ -31,10 +31,7 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
-        // TODO: Move to a method
-        // A comment or empty line should just be skipped
-        let trimmed_string = line.raw_string.trim();
-        if trimmed_string.starts_with('#') || trimmed_string.is_empty() {
+        if line.should_be_skipped() {
             continue;
         }
 

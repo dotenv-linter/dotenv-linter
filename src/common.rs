@@ -70,6 +70,20 @@ impl LineEntry {
             None => None,
         }
     }
+
+    // Commented or empty lines should be skipped
+    pub fn should_be_skipped(&self) -> bool {
+        let trimmed_string = self.raw_string.trim();
+        if trimmed_string.starts_with('#') || trimmed_string.is_empty() {
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn strip_inline_comments(&self) -> Self {
+        self.clone()
+    }
 }
 
 #[cfg(test)]
@@ -191,6 +205,46 @@ mod tests {
                 let expected = None;
 
                 assert_eq!(expected, input.get_key());
+            }
+        }
+
+        mod should_be_skipped {
+            use super::*;
+
+            #[test]
+            fn comment_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("#FOOBAR"),
+                };
+                let expected = true;
+
+                assert_eq!(expected, input.should_be_skipped());
+            }
+
+            #[test]
+            fn empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from(""),
+                };
+                let expected = true;
+
+                assert_eq!(expected, input.should_be_skipped());
+            }
+
+            #[test]
+            fn normal_line() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("KEY=value"),
+                };
+                let expected = false;
+
+                assert_eq!(expected, input.should_be_skipped());
             }
         }
     }
