@@ -15,11 +15,13 @@ impl Default for LeadingSpaceChecker {
 
 impl Check for LeadingSpaceChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
-        // FIXME: Doesn't check a tab character
-        if line.raw_string.starts_with(' ') {
-            Some(Warning::new(line, self.template.clone()))
-        } else {
+        if line
+            .raw_string
+            .starts_with(|c: char| c.is_alphabetic() || c == '_')
+        {
             None
+        } else {
+            Some(Warning::new(line, self.template.clone()))
         }
     }
 }
@@ -31,7 +33,7 @@ mod tests {
     const MESSAGE: &str = "Leading space detected";
 
     #[test]
-    fn working_run() {
+    fn normal() {
         let mut checker = LeadingSpaceChecker::default();
         let line = LineEntry {
             number: 1,
@@ -42,7 +44,60 @@ mod tests {
     }
 
     #[test]
-    fn failing_run_with_one_leading_space() {
+    fn leading_underscore() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("_FOO=BAR"),
+        };
+        assert_eq!(None, checker.run(line));
+    }
+
+    #[test]
+    fn leading_dot() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from(".FOO=BAR"),
+        };
+        assert_eq!(
+            Some(Warning::new(line.clone(), MESSAGE.to_string())),
+            checker.run(line)
+        );
+    }
+
+    #[test]
+    fn leading_asterisk() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("*FOO=BAR"),
+        };
+        assert_eq!(
+            Some(Warning::new(line.clone(), MESSAGE.to_string())),
+            checker.run(line)
+        );
+    }
+
+    #[test]
+    fn leading_number() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("1FOO=BAR"),
+        };
+        assert_eq!(
+            Some(Warning::new(line.clone(), MESSAGE.to_string())),
+            checker.run(line)
+        );
+    }
+
+    #[test]
+    fn leading_space() {
         let mut checker = LeadingSpaceChecker::default();
         let line = LineEntry {
             number: 1,
@@ -54,12 +109,24 @@ mod tests {
     }
 
     #[test]
-    fn failing_run_with_two_leading_spaces() {
+    fn two_leading_spaces() {
         let mut checker = LeadingSpaceChecker::default();
         let line = LineEntry {
             number: 1,
             file_name: String::from(".env"),
             raw_string: String::from("  FOO=BAR"),
+        };
+        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        assert_eq!(expected, checker.run(line));
+    }
+
+    #[test]
+    fn leading_tab() {
+        let mut checker = LeadingSpaceChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("\tFOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
         assert_eq!(expected, checker.run(line));
