@@ -247,5 +247,70 @@ mod tests {
                 assert_eq!(expected, input.should_be_skipped());
             }
         }
+
+        mod strip_inline_comments {
+            use super::*;
+
+            #[test]
+            fn normal_line() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("KEY=value"),
+                };
+                let expected = input.clone();
+
+                assert_eq!(expected, input.strip_inline_comments());
+            }
+
+            #[test]
+            fn line_with_single_quoted_comment() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("KEY='value#foo'"),
+                };
+                let expected = input.clone();
+
+                assert_eq!(expected, input.strip_inline_comments());
+            }
+
+            #[test]
+            fn line_with_double_quoted_comment() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("KEY=\"value#foo\""),
+                };
+                let expected = input.clone();
+
+                assert_eq!(expected, input.strip_inline_comments());
+            }
+
+            #[test]
+            fn line_with_comment_without_space() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("KEY=value#foo"),
+                };
+                let expected = input.clone();
+
+                assert_eq!(expected, input.strip_inline_comments());
+            }
+
+            #[test]
+            fn line_with_comment_with_space() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("KEY=value #foo"),
+                };
+                let mut expected = input.clone();
+                expected.raw_string = String::from("KEY=value");
+
+                assert_eq!(expected, input.strip_inline_comments());
+            }
+        }
     }
 }
