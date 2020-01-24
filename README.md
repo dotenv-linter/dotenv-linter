@@ -51,7 +51,7 @@ $ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
 
 ## 🚀 Usage
 
-By default, `dotenv-linter` checks all files with the `.env` prefix. For example: `.env`, `.env.test`, `.env.qa`:
+By default, `dotenv-linter` checks all files that start and end with `.env`. For example: `.env`, `test.env`, `.env.qa`:
 
 ```bash
 $ dotenv-linter
@@ -59,17 +59,17 @@ $ dotenv-linter
 .env:2 The FOO-BAR key has incorrect delimiter
 .env:3 The FOo_BAR key should be in uppercase
 .env:4 The line has spaces around equal sign
-.env.test:5 The foo_bar key should be in uppercase
-.env.test:6 The FOO key should be with a value or have an equal sign
+test.env:5 The foo_bar key should be in uppercase
+test.env:6 The FOO key should be with a value or have an equal sign
 ```
 
 If you want to include a file with a specific name to check,
 you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAME`:
 
 ```bash
-$ dotenv-linter -i test.env --include .my-env-file
+$ dotenv-linter -i test.dotenv --include .my-env-file
 .env:1 Invalid leading character detected
-test.env:2 The FOO-BAR key has incorrect delimiter
+test.dotenv:2 The FOO-BAR key has incorrect delimiter
 .my-env-file:3 The line has spaces around equal sign
 ```
 
@@ -135,9 +135,13 @@ Detects if a line starts with an unallowed character (characters from `A` to `Z`
 ```env
 ❌Wrong
  FOO=BAR
+.FOO=BAR
+*FOO=BAR
+1FOO=BAR
 
 ✅Correct
 FOO=BAR
+_FOO=BAR
 ```
 
 ### Lowercase key
@@ -193,7 +197,7 @@ FOO=BAR
   - [x] Duplicated keys;
   - [x] Incorrect delimiter;
   - [x] Keys without values;
-  - [x] Leading Space;
+  - [x] Leading character;
   - [x] Lowercase keys;
   - [x] Spaces around equal sign;
   - [x] Unordered keys;
