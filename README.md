@@ -55,7 +55,7 @@ By default, `dotenv-linter` checks all files with the `.env` prefix. For example
 
 ```bash
 $ dotenv-linter
-.env:1 Leading space detected
+.env:1 Invalid leading character detected
 .env:2 The FOO-BAR key has incorrect delimiter
 .env:3 The FOo_BAR key should be in uppercase
 .env:4 The line has spaces around equal sign
@@ -68,7 +68,7 @@ you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAM
 
 ```bash
 $ dotenv-linter -i test.env --include .my-env-file
-.env:1 Leading space detected
+.env:1 Invalid leading character detected
 test.env:2 The FOO-BAR key has incorrect delimiter
 .my-env-file:3 The line has spaces around equal sign
 ```
@@ -128,9 +128,9 @@ FOO=
 FOO=BAR
 ```
 
-### Leading space
+### Leading character
 
-Detects if a line starts with a space or a tab character:
+Detects if a line starts with an unallowed character (characters from `A` to `Z` and `_` (underscore) are allowed):
 
 ```env
 ❌Wrong
