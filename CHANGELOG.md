@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+
+### 🔧 Changed
+
+## [v1.1.0] - 2020-01-27
+### 🚀 Added
 - Add check: Unordered keys [#72](https://github.com/mgrachev/dotenv-linter/pull/72)
 - Add the ability to specify the directory where to run [#65](https://github.com/mgrachev/dotenv-linter/pull/65) ([@Louis-Lesage](https://github.com/Louis-Lesage))
 - Add check: Duplicated keys [#33](https://github.com/mgrachev/dotenv-linter/pull/33) ([@mstruebing](https://github.com/mstruebing))
@@ -32,4 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/mgrachev/dotenv-linter/pull/26)
 - Prepare a template for easy adding new checks [#14](https://github.com/mgrachev/dotenv-linter/pull/14)
 
+[v1.1.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.0.0
