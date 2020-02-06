@@ -11,7 +11,7 @@
 
 ### Binary
 
-```bash
+```shell script
 # Linux
 $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.0/dotenv-linter-v1.1.0-linux-x86_64.tar.gz -sSfL | tar -xzf - 
 
@@ -45,15 +45,23 @@ jobs:
 
 ### Docker
 
-```bash
+```shell script
 $ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
+```
+
+### Cargo
+
+If you are a **Rust** programmer, you can install `dotenv-linter` via `cargo`: 
+
+```shell script
+$ cargo install dotenv-linter
 ```
 
 ## 🚀 Usage
 
 By default, `dotenv-linter` checks all files that start and end with `.env`. For example: `.env`, `test.env`, `.env.qa`:
 
-```bash
+```shell script
 $ dotenv-linter
 .env:1 Invalid leading character detected
 .env:2 The FOO-BAR key has incorrect delimiter
@@ -66,7 +74,7 @@ test.env:6 The FOO key should be with a value or have an equal sign
 If you want to include a file with a specific name to check,
 you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAME`:
 
-```bash
+```shell script
 $ dotenv-linter -i test.dotenv --include .my-env-file
 .env:1 Invalid leading character detected
 test.dotenv:2 The FOO-BAR key has incorrect delimiter
@@ -76,14 +84,14 @@ test.dotenv:2 The FOO-BAR key has incorrect delimiter
 If you want to exclude a file with a specific name from check,
 you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAME`:
 
-```bash
+```shell script
 $ dotenv-linter -e .env --exclude .env.test
 ```
 
 If you want to specify the directory where to run dotenv-linter,
 you can use the argument `--path DIRECTORY_PATH` or its short version `-p DIRECTORY_PATH`:
 
-```bash
+```shell script
 $ dotenv-linter -p /directory/where/to/run
 ```
 

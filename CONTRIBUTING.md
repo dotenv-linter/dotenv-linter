@@ -57,7 +57,7 @@ impl Check for ExampleChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
         // Write your check logic here...
         if line.raw_string.starts_with("EXAMPLE") {
-            Some(Warning::new(line.clone(), self.template.clone()))
+            Some(Warning::new(line, self.template.clone()))
         } else {
             None
         }
