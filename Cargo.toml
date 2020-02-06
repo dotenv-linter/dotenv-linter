@@ -4,8 +4,12 @@ version = "1.1.0"
 authors = ["Mikhail Grachev <work@mgrachev.com>"]
 edition = "2018"
 description = "Linter for .env files"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+homepage = "https://github.com/mgrachev/dotenv-linter"
+license = "MIT"
+readme = "README.md"
+keywords = ["environment", "env", "dotenv", "linter", "lint"]
+categories = ["command-line-utilities"]
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 clap = "2.33.0"

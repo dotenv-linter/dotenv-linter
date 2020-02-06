@@ -74,3 +74,12 @@ jobs:
 
           docker build -t mgrachev/dotenv-linter:latest .
           docker push mgrachev/dotenv-linter:latest
+
+  release-crate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build and publish to crates.io
+        run: |
+          cargo login ${{ secrets.CRATES_TOKEN }}
+          cargo publish
