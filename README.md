@@ -24,11 +24,11 @@ $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.0/dotenv
 
 ### GitHub Action
 
-Use [action-dotenv-linter](https://github.com/mgrachev/action-dotenv-linter) to run `dotenv-linter`:
+<details>
+<summary>Example: <code>.github/workflows/dotenv_linter.yml</code></summary>
 
-```yml
-# .github/workflows/dotenv_linter.yml
-name: reviewdog
+```yaml
+name: dotenv-linter
 on: [pull_request]
 jobs:
   dotenv-linter:
@@ -42,6 +42,32 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
 ```
+
+In the example above, [action-dotenv-linter](https://github.com/mgrachev/action-dotenv-linter) is used to run `dotenv-linter`.
+</details>
+
+### CircleCI
+
+<details>
+<summary>Example: <code>.circleci/config.yml</code></summary>
+
+```yaml
+version: 2.1
+jobs:
+  dotenv-linter:
+    docker:
+      - image: circleci/rust:latest
+    steps:
+      - checkout
+      - run:
+          name: Run dotenv-linter
+          command: |
+            DOTENV_LINTER_VERSION=v1.1.0
+            wget https://github.com/mgrachev/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-$DOTENV_LINTER_VERSION-alpine-x86_64.tar.gz \
+            -O - -q | tar -xzf -
+            ./dotenv-linter
+```
+</details>
 
 ### Docker
 
