@@ -22,6 +22,12 @@ $ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.0/dotenv
 $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.0/dotenv-linter-v1.1.0-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
+### Homebrew / Linuxbrew
+
+```shell script
+$ brew install mgrachev/tap/dotenv-linter
+```
+
 ### GitHub Action
 
 <details>
