@@ -1,11 +1,9 @@
-# ✌️dotenv-linter
+# ✌️dotenv-linter ![](https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg) [![](https://codecov.io/gh/mgrachev/dotenv-linter/branch/master/graph/badge.svg)](https://codecov.io/gh/mgrachev/dotenv-linter) ![](https://img.shields.io/github/license/mgrachev/dotenv-linter) ![](https://img.shields.io/github/v/release/mgrachev/dotenv-linter)
 
-![](https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg)
-![](https://img.shields.io/github/license/mgrachev/dotenv-linter)
-![](https://img.shields.io/github/v/release/mgrachev/dotenv-linter)
-[![](https://codecov.io/gh/mgrachev/dotenv-linter/branch/master/graph/badge.svg)](https://codecov.io/gh/mgrachev/dotenv-linter)
-
-> Linter for `.env` files. Written in Rust 🦀
+<p align="center">Linter for <code>.env</code> files. Written in Rust 🦀</p>
+<p align="center">
+  <img alt="dotenv-linter" src="img/example.png" width="547" />
+</p>
 
 ## 👨‍💻 Installation
 
@@ -26,6 +24,20 @@ $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.0/dotenv
 
 ```shell script
 $ brew install mgrachev/tap/dotenv-linter
+```
+
+### Docker
+
+```shell script
+$ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
+```
+
+### Cargo
+
+If you are a **Rust** programmer, you can install `dotenv-linter` via `cargo`: 
+
+```shell script
+$ cargo install dotenv-linter
 ```
 
 ### GitHub Action
@@ -75,20 +87,6 @@ jobs:
 ```
 </details>
 
-### Docker
-
-```shell script
-$ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
-```
-
-### Cargo
-
-If you are a **Rust** programmer, you can install `dotenv-linter` via `cargo`: 
-
-```shell script
-$ cargo install dotenv-linter
-```
-
 ## 🚀 Usage
 
 By default, `dotenv-linter` checks all files that start and end with `.env`. For example: `.env`, `test.env`, `.env.qa`:
@@ -107,7 +105,7 @@ If you want to include a file with a specific name to check,
 you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAME`:
 
 ```shell script
-$ dotenv-linter -i test.dotenv --include .my-env-file
+$ dotenv-linter -i test.dotenv .my-env-file
 .env:1 Invalid leading character detected
 test.dotenv:2 The FOO-BAR key has incorrect delimiter
 .my-env-file:3 The line has spaces around equal sign
@@ -117,7 +115,7 @@ If you want to exclude a file with a specific name from check,
 you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAME`:
 
 ```shell script
-$ dotenv-linter -e .env --exclude .env.test
+$ dotenv-linter -e .env .env.test
 ```
 
 If you want to specify the directory where to run dotenv-linter,
