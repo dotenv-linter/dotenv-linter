@@ -263,29 +263,10 @@ If you've ever wanted to contribute to open source, now you have a great opportu
 
 ## ✨ Contributors
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/mgrachev/dotenv-linter/graphs/contributors"><img src="https://opencollective.com/dotenv-linter/contributors.svg?width=890&button=false" /></a>
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://github.com/mgrachev"><img src="https://avatars0.githubusercontent.com/u/700998?v=4" width="100px;" alt=""/><br /><sub><b>Grachev Mikhail</b></sub></a><br /><a href="https://github.com/mgrachev/dotenv-linter/commits?author=mgrachev" title="Code">💻</a> <a href="https://github.com/mgrachev/dotenv-linter/commits?author=mgrachev" title="Documentation">📖</a> <a href="#ideas-mgrachev" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/mgrachev/dotenv-linter/commits?author=mgrachev" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/mstruebing"><img src="https://avatars0.githubusercontent.com/u/12071529?v=4" width="100px;" alt=""/><br /><sub><b>Max Strübing</b></sub></a><br /><a href="https://github.com/mgrachev/dotenv-linter/commits?author=mstruebing" title="Code">💻</a> <a href="#example-mstruebing" title="Examples">💡</a> <a href="#ideas-mstruebing" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/mgrachev/dotenv-linter/commits?author=mstruebing" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/Louis-Lesage"><img src="https://avatars2.githubusercontent.com/u/31346705?v=4" width="100px;" alt=""/><br /><sub><b>Louis Lesage</b></sub></a><br /><a href="https://github.com/mgrachev/dotenv-linter/commits?author=Louis-Lesage" title="Code">💻</a> <a href="#example-Louis-Lesage" title="Examples">💡</a></td>
-    <td align="center"><a href="https://github.com/artem-russkikh"><img src="https://avatars0.githubusercontent.com/u/3540978?v=4" width="100px;" alt=""/><br /><sub><b>Artem Russkikh</b></sub></a><br /><a href="https://github.com/mgrachev/dotenv-linter/commits?author=artem-russkikh" title="Code">💻</a> <a href="#example-artem-russkikh" title="Examples">💡</a> <a href="#ideas-artem-russkikh" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/mgrachev/dotenv-linter/commits?author=artem-russkikh" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/sonro"><img src="https://avatars2.githubusercontent.com/u/11620521?v=4" width="100px;" alt=""/><br /><sub><b>Christopher Morton</b></sub></a><br /><a href="https://github.com/mgrachev/dotenv-linter/commits?author=sonro" title="Code">💻</a> <a href="#example-sonro" title="Examples">💡</a> <a href="https://github.com/mgrachev/dotenv-linter/commits?author=sonro" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://github.com/qelphybox"><img src="https://avatars3.githubusercontent.com/u/8515324?v=4" width="100px;" alt=""/><br /><sub><b>Kirill Bobykin</b></sub></a><br /><a href="https://github.com/mgrachev/dotenv-linter/commits?author=qelphybox" title="Code">💻</a> <a href="#example-qelphybox" title="Examples">💡</a> <a href="#ideas-qelphybox" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/mgrachev/dotenv-linter/commits?author=qelphybox" title="Tests">⚠️</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
-
-## ♥️ Sponsor
+## ♥️ Sponsors
 
 <p>
   <a href="https://evrone.com/?utm_source=dotenv-linter">
@@ -293,7 +274,6 @@ This project follows the [all-contributors](https://github.com/all-contributors/
       alt="Sponsored by Evrone" width="210">
   </a>
 </p>
-
 
 ## 📃 License
 
