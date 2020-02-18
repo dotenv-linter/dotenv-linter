@@ -34,7 +34,7 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
         // TODO: Move to a method
         // A comment or empty line should just be skipped
         let trimmed_string = line.raw_string.trim();
-        if trimmed_string.starts_with('#') || trimmed_string.is_empty() {
+        if trimmed_string.is_empty() || trimmed_string.starts_with('#') {
             continue;
         }
 
