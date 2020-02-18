@@ -8,12 +8,12 @@ fn main() {
         Ok(warnings) => {
             if !warnings.is_empty() {
                 warnings.iter().for_each(|w| println!("{}", w));
-                process::exit(1);
             }
         }
         Err(error) => {
             eprintln!("dotenv-linter: {}", error);
-            process::exit(1);
         }
     };
+
+    process::exit(1);
 }

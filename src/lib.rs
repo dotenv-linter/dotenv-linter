@@ -95,7 +95,7 @@ impl<'a> DotenvLinter<'a> {
         let entries = dir_path.read_dir()?;
 
         let mut paths: Vec<FileEntry> = entries
-            .filter_map(Result::ok)
+            .filter_map(|e| e.ok())
             .filter_map(|e| FileEntry::from(e.path()))
             .filter(|f| f.is_env_file())
             .collect();

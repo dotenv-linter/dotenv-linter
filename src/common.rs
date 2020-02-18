@@ -1,3 +1,4 @@
+use std::env;
 use std::fmt;
 use std::path::PathBuf;
 
@@ -32,12 +33,9 @@ pub struct FileEntry {
 impl FileEntry {
     /// Converts `PathBuf` to `FileEntry`
     pub fn from(path: PathBuf) -> Option<Self> {
-        let file_name = match path.file_name() {
-            Some(s) => s,
-            None => return None,
-        };
-
-        let file_name = match file_name.to_str() {
+        let pwd = env::current_dir().ok()?;
+        let p = path.strip_prefix(pwd).ok()?;
+        let file_name = match p.to_str() {
             Some(s) => s.to_string(),
             None => return None,
         };
@@ -102,8 +100,24 @@ mod tests {
 
             #[test]
             fn path_with_file_test() {
-                let path = PathBuf::from(".env");
+                let result = env::current_dir();
+                assert!(result.is_ok());
+
+                let current_dir = result.unwrap();
+                let path = current_dir.join(".env");
                 let file_name = String::from(".env");
+                let f = FileEntry::from(path.clone());
+                assert_eq!(Some(FileEntry { path, file_name }), f);
+            }
+
+            #[test]
+            fn path_with_nested_file_test() {
+                let result = env::current_dir();
+                assert!(result.is_ok());
+
+                let current_dir = result.unwrap();
+                let path = current_dir.join("test/.env");
+                let file_name = String::from("test/.env");
                 let f = FileEntry::from(path.clone());
                 assert_eq!(Some(FileEntry { path, file_name }), f);
             }
