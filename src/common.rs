@@ -35,11 +35,7 @@ impl FileEntry {
     pub fn from(path: PathBuf) -> Option<Self> {
         let pwd = env::current_dir().ok()?;
         let p = path.strip_prefix(pwd).ok()?;
-        let file_name = match p.to_str() {
-            Some(s) => s.to_string(),
-            None => return None,
-        };
-
+        let file_name = p.to_str()?.to_string();
         Some(FileEntry { path, file_name })
     }
 

@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 
+## [v1.1.1] - 2020-02-18
+### 🔧 Changed
+- Show the full path to the file relative to the current directory [#85](https://github.com/mgrachev/dotenv-linter/pull/85)
+
 ## [v1.1.0] - 2020-01-27
 ### 🚀 Added
 - Add check: Unordered keys [#72](https://github.com/mgrachev/dotenv-linter/pull/72)
@@ -37,5 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/mgrachev/dotenv-linter/pull/26)
 - Prepare a template for easy adding new checks [#14](https://github.com/mgrachev/dotenv-linter/pull/14)
 
+[v1.1.1]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.1
 [v1.1.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.0.0
