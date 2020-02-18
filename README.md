@@ -2,7 +2,7 @@
 
 <p align="center">Linter for <code>.env</code> files. Written in Rust 🦀</p>
 <p align="center">
-  <img alt="dotenv-linter" src="img/example.png" width="547" />
+  <img alt="dotenv-linter" src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/master/img/example.png" width="547" />
 </p>
 
 ## 👨‍💻 Installation
