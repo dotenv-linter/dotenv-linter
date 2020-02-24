@@ -26,6 +26,14 @@ $ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.1/dotenv
 $ brew install mgrachev/tap/dotenv-linter
 ```
 
+### Arch Linux / AUR
+
+```shell script
+# use your favourite AUR-helper
+$ trizen -S dotenv-linter-bin # for the binary distribution
+$ trizen -S dotenv-linter-git # for the current master branch
+```
+
 ### Docker
 
 ```shell script
