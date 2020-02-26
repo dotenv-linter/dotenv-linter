@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Use `Line.get_key` in all checkers [#89](https://github.com/mgrachev/dotenv-linter/pull/89) ([@pineapplethief](https://github.com/pineapplethief))
-
+- Refactor `Github Actions` and reduce `Docker Image size` [#90](https://github.com/mgrachev/dotenv-linter/pull/89) ([@Macbet](https://github.com/Macbet))
 ## [v1.1.1] - 2020-02-18
 ### 🔧 Changed
 - Show the full path to the file relative to the current directory [#85](https://github.com/mgrachev/dotenv-linter/pull/85)
