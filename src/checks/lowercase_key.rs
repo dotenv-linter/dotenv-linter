@@ -15,12 +15,11 @@ impl Default for LowercaseKeyChecker {
 
 impl Check for LowercaseKeyChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
-        let line_str: Vec<&str> = line.raw_string.split('=').collect();
-        let key = line_str[0];
+        let key = line.get_key()?;
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line.clone(), self.template.replace("{}", key)))
+            Some(Warning::new(line.clone(), self.template.replace("{}", &key)))
         }
     }
 }
