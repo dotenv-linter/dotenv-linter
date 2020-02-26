@@ -17,7 +17,7 @@ impl Check for IncorrectDelimiterChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.trim().chars().any(|c| !c.is_alphabetic() && c != '_') {
-            return Some(Warning::new(line.clone(), self.template.replace("{}", &key)));
+            return Some(Warning::new(line, self.template.replace("{}", &key)));
         }
 
         None

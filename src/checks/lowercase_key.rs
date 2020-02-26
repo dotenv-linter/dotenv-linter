@@ -19,7 +19,7 @@ impl Check for LowercaseKeyChecker {
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line.clone(), self.template.replace("{}", &key)))
+            Some(Warning::new(line, self.template.replace("{}", &key)))
         }
     }
 }
