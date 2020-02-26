@@ -6,5 +6,5 @@ RUN cargo build --release  && \
 
 FROM scratch
 
-COPY --from=0 /app/target/release/dotenv-linter /
+COPY --from=builder /app/target/release/dotenv-linter /
 ENTRYPOINT ["/dotenv-linter"]
