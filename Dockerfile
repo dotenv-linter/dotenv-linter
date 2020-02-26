@@ -1,5 +1,10 @@
-FROM alpine:latest
+FROM rust:1.41 as builder
+WORKDIR /app 
+COPY . /app
+RUN cargo build --release  && \
+    chmod +x target/release/dotenv-linter
 
-COPY dotenv-linter /usr/local/bin/
+FROM scratch
 
-ENTRYPOINT ["dotenv-linter"]
+COPY --from=0 /app/target/release/dotenv-linter /
+ENTRYPOINT ["/dotenv-linter"]
