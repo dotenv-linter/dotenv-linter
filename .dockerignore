@@ -1,0 +1,10 @@
+.editorconfig
+.git
+.github
+.gitignore
+Dockerfile
+img
+License
+.codecov.yml
+*.md
+LICENSE
