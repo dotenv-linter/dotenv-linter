@@ -62,34 +62,6 @@ mod tests {
     }
 
     #[test]
-    fn run_with_empty_line_test() {
-        let line = LineEntry {
-            number: 1,
-            file_name: String::from(".env"),
-            raw_string: String::from(""),
-        };
-
-        let lines: Vec<LineEntry> = vec![line];
-        let expected: Vec<Warning> = Vec::new();
-
-        assert_eq!(expected, run(lines));
-    }
-
-    #[test]
-    fn run_with_comment_line_test() {
-        let line = LineEntry {
-            number: 1,
-            file_name: String::from(".env"),
-            raw_string: String::from("# Comment"),
-        };
-
-        let lines: Vec<LineEntry> = vec![line];
-        let expected: Vec<Warning> = Vec::new();
-
-        assert_eq!(expected, run(lines));
-    }
-
-    #[test]
     fn run_with_valid_line_test() {
         let line = LineEntry {
             number: 1,

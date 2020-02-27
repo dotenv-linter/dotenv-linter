@@ -158,6 +158,43 @@ mod tests {
     mod line_entry {
         use super::*;
 
+        mod is_empty_or_comment {
+            use super::*;
+
+            #[test]
+            fn run_with_empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from(""),
+                };
+
+                assert_eq!(input.is_empty_or_comment(), true);
+            }
+
+            #[test]
+            fn run_with_comment_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("# Comment"),
+                };
+
+                assert_eq!(input.is_empty_or_comment(), true);
+            }
+
+            #[test]
+            fn run_with_not_comment_or_empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("NotComment"),
+                };
+
+                assert_eq!(input.is_empty_or_comment(), false);
+            }
+        }
+
         mod get_key {
             use super::*;
 
