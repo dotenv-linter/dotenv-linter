@@ -54,8 +54,14 @@ pub struct LineEntry {
 }
 
 impl LineEntry {
+    pub fn is_empty_or_comment(&self) -> bool {
+        let trimmed_string = self.raw_string.trim();
+
+        return trimmed_string.is_empty() || trimmed_string.starts_with('#');
+    }
+
     pub fn get_key(&self) -> Option<String> {
-        if self.raw_string.is_empty() {
+        if self.is_empty_or_comment() {
             return None;
         }
 
