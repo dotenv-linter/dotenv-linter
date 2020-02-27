@@ -57,7 +57,7 @@ impl LineEntry {
     pub fn is_empty_or_comment(&self) -> bool {
         let trimmed_string = self.raw_string.trim();
 
-        return trimmed_string.is_empty() || trimmed_string.starts_with('#');
+        trimmed_string.is_empty() || trimmed_string.starts_with('#')
     }
 
     pub fn get_key(&self) -> Option<String> {
