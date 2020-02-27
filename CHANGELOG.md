@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
-- Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run`. [#88](https://github.com/mgrachev/dotenv-linter/pull/88) ([@Aleksey Glukhov](https://github.com/pineapplethief))
+- Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run`. [#91](https://github.com/mgrachev/dotenv-linter/pull/91) ([@Aleksey Glukhov](https://github.com/pineapplethief))
 
 ### 🔧 Changed
 
