@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
-- Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run`. [#94](https://github.com/mgrachev/dotenv-linter/pull/94) ([@Aleksey Glukhov](https://github.com/pineapplethief))
+- Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run` [#94](https://github.com/mgrachev/dotenv-linter/pull/94) ([@pineapplethief](https://github.com/pineapplethief))
 - Refactor `Github Actions` and reduce `Docker Image size` [#90](https://github.com/mgrachev/dotenv-linter/pull/90) ([@Macbet](https://github.com/Macbet))
 - Use `Line.get_key` in all checks [#89](https://github.com/mgrachev/dotenv-linter/pull/89) ([@pineapplethief](https://github.com/pineapplethief))
 
