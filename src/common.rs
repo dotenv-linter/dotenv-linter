@@ -54,8 +54,14 @@ pub struct LineEntry {
 }
 
 impl LineEntry {
+    pub fn is_empty_or_comment(&self) -> bool {
+        let trimmed_string = self.raw_string.trim();
+
+        trimmed_string.is_empty() || trimmed_string.starts_with('#')
+    }
+
     pub fn get_key(&self) -> Option<String> {
-        if self.raw_string.is_empty() {
+        if self.is_empty_or_comment() {
             return None;
         }
 
@@ -151,6 +157,43 @@ mod tests {
 
     mod line_entry {
         use super::*;
+
+        mod is_empty_or_comment {
+            use super::*;
+
+            #[test]
+            fn run_with_empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from(""),
+                };
+
+                assert_eq!(input.is_empty_or_comment(), true);
+            }
+
+            #[test]
+            fn run_with_comment_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("# Comment"),
+                };
+
+                assert_eq!(input.is_empty_or_comment(), true);
+            }
+
+            #[test]
+            fn run_with_not_comment_or_empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_name: String::from(".env"),
+                    raw_string: String::from("NotComment"),
+                };
+
+                assert_eq!(input.is_empty_or_comment(), false);
+            }
+        }
 
         mod get_key {
             use super::*;
