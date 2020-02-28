@@ -31,10 +31,7 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
-        // TODO: Move to a method
-        // A comment or empty line should just be skipped
-        let trimmed_string = line.raw_string.trim();
-        if trimmed_string.is_empty() || trimmed_string.starts_with('#') {
+        if line.is_empty_or_comment() {
             continue;
         }
 
@@ -59,20 +56,6 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
 
         assert_eq!(expected, run(empty));
-    }
-
-    #[test]
-    fn run_with_empty_line_test() {
-        let line = LineEntry {
-            number: 1,
-            file_name: String::from(".env"),
-            raw_string: String::from(""),
-        };
-
-        let lines: Vec<LineEntry> = vec![line];
-        let expected: Vec<Warning> = Vec::new();
-
-        assert_eq!(expected, run(lines));
     }
 
     #[test]

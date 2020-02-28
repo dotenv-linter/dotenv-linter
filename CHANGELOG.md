@@ -8,8 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
-- Refactor `Github Actions` and reduce `Docker Image size` [#90](https://github.com/mgrachev/dotenv-linter/pull/90) ([@Macbet](https://github.com/Macbet))
-- Use `Line.get_key` in all checks [#89](https://github.com/mgrachev/dotenv-linter/pull/89) ([@pineapplethief](https://github.com/pineapplethief))
+- Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run`. [#93](https://github.com/mgrachev/dotenv-linter/pull/93) ([@Aleksey Glukhov](https://github.com/pineapplethief))
 
 ## [v1.1.1] - 2020-02-18
 ### 🔧 Changed
@@ -35,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 - Add check: Keys without values [#22](https://github.com/mgrachev/dotenv-linter/pull/22) ([@mstruebing](https://github.com/mstruebing))
 - Add check: Lowercase keys [#21](https://github.com/mgrachev/dotenv-linter/pull/21) ([@qelphybox](https://github.com/qelphybox))
-- Add check: Incorrect delimiter [#20](https://github.com/mgrachev/dotenv-linter/pull/20) ([@sonro](https://github.com/sonro)) 
+- Add check: Incorrect delimiter [#20](https://github.com/mgrachev/dotenv-linter/pull/20) ([@sonro](https://github.com/sonro))
 - Add `Display` trait for `LineEntry` [#19](https://github.com/mgrachev/dotenv-linter/pull/19) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
