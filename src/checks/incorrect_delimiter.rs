@@ -16,7 +16,7 @@ impl Default for IncorrectDelimiterChecker {
 impl Check for IncorrectDelimiterChecker {
     fn run(&mut self, line: LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
-        if key.trim().chars().any(|c| !c.is_alphabetic() && c != '_') {
+        if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
             return Some(Warning::new(line, self.template.replace("{}", &key)));
         }
 
@@ -35,6 +35,17 @@ mod tests {
             number: 1,
             file_name: String::from(".env"),
             raw_string: String::from("FOO_BAR=FOOBAR"),
+        };
+        assert_eq!(None, checker.run(line));
+    }
+
+    #[test]
+    fn working_with_digits_run() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_name: String::from(".env"),
+            raw_string: String::from("F1OO=BAR"),
         };
         assert_eq!(None, checker.run(line));
     }
