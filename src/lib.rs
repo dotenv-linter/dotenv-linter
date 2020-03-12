@@ -1,15 +1,16 @@
 use crate::common::*;
 use clap::Arg;
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Error};
+use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 
 mod checks;
 mod common;
 
-fn new_app<'a, 'b>() -> clap::App<'a, 'b> {
+fn get_args<'a>() -> clap::ArgMatches<'a> {
     clap::App::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -42,109 +43,76 @@ fn new_app<'a, 'b>() -> clap::App<'a, 'b> {
                 .multiple(false)
                 .takes_value(true),
         )
+        .get_matches()
 }
 
-#[derive(Debug)]
-pub struct DotenvLinter<'a> {
-    args: clap::ArgMatches<'a>,
+pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
+    let args = get_args();
+
+    let dir_path = match args.value_of("path") {
+        Some(path) => PathBuf::from(path),
+        None => env::current_dir()?,
+    };
+
+    let files = dotenv_files(args, dir_path)?;
+    let mut warnings: Vec<Warning> = Vec::new();
+
+    for file in files {
+        let f = File::open(&file.path)?;
+        let reader = BufReader::new(f);
+
+        // TODO: Initialize a vector with a capacity equal to the number of lines
+        let mut lines: Vec<LineEntry> = Vec::new();
+        for (index, line) in reader.lines().enumerate() {
+            let number = index + 1;
+            let raw_string = line?;
+
+            lines.push(LineEntry {
+                file_name: file.file_name.clone(),
+                number,
+                raw_string,
+            })
+        }
+
+        let result = checks::run(lines);
+        warnings.extend(result);
+    }
+
+    Ok(warnings)
 }
 
-pub fn new<'a>() -> DotenvLinter<'a> {
-    DotenvLinter {
-        args: new_app().get_matches(),
-    }
-}
+/// Returns `Result<Vec<FileEntry>` of files with the the `.env` prefix
+#[allow(clippy::redundant_closure)]
+fn dotenv_files(
+    args: clap::ArgMatches,
+    dir_path: PathBuf,
+) -> Result<Vec<FileEntry>, Box<dyn Error>> {
+    let entries = dir_path.read_dir()?;
 
-impl<'a> DotenvLinter<'a> {
-    pub fn run(&self) -> Result<Vec<Warning>, Error> {
-        let dir_path = match self.args.value_of("path") {
-            Some(path) => PathBuf::from(path),
-            None => env::current_dir()?,
-        };
+    let mut paths: Vec<FileEntry> = entries
+        .filter_map(|e| e.ok())
+        .filter_map(|e| FileEntry::from(e.path()))
+        .filter(|f| f.is_env_file())
+        .collect();
 
-        let files = self.dotenv_files(dir_path)?;
-
-        let mut warnings: Vec<Warning> = Vec::new();
-        for file in files {
-            let f = File::open(&file.path)?;
-            let reader = BufReader::new(f);
-
-            // TODO: Initialize a vector with a capacity equal to the number of lines
-            let mut lines: Vec<LineEntry> = Vec::new();
-            for (index, line) in reader.lines().enumerate() {
-                let number = index + 1;
-                let raw_string = line?;
-
-                lines.push(LineEntry {
-                    file_name: file.file_name.clone(),
-                    number,
-                    raw_string,
-                })
-            }
-
-            let result = checks::run(lines);
-            warnings.extend(result);
-        }
-
-        Ok(warnings)
+    // Adds files to paths if they should be included
+    if let Some(included) = args.values_of("include") {
+        included
+            .filter_map(|f| fs::canonicalize(f).ok())
+            .filter_map(|p| FileEntry::from(p))
+            .for_each(|f| paths.push(f));
     }
 
-    /// Returns `Result<Vec<FileEntry>` of files with the the `.env` prefix
-    #[allow(clippy::redundant_closure)]
-    fn dotenv_files(&self, dir_path: PathBuf) -> Result<Vec<FileEntry>, Error> {
-        let entries = dir_path.read_dir()?;
+    // Removes files from paths if they should be excluded
+    if let Some(excluded) = args.values_of("exclude") {
+        let excluded_paths: Vec<PathBuf> =
+            excluded.filter_map(|f| fs::canonicalize(f).ok()).collect();
 
-        let mut paths: Vec<FileEntry> = entries
-            .filter_map(|e| e.ok())
-            .filter_map(|e| FileEntry::from(e.path()))
-            .filter(|f| f.is_env_file())
-            .collect();
-
-        // Adds files to paths if they should be included
-        if let Some(included) = self.args.values_of("include") {
-            included
-                .filter_map(|f| fs::canonicalize(f).ok())
-                .filter_map(|p| FileEntry::from(p))
-                .for_each(|f| paths.push(f));
-        }
-
-        // Removes files from paths if they should be excluded
-        if let Some(excluded) = self.args.values_of("exclude") {
-            let excluded_paths: Vec<PathBuf> =
-                excluded.filter_map(|f| fs::canonicalize(f).ok()).collect();
-
-            paths.retain(|f| !excluded_paths.contains(&f.path));
-        }
-
-        paths.sort();
-        paths.dedup();
-
-        Ok(paths)
+        paths.retain(|f| !excluded_paths.contains(&f.path));
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+    paths.sort();
+    paths.dedup();
 
-    mod args {
-        use super::*;
-
-        mod path {
-            use super::*;
-            use std::io::ErrorKind;
-
-            #[test]
-            fn file_not_found() {
-                let linter = DotenvLinter {
-                    args: new_app().get_matches_from(vec!["dotenv-linter", "-p", "/foo"]),
-                };
-
-                let result = linter.run();
-                assert!(result.is_err());
-                // Err(Os { code: 2, kind: NotFound, message: "No such file or directory" })
-                assert_eq!(result.unwrap_err().kind(), ErrorKind::NotFound);
-            }
-        }
-    }
+    Ok(paths)
 }

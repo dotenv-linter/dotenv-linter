@@ -9,7 +9,6 @@ license = "MIT"
 readme = "README.md"
 keywords = ["environment", "env", "dotenv", "linter", "lint"]
 categories = ["command-line-utilities"]
-maintenance = { status = "actively-developed" }
 
 [dependencies]
 clap = "2.33.0"
