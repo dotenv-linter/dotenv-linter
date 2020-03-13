@@ -11,13 +11,13 @@
 
 ```shell script
 # Linux
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.1/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf - 
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf - 
 
 # Alpine Linux
-$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.1/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.1/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ### Homebrew / Linuxbrew
@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Run dotenv-linter
           command: |
-            DOTENV_LINTER_VERSION=v1.1.1
+            DOTENV_LINTER_VERSION=v1.1.2
             wget https://github.com/mgrachev/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
             -O - -q | tar -xzf -
             ./dotenv-linter

@@ -8,11 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+
+## [v1.1.2] - 2020-03-13
+### 🔧 Changed
+- Fix --path CLI parameter not canonizing filepaths from directory path passed as argument and not working as intended as a result [#97](https://github.com/mgrachev/dotenv-linter/pull/97) ([@pineapplethief](https://github.com/pineapplethief))
+- Fix incorrect delimiter check for keys contains numeric [#95](https://github.com/mgrachev/dotenv-linter/pull/95) ([@alter369](https://github.com/alter369))
 - Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run` [#94](https://github.com/mgrachev/dotenv-linter/pull/94) ([@pineapplethief](https://github.com/pineapplethief))
 - Refactor `Github Actions` and reduce `Docker Image size` [#90](https://github.com/mgrachev/dotenv-linter/pull/90) ([@Macbet](https://github.com/Macbet))
 - Use `Line.get_key` in all checks [#89](https://github.com/mgrachev/dotenv-linter/pull/89) ([@pineapplethief](https://github.com/pineapplethief))
-- Fix incorrect delimiter check for keys contains numeric [#95](https://github.com/mgrachev/dotenv-linter/pull/95) ([@alter369](https://github.com/alter369))
-- Fix --path CLI parameter not canonizing filepaths from directory path passed as argument and not working as intended as a result. [#97](https://github.com/mgrachev/dotenv-linter/pull/97) ([@pineapplethief](https://github.com/pineapplethief))
 
 ## [v1.1.1] - 2020-02-18
 ### 🔧 Changed
@@ -46,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/mgrachev/dotenv-linter/pull/26)
 - Prepare a template for easy adding new checks [#14](https://github.com/mgrachev/dotenv-linter/pull/14)
 
+[v1.1.2]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.2
 [v1.1.1]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.1
 [v1.1.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.0
 [v1.0.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.0.0
