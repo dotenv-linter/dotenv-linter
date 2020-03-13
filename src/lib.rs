@@ -91,7 +91,8 @@ fn dotenv_files(
 
     let mut paths: Vec<FileEntry> = entries
         .filter_map(|e| e.ok())
-        .filter_map(|e| FileEntry::from(e.path()))
+        .filter_map(|f| fs::canonicalize(f.path()).ok())
+        .filter_map(|p| FileEntry::from(p))
         .filter(|f| f.is_env_file())
         .collect();
 

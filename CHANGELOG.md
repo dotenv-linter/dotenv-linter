@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactor `Github Actions` and reduce `Docker Image size` [#90](https://github.com/mgrachev/dotenv-linter/pull/90) ([@Macbet](https://github.com/Macbet))
 - Use `Line.get_key` in all checks [#89](https://github.com/mgrachev/dotenv-linter/pull/89) ([@pineapplethief](https://github.com/pineapplethief))
 - Fix incorrect delimiter check for keys contains numeric [#95](https://github.com/mgrachev/dotenv-linter/pull/95) ([@alter369](https://github.com/alter369))
+- Fix --path CLI parameter not canonizing filepaths from directory path passed as argument and not working as intended as a result. [#97](https://github.com/mgrachev/dotenv-linter/pull/97) ([@pineapplethief](https://github.com/pineapplethief))
 
 ## [v1.1.1] - 2020-02-18
 ### 🔧 Changed
