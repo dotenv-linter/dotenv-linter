@@ -55,6 +55,7 @@ fn get_args(current_dir: &str) -> clap::ArgMatches {
         .get_matches()
 }
 
+#[allow(clippy::redundant_closure)]
 pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     let current_dir = match env::current_dir() {
         Ok(dir) => dir,
@@ -78,7 +79,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         files = inputs
             .filter_map(|s| fs::canonicalize(s).ok())
             .filter(|p| p.is_file())
-            .filter_map(|p| FileEntry::from(p.to_path_buf()))
+            .filter_map(|p| FileEntry::from(p))
             .collect();
     }
 

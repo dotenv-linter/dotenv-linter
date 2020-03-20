@@ -71,6 +71,7 @@ impl Check for ExampleChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn working_run() {

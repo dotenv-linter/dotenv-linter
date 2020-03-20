@@ -30,6 +30,7 @@ impl Check for SpacesAroundEqualChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     const MESSAGE: &str = "The line has spaces around equal sign";
 

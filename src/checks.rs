@@ -49,6 +49,7 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn run_with_empty_vec_test() {

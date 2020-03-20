@@ -29,6 +29,7 @@ impl Check for KeyWithoutValueChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn working_run_with_value() {

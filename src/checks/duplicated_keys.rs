@@ -31,6 +31,7 @@ impl Check for DuplicatedKeysChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     fn run_duplicated_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = DuplicatedKeysChecker::default();
