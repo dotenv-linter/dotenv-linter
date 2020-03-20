@@ -33,7 +33,7 @@ mod tests {
         let mut checker = LowercaseKeyChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(line));
@@ -44,7 +44,7 @@ mod tests {
         let mut checker = LowercaseKeyChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("foo_bar=FOOBAR"),
         };
         let expected = Some(Warning::new(
@@ -59,7 +59,7 @@ mod tests {
         let mut checker = LowercaseKeyChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOo_BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(

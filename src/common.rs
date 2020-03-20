@@ -1,4 +1,3 @@
-use std::env;
 use std::fmt;
 use std::path::PathBuf;
 
@@ -19,7 +18,9 @@ impl fmt::Display for Warning {
         write!(
             f,
             "{}:{} {}",
-            self.line.file_name, self.line.number, self.message
+            self.line.file_path.display(),
+            self.line.number,
+            self.message
         )
     }
 }
@@ -33,9 +34,16 @@ pub struct FileEntry {
 impl FileEntry {
     /// Converts `PathBuf` to `FileEntry`
     pub fn from(path: PathBuf) -> Option<Self> {
-        let pwd = env::current_dir().ok()?;
-        let p = path.strip_prefix(pwd).ok()?;
-        let file_name = p.to_str()?.to_string();
+        let file_name = match path.file_name() {
+            Some(s) => s,
+            None => return None,
+        };
+
+        let file_name = match file_name.to_str() {
+            Some(s) => s.to_string(),
+            None => return None,
+        };
+
         Some(FileEntry { path, file_name })
     }
 
@@ -49,7 +57,7 @@ impl FileEntry {
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
     pub number: usize,
-    pub file_name: String,
+    pub file_path: PathBuf,
     pub raw_string: String,
 }
 
@@ -80,7 +88,7 @@ mod tests {
     fn warning_fmt_test() {
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
         let warning = Warning::new(line, String::from("The FOO key is duplicated"));
@@ -102,24 +110,8 @@ mod tests {
 
             #[test]
             fn path_with_file_test() {
-                let result = env::current_dir();
-                assert!(result.is_ok());
-
-                let current_dir = result.unwrap();
-                let path = current_dir.join(".env");
+                let path = PathBuf::from(".env");
                 let file_name = String::from(".env");
-                let f = FileEntry::from(path.clone());
-                assert_eq!(Some(FileEntry { path, file_name }), f);
-            }
-
-            #[test]
-            fn path_with_nested_file_test() {
-                let result = env::current_dir();
-                assert!(result.is_ok());
-
-                let current_dir = result.unwrap();
-                let path = current_dir.join("test/.env");
-                let file_name = String::from("test/.env");
                 let f = FileEntry::from(path.clone());
                 assert_eq!(Some(FileEntry { path, file_name }), f);
             }
@@ -165,7 +157,7 @@ mod tests {
             fn run_with_empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from(""),
                 };
 
@@ -176,7 +168,7 @@ mod tests {
             fn run_with_comment_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("# Comment"),
                 };
 
@@ -187,7 +179,7 @@ mod tests {
             fn run_with_not_comment_or_empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("NotComment"),
                 };
 
@@ -202,7 +194,7 @@ mod tests {
             fn empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from(""),
                 };
                 let expected = None;
@@ -214,7 +206,7 @@ mod tests {
             fn correct_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 };
                 let expected = Some(String::from("FOO"));
@@ -226,7 +218,7 @@ mod tests {
             fn line_without_value_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO="),
                 };
                 let expected = Some(String::from("FOO"));
@@ -238,7 +230,7 @@ mod tests {
             fn missing_value_and_equal_sign_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOOBAR"),
                 };
                 let expected = None;
