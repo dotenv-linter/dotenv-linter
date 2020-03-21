@@ -71,13 +71,14 @@ impl Check for ExampleChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn working_run() {
         let mut checker = ExampleChecker::default();
         let line = &LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(line));
@@ -88,7 +89,7 @@ mod tests {
         let mut checker = ExampleChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("EXAMPLE=true"),
         };
         let expected = Some(Warning::new(line.clone(), String::from("Example detected")));

@@ -20,8 +20,7 @@ impl Check for DuplicatedKeysChecker {
         let key = line.get_key()?;
 
         if self.keys.contains(&key) {
-            let warning = Warning::new(line, self.template.replace("{}", &key));
-            return Some(warning);
+            return Some(Warning::new(line, self.template.replace("{}", &key)));
         }
 
         self.keys.push(key);
@@ -32,6 +31,7 @@ impl Check for DuplicatedKeysChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     fn run_duplicated_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = DuplicatedKeysChecker::default();
@@ -48,7 +48,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -56,13 +56,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
                     String::from("The FOO key is duplicated"),
@@ -79,7 +79,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -87,7 +87,7 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 None,
@@ -103,7 +103,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -111,13 +111,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
                     String::from("The FOO key is duplicated"),
@@ -126,7 +126,7 @@ mod tests {
             (
                 LineEntry {
                     number: 3,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 None,
@@ -134,13 +134,13 @@ mod tests {
             (
                 LineEntry {
                     number: 4,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 4,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
                     String::from("The BAR key is duplicated"),
@@ -157,7 +157,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -165,13 +165,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
                     String::from("The FOO key is duplicated"),
@@ -180,7 +180,7 @@ mod tests {
             (
                 LineEntry {
                     number: 3,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 None,

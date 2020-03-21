@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- New CLI API: Ability to check multiple directories [#99](https://github.com/mgrachev/dotenv-linter/pull/99)
 
 ## [v1.1.2] - 2020-03-13
 ### 🔧 Changed

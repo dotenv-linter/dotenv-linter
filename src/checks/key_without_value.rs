@@ -29,13 +29,14 @@ impl Check for KeyWithoutValueChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn working_run_with_value() {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(line));
@@ -46,7 +47,7 @@ mod tests {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO="),
         };
         assert_eq!(None, checker.run(line));
@@ -57,7 +58,7 @@ mod tests {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO"),
         };
         let expected = Some(Warning::new(

@@ -49,6 +49,7 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn run_with_empty_vec_test() {
@@ -62,7 +63,7 @@ mod tests {
     fn run_with_empty_line_test() {
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from(""),
         };
 
@@ -76,7 +77,7 @@ mod tests {
     fn run_with_comment_line_test() {
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("# Comment"),
         };
 
@@ -90,7 +91,7 @@ mod tests {
     fn run_with_valid_line_test() {
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
 
@@ -104,7 +105,7 @@ mod tests {
     fn run_with_invalid_line_test() {
         let line = LineEntry {
             number: 1,
-            file_name: String::from(".env"),
+            file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO"),
         };
         let warning = Warning::new(

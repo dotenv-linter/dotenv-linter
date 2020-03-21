@@ -48,6 +48,7 @@ impl Check for UnorderedKeysChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     fn run_unordered_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = UnorderedKeysChecker::default();
@@ -63,7 +64,7 @@ mod tests {
         let asserts = vec![(
             LineEntry {
                 number: 1,
-                file_name: String::from(".env"),
+                file_path: PathBuf::from(".env"),
                 raw_string: String::from("FOO=BAR"),
             },
             None,
@@ -78,7 +79,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 None,
@@ -86,7 +87,7 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -102,7 +103,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -110,13 +111,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
                     String::from("The BAR key should go before the FOO key"),
@@ -133,7 +134,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -141,13 +142,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
                     String::from("The BAR key should go before the FOO key"),
@@ -156,13 +157,13 @@ mod tests {
             (
                 LineEntry {
                     number: 3,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("ABC=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 3,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("ABC=BAR"),
                     },
                     String::from("The ABC key should go before the BAR key"),
@@ -179,7 +180,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -187,13 +188,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
                     String::from("The BAR key should go before the FOO key"),
@@ -202,13 +203,13 @@ mod tests {
             (
                 LineEntry {
                     number: 3,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("DDD=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 3,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("DDD=BAR"),
                     },
                     String::from("The DDD key should go before the FOO key"),
@@ -225,7 +226,7 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -233,13 +234,13 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("BAR=FOO"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
                     String::from("The BAR key should go before the FOO key"),
@@ -248,13 +249,13 @@ mod tests {
             (
                 LineEntry {
                     number: 3,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("DDD=BAR"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 3,
-                        file_name: String::from(".env"),
+                        file_path: PathBuf::from(".env"),
                         raw_string: String::from("DDD=BAR"),
                     },
                     String::from("The DDD key should go before the FOO key"),
@@ -263,7 +264,7 @@ mod tests {
             (
                 LineEntry {
                     number: 3,
-                    file_name: String::from(".env"),
+                    file_path: PathBuf::from(".env"),
                     raw_string: String::from("ZOO=BAR"),
                 },
                 None,
