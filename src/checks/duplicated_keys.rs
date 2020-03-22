@@ -1,15 +1,16 @@
 use crate::checks::Check;
 use crate::common::*;
+use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeysChecker {
     template: String,
-    keys: Vec<String>,
+    keys: HashSet<String>,
 }
 
 impl Default for DuplicatedKeysChecker {
     fn default() -> Self {
         Self {
-            keys: Vec::new(),
+            keys: HashSet::new(),
             template: String::from("The {} key is duplicated"),
         }
     }
@@ -23,7 +24,7 @@ impl Check for DuplicatedKeysChecker {
             return Some(Warning::new(line, self.template.replace("{}", &key)));
         }
 
-        self.keys.push(key);
+        self.keys.insert(key);
         None
     }
 }
