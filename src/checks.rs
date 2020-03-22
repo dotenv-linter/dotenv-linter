@@ -36,7 +36,6 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
         }
 
         for ch in &mut checks {
-            // TODO: Use a reference instead of the clone method
             if let Some(warning) = ch.run(&line) {
                 warnings.push(warning);
             }
