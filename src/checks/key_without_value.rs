@@ -14,7 +14,7 @@ impl Default for KeyWithoutValueChecker {
 }
 
 impl Check for KeyWithoutValueChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if !line.raw_string.contains('=') {
             Some(Warning::new(
                 line.clone(),
@@ -39,7 +39,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -50,7 +50,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO="),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -65,6 +65,6 @@ mod tests {
             line.clone(),
             String::from("The FOO key should be with a value or have an equal sign"),
         ));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 }
