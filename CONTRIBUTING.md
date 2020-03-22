@@ -54,10 +54,10 @@ impl Default for ExampleChecker {
 }
 
 impl Check for ExampleChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         // Write your check logic here...
         if line.raw_string.starts_with("EXAMPLE") {
-            Some(Warning::new(line, self.template.clone()))
+            Some(Warning::new(line.clone(), self.template.clone()))
         } else {
             None
         }
@@ -93,7 +93,7 @@ mod tests {
             raw_string: String::from("EXAMPLE=true"),
         };
         let expected = Some(Warning::new(line.clone(), String::from("Example detected")));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 }
 ```

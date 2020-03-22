@@ -17,11 +17,14 @@ impl Default for DuplicatedKeysChecker {
 }
 
 impl Check for DuplicatedKeysChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
 
         if self.keys.contains(&key) {
-            return Some(Warning::new(line, self.template.replace("{}", &key)));
+            return Some(Warning::new(
+                line.clone(),
+                self.template.replace("{}", &key),
+            ));
         }
 
         self.keys.insert(key);
@@ -39,7 +42,7 @@ mod tests {
 
         for assert in asserts {
             let (input, output) = assert;
-            assert_eq!(checker.run(input), output);
+            assert_eq!(checker.run(&input), output);
         }
     }
 
