@@ -7,11 +7,12 @@ use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
+use std::ffi::OsStr;
 
 mod checks;
 mod common;
 
-fn get_args(current_dir: &str) -> clap::ArgMatches {
+fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
     clap::App::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -21,7 +22,7 @@ fn get_args(current_dir: &str) -> clap::ArgMatches {
             Arg::with_name("input")
                 .help("files or paths")
                 .index(1)
-                .default_value(current_dir)
+                .default_value(current_dir.to_str().unwrap())
                 .required(true)
                 .multiple(true),
         )
@@ -44,7 +45,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         Err(e) => return Err(Box::new(e)),
     };
 
-    let current_dir = current_dir.to_str().unwrap();
+    let current_dir = current_dir.as_os_str();
 
     let args = get_args(current_dir);
 
