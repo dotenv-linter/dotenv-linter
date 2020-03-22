@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Use reference for the LineEntry as part of the run method for checks [#111](https://github.com/mgrachev/dotenv-linter/pull/111)
 - New CLI API: Ability to check multiple directories [#99](https://github.com/mgrachev/dotenv-linter/pull/99)
 
 ## [v1.1.2] - 2020-03-13
