@@ -3,11 +3,11 @@ use crate::common::*;
 use clap::Arg;
 use std::env;
 use std::error::Error;
+use std::ffi::OsStr;
 use std::fs;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
-use std::ffi::OsStr;
 
 mod checks;
 mod common;
