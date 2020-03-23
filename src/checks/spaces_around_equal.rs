@@ -14,12 +14,12 @@ impl Default for SpacesAroundEqualChecker {
 }
 
 impl Check for SpacesAroundEqualChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let line_splitted = line.raw_string.split('=').collect::<Vec<&str>>();
 
         if let [key, value] = &line_splitted[..] {
             if key.ends_with(' ') || value.starts_with(' ') {
-                return Some(Warning::new(line, self.template.clone()));
+                return Some(Warning::new(line.clone(), self.template.clone()));
             }
         }
 
@@ -42,7 +42,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("DEBUG_HTTP=true"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -53,7 +53,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from(" DEBUG_HTTP=true"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -64,7 +64,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("DEBUG_HTTP=true "),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -75,7 +75,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from(""),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -86,7 +86,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("DEBUG_HTTP true"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -98,7 +98,7 @@ mod tests {
             raw_string: String::from("DEBUG-HTTP = true"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -110,7 +110,7 @@ mod tests {
             raw_string: String::from("DEBUG-HTTP =true"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -122,6 +122,6 @@ mod tests {
             raw_string: String::from("DEBUG-HTTP= true"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 }

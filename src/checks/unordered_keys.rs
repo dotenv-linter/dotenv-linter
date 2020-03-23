@@ -16,7 +16,7 @@ impl Default for UnorderedKeysChecker {
 }
 
 impl Check for UnorderedKeysChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         self.keys.push(key.clone());
         let mut sorted_keys = self.keys.clone();
@@ -28,7 +28,7 @@ impl Check for UnorderedKeysChecker {
             let another_key = sorted_keys.get(index + 1)?.clone();
 
             let warning = Warning::new(
-                line,
+                line.clone(),
                 self.template
                     .replace("{1}", &key)
                     .replace("{2}", &another_key),
@@ -50,7 +50,7 @@ mod tests {
 
         for assert in asserts {
             let (input, output) = assert;
-            assert_eq!(checker.run(input), output);
+            assert_eq!(checker.run(&input), output);
         }
     }
 
