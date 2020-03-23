@@ -14,8 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New CLI API: Ability to check multiple directories [#99](https://github.com/mgrachev/dotenv-linter/pull/99)
 - Add exit with the code 0 when there are no warnings [#105](https://github.com/mgrachev/dotenv-linter/pull/105) ([@simPod](https://github.com/simPod))
 
-
-
 ## [v1.1.2] - 2020-03-13
 ### 🔧 Changed
 - Fix --path CLI parameter not canonizing filepaths from directory path passed as argument and not working as intended as a result [#97](https://github.com/mgrachev/dotenv-linter/pull/97) ([@pineapplethief](https://github.com/pineapplethief))
