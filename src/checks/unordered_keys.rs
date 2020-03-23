@@ -25,12 +25,7 @@ impl Check for UnorderedKeysChecker {
         if !sorted_keys.eq(&self.keys) {
             let index = sorted_keys.iter().position(|p| p == &key)?;
 
-            if (index + 1) >= sorted_keys.len() {
-                // If the vectors are not equal, but the key is the last element
-                return None;
-            }
-
-            let another_key = sorted_keys[index + 1].clone();
+            let another_key = sorted_keys.get(index + 1)?;
 
             let warning = Warning::new(
                 line.clone(),
