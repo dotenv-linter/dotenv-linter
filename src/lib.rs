@@ -22,7 +22,7 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
             Arg::with_name("input")
                 .help("files or paths")
                 .index(1)
-                .default_value(current_dir.to_str().unwrap())
+                .default_value_os(current_dir)
                 .required(true)
                 .multiple(true),
         )
