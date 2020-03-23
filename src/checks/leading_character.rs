@@ -14,14 +14,14 @@ impl Default for LeadingCharacterChecker {
 }
 
 impl Check for LeadingCharacterChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if line
             .raw_string
             .starts_with(|c: char| c.is_alphabetic() || c == '_')
         {
             None
         } else {
-            Some(Warning::new(line, self.template.clone()))
+            Some(Warning::new(line.clone(), self.template.clone()))
         }
     }
 }
@@ -41,7 +41,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -52,7 +52,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("_FOO=BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -65,7 +65,7 @@ mod tests {
         };
         assert_eq!(
             Some(Warning::new(line.clone(), MESSAGE.to_string())),
-            checker.run(line)
+            checker.run(&line)
         );
     }
 
@@ -79,7 +79,7 @@ mod tests {
         };
         assert_eq!(
             Some(Warning::new(line.clone(), MESSAGE.to_string())),
-            checker.run(line)
+            checker.run(&line)
         );
     }
 
@@ -93,7 +93,7 @@ mod tests {
         };
         assert_eq!(
             Some(Warning::new(line.clone(), MESSAGE.to_string())),
-            checker.run(line)
+            checker.run(&line)
         );
     }
 
@@ -106,7 +106,7 @@ mod tests {
             raw_string: String::from(" FOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -118,7 +118,7 @@ mod tests {
             raw_string: String::from("  FOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -130,6 +130,6 @@ mod tests {
             raw_string: String::from("\tFOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 }

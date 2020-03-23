@@ -256,18 +256,14 @@ fn checks_one_specific_file_twice() {
 }
 
 #[test]
-fn checks_success_code() {
+fn exits_with_0_on_no_errors() {
     let current_dir = tempdir().unwrap();
     let file_path = current_dir.path().join(".env");
     let mut file = File::create(&file_path).unwrap();
-    writeln!(file, "FOO=BAR").unwrap();
-    println!("{:?}", current_dir);
+    writeln!(file, "FOO=bar").unwrap();
+
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.current_dir(&current_dir)
-        .assert()
-        .success()
-        .code(0)
-        .stdout(format!(""));
+    cmd.current_dir(&current_dir).assert().success();
 
     drop(file);
     current_dir.close().unwrap();

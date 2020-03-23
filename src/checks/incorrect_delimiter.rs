@@ -14,10 +14,13 @@ impl Default for IncorrectDelimiterChecker {
 }
 
 impl Check for IncorrectDelimiterChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
-            return Some(Warning::new(line, self.template.replace("{}", &key)));
+            return Some(Warning::new(
+                line.clone(),
+                self.template.replace("{}", &key),
+            ));
         }
 
         None
@@ -37,7 +40,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO_BAR=FOOBAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -48,7 +51,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("F1OO=BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -63,7 +66,7 @@ mod tests {
             line.clone(),
             String::from("The FOO-BAR key has incorrect delimiter"),
         ));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -78,7 +81,7 @@ mod tests {
             line.clone(),
             String::from("The FOO BAR key has incorrect delimiter"),
         ));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -89,7 +92,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO-BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -100,7 +103,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from(" FOO=FOOBAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -111,7 +114,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO_BAR =FOOBAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -122,7 +125,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from(""),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -133,6 +136,6 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("F=BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 }

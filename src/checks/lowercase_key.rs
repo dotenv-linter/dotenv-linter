@@ -14,12 +14,15 @@ impl Default for LowercaseKeyChecker {
 }
 
 impl Check for LowercaseKeyChecker {
-    fn run(&mut self, line: LineEntry) -> Option<Warning> {
+    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line, self.template.replace("{}", &key)))
+            Some(Warning::new(
+                line.clone(),
+                self.template.replace("{}", &key),
+            ))
         }
     }
 }
@@ -37,7 +40,7 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
-        assert_eq!(None, checker.run(line));
+        assert_eq!(None, checker.run(&line));
     }
 
     #[test]
@@ -52,7 +55,7 @@ mod tests {
             line.clone(),
             String::from("The foo_bar key should be in uppercase"),
         ));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -67,6 +70,6 @@ mod tests {
             line.clone(),
             String::from("The FOo_BAR key should be in uppercase"),
         ));
-        assert_eq!(expected, checker.run(line));
+        assert_eq!(expected, checker.run(&line));
     }
 }
