@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Added check name to lowercase check warning [#124](https://github.com/mgrachev/dotenv-linter/pull/131)
 
 ### 🔧 Changed
 - Replaced kcov with grcov in Github Actions [#143](https://github.com/mgrachev/dotenv-linter/pull/143) ([@pmk21](https://github.com/pmk21))
