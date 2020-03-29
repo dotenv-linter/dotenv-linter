@@ -8,7 +8,7 @@ pub(crate) struct LowercaseKeyChecker {
 impl Default for LowercaseKeyChecker {
     fn default() -> Self {
         Self {
-            template: String::from("The {} key should be in uppercase"),
+            template: String::from("LowercaseKey: The {} key should be in uppercase"),
         }
     }
 }
@@ -53,7 +53,7 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("The foo_bar key should be in uppercase"),
+            String::from("LowercaseKey: The foo_bar key should be in uppercase"),
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -68,7 +68,7 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("The FOo_BAR key should be in uppercase"),
+            String::from("LowercaseKey: The FOo_BAR key should be in uppercase"),
         ));
         assert_eq!(expected, checker.run(&line));
     }
