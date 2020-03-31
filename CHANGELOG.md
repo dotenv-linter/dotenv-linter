@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Renamed check SpacesAroundEqual to SpaceCharacter [#134](https://github.com/mgrachev/dotenv-linter/pull/134) ([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 
 ### 🔧 Changed
 - Minimizing Rust Binary Size [#132](https://github.com/mgrachev/dotenv-linter/pull/132) ([@akirill0v](https://github.com/akirill0v))
