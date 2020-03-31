@@ -6,9 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
-- Renamed check SpacesAroundEqual to SpaceCharacter [#134](https://github.com/mgrachev/dotenv-linter/pull/134) ([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 
 ### 🔧 Changed
+- Renamed check SpacesAroundEqual to SpaceCharacter [#134](https://github.com/mgrachev/dotenv-linter/pull/134) ([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 - Rename check DuplicatedKeys to DuplicatedKey [#133](https://github.com/mgrachev/dotenv-linter/pull/133) ([@sonro](https://github.com/sonro))
 - Minimizing Rust Binary Size [#132](https://github.com/mgrachev/dotenv-linter/pull/132) ([@akirill0v](https://github.com/akirill0v))
 - Remove the unwrap method and use platform native OsString to fetch the information about current directory [#115](https://github.com/mgrachev/dotenv-linter/pull/115) ([@kanapuli](https://github.com/kanapuli))
