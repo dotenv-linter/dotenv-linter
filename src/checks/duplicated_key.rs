@@ -2,12 +2,12 @@ use crate::checks::Check;
 use crate::common::*;
 use std::collections::HashSet;
 
-pub(crate) struct DuplicatedKeysChecker {
+pub(crate) struct DuplicatedKeyChecker {
     template: String,
     keys: HashSet<String>,
 }
 
-impl Default for DuplicatedKeysChecker {
+impl Default for DuplicatedKeyChecker {
     fn default() -> Self {
         Self {
             keys: HashSet::new(),
@@ -16,7 +16,7 @@ impl Default for DuplicatedKeysChecker {
     }
 }
 
-impl Check for DuplicatedKeysChecker {
+impl Check for DuplicatedKeyChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
 
@@ -38,7 +38,7 @@ mod tests {
     use std::path::PathBuf;
 
     fn run_duplicated_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
-        let mut checker = DuplicatedKeysChecker::default();
+        let mut checker = DuplicatedKeyChecker::default();
 
         for assert in asserts {
             let (input, output) = assert;

@@ -135,7 +135,7 @@ $ dotenv-linter -p /directory/where/to/run
 
 ## ✅ Checks
 
-### Duplicated Keys
+### Duplicated Key
 
 Detects if a key is not unique:
 
