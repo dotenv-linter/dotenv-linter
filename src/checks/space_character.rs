@@ -1,11 +1,11 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct SpacesAroundEqualChecker {
+pub(crate) struct SpaceCharacterChecker {
     template: String,
 }
 
-impl Default for SpacesAroundEqualChecker {
+impl Default for SpaceCharacterChecker {
     fn default() -> Self {
         Self {
             template: String::from("The line has spaces around equal sign"),
@@ -13,7 +13,7 @@ impl Default for SpacesAroundEqualChecker {
     }
 }
 
-impl Check for SpacesAroundEqualChecker {
+impl Check for SpaceCharacterChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let line_splitted = line.raw_string.split('=').collect::<Vec<&str>>();
 
@@ -36,7 +36,7 @@ mod tests {
 
     #[test]
     fn working_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -47,7 +47,7 @@ mod tests {
 
     #[test]
     fn working_leading_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn working_trailing_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -69,7 +69,7 @@ mod tests {
 
     #[test]
     fn working_empty_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -80,7 +80,7 @@ mod tests {
 
     #[test]
     fn working_no_equal_sign_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -91,7 +91,7 @@ mod tests {
 
     #[test]
     fn failing_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -103,7 +103,7 @@ mod tests {
 
     #[test]
     fn failing_when_whitespace_before_equal_sign_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),
@@ -115,7 +115,7 @@ mod tests {
 
     #[test]
     fn failing_when_whitespace_after_equal_sign_run() {
-        let mut checker = SpacesAroundEqualChecker::default();
+        let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
             file_path: PathBuf::from(".env"),

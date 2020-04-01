@@ -213,7 +213,7 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### Spaces around equal sign
+### Space character
 
 Detects lines with a whitespace around equal sign character `=`:
 
@@ -253,7 +253,7 @@ FOO=BAR
   - [x] Keys without values;
   - [x] Leading character;
   - [x] Lowercase keys;
-  - [x] Spaces around equal sign;
+  - [x] Space character;
   - [x] Unordered keys;
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.
