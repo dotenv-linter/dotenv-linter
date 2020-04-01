@@ -231,7 +231,7 @@ FOO = BAR
 FOO=BAR
 ```
 
-### Unordered Keys
+### Unordered Key
 
 Detects if a key is not alphabetically ordered:
 
@@ -248,13 +248,13 @@ FOO=BAR
 ## 📋 Roadmap
 
 - [x] Add more checks:
-  - [x] Duplicated keys;
+  - [x] Duplicated key;
   - [x] Incorrect delimiter;
   - [x] Keys without values;
   - [x] Leading character;
   - [x] Lowercase keys;
   - [x] Space character;
-  - [x] Unordered keys;
+  - [x] Unordered key;
 - [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
 - [x] Create a GitHub Action for easily using `dotenv-linter`.
 
