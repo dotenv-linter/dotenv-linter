@@ -10,7 +10,7 @@ impl Default for UnorderedKeysChecker {
     fn default() -> Self {
         Self {
             keys: Vec::new(),
-            template: String::from("The {1} key should go before the {2} key"),
+            template: String::from("UnorderedKey: The {1} key should go before the {2} key"),
         }
     }
 }
@@ -115,7 +115,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The BAR key should go before the FOO key"),
+                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
                 )),
             ),
         ];
@@ -146,7 +146,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The BAR key should go before the FOO key"),
+                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
                 )),
             ),
             (
@@ -161,7 +161,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("ABC=BAR"),
                     },
-                    String::from("The ABC key should go before the BAR key"),
+                    String::from("UnorderedKey: The ABC key should go before the BAR key"),
                 )),
             ),
         ];
@@ -192,7 +192,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The BAR key should go before the FOO key"),
+                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
                 )),
             ),
             (
@@ -207,7 +207,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("DDD=BAR"),
                     },
-                    String::from("The DDD key should go before the FOO key"),
+                    String::from("UnorderedKey: The DDD key should go before the FOO key"),
                 )),
             ),
         ];
@@ -238,7 +238,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The BAR key should go before the FOO key"),
+                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
                 )),
             ),
             (
@@ -253,7 +253,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("DDD=BAR"),
                     },
-                    String::from("The DDD key should go before the FOO key"),
+                    String::from("UnorderedKey: The DDD key should go before the FOO key"),
                 )),
             ),
             (

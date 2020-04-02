@@ -215,7 +215,7 @@ fn checks_one_specific_file_and_one_path() {
         .failure()
         .code(1)
         .stdout(format!(
-            "{}/{}:2 The FOO key is duplicated\n{}:2 The BAR key should go before the FOO key\n",
+            "{}/{}:2 The FOO key is duplicated\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
             relative_path.to_str().unwrap(),
             file_path3.file_name().unwrap().to_str().unwrap(),
             file_path2.file_name().unwrap().to_str().unwrap(),
