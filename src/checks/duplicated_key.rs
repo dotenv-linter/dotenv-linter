@@ -11,7 +11,7 @@ impl Default for DuplicatedKeyChecker {
     fn default() -> Self {
         Self {
             keys: HashSet::new(),
-            template: String::from("The {} key is duplicated"),
+            template: String::from("DuplicatedKey: The {} key is duplicated"),
         }
     }
 }
@@ -69,7 +69,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The FOO key is duplicated"),
+                    String::from("DuplicatedKey: The FOO key is duplicated"),
                 )),
             ),
         ];
@@ -124,7 +124,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The FOO key is duplicated"),
+                    String::from("DuplicatedKey: The FOO key is duplicated"),
                 )),
             ),
             (
@@ -147,7 +147,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The BAR key is duplicated"),
+                    String::from("DuplicatedKey: The BAR key is duplicated"),
                 )),
             ),
         ];
@@ -178,7 +178,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The FOO key is duplicated"),
+                    String::from("DuplicatedKey: The FOO key is duplicated"),
                 )),
             ),
             (
