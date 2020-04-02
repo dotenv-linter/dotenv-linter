@@ -4,13 +4,27 @@ use crate::common::*;
 pub(crate) struct UnorderedKeysChecker {
     template: String,
     keys: Vec<String>,
+    name: String,
+}
+
+impl UnorderedKeysChecker {
+    fn message(&self, key_one: &str, key_two: &str) -> String {
+        return format!(
+            "{}: {}",
+            self.name,
+            self.template
+                .replace("{1}", key_one)
+                .replace("{2}", key_two)
+        );
+    }
 }
 
 impl Default for UnorderedKeysChecker {
     fn default() -> Self {
         Self {
             keys: Vec::new(),
-            template: String::from("UnorderedKey: The {1} key should go before the {2} key"),
+            name: String::from("UnorderedKey"),
+            template: String::from("The {1} key should go before the {2} key"),
         }
     }
 }
@@ -27,12 +41,7 @@ impl Check for UnorderedKeysChecker {
 
             let another_key = sorted_keys.get(index + 1)?;
 
-            let warning = Warning::new(
-                line.clone(),
-                self.template
-                    .replace("{1}", &key)
-                    .replace("{2}", &another_key),
-            );
+            let warning = Warning::new(line.clone(), self.message(&key, &another_key));
             return Some(warning);
         }
 
