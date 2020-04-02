@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- DuplicatedKey: Show check name in message [#138](https://github.com/mgrachev/dotenv-linter/pull/138)([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 - Add test coverage for CLI --exclude arguments [#135](https://github.com/mgrachev/dotenv-linter/pull/135) ([@sonro](https://github.com/sonro))
 - Renamed check SpacesAroundEqual to SpaceCharacter [#134](https://github.com/mgrachev/dotenv-linter/pull/134) ([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 - Rename check DuplicatedKeys to DuplicatedKey [#133](https://github.com/mgrachev/dotenv-linter/pull/133) ([@sonro](https://github.com/sonro))
