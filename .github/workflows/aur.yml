@@ -1,0 +1,29 @@
+name: aur
+
+on: # TODO: Only on release
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  aur-publish:
+    name: Publish to AUR
+    runs-on: ubuntu-latest
+    container: archlinux/base
+
+    steps:
+      - name: Publish
+        run: |
+          pacman -Sy --needed --noconfirm sudo git binutils && \
+          useradd builduser -m && \
+          su builduser -c "
+            cd ~ && \
+            git clone https://aur.archlinux.org/dotenv-linter-bin.git && \
+            cd dotenv-linter-bin && \
+            sed -i 's/pkgver=.*/pkgver=1.1.3/g' PKGBUILD && \
+            git status && \
+            git add . && \
+            git commit -m 'release VERSION' && \
+            git push origin master
+          "
