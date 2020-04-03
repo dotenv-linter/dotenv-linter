@@ -71,7 +71,7 @@ fn checks_one_specific_path() {
         .failure()
         .code(1)
         .stdout(format!(
-            "{}/{}:1 Invalid leading character detected\n",
+            "{}/{}:1 LeadingCharacter: Invalid leading character detected\n",
             relative_path.to_str().unwrap(),
             file_path2.file_name().unwrap().to_str().unwrap()
         ));
@@ -109,7 +109,7 @@ fn checks_two_specific_paths() {
         .failure()
         .code(1)
         .stdout(format!(
-            "{}/{}:1 Invalid leading character detected\n{}/{}/{}:1 Invalid leading character detected\n",
+            "{}/{}:1 LeadingCharacter: Invalid leading character detected\n{}/{}/{}:1 LeadingCharacter: Invalid leading character detected\n",
             relative_path1.to_str().unwrap(),
             file_path2.file_name().unwrap().to_str().unwrap(),
             relative_path1.to_str().unwrap(),
@@ -246,7 +246,7 @@ fn checks_one_specific_file_twice() {
         .failure()
         .code(1)
         .stdout(format!(
-            "{}:1 Invalid leading character detected\n",
+            "{}:1 LeadingCharacter: Invalid leading character detected\n",
             file_path2.file_name().unwrap().to_str().unwrap()
         ));
 
@@ -330,7 +330,7 @@ fn exclude_one_file_check_one_file() {
         .failure()
         .code(1)
         .stdout(format!(
-            "{}:1 Invalid leading character detected\n",
+            "{}:1 LeadingCharacter: Invalid leading character detected\n",
             file_to_check_path.file_name().unwrap().to_str().unwrap()
         ));
 

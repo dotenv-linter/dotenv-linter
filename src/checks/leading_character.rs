@@ -2,13 +2,13 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct LeadingCharacterChecker {
-    template: String,
+    template: &'static str,
 }
 
 impl Default for LeadingCharacterChecker {
     fn default() -> Self {
         Self {
-            template: String::from("Invalid leading character detected"),
+            template: "LeadingCharacter: Invalid leading character detected",
         }
     }
 }
@@ -21,7 +21,7 @@ impl Check for LeadingCharacterChecker {
         {
             None
         } else {
-            Some(Warning::new(line.clone(), self.template.clone()))
+            Some(Warning::new(line.clone(), self.template.to_string()))
         }
     }
 }
@@ -31,7 +31,7 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    const MESSAGE: &str = "Invalid leading character detected";
+    const MESSAGE: &str = "LeadingCharacter: Invalid leading character detected";
 
     #[test]
     fn normal() {
