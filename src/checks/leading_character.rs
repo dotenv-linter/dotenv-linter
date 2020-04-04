@@ -23,7 +23,10 @@ impl Check for LeadingCharacterChecker {
         {
             None
         } else {
-            Some(Warning::new(line.clone(), format!("{}: {}", self.name, self.template)))
+            Some(Warning::new(
+                line.clone(),
+                format!("{}: {}", self.name, self.template),
+            ))
         }
     }
 }
