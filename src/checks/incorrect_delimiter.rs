@@ -2,13 +2,15 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct IncorrectDelimiterChecker {
-    template: String,
+    name: &'static str,
+    template: &'static str,
 }
 
 impl Default for IncorrectDelimiterChecker {
     fn default() -> Self {
         Self {
-            template: String::from("The {} key has incorrect delimiter"),
+            name: "IncorrectDelimiter",
+            template: "The {} key has incorrect delimiter",
         }
     }
 }
@@ -19,7 +21,7 @@ impl Check for IncorrectDelimiterChecker {
         if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
             return Some(Warning::new(
                 line.clone(),
-                self.template.replace("{}", &key),
+                format!("{}: {}", self.name, self.template.replace("{}", &key)),
             ));
         }
 
@@ -64,7 +66,7 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("The FOO-BAR key has incorrect delimiter"),
+            String::from("IncorrectDelimiter: The FOO-BAR key has incorrect delimiter"),
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -79,7 +81,7 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("The FOO BAR key has incorrect delimiter"),
+            String::from("IncorrectDelimiter: The FOO BAR key has incorrect delimiter"),
         ));
         assert_eq!(expected, checker.run(&line));
     }
