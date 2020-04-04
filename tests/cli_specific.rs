@@ -13,7 +13,7 @@ fn checks_one_specific_path() {
 
     let args = &[subdir.as_str()];
     let expected_output = format!(
-        "{}/{}:1 Invalid leading character detected\n",
+        "{}/{}:1 LeadingCharacter: Invalid leading character detected\n",
         testdir.relative_path(&subdir),
         testfile_2.shortname_as_str(),
     );
@@ -34,7 +34,7 @@ fn checks_two_specific_paths() {
 
     let args = &[subdir_1.as_str(), subdir_2.as_str()];
     let expected_output = format!(
-        "{}/{}:1 Invalid leading character detected\n{}/{}:1 Invalid leading character detected\n",
+        "{}/{}:1 LeadingCharacter: Invalid leading character detected\n{}/{}:1 LeadingCharacter: Invalid leading character detected\n",
         testdir.relative_path(&subdir_1),
         testfile_2.shortname_as_str(),
         testdir.relative_path(&subdir_2),
@@ -107,7 +107,7 @@ fn checks_one_specific_file_twice() {
 
     let args = &[testfile_2.as_str(), testfile_2.as_str()];
     let expected_output = format!(
-        "{}:1 Invalid leading character detected\n",
+        "{}:1 LeadingCharacter: Invalid leading character detected\n",
         testfile_2.shortname_as_str()
     );
 
