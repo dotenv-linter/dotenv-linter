@@ -6,6 +6,12 @@ pub(crate) struct IncorrectDelimiterChecker {
     template: &'static str,
 }
 
+impl IncorrectDelimiterChecker {
+    fn message(&self, key: &str) -> String {
+        format!("{}: {}", self.name, self.template.replace("{}", &key))
+    }
+}
+
 impl Default for IncorrectDelimiterChecker {
     fn default() -> Self {
         Self {
@@ -19,10 +25,7 @@ impl Check for IncorrectDelimiterChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
-            return Some(Warning::new(
-                line.clone(),
-                format!("{}: {}", self.name, self.template.replace("{}", &key)),
-            ));
+            return Some(Warning::new(line.clone(), self.message(&key)));
         }
 
         None
