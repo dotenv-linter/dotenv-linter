@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Replaced kcov with grcov in Github Actions [#143](https://github.com/mgrachev/dotenv-linter/pull/143) ([@pmk21](https://github.com/pmk21))
 - Streamline CLI tests and split into smaller files [#137](https://github.com/mgrachev/dotenv-linter/pull/137) ([@sonro](https://github.com/sonro))
 - UnorderedKey: Added check name to the message [#140](https://github.com/mgrachev/dotenv-linter/pull/140) ([@pmk21](https://github.com/pmk21))
 - Add test coverage for CLI --exclude arguments [#135](https://github.com/mgrachev/dotenv-linter/pull/135) ([@sonro](https://github.com/sonro))
