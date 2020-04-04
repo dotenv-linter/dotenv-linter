@@ -2,13 +2,15 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct LowercaseKeyChecker {
+    name: String,
     template: String,
 }
 
 impl Default for LowercaseKeyChecker {
     fn default() -> Self {
         Self {
-            template: String::from("LowercaseKey: The {} key should be in uppercase"),
+            name: String::from("LowercaseKey"),
+            template: String::from("The {} key should be in uppercase"),
         }
     }
 }
@@ -19,11 +21,19 @@ impl Check for LowercaseKeyChecker {
         if key.to_uppercase() == key {
             None
         } else {
+            let warning_text = self.template.replace("{}", &key);
+
             Some(Warning::new(
                 line.clone(),
-                self.template.replace("{}", &key),
+                self.message(&warning_text),
             ))
         }
+    }
+}
+
+impl LowercaseKeyChecker {
+    fn message(&self, text: &str) -> String {
+        format!("{}: {}", self.name, text)
     }
 }
 
