@@ -61,8 +61,8 @@ jobs:
       with:
         command: build
 
-  coverage:
-    name: tests_&_coverage
+  tests:
+    name: Tests and coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
