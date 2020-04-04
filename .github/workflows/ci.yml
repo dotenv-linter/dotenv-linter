@@ -17,18 +17,6 @@ jobs:
       with:
         command: check
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-
   fmt:
     name: Rustfmt
     runs-on: ubuntu-latest
@@ -74,7 +62,7 @@ jobs:
         command: build
 
   coverage:
-    name: Test Coverage
+    name: tests_&_coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -84,14 +72,15 @@ jobs:
           override: true
       - uses: actions-rs/cargo@v1
         with:
+          command: clean
+      - uses: actions-rs/cargo@v1
+        with:
           command: test
           args: --all-features --no-fail-fast
         env:
           CARGO_INCREMENTAL: '0'
           RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads'
       - uses: actions-rs/grcov@v0.1
-
       - uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./lcov.info
