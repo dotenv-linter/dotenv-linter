@@ -3,14 +3,22 @@ use crate::common::*;
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyChecker {
+    name: String,
     template: String,
     keys: HashSet<String>,
+}
+
+impl DuplicatedKeyChecker {
+    fn message(&self, key: &str) -> String {
+        return format!("{}: {}", self.name, self.template.replace("{}", &key));
+    }
 }
 
 impl Default for DuplicatedKeyChecker {
     fn default() -> Self {
         Self {
             keys: HashSet::new(),
+            name: String::from("DuplicatedKey"),
             template: String::from("The {} key is duplicated"),
         }
     }
@@ -21,10 +29,7 @@ impl Check for DuplicatedKeyChecker {
         let key = line.get_key()?;
 
         if self.keys.contains(&key) {
-            return Some(Warning::new(
-                line.clone(),
-                self.template.replace("{}", &key),
-            ));
+            return Some(Warning::new(line.clone(), self.message(&key)));
         }
 
         self.keys.insert(key);
@@ -69,7 +74,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The FOO key is duplicated"),
+                    String::from("DuplicatedKey: The FOO key is duplicated"),
                 )),
             ),
         ];
@@ -124,7 +129,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The FOO key is duplicated"),
+                    String::from("DuplicatedKey: The FOO key is duplicated"),
                 )),
             ),
             (
@@ -147,7 +152,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("The BAR key is duplicated"),
+                    String::from("DuplicatedKey: The BAR key is duplicated"),
                 )),
             ),
         ];
@@ -178,7 +183,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("The FOO key is duplicated"),
+                    String::from("DuplicatedKey: The FOO key is duplicated"),
                 )),
             ),
             (
