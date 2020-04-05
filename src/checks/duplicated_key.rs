@@ -3,15 +3,23 @@ use crate::common::*;
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyChecker {
+    name: String,
     template: String,
     keys: HashSet<String>,
+}
+
+impl DuplicatedKeyChecker {
+    fn message(&self, key: &str) -> String {
+        return format!("{}: {}", self.name, self.template.replace("{}", &key));
+    }
 }
 
 impl Default for DuplicatedKeyChecker {
     fn default() -> Self {
         Self {
             keys: HashSet::new(),
-            template: String::from("DuplicatedKey: The {} key is duplicated"),
+            name: String::from("DuplicatedKey"),
+            template: String::from("The {} key is duplicated"),
         }
     }
 }
@@ -23,7 +31,7 @@ impl Check for DuplicatedKeyChecker {
         if self.keys.contains(&key) {
             return Some(Warning::new(
                 line.clone(),
-                self.template.replace("{}", &key),
+                self.message(&key),
             ));
         }
 
