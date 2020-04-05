@@ -91,9 +91,15 @@ mod tests {
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
         };
-        let warning = Warning::new(line, String::from("The FOO key is duplicated"));
+        let warning = Warning::new(
+            line,
+            String::from("DuplicatedKey: The FOO key is duplicated"),
+        );
 
-        assert_eq!(".env:1 The FOO key is duplicated", format!("{}", warning));
+        assert_eq!(
+            ".env:1 DuplicatedKey: The FOO key is duplicated",
+            format!("{}", warning)
+        );
     }
 
     mod file_entry {

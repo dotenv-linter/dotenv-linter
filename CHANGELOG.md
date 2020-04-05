@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- DuplicatedKey: Show check name in message [#138](https://github.com/mgrachev/dotenv-linter/pull/138)([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 - IncorrectDelimiter: Show check name in the message [#146](https://github.com/mgrachev/dotenv-linter/pull/146) ([undef1nd](https://github.com/undef1nd))
 - Replaced kcov with grcov in Github Actions [#143](https://github.com/mgrachev/dotenv-linter/pull/143) ([@pmk21](https://github.com/pmk21))
 - Streamline CLI tests and split into smaller files [#137](https://github.com/mgrachev/dotenv-linter/pull/137) ([@sonro](https://github.com/sonro))
