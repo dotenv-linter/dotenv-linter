@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
-- Added check name to lowercase check warning [#124](https://github.com/mgrachev/dotenv-linter/pull/124) ([@qelphybox](https://github.com/qelphybox))
+- Added check name to lowercase check warning [#131](https://github.com/mgrachev/dotenv-linter/pull/131) ([@qelphybox](https://github.com/qelphybox))
 - Replaced kcov with grcov in Github Actions [#143](https://github.com/mgrachev/dotenv-linter/pull/143) ([@pmk21](https://github.com/pmk21))
 - Streamline CLI tests and split into smaller files [#137](https://github.com/mgrachev/dotenv-linter/pull/137) ([@sonro](https://github.com/sonro))
 - UnorderedKey: Added check name to the message [#140](https://github.com/mgrachev/dotenv-linter/pull/140) ([@pmk21](https://github.com/pmk21))
