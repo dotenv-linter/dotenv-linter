@@ -28,7 +28,7 @@ fn checks_current_dir_with_dot_arg() {
 
     let args = &["."];
     let expected_output = format!(
-        "{}:1 The foo key should be in uppercase\n",
+        "{}:1 LowercaseKey: The foo key should be in uppercase\n",
         testfile.shortname_as_str(),
     );
 
