@@ -21,19 +21,14 @@ impl Check for LowercaseKeyChecker {
         if key.to_uppercase() == key {
             None
         } else {
-            let warning_text = self.template.replace("{}", &key);
-
-            Some(Warning::new(
-                line.clone(),
-                self.message(&warning_text),
-            ))
+            Some(Warning::new(line.clone(), self.message(&key)))
         }
     }
 }
 
 impl LowercaseKeyChecker {
-    fn message(&self, text: &str) -> String {
-        format!("{}: {}", self.name, text)
+    fn message(&self, key: &str) -> String {
+        format!("{}: {}", self.name, self.template.replace("{}", key))
     }
 }
 
