@@ -17,18 +17,6 @@ jobs:
       with:
         command: check
 
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-      - uses: actions-rs/cargo@v1
-        with:
-          command: test
-
   fmt:
     name: Rustfmt
     runs-on: ubuntu-latest
@@ -73,26 +61,26 @@ jobs:
       with:
         command: build
 
-  coverage:
-    name: Test Coverage
+  tests:
+    name: Tests and coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
-      - name: Build kcov
-        run: |
-          sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
-          wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz
-          tar xzf master.tar.gz || true
-          cd kcov-master && mkdir build && cd build && cmake .. && make
-          make install DESTDIR=../../kcov-build && cd ../.. && rm -rf kcov-master && rm -rf master.tar.gz
-      - name: Push test coverage to codecov
-        run: |
-          cargo clean
-          cargo test --no-run
-
-          for file in target/debug/*-*; do mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov \
-          --exclude-pattern=/.cargo,/usr/local --verify "target/cov/$(basename $file)" "$file"; done || true
-          bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
+          toolchain: nightly
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clean
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --no-fail-fast
+        env:
+          CARGO_INCREMENTAL: '0'
+          RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads'
+      - uses: actions-rs/grcov@v0.1
+      - uses: codecov/codecov-action@v1
+        with:
+          file: ./lcov.info
