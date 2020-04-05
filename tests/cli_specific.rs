@@ -70,7 +70,7 @@ fn checks_two_specific_files() {
 
     let args = &[testfile_2.as_str(), testfile_3.as_str()];
     let expected_output = format!(
-        "{}/{}:2 The FOO key is duplicated\n{}:1 The line has spaces around equal sign\n",
+        "{}/{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 The line has spaces around equal sign\n",
         testdir.relative_path(&subdir),
         testfile_3.shortname_as_str(),
         testfile_2.shortname_as_str(),
@@ -90,7 +90,7 @@ fn checks_one_specific_file_and_one_path() {
 
     let args = &[testfile_2.as_str(), subdir.as_str()];
     let expected_output = format!(
-        "{}/{}:2 The FOO key is duplicated\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
+        "{}/{}:2 DuplicatedKey: The FOO key is duplicated\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
         testdir.relative_path(&subdir),
         testfile_3.shortname_as_str(),
         testfile_2.shortname_as_str(),

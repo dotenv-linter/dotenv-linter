@@ -29,10 +29,7 @@ impl Check for DuplicatedKeyChecker {
         let key = line.get_key()?;
 
         if self.keys.contains(&key) {
-            return Some(Warning::new(
-                line.clone(),
-                self.message(&key),
-            ));
+            return Some(Warning::new(line.clone(), self.message(&key)));
         }
 
         self.keys.insert(key);
