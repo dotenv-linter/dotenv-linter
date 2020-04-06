@@ -109,7 +109,9 @@ mod tests {
         };
         let warning = Warning::new(
             line.clone(),
-            String::from("The FOO key should be with a value or have an equal sign"),
+            String::from(
+                "KeyWithoutValue: The FOO key should be with a value or have an equal sign",
+            ),
         );
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = vec![warning];
