@@ -1,13 +1,13 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct UnorderedKeysChecker {
+pub(crate) struct UnorderedKeyChecker {
     template: String,
     keys: Vec<String>,
     name: String,
 }
 
-impl UnorderedKeysChecker {
+impl UnorderedKeyChecker {
     fn message(&self, key_one: &str, key_two: &str) -> String {
         return format!(
             "{}: {}",
@@ -19,7 +19,7 @@ impl UnorderedKeysChecker {
     }
 }
 
-impl Default for UnorderedKeysChecker {
+impl Default for UnorderedKeyChecker {
     fn default() -> Self {
         Self {
             keys: Vec::new(),
@@ -29,7 +29,7 @@ impl Default for UnorderedKeysChecker {
     }
 }
 
-impl Check for UnorderedKeysChecker {
+impl Check for UnorderedKeyChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         self.keys.push(key.clone());
@@ -55,7 +55,7 @@ mod tests {
     use std::path::PathBuf;
 
     fn run_unordered_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
-        let mut checker = UnorderedKeysChecker::default();
+        let mut checker = UnorderedKeyChecker::default();
 
         for assert in asserts {
             let (input, output) = assert;
