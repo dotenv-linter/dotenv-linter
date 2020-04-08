@@ -160,7 +160,7 @@ FOO-BAR=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### Keys without values
+### Key without value
 
 Detects if a line has a key without a value:
 ```env
@@ -250,7 +250,7 @@ FOO=BAR
 - [x] Add more checks:
   - [x] Duplicated key;
   - [x] Incorrect delimiter;
-  - [x] Keys without values;
+  - [x] Key without value;
   - [x] Leading character;
   - [x] Lowercase keys;
   - [x] Space character;
