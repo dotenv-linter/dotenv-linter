@@ -15,6 +15,12 @@ impl Default for LeadingCharacterChecker {
     }
 }
 
+impl LeadingCharacterChecker {
+    fn message(&self) -> String {
+        format!("{}: {}", self.name, self.template)
+    }
+}
+
 impl Check for LeadingCharacterChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if line
@@ -23,10 +29,7 @@ impl Check for LeadingCharacterChecker {
         {
             None
         } else {
-            Some(Warning::new(
-                line.clone(),
-                format!("{}: {}", self.name, self.template),
-            ))
+            Some(Warning::new(line.clone(), self.message()))
         }
     }
 }
