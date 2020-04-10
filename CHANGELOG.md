@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- LeadingCharacter: Show check name in message [#144](https://github.com/mgrachev/dotenv-linter/pull/144) ([@michaetto](https://github.com/michaetto))
 - Rename `UnorderedKeys` check to singular `UnorderedKey` [#147](https://github.com/mgrachev/dotenv-linter/pull/147) ([@pineapplethief](https://github.com/pineapplethief))
 - KeyWithoutValue: Show check name in the message [#139](https://github.com/mgrachev/dotenv-linter/pull/139) ([@harshu4](https://github.com/harshu4))
 - LowercaseKey: Show check name in the message [#131](https://github.com/mgrachev/dotenv-linter/pull/131) ([@qelphybox](https://github.com/qelphybox))
