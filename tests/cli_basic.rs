@@ -16,7 +16,7 @@ fn checks_current_dir() {
     let testfile = testdir.create_testfile(".env", "FOO");
 
     testdir.test_command_fail(format!(
-        "{}:1 The FOO key should be with a value or have an equal sign\n",
+        "{}:1 KeyWithoutValue: The FOO key should be with a value or have an equal sign\n",
         testfile.shortname_as_str()
     ));
 }
@@ -28,7 +28,7 @@ fn checks_current_dir_with_dot_arg() {
 
     let args = &["."];
     let expected_output = format!(
-        "{}:1 The foo key should be in uppercase\n",
+        "{}:1 LowercaseKey: The foo key should be in uppercase\n",
         testfile.shortname_as_str(),
     );
 
