@@ -11,7 +11,7 @@
 
 ```shell script
 # Linux
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf - 
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
 
 # Alpine Linux
 $ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
@@ -42,7 +42,7 @@ $ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
 
 ### Cargo
 
-If you are a **Rust** programmer, you can install `dotenv-linter` via `cargo`: 
+If you are a **Rust** programmer, you can install `dotenv-linter` via `cargo`:
 
 ```shell script
 $ cargo install dotenv-linter
@@ -104,7 +104,7 @@ $ dotenv-linter
 .env:1 Invalid leading character detected
 .env:2 The FOO-BAR key has incorrect delimiter
 .env:3 The FOo_BAR key should be in uppercase
-.env:4 The line has spaces around equal sign
+.env:4 SpaceCharacter:The line has spaces around equal sign
 test.env:5 The foo_bar key should be in uppercase
 test.env:6 The FOO key should be with a value or have an equal sign
 ```
@@ -116,7 +116,7 @@ you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAM
 $ dotenv-linter -i test.dotenv .my-env-file
 .env:1 Invalid leading character detected
 test.dotenv:2 The FOO-BAR key has incorrect delimiter
-.my-env-file:3 The line has spaces around equal sign
+.my-env-file:3 SpaceCharacter: The line has spaces around equal sign
 ```
 
 If you want to exclude a file with a specific name from check,
