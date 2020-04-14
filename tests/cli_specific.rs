@@ -52,7 +52,7 @@ fn checks_one_specific_file() {
 
     let args = &[testfile_2.as_str()];
     let expected_output = format!(
-        "{}:1 The line has spaces around equal sign\n",
+        "{}:1 SpaceCharacter: The line has spaces around equal sign\n",
         testfile_2.shortname_as_str()
     );
 
@@ -70,7 +70,7 @@ fn checks_two_specific_files() {
 
     let args = &[testfile_2.as_str(), testfile_3.as_str()];
     let expected_output = format!(
-        "{}/{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 The line has spaces around equal sign\n",
+        "{}/{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 SpaceCharacter: The line has spaces around equal sign\n",
         testdir.relative_path(&subdir),
         testfile_3.shortname_as_str(),
         testfile_2.shortname_as_str(),

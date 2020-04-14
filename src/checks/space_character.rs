@@ -3,11 +3,19 @@ use crate::common::*;
 
 pub(crate) struct SpaceCharacterChecker {
     template: String,
+    name: String,
+}
+
+impl SpaceCharacterChecker {
+    fn message(&self) -> String {
+        return format!("{}: {}", self.name, self.template);
+    }
 }
 
 impl Default for SpaceCharacterChecker {
     fn default() -> Self {
         Self {
+            name: String::from("SpaceCharacter"),
             template: String::from("The line has spaces around equal sign"),
         }
     }
@@ -19,7 +27,8 @@ impl Check for SpaceCharacterChecker {
 
         if let [key, value] = &line_splitted[..] {
             if key.ends_with(' ') || value.starts_with(' ') {
-                return Some(Warning::new(line.clone(), self.template.clone()));
+                let warning = Warning::new(line.clone(), self.message());
+                return Some(warning);
             }
         }
 
@@ -32,7 +41,7 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    const MESSAGE: &str = "The line has spaces around equal sign";
+    const MESSAGE: &str = "SpaceCharacter: The line has spaces around equal sign";
 
     #[test]
     fn working_run() {
