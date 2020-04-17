@@ -27,6 +27,9 @@
 
 It checks `.env` files for problems that may cause the application to malfunction:
 
+* ✅Duplicated Key
+* Duplicated Key
+
 <p>
     ✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
     &nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
