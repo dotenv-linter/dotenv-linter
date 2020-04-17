@@ -36,17 +36,6 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
 </p>
 
-<p>
-It checks `.env` files for problems that may cause the application to malfunction:<br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
-</p>
-
 Its key features:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️It is blazing-fast because it is written in Rust 🦀<br />
