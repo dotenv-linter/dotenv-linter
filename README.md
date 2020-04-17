@@ -38,9 +38,9 @@ It checks `.env` files for problems that may cause the application to malfunctio
 
 Its key features:
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;⚡️It is blazing-fast because it is written in Rust 🦀<br />
-&nbsp;&nbsp;&nbsp;&nbsp;💣It can be used on any project, regardless of the programming language 💥<br />
-&nbsp;&nbsp;&nbsp;&nbsp;🚀It can integrate with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
+&nbsp;&nbsp;&nbsp;&nbsp;⚡️Blazing-fast because it is written in Rust 🦀<br />
+&nbsp;&nbsp;&nbsp;&nbsp;💣Can be used on any project regardless of the programming language 💥<br />
+&nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
 dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
