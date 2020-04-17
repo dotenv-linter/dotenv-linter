@@ -28,17 +28,17 @@
 It checks `.env` files for problems that may cause the application to malfunction 😱
 
 <p>
-    ✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
-    ✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
-    ✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
-    ✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
-    ✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
-    ✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
-    ✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
+    &nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
 </p>
 
-Its key features:
 <p>
+Its key features:<br />
 ⚡️It is blazing-fast because it is written in Rust 🦀<br />
 💣It can be used on any project, regardless of the programming language 💥<br />
 🚀It can integrate with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
