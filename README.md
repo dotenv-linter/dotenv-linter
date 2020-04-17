@@ -37,36 +37,11 @@ It checks `.env` files for problems that may cause the application to malfunctio
     &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
 </p>
 
-* ✅Duplicated Key
-* Duplicated Key
-
-
-
-<p>
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
-    &nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
-</p>
-
-<p>
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
-    &nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
-</p>
-
 <p>
 Its key features:<br />
-⚡️It is blazing-fast because it is written in Rust 🦀<br />
-&nbsp;💣It can be used on any project, regardless of the programming language 💥<br />
-🚀It can integrate with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
+&nbsp;&nbsp;&nbsp;&nbsp;⚡️It is blazing-fast because it is written in Rust 🦀<br />
+&nbsp;&nbsp;&nbsp;&nbsp;💣It can be used on any project, regardless of the programming language 💥<br />
+&nbsp;&nbsp;&nbsp;&nbsp;🚀It can integrate with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
 dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
