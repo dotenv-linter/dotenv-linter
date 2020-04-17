@@ -36,7 +36,7 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
 </p>
 
-Its key features:
+The key features:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️Blazing-fast because it is written in Rust 🦀<br />
 &nbsp;&nbsp;&nbsp;&nbsp;💣Can be used on any project regardless of the programming language 💥<br />
