@@ -37,18 +37,12 @@ It checks `.env` files for problems that may cause the application to malfunctio
     ✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
 </p>
 
-* ✅[Duplicated Key](#duplicated-key)
-* ✅[Incorrect delimiter](#incorrect-delimiter)
-* ✅[Key without value](#key-without-value)
-* ✅[Leading character](#leading-character)
-* ✅[Lowercase key](#lowercase-key)
-* ✅[Space character](#space-character)
-* ✅[Unordered Key](#unordered-Key)
-
 Its key features:
-* It is blazing-fast because it is written in Rust 🦀
-* It can be used on any project, regardless of the programming language 🔥
-* It can integrate with [reviewdog](https://github.com/reviewdog/reviewdog) and other CI services (including [GitHub Actions](https://github.com/mgrachev/action-dotenv-linter)) 🚀
+<p>
+⚡️It is blazing-fast because it is written in Rust 🦀<br />
+💣It can be used on any project, regardless of the programming language 💥<br />
+🚀It can integrate with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
+</p>
 
 dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
