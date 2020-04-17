@@ -26,13 +26,24 @@
 </p>
 
 It checks `.env` files for problems that may cause the application to malfunction 😱
-* [Duplicated Key](#duplicated-key)
-* [Incorrect delimiter](#incorrect-delimiter)
-* [Key without value](#key-without-value)
-* [Leading character](#leading-character)
-* [Lowercase key](#lowercase-key)
-* [Space character](#space-character)
-* [Unordered Key](#unordered-Key)
+
+<p>
+    ✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
+    ✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
+    ✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
+    ✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
+    ✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
+    ✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
+    ✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
+</p>
+
+* ✅[Duplicated Key](#duplicated-key)
+* ✅[Incorrect delimiter](#incorrect-delimiter)
+* ✅[Key without value](#key-without-value)
+* ✅[Leading character](#leading-character)
+* ✅[Lowercase key](#lowercase-key)
+* ✅[Space character](#space-character)
+* ✅[Unordered Key](#unordered-Key)
 
 Its key features:
 * It is blazing-fast because it is written in Rust 🦀
