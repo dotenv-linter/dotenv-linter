@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/mgrachev">
+  <a href="https://github.com/mgrachev/dotenv-linter">
     <img alt="dotenv-linter"
          width="350" height="192"
          src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/new-logo/logo.svg?sanitize=true">
@@ -43,6 +43,8 @@ The key features:
 &nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
+[]
+
 dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
 ## 👨‍💻 Installation
@@ -51,13 +53,13 @@ dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=
 
 ```shell script
 # Linux
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
 
 # Alpine Linux
-$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ### Homebrew / Linuxbrew
@@ -128,7 +130,7 @@ jobs:
       - run:
           name: Run dotenv-linter
           command: |
-            DOTENV_LINTER_VERSION=v1.2.0
+            DOTENV_LINTER_VERSION=v1.1.2
             wget https://github.com/mgrachev/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
             -O - -q | tar -xzf -
             ./dotenv-linter
