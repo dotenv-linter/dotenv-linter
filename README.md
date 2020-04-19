@@ -27,13 +27,13 @@
 
 It checks `.env` files for problems that may cause the application to malfunction:
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#duplicated-key">Duplicated Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#key-without-value">Key without value</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a>
 </p>
 
 The key features:
