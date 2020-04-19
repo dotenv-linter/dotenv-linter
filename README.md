@@ -1,9 +1,49 @@
-# ✌️dotenv-linter ![](https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg) [![](https://codecov.io/gh/mgrachev/dotenv-linter/branch/master/graph/badge.svg)](https://codecov.io/gh/mgrachev/dotenv-linter) ![](https://img.shields.io/github/license/mgrachev/dotenv-linter) ![](https://img.shields.io/github/v/release/mgrachev/dotenv-linter)
-
-<p align="center">Linter for <code>.env</code> files. Written in Rust 🦀</p>
 <p align="center">
-  <img alt="dotenv-linter" src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/master/img/example.png" width="547" />
+  <a href="https://github.com/mgrachev/dotenv-linter">
+    <img alt="dotenv-linter"
+         width="350" height="192"
+         src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/master/logo.svg?sanitize=true">
+  </a>
 </p>
+
+<h2 align="center">
+  ⚡️Blazing-fast linter for <code>.env</code> files. Written in Rust 🦀
+</h2>
+
+<p align="center">
+  <a href="https://github.com/mgrachev/dotenv-linter/actions">
+    <img alt="GitHub Actions" src="https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg">
+  </a>
+  <a href="https://codecov.io/gh/mgrachev/dotenv-linter">
+    <img alt="Coverage Status" src="https://codecov.io/gh/mgrachev/dotenv-linter/branch/master/graph/badge.svg">
+  </a>
+  <a href="https://github.com/mgrachev/dotenv-linter/blob/master/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/mgrachev/dotenv-linter">
+  </a>
+  <a href="https://github.com/mgrachev/dotenv-linter/releases">
+    <img alt="Releases" src="https://img.shields.io/github/release/mgrachev/dotenv-linter">
+  </a>
+</p>
+
+It checks `.env` files for problems that may cause the application to malfunction:
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#duplicated-key">Duplicated Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#incorrect-delimiter">Incorrect delimiter</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#key-without-value">Key without value</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#leading-character">Leading character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#lowercase-key">Lowercase key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#space-character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="/mgrachev/dotenv-linter#unordered-Key">Unordered Key</a>
+</p>
+
+The key features:
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;⚡️Blazing-fast because it is written in Rust 🦀<br />
+&nbsp;&nbsp;&nbsp;&nbsp;💣Can be used on any project regardless of the programming language 💥<br />
+&nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
+</p>
+
+dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
 ## 👨‍💻 Installation
 
@@ -245,19 +285,6 @@ BAR=FOO
 FOO=BAR
 ```
 
-## 📋 Roadmap
-
-- [x] Add more checks:
-  - [x] Duplicated key;
-  - [x] Incorrect delimiter;
-  - [x] Key without value;
-  - [x] Leading character;
-  - [x] Lowercase keys;
-  - [x] Space character;
-  - [x] Unordered key;
-- [x] Support [reviewdog](https://github.com/reviewdog/reviewdog);
-- [x] Create a GitHub Action for easily using `dotenv-linter`.
-
 ## 🤝 Contributing
 
 If you've ever wanted to contribute to open source, now you have a great opportunity:
@@ -277,11 +304,15 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 ## ♥️ Sponsors
 
 <p>
-  <a href="https://evrone.com/?utm_source=dotenv-linter">
+  <a href="https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter">
     <img src="https://www.mgrachev.com/assets/static/evrone-sponsored-300.png"
       alt="Sponsored by Evrone" width="210">
   </a>
 </p>
+
+Become a financial contributor and help us sustain our community.
+
+<a href="https://opencollective.com/dotenv-linter"><img src="https://opencollective.com/dotenv-linter/individuals.svg?width=890"></a>
 
 ## 📃 License
 
