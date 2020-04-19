@@ -137,30 +137,40 @@ jobs:
 
 ## 🚀 Usage
 
-By default, `dotenv-linter` checks all `.env` files in the current directory:
+By default, `dotenv-linter` checks all files that start and end with `.env`. For example: `.env`, `test.env`, `.env.qa`:
 
 ```shell script
 $ dotenv-linter
-.env:2 DuplicatedKey: The FOO key is duplicated
-.env:3 UnorderedKey: The BAR key should go before the FOO key
-.env.test:1 LeadingCharacter: Invalid leading character detected
+.env:1 Invalid leading character detected
+.env:2 The FOO-BAR key has incorrect delimiter
+.env:3 The FOo_BAR key should be in uppercase
+.env:4 SpaceCharacter:The line has spaces around equal sign
+test.env:5 The foo_bar key should be in uppercase
+test.env:6 The FOO key should be with a value or have an equal sign
 ```
 
-To check another directory, just pass its path as an argument. The same approach works if you need to check any files individually:
+If you want to include a file with a specific name to check,
+you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAME`:
 
 ```shell script
-$ dotenv-linter dir1 dir2/.my-env-file
-dir1/.env:1 LeadingCharacter: Invalid leading character detected
-dir1/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
-dir2/.my-env-file:1 LowercaseKey: The bar key should be in uppercase
+$ dotenv-linter -i test.dotenv .my-env-file
+.env:1 Invalid leading character detected
+test.dotenv:2 The FOO-BAR key has incorrect delimiter
+.my-env-file:3 SpaceCharacter: The line has spaces around equal sign
 ```
 
-If you need to exclude a file from check, you can use the argument `--exclude FILE_PATH` or its short version `-e FILE_PATH`:
+If you want to exclude a file with a specific name from check,
+you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAME`:
 
 ```shell script
-$ dotenv-linter --exclude .env.test
-.env:2 DuplicatedKey: The FOO key is duplicated
-.env:3 UnorderedKey: The BAR key should go before the FOO key
+$ dotenv-linter -e .env .env.test
+```
+
+If you want to specify the directory where to run dotenv-linter,
+you can use the argument `--path DIRECTORY_PATH` or its short version `-p DIRECTORY_PATH`:
+
+```shell script
+$ dotenv-linter -p /directory/where/to/run
 ```
 
 ## ✅ Checks
