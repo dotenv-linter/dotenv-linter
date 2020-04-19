@@ -2,7 +2,7 @@
   <a href="https://github.com/mgrachev/dotenv-linter">
     <img alt="dotenv-linter"
          width="350" height="192"
-         src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/new-logo/logo.svg?sanitize=true">
+         src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/readme-v2/logo.svg?sanitize=true">
   </a>
 </p>
 
