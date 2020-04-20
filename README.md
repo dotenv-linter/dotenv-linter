@@ -51,13 +51,13 @@ dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=
 
 ```shell script
 # Linux
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
 
 # Alpine Linux
-$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.1.2/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ### Homebrew / Linuxbrew
@@ -128,7 +128,7 @@ jobs:
       - run:
           name: Run dotenv-linter
           command: |
-            DOTENV_LINTER_VERSION=v1.1.2
+            DOTENV_LINTER_VERSION=v1.2.0
             wget https://github.com/mgrachev/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
             -O - -q | tar -xzf -
             ./dotenv-linter
@@ -137,40 +137,30 @@ jobs:
 
 ## 🚀 Usage
 
-By default, `dotenv-linter` checks all files that start and end with `.env`. For example: `.env`, `test.env`, `.env.qa`:
+By default, `dotenv-linter` checks all `.env` files in the current directory:
 
 ```shell script
 $ dotenv-linter
-.env:1 Invalid leading character detected
-.env:2 The FOO-BAR key has incorrect delimiter
-.env:3 The FOo_BAR key should be in uppercase
-.env:4 SpaceCharacter:The line has spaces around equal sign
-test.env:5 The foo_bar key should be in uppercase
-test.env:6 The FOO key should be with a value or have an equal sign
+.env:2 DuplicatedKey: The FOO key is duplicated
+.env:3 UnorderedKey: The BAR key should go before the FOO key
+.env.test:1 LeadingCharacter: Invalid leading character detected
 ```
 
-If you want to include a file with a specific name to check,
-you can use the argument `--include FILE_NAME` or its short version `-i FILE_NAME`:
+To check another directory, just pass its path as an argument. The same approach works if you need to check any files individually:
 
 ```shell script
-$ dotenv-linter -i test.dotenv .my-env-file
-.env:1 Invalid leading character detected
-test.dotenv:2 The FOO-BAR key has incorrect delimiter
-.my-env-file:3 SpaceCharacter: The line has spaces around equal sign
+$ dotenv-linter dir1 dir2/.my-env-file
+dir1/.env:1 LeadingCharacter: Invalid leading character detected
+dir1/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
+dir2/.my-env-file:1 LowercaseKey: The bar key should be in uppercase
 ```
 
-If you want to exclude a file with a specific name from check,
-you can use the argument `--exclude FILE_NAME` or its short version `-e FILE_NAME`:
+If you need to exclude a file from check, you can use the argument `--exclude FILE_PATH` or its short version `-e FILE_PATH`:
 
 ```shell script
-$ dotenv-linter -e .env .env.test
-```
-
-If you want to specify the directory where to run dotenv-linter,
-you can use the argument `--path DIRECTORY_PATH` or its short version `-p DIRECTORY_PATH`:
-
-```shell script
-$ dotenv-linter -p /directory/where/to/run
+$ dotenv-linter --exclude .env.test
+.env:2 DuplicatedKey: The FOO key is duplicated
+.env:3 UnorderedKey: The BAR key should go before the FOO key
 ```
 
 ## ✅ Checks

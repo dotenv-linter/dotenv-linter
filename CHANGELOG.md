@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+
+## [v1.2.0] - 2020-04-20
+### 🔧 Changed
 - SpaceCharacter: Show check name in the message [#149](https://github.com/mgrachev/dotenv-linter/pull/149) ([@pineapplethief](https://github.com/pineapplethief))
 - LeadingCharacter: Show check name in message [#144](https://github.com/mgrachev/dotenv-linter/pull/144) ([@michaetto](https://github.com/michaetto))
 - Rename `UnorderedKeys` check to singular `UnorderedKey` [#147](https://github.com/mgrachev/dotenv-linter/pull/147) ([@pineapplethief](https://github.com/pineapplethief))
@@ -69,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/mgrachev/dotenv-linter/pull/26)
 - Prepare a template for easy adding new checks [#14](https://github.com/mgrachev/dotenv-linter/pull/14)
 
+[v1.2.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.2.0
 [v1.1.2]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.2
 [v1.1.1]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.1
 [v1.1.0]: https://github.com/mgrachev/dotenv-linter/releases/tag/v1.1.0
