@@ -1,10 +1,15 @@
-FROM rust:1.41 as builder
-WORKDIR /app 
-COPY . /app
-RUN cargo build --release  && \
-    chmod +x target/release/dotenv-linter
+FROM rust:1.42 as builder
+WORKDIR /usr/src
+RUN rustup target add x86_64-unknown-linux-musl
+
+RUN USER=root cargo new dotenv-linter
+WORKDIR /usr/src/dotenv-linter
+COPY Cargo.toml ./
+RUN cargo build --release
+
+COPY src ./src
+RUN cargo install --target x86_64-unknown-linux-musl --path .
 
 FROM scratch
-
-COPY --from=builder /app/target/release/dotenv-linter /
+COPY --from=builder /usr/local/cargo/bin/dotenv-linter /
 ENTRYPOINT ["/dotenv-linter"]
