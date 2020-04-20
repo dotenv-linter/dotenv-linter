@@ -10,7 +10,7 @@ Bug fixes and new features should include tests.
 #### ✔ Checklist:
 <!-- Remove items that do not apply. For completed items, change [ ] to [x]. -->
 
-- [ ] This PR has been added to [CHANGELOG.md](https://github.com/mgrachev/dotenv-linter/blob/master/CHANGELOG.md) (at the top of the list);
+- [ ] This PR has been added to [CHANGELOG.md](https://github.com/dotenv-linter/dotenv-linter/blob/master/CHANGELOG.md) (at the top of the list);
 - [ ] Tests for the changes have been added (for bug fixes / features);
 - [ ] Docs have been added / updated (for bug fixes / features).
 
