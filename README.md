@@ -1,8 +1,8 @@
 <p align="center">
-  <a href="https://github.com/mgrachev/dotenv-linter">
+  <a href="https://github.com/dotenv-linter/dotenv-linter">
     <img alt="dotenv-linter"
          width="350" height="192"
-         src="https://raw.githubusercontent.com/mgrachev/dotenv-linter/master/logo.svg?sanitize=true">
+         src="https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/logo.svg?sanitize=true">
   </a>
 </p>
 
@@ -11,17 +11,17 @@
 </h2>
 
 <p align="center">
-  <a href="https://github.com/mgrachev/dotenv-linter/actions">
-    <img alt="GitHub Actions" src="https://github.com/mgrachev/dotenv-linter/workflows/CI/badge.svg">
+  <a href="https://github.com/dotenv-linter/dotenv-linter/actions">
+    <img alt="GitHub Actions" src="https://github.com/dotenv-linter/dotenv-linter/workflows/CI/badge.svg">
   </a>
-  <a href="https://codecov.io/gh/mgrachev/dotenv-linter">
-    <img alt="Coverage Status" src="https://codecov.io/gh/mgrachev/dotenv-linter/branch/master/graph/badge.svg">
+  <a href="https://codecov.io/gh/dotenv-linter/dotenv-linter">
+    <img alt="Coverage Status" src="https://codecov.io/gh/dotenv-linter/dotenv-linter/branch/master/graph/badge.svg">
   </a>
-  <a href="https://github.com/mgrachev/dotenv-linter/blob/master/LICENSE">
-    <img alt="License" src="https://img.shields.io/github/license/mgrachev/dotenv-linter">
+  <a href="https://github.com/dotenv-linter/dotenv-linter/blob/master/LICENSE">
+    <img alt="License" src="https://img.shields.io/github/license/dotenv-linter/dotenv-linter">
   </a>
-  <a href="https://github.com/mgrachev/dotenv-linter/releases">
-    <img alt="Releases" src="https://img.shields.io/github/release/mgrachev/dotenv-linter">
+  <a href="https://github.com/dotenv-linter/dotenv-linter/releases">
+    <img alt="Releases" src="https://img.shields.io/github/release/dotenv-linter/dotenv-linter">
   </a>
 </p>
 
@@ -40,7 +40,7 @@ The key features:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️Blazing-fast because it is written in Rust 🦀<br />
 &nbsp;&nbsp;&nbsp;&nbsp;💣Can be used on any project regardless of the programming language 💥<br />
-&nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/mgrachev/action-dotenv-linter">GitHub Actions</a>) 🔥
+&nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
 dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
@@ -51,19 +51,19 @@ dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=
 
 ```shell script
 # Linux
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v1.2.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
 
 # Alpine Linux
-$ wget https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/dotenv-linter/dotenv-linter/releases/download/v1.2.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/mgrachev/dotenv-linter/releases/download/v1.2.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v1.2.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ### Homebrew / Linuxbrew
 
 ```shell script
-$ brew install mgrachev/tap/dotenv-linter
+$ brew install dotenv-linter/tap/dotenv-linter
 ```
 
 ### Arch Linux / AUR
@@ -77,7 +77,7 @@ $ trizen -S dotenv-linter-git # for the current master branch
 ### Docker
 
 ```shell script
-$ docker run --rm -v `pwd`:/app -w /app mgrachev/dotenv-linter
+$ docker run --rm -v `pwd`:/app -w /app dotenv-linter/dotenv-linter
 ```
 
 ### Cargo
@@ -104,12 +104,12 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
       - name: dotenv-linter
-        uses: mgrachev/action-dotenv-linter@v1
+        uses: dotenv-linter/action-dotenv-linter@v1
         with:
           github_token: ${{ secrets.github_token }}
 ```
 
-In the example above, [action-dotenv-linter](https://github.com/mgrachev/action-dotenv-linter) is used to run `dotenv-linter`.
+In the example above, [action-dotenv-linter](https://github.com/dotenv-linter/action-dotenv-linter) is used to run `dotenv-linter`.
 </details>
 
 ### CircleCI
@@ -129,7 +129,7 @@ jobs:
           name: Run dotenv-linter
           command: |
             DOTENV_LINTER_VERSION=v1.2.0
-            wget https://github.com/mgrachev/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
+            wget https://github.com/dotenv-linter/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
             -O - -q | tar -xzf -
             ./dotenv-linter
 ```
@@ -289,7 +289,7 @@ If you've ever wanted to contribute to open source, now you have a great opportu
 ## ✨ Contributors
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/mgrachev/dotenv-linter/graphs/contributors"><img src="https://opencollective.com/dotenv-linter/contributors.svg?width=890&button=false" /></a>
+<a href="https://github.com/dotenv-linter/dotenv-linter/graphs/contributors"><img src="https://opencollective.com/dotenv-linter/contributors.svg?width=890&button=false" /></a>
 
 ## ♥️ Sponsors
 
