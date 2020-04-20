@@ -7,7 +7,7 @@
 </p>
 
 <h2 align="center">
-  ⚡️Blazing-fast linter for <code>.env</code> files. Written in Rust 🦀
+⚡️Lightning-fast linter for <code>.env</code> files. Written in Rust 🦀
 </h2>
 
 <p align="center">
@@ -38,12 +38,12 @@ It checks `.env` files for problems that may cause the application to malfunctio
 
 The key features:
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;⚡️Blazing-fast because it is written in Rust 🦀<br />
+&nbsp;&nbsp;&nbsp;&nbsp;⚡️Lightning-fast because it is written in Rust 🦀<br />
 &nbsp;&nbsp;&nbsp;&nbsp;💣Can be used on any project regardless of the programming language 💥<br />
 &nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
-dotenv-linter is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
+[dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
 ## 👨‍💻 Installation
 
@@ -77,7 +77,7 @@ $ trizen -S dotenv-linter-git # for the current master branch
 ### Docker
 
 ```shell script
-$ docker run --rm -v `pwd`:/app -w /app dotenv-linter/dotenv-linter
+$ docker run --rm -v `pwd`:/app -w /app dotenvlinter/dotenv-linter
 ```
 
 ### Cargo
