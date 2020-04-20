@@ -7,7 +7,7 @@
 </p>
 
 <h2 align="center">
-⚡️Lightning-fast linter for .env files. Written in Rust 🦀
+⚡️Lightning-fast linter for <code>.env</code> files. Written in Rust 🦀
 </h2>
 
 <p align="center">
