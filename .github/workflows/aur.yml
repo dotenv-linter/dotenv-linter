@@ -1,10 +1,6 @@
 name: aur
 
-on: # TODO: Only on release
-  push:
-    branches:
-      - master
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   aur-publish:
@@ -15,13 +11,16 @@ jobs:
     steps:
       - name: Publish
         run: |
-          pacman -Sy --needed --noconfirm sudo git binutils && \
+          pacman -Sy --needed --noconfirm sudo git binutils openssh && \
           useradd builduser -m && \
           su builduser -c "
+            echo ${{ secrets.SSH_PUBLIC_KEY }} > ~/.ssh/id_rsa.pub && \
+            echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa && \
             cd ~ && \
-            git clone https://aur.archlinux.org/dotenv-linter-bin.git && \
+            git clone ssh://aur@aur.archlinux.org/dotenv-linter-bin.git && \
             cd dotenv-linter-bin && \
-            sed -i 's/pkgver=.*/pkgver=1.1.3/g' PKGBUILD && \
+            GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
+            sed -i \"s/pkgver=.*/pkgver=$GIT_TAG\" PKGBUILD && \
             git status && \
             git add . && \
             git commit -m 'release VERSION' && \
