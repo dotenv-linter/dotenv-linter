@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Github Actions: Add caching in the CI workflow [#163](https://github.com/dotenv-linter/dotenv-linter/pull/163) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add GitHub Workflow for AUR publishing [#161](https://github.com/dotenv-linter/dotenv-linter/pull/161) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
