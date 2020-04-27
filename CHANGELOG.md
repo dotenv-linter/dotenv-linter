@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add GitHub Workflow for AUR publishing [#161](https://github.com/dotenv-linter/dotenv-linter/pull/161) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
-- Fix docker image [#160](https://github.com/dotenv-linter/dotenv-linter/pull/160)
+- Fix docker image [#160](https://github.com/dotenv-linter/dotenv-linter/pull/160) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v1.2.0] - 2020-04-20
 ### 🔧 Changed
@@ -29,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove the unwrap method and use platform native OsString to fetch the information about current directory [#115](https://github.com/dotenv-linter/dotenv-linter/pull/115) ([@kanapuli](https://github.com/kanapuli))
 - Use HashSet for DuplicateKeyChecker [#113](https://github.com/dotenv-linter/dotenv-linter/pull/113) ([@TamasFlorin](https://github.com/TamasFlorin))
 - Use reference for the LineEntry as part of the run method for checks [#111](https://github.com/dotenv-linter/dotenv-linter/pull/111) ([@TamasFlorin](https://github.com/TamasFlorin))
-- New CLI API: Ability to check multiple directories [#99](https://github.com/dotenv-linter/dotenv-linter/pull/99)
+- New CLI API: Ability to check multiple directories [#99](https://github.com/dotenv-linter/dotenv-linter/pull/99) ([@mgrachev](https://github.com/mgrachev))
 - Add exit with the code 0 when there are no warnings [#105](https://github.com/dotenv-linter/dotenv-linter/pull/105) ([@simPod](https://github.com/simPod))
 - Use `get` method to get result of item in `Vec` and use ? operator unwrap the result if it's `Some` [#108](https://github.com/dotenv-linter/dotenv-linter/pull/108) ([@boybird](https://github.com/boybird))
 
@@ -43,23 +44,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v1.1.1] - 2020-02-18
 ### 🔧 Changed
-- Show the full path to the file relative to the current directory [#85](https://github.com/dotenv-linter/dotenv-linter/pull/85)
+- Show the full path to the file relative to the current directory [#85](https://github.com/dotenv-linter/dotenv-linter/pull/85) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v1.1.0] - 2020-01-27
 ### 🚀 Added
-- Add check: Unordered keys [#72](https://github.com/dotenv-linter/dotenv-linter/pull/72)
+- Add check: Unordered keys [#72](https://github.com/dotenv-linter/dotenv-linter/pull/72) ([@mgrachev](https://github.com/mgrachev))
 - Add the ability to specify the directory where to run [#65](https://github.com/dotenv-linter/dotenv-linter/pull/65) ([@Louis-Lesage](https://github.com/Louis-Lesage))
 - Add check: Duplicated keys [#33](https://github.com/dotenv-linter/dotenv-linter/pull/33) ([@mstruebing](https://github.com/mstruebing))
 - Add exit with the code 1 on warnings found [#58](https://github.com/dotenv-linter/dotenv-linter/pull/58) ([@Louis-Lesage](https://github.com/Louis-Lesage))
 - Add exclude argument to exclude specific files [#49](https://github.com/dotenv-linter/dotenv-linter/pull/49) ([@mstruebing](https://github.com/mstruebing))
-- Add the ability to include files to check [#48](https://github.com/dotenv-linter/dotenv-linter/pull/48)
+- Add the ability to include files to check [#48](https://github.com/dotenv-linter/dotenv-linter/pull/48) ([@mgrachev](https://github.com/mgrachev))
 - Add check: Spaces around equal sign [#35](https://github.com/dotenv-linter/dotenv-linter/pull/35) ([@artem-russkikh](https://github.com/artem-russkikh))
 - Add skipping of commented or empty lines [#37](https://github.com/dotenv-linter/dotenv-linter/pull/37) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
 - Rename `leading_space` to `leading_character` and check for allowed chars [#63](https://github.com/dotenv-linter/dotenv-linter/pull/63) ([@mstruebing](https://github.com/mstruebing))
 - Remove multiple checks of the same file [#62](https://github.com/dotenv-linter/dotenv-linter/pull/62) ([@mstruebing](https://github.com/mstruebing))
-- Add mutability support for checks [#52](https://github.com/dotenv-linter/dotenv-linter/pull/52)
+- Add mutability support for checks [#52](https://github.com/dotenv-linter/dotenv-linter/pull/52) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v1.0.0] - 2020-01-01
 ### 🚀 Added
@@ -69,9 +70,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Display` trait for `LineEntry` [#19](https://github.com/dotenv-linter/dotenv-linter/pull/19) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
-- Add support for command line arguments [#31](https://github.com/dotenv-linter/dotenv-linter/pull/31)
-- Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26)
-- Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14)
+- Add support for command line arguments [#31](https://github.com/dotenv-linter/dotenv-linter/pull/31) ([@mgrachev](https://github.com/mgrachev))
+- Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
+- Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
 [v1.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.2.0
 [v1.1.2]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.1.2
