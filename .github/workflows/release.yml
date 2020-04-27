@@ -75,3 +75,37 @@ jobs:
         run: |
           cargo login ${{ secrets.CRATES_TOKEN }}
           cargo publish
+
+  release-aur:
+    runs-on: ubuntu-latest
+    container: archlinux/base
+
+    steps:
+      # see: https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167#M1027
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      - name: Build and publish to aur.archlinux.org
+        run: |
+          pacman -Sy --needed --noconfirm sudo git binutils openssh && \
+          useradd builduser -m && \
+          su builduser -c "
+            mkdir ~/.ssh && \
+            echo \"${{ secrets.SSH_PUBLIC_KEY }}\" > ~/.ssh/id_rsa.pub && \
+            echo \"${{ secrets.SSH_PRIVATE_KEY }}\" > ~/.ssh/id_rsa && \
+            chmod 600 ~/.ssh/id_rsa && \
+            ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts && \
+            git config --global user.email \"work@mgrachev.com\" && \
+            git config --global user.name \"Dotenv Linter\" && \
+            cd ~ && \
+            git clone ssh://aur@aur.archlinux.org/dotenv-linter-bin.git && \
+            cd dotenv-linter-bin && \
+            sed -i \"s/pkgver=.*/pkgver=${{ steps.get_version.outputs.VERSION }}/\" PKGBUILD && \
+            makepkg --printsrcinfo > .SRCINFO
+            git status && \
+            git diff && \
+            git add . && \
+            git commit -m 'release ${{ steps.get_version.outputs.VERSION }}' && \
+            git push origin master
+          "
