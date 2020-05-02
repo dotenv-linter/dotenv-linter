@@ -183,7 +183,7 @@ jobs:
         env:
           CARGO_INCREMENTAL: '0'
           RUSTFLAGS: |
-            -Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads
+            -Zprofile -Zpanic_abort_tests -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort
       - uses: actions-rs/grcov@v0.1
       - uses: codecov/codecov-action@v1
         with:
