@@ -5,6 +5,7 @@ mod incorrect_delimiter;
 mod key_without_value;
 mod leading_character;
 mod lowercase_key;
+mod quote_character;
 mod space_character;
 mod unordered_key;
 
@@ -23,6 +24,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(space_character::SpaceCharacterChecker::default()),
         Box::new(unordered_key::UnorderedKeyChecker::default()),
+        Box::new(quote_character::QuoteCharacterChecker::default()),
     ]
 }
 

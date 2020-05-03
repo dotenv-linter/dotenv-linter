@@ -78,6 +78,17 @@ impl LineEntry {
             None => None,
         }
     }
+
+    pub fn get_value(&self) -> Option<String> {
+        if self.is_empty_or_comment() {
+            return None;
+        }
+
+        match self.raw_string.find('=') {
+            Some(index) => Some(self.raw_string[index..].to_owned()),
+            None => None,
+        }
+    }
 }
 
 #[cfg(test)]
