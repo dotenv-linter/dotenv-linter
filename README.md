@@ -33,7 +33,7 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a>
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character">Quote character</a>
 </p>
 
@@ -277,6 +277,18 @@ BAR=FOO
 
 ✅Correct
 BAR=FOO
+FOO=BAR
+```
+
+### Quote Character
+```
+❌Wrong
+FOO="BAR"
+
+❌Wrong
+FOO='BAR'
+
+✅Correct
 FOO=BAR
 ```
 
