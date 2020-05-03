@@ -34,6 +34,7 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a>
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character">Quote character</a>
 </p>
 
 The key features:
