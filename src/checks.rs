@@ -22,9 +22,9 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(leading_character::LeadingCharacterChecker::default()),
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
+        Box::new(quote_character::QuoteCharacterChecker::default()),
         Box::new(space_character::SpaceCharacterChecker::default()),
         Box::new(unordered_key::UnorderedKeyChecker::default()),
-        Box::new(quote_character::QuoteCharacterChecker::default()),
     ]
 }
 

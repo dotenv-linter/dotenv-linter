@@ -32,9 +32,9 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#key-without-value">Key without value</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character">Quote character</a>
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a>(Will be available in v2.0.0)<br />
 </p>
 
 The key features:
@@ -248,6 +248,18 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
+### Quote Character (Will be available in v2.0.0)
+```env
+❌Wrong
+FOO="BAR"
+
+❌Wrong
+FOO='BAR'
+
+✅Correct
+FOO=BAR
+```
+
 ### Space character
 
 Detects lines with a whitespace around equal sign character `=`:
@@ -277,18 +289,6 @@ BAR=FOO
 
 ✅Correct
 BAR=FOO
-FOO=BAR
-```
-
-### Quote Character
-```
-❌Wrong
-FOO="BAR"
-
-❌Wrong
-FOO='BAR'
-
-✅Correct
 FOO=BAR
 ```
 

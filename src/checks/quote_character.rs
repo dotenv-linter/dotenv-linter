@@ -2,15 +2,21 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct QuoteCharacterChecker {
-    name: String,
-    template: String,
+    name: &'static str,
+    template: &'static str,
+}
+
+impl QuoteCharacterChecker {
+    fn message(&self) -> String {
+        format!("{}: {}", self.name, self.template)
+    }
 }
 
 impl Default for QuoteCharacterChecker {
     fn default() -> Self {
         Self {
-            name: String::from("QuoteCharacter"),
-            template: String::from("Quote char in detected in value"),
+            name: "QuoteCharacter",
+            template: "The value is wrapped in quotes",
         }
     }
 }
@@ -19,16 +25,10 @@ impl Check for QuoteCharacterChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
         if val.contains('\"') || val.contains('\'') {
-            Some(Warning::new(line.clone(), self.message(&val)))
+            Some(Warning::new(line.clone(), self.message()))
         } else {
             None
         }
-    }
-}
-
-impl QuoteCharacterChecker {
-    fn message(&self, key: &str) -> String {
-        format!("{}: {}", self.name, self.template.replace("{}", key))
     }
 }
 
@@ -61,15 +61,15 @@ mod tests {
                 LineEntry {
                     number: 2,
                     file_path: PathBuf::from(".env"),
-                    raw_string: String::from("FOO=\'BAR\'"),
+                    raw_string: String::from("FOO='BAR'"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
                         file_path: PathBuf::from(".env"),
-                        raw_string: String::from("FOO=\'BAR\'"),
+                        raw_string: String::from("FOO='BAR'"),
                     },
-                    String::from("QuoteCharacter: Quote char in detected in value"),
+                    String::from("QuoteCharacter: The value is wrapped in quotes"),
                 )),
             ),
         ];
@@ -100,7 +100,7 @@ mod tests {
                         file_path: PathBuf::from(".env"),
                         raw_string: String::from("FOO=\"BAR\""),
                     },
-                    String::from("QuoteCharacter: Quote char in detected in value"),
+                    String::from("QuoteCharacter: The value is wrapped in quotes"),
                 )),
             ),
         ];
