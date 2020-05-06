@@ -249,6 +249,9 @@ FOO_BAR=FOOBAR
 ```
 
 ### Quote character (Will be available in v2.0.0)
+
+Detects if a value is wrapped in quotes:
+
 ```env
 ❌Wrong
 FOO="BAR"
