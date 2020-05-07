@@ -32,8 +32,9 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#key-without-value">Key without value</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character-will-be-available-in-v200">Quote character</a> (Will be available in v2.0.0)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a>
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a><br />
 </p>
 
 The key features:
@@ -245,6 +246,21 @@ foo_bar=FOOBAR
 
 ✅Correct
 FOO_BAR=FOOBAR
+```
+
+### Quote character (Will be available in v2.0.0)
+
+Detects if a value is wrapped in quotes:
+
+```env
+❌Wrong
+FOO="BAR"
+
+❌Wrong
+FOO='BAR'
+
+✅Correct
+FOO=BAR
 ```
 
 ### Space character

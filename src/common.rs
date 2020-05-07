@@ -78,6 +78,17 @@ impl LineEntry {
             None => None,
         }
     }
+
+    pub fn get_value(&self) -> Option<String> {
+        if self.is_empty_or_comment() {
+            return None;
+        }
+
+        match self.raw_string.find('=') {
+            Some(index) => Some(self.raw_string[(index + 1)..].to_owned()),
+            None => None,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -242,6 +253,70 @@ mod tests {
                 let expected = None;
 
                 assert_eq!(expected, input.get_key());
+            }
+        }
+
+        mod get_value {
+            use super::*;
+
+            #[test]
+            fn empty_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from(""),
+                };
+                let expected = None;
+
+                assert_eq!(expected, input.get_value());
+            }
+
+            #[test]
+            fn correct_line_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("FOO=BAR"),
+                };
+                let expected = Some(String::from("BAR"));
+
+                assert_eq!(expected, input.get_value());
+            }
+
+            #[test]
+            fn line_without_key_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("=BAR"),
+                };
+                let expected = Some(String::from("BAR"));
+
+                assert_eq!(expected, input.get_value());
+            }
+
+            #[test]
+            fn line_without_value_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("FOO="),
+                };
+                let expected = Some(String::from(""));
+
+                assert_eq!(expected, input.get_value());
+            }
+
+            #[test]
+            fn missing_value_and_equal_sign_test() {
+                let input = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("FOOBAR"),
+                };
+                let expected = None;
+
+                assert_eq!(expected, input.get_value());
             }
         }
     }
