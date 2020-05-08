@@ -4,9 +4,8 @@ use clap::Arg;
 use std::env;
 use std::error::Error;
 use std::ffi::OsStr;
-use std::fs;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::fs::{self, File};
+use std::io::{self, BufRead, BufReader, Read, Seek, SeekFrom};
 use std::path::PathBuf;
 
 mod checks;
@@ -36,6 +35,43 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .takes_value(true),
         )
         .get_matches()
+}
+
+fn run_checks(fe: &FileEntry) -> io::Result<Vec<Warning>> {
+    let mut f = File::open(&fe.path)?;
+
+    let reader = BufReader::new(&f);
+
+    // TODO: Initialize a vector with a capacity equal to the number of lines
+    let mut lines: Vec<LineEntry> = Vec::new();
+
+    let mut number = 0;
+    for (index, line) in reader.lines().enumerate() {
+        number = index + 1;
+        let raw_string = line?;
+
+        lines.push(LineEntry {
+            number,
+            file_path: fe.path.clone(),
+            raw_string,
+        })
+    }
+
+    let mut last_line = String::new();
+    let ending_seq_length = 1;
+    if f.seek(SeekFrom::End(-ending_seq_length)).is_ok()
+        && f.read_to_string(&mut last_line)? == ending_seq_length as usize
+    {
+        // We add a special LineEntry with the final character in the file
+        // for the "Ending Blank Line" check.
+        lines.push(LineEntry {
+            number: number + 1,
+            file_path: fe.path.clone(),
+            raw_string: last_line,
+        })
+    }
+
+    Ok(checks::run(lines))
 }
 
 #[allow(clippy::redundant_closure)]
@@ -107,23 +143,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     let mut warnings: Vec<Warning> = Vec::new();
     for file in new_files {
-        let f = File::open(&file.path)?;
-        let reader = BufReader::new(f);
-
-        // TODO: Initialize a vector with a capacity equal to the number of lines
-        let mut lines: Vec<LineEntry> = Vec::new();
-        for (index, line) in reader.lines().enumerate() {
-            let number = index + 1;
-            let raw_string = line?;
-
-            lines.push(LineEntry {
-                number,
-                file_path: file.path.clone(),
-                raw_string,
-            })
-        }
-
-        let result = checks::run(lines);
+        let result = run_checks(&file)?;
         warnings.extend(result);
     }
 

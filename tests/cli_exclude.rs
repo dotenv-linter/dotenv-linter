@@ -6,15 +6,15 @@ use cli_common::TestDir;
 #[test]
 fn exclude_one_file() {
     let test_dir = TestDir::new();
-    let testfile = test_dir.create_testfile(".env", " FOO=");
+    let testfile = test_dir.create_testfile(".env", " FOO=\n");
     test_dir.test_command_success_with_args(&["--exclude", testfile.as_str()]);
 }
 
 #[test]
 fn exclude_two_files() {
     let test_dir = TestDir::new();
-    let testfile_1 = test_dir.create_testfile(".env", " FOO=");
-    let testfile_2 = test_dir.create_testfile(".loacl.env", " BAR=");
+    let testfile_1 = test_dir.create_testfile(".env", " FOO=\n");
+    let testfile_2 = test_dir.create_testfile(".loacl.env", " BAR=\n");
 
     test_dir.test_command_success_with_args(&[
         "-e",
@@ -27,8 +27,8 @@ fn exclude_two_files() {
 #[test]
 fn exclude_one_file_check_one_file() {
     let test_dir = TestDir::new();
-    let testfile_to_check = test_dir.create_testfile(".env", " FOO=");
-    let testfile_to_exclude = test_dir.create_testfile(".exclude-me.env", " BAR=");
+    let testfile_to_check = test_dir.create_testfile(".env", " FOO=\n");
+    let testfile_to_exclude = test_dir.create_testfile(".exclude-me.env", " BAR=\n");
 
     let args = &["--exclude", testfile_to_exclude.as_str()];
     let expected_output = format!(

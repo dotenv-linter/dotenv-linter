@@ -6,10 +6,10 @@ use cli_common::TestDir;
 #[test]
 fn checks_one_specific_path() {
     let testdir = TestDir::new();
-    testdir.create_testfile(".env", "foo=");
+    testdir.create_testfile(".env", "foo=\n");
 
     let subdir = testdir.subdir();
-    let testfile_2 = subdir.create_testfile(".env.test", "1FOO=");
+    let testfile_2 = subdir.create_testfile(".env.test", "1FOO=\n");
 
     let args = &[subdir.as_str()];
     let expected_output = format!(
@@ -24,13 +24,13 @@ fn checks_one_specific_path() {
 #[test]
 fn checks_two_specific_paths() {
     let testdir = TestDir::new();
-    testdir.create_testfile(".env", "foo=");
+    testdir.create_testfile(".env", "foo=\n");
 
     let subdir_1 = testdir.subdir();
-    let testfile_2 = subdir_1.create_testfile(".env", " FOO=");
+    let testfile_2 = subdir_1.create_testfile(".env", " FOO=\n");
 
     let subdir_2 = subdir_1.subdir();
-    let testfile_3 = subdir_2.create_testfile(".env", " FOO=");
+    let testfile_3 = subdir_2.create_testfile(".env", " FOO=\n");
 
     let args = &[subdir_1.as_str(), subdir_2.as_str()];
     let expected_output = format!(
@@ -47,8 +47,8 @@ fn checks_two_specific_paths() {
 #[test]
 fn checks_one_specific_file() {
     let test_dir = TestDir::new();
-    test_dir.create_testfile(".env", "foo=");
-    let testfile_2 = test_dir.create_testfile("test-env-file", "FOO =");
+    test_dir.create_testfile(".env", "foo=\n");
+    let testfile_2 = test_dir.create_testfile("test-env-file", "FOO =\n");
 
     let args = &[testfile_2.as_str()];
     let expected_output = format!(
@@ -63,10 +63,10 @@ fn checks_one_specific_file() {
 fn checks_two_specific_files() {
     let testdir = TestDir::new();
     testdir.create_testfile(".env", "foo=");
-    let testfile_2 = testdir.create_testfile("test-env-file", "FOO =");
+    let testfile_2 = testdir.create_testfile("test-env-file", "FOO =\n");
 
     let subdir = testdir.subdir();
-    let testfile_3 = subdir.create_testfile("another_test_file", "FOO=BAR\nFOO=BAR");
+    let testfile_3 = subdir.create_testfile("another_test_file", "FOO=BAR\nFOO=BAR\n");
 
     let args = &[testfile_2.as_str(), testfile_3.as_str()];
     let expected_output = format!(
@@ -83,10 +83,10 @@ fn checks_two_specific_files() {
 fn checks_one_specific_file_and_one_path() {
     let testdir = TestDir::new();
     testdir.create_testfile(".env", "foo=");
-    let testfile_2 = testdir.create_testfile("test-env-file", "FOO=BAR\nBAR=FOO");
+    let testfile_2 = testdir.create_testfile("test-env-file", "FOO=BAR\nBAR=FOO\n");
 
     let subdir = testdir.subdir();
-    let testfile_3 = subdir.create_testfile("test.env", "FOO=BAR\nFOO=BAR");
+    let testfile_3 = subdir.create_testfile("test.env", "FOO=BAR\nFOO=BAR\n");
 
     let args = &[testfile_2.as_str(), subdir.as_str()];
     let expected_output = format!(
@@ -103,7 +103,7 @@ fn checks_one_specific_file_and_one_path() {
 fn checks_one_specific_file_twice() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "foo=");
-    let testfile_2 = test_dir.create_testfile("test-env-file", "1FOO=");
+    let testfile_2 = test_dir.create_testfile("test-env-file", "1FOO=\n");
 
     let args = &[testfile_2.as_str(), testfile_2.as_str()];
     let expected_output = format!(
