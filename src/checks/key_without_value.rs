@@ -1,27 +1,27 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct KeyWithoutValueChecker {
-    template: String,
-    name: String,
+pub(crate) struct KeyWithoutValueChecker<'a> {
+    template: &'a str,
+    name: &'a str,
 }
 
-impl Default for KeyWithoutValueChecker {
+impl Default for KeyWithoutValueChecker<'_> {
     fn default() -> Self {
         Self {
-            name: String::from("KeyWithoutValue"),
-            template: String::from("The {} key should be with a value or have an equal sign"),
+            name: "KeyWithoutValue",
+            template: "The {} key should be with a value or have an equal sign",
         }
     }
 }
 
-impl KeyWithoutValueChecker {
+impl KeyWithoutValueChecker<'_> {
     fn message(&self, key: &str) -> String {
         return format!("{}: {}", self.name, self.template.replace("{}", &key));
     }
 }
 
-impl Check for KeyWithoutValueChecker {
+impl Check for KeyWithoutValueChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if !line.raw_string.contains('=') {
             Some(Warning::new(line.clone(), self.message(&line.raw_string)))

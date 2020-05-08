@@ -6,11 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add check: Quote characters [#174](https://github.com/dotenv-linter/dotenv-linter/pull/174) ([@sourabhmarathe](https://github.com/sourabhmarathe))
 - Github Actions: Add caching in the CI workflow [#163](https://github.com/dotenv-linter/dotenv-linter/pull/163) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add GitHub Workflow for AUR publishing [#161](https://github.com/dotenv-linter/dotenv-linter/pull/161) ([@mstruebing](https://github.com/mstruebing))
-- Add check: Quote characters [#174](https://github.com/dotenv-linter/dotenv-linter/pull/174) ([@sourabhmarathe](https://github.com/sourabhmarathe))
 
 ### 🔧 Changed
+- Replace `String` with `&'a str` for `KeyWithoutValueChecker` [#177](https://github.com/dotenv-linter/dotenv-linter/pull/177) ([@mgrachev](https://github.com/mgrachev))
 - Fix docker image [#160](https://github.com/dotenv-linter/dotenv-linter/pull/160) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v1.2.0] - 2020-04-20
