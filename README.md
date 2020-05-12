@@ -28,11 +28,12 @@
 It checks `.env` files for problems that may cause the application to malfunction:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#duplicated-key">Duplicated Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#ending-blank-line-will-be-available-in-v200">Ending Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#key-without-value">Key without value</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character-will-be-available-in-v200">Quote character</a> (Will be available in v2.0.0)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character-will-be-available-in-v200">Quote character</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a><br />
 </p>
@@ -184,6 +185,21 @@ FOO=BAR
 BAR=FOO
 ```
 
+### Ending Blank Line (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+
+Detects if a file doesn't have a blank line at the end.
+
+```env
+❌Wrong
+FOO=BAR
+```
+
+```env
+✅Correct
+FOO=BAR
+
+```
+
 ### Incorrect delimiter
 
 Detects if a key does not use an underscore to separate words:
@@ -248,7 +264,7 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### Quote character (Will be available in v2.0.0)
+### Quote character (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
 
 Detects if a value is wrapped in quotes:
 

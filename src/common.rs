@@ -63,9 +63,15 @@ pub struct LineEntry {
 
 impl LineEntry {
     pub fn is_empty_or_comment(&self) -> bool {
-        let trimmed_string = self.raw_string.trim();
+        self.is_empty() || self.is_comment()
+    }
 
-        trimmed_string.is_empty() || trimmed_string.starts_with('#')
+    pub fn is_empty(&self) -> bool {
+        self.trimmed_string().is_empty()
+    }
+
+    pub fn is_comment(&self) -> bool {
+        self.trimmed_string().starts_with('#')
     }
 
     pub fn get_key(&self) -> Option<String> {
@@ -73,8 +79,8 @@ impl LineEntry {
             return None;
         }
 
-        match self.raw_string.find('=') {
-            Some(index) => Some(self.raw_string[..index].to_owned()),
+        match self.trimmed_string().find('=') {
+            Some(index) => Some(self.trimmed_string()[..index].to_owned()),
             None => None,
         }
     }
@@ -88,6 +94,10 @@ impl LineEntry {
             Some(index) => Some(self.raw_string[(index + 1)..].to_owned()),
             None => None,
         }
+    }
+
+    pub fn trimmed_string(&self) -> &str {
+        self.raw_string.trim()
     }
 }
 
@@ -178,6 +188,8 @@ mod tests {
                     raw_string: String::from(""),
                 };
 
+                assert_eq!(input.is_empty(), true);
+                assert_eq!(input.is_comment(), false);
                 assert_eq!(input.is_empty_or_comment(), true);
             }
 
@@ -189,6 +201,8 @@ mod tests {
                     raw_string: String::from("# Comment"),
                 };
 
+                assert_eq!(input.is_empty(), false);
+                assert_eq!(input.is_comment(), true);
                 assert_eq!(input.is_empty_or_comment(), true);
             }
 
@@ -200,6 +214,8 @@ mod tests {
                     raw_string: String::from("NotComment"),
                 };
 
+                assert_eq!(input.is_empty(), false);
+                assert_eq!(input.is_comment(), false);
                 assert_eq!(input.is_empty_or_comment(), false);
             }
         }
@@ -317,6 +333,43 @@ mod tests {
                 let expected = None;
 
                 assert_eq!(expected, input.get_value());
+            }
+        }
+
+        mod trimmed_string {
+            use super::*;
+
+            #[test]
+            fn line_without_blank_chars_test() {
+                let entry = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("FOO=BAR"),
+                };
+
+                assert_eq!("FOO=BAR", entry.trimmed_string());
+            }
+
+            #[test]
+            fn line_with_spaces_test() {
+                let entry = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("   FOO=BAR  "),
+                };
+
+                assert_eq!("FOO=BAR", entry.trimmed_string());
+            }
+
+            #[test]
+            fn line_with_tab_test() {
+                let entry = LineEntry {
+                    number: 1,
+                    file_path: PathBuf::from(".env"),
+                    raw_string: String::from("FOO=BAR\t"),
+                };
+
+                assert_eq!("FOO=BAR", entry.trimmed_string());
             }
         }
     }
