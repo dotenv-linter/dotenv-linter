@@ -2,6 +2,7 @@ use crate::common::*;
 
 mod duplicated_key;
 mod ending_blank_line;
+mod extra_blank_line;
 mod incorrect_delimiter;
 mod key_without_value;
 mod leading_character;
@@ -19,6 +20,7 @@ trait Check {
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(duplicated_key::DuplicatedKeyChecker::default()),
+        Box::new(extra_blank_line::ExtraBlankLineChecker::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
         Box::new(leading_character::LeadingCharacterChecker::default()),
         Box::new(key_without_value::KeyWithoutValueChecker::default()),
@@ -33,19 +35,19 @@ pub fn run(lines: Vec<LineEntry>) -> Vec<Warning> {
     let mut checks = checklist();
     let mut warnings: Vec<Warning> = Vec::new();
 
-    if let Some((last_line, rest_lines)) = lines.split_last() {
-        for line in rest_lines {
-            if line.is_empty_or_comment() {
-                continue;
-            }
-
-            for ch in &mut checks {
-                if let Some(warning) = ch.run(line) {
-                    warnings.push(warning);
-                }
-            }
+    for line in &lines {
+        if line.is_comment() {
+            continue;
         }
 
+        for ch in &mut checks {
+            if let Some(warning) = ch.run(line) {
+                warnings.push(warning);
+            }
+        }
+    }
+
+    if let Some(last_line) = lines.last() {
         let mut ending_line_checker = ending_blank_line::EndingBlankLineChecker::default();
         if let Some(warning) = ending_line_checker.run(last_line) {
             warnings.push(warning);
@@ -86,7 +88,7 @@ mod tests {
 
     #[test]
     fn run_with_empty_line_test() {
-        let lines: Vec<LineEntry> = vec![line_entry(1, ""), blank_entry(2)];
+        let lines: Vec<LineEntry> = vec![blank_entry(1)];
         let expected: Vec<Warning> = Vec::new();
 
         assert_eq!(expected, run(lines));
@@ -94,7 +96,7 @@ mod tests {
 
     #[test]
     fn run_with_comment_line_test() {
-        let lines: Vec<LineEntry> = vec![line_entry(1, "# Comment"), blank_entry(2)];
+        let lines: Vec<LineEntry> = vec![line_entry(1, "# Comment = 'Value'"), blank_entry(2)];
         let expected: Vec<Warning> = Vec::new();
 
         assert_eq!(expected, run(lines));
