@@ -29,6 +29,7 @@ It checks `.env` files for problems that may cause the application to malfunctio
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#duplicated-key">Duplicated Key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#ending-blank-line-will-be-available-in-v200">Ending Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#extra-blank-line-will-be-available-in-v200">Extra Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#key-without-value">Key without value</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
@@ -196,6 +197,41 @@ FOO=BAR
 
 ```env
 ✅Correct
+FOO=BAR
+
+```
+
+### Extra Blank Line (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+
+Detects if a file contains more than one blank line in a row.
+
+```env
+❌Wrong
+A=B
+
+
+FOO=BAR
+```
+
+```env
+❌Wrong
+A=B
+FOO=BAR
+
+
+```
+
+```env
+✅Correct
+A=B
+
+FOO=BAR
+
+```
+
+```env
+✅Correct
+A=B
 FOO=BAR
 
 ```

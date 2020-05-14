@@ -28,7 +28,7 @@ fn incorrect_files() {
         "A=B",
         "# Comment 1\n# Comment 2\n# Comment 3",
     ];
-    let expected_line_numbers = vec![4, 4, 2, 4];
+    let expected_line_numbers = vec![3, 3, 1, 3];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();

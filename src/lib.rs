@@ -62,13 +62,16 @@ fn run_checks(fe: &FileEntry) -> io::Result<Vec<Warning>> {
     if f.seek(SeekFrom::End(-ending_seq_length)).is_ok()
         && f.read_to_string(&mut last_line)? == ending_seq_length as usize
     {
-        // We add a special LineEntry with the final character in the file
-        // for the "Ending Blank Line" check.
-        lines.push(LineEntry {
-            number: number + 1,
-            file_path: fe.path.clone(),
-            raw_string: last_line,
-        })
+        // We add an one more LineEntry with the final character in the file
+        // for the "Ending Blank Line" check if this final character is the "\n"
+        // (the latter condition is needed because of "Extra Blank Line" check at the end of file).
+        if last_line.as_str() == "\n" {
+            lines.push(LineEntry {
+                number: number + 1,
+                file_path: fe.path.clone(),
+                raw_string: last_line,
+            });
+        }
     }
 
     Ok(checks::run(lines))

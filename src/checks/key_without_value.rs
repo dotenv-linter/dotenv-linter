@@ -23,7 +23,7 @@ impl KeyWithoutValueChecker<'_> {
 
 impl Check for KeyWithoutValueChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        if !line.raw_string.contains('=') {
+        if !(line.is_empty() || line.raw_string.contains('=')) {
             Some(Warning::new(line.clone(), self.message(&line.raw_string)))
         } else {
             None
@@ -43,6 +43,17 @@ mod tests {
             number: 1,
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
+        };
+        assert_eq!(None, checker.run(&line));
+    }
+
+    #[test]
+    fn working_run_with_blank_line() {
+        let mut checker = KeyWithoutValueChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_path: PathBuf::from(".env"),
+            raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(&line));
     }

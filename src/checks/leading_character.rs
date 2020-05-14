@@ -23,9 +23,10 @@ impl LeadingCharacterChecker {
 
 impl Check for LeadingCharacterChecker {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        if line
-            .raw_string
-            .starts_with(|c: char| c.is_alphabetic() || c == '_')
+        if line.is_empty()
+            || line
+                .raw_string
+                .starts_with(|c: char| c.is_alphabetic() || c == '_')
         {
             None
         } else {
@@ -48,6 +49,17 @@ mod tests {
             number: 1,
             file_path: PathBuf::from(".env"),
             raw_string: String::from("FOO=BAR"),
+        };
+        assert_eq!(None, checker.run(&line));
+    }
+
+    #[test]
+    fn blank_line() {
+        let mut checker = LeadingCharacterChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file_path: PathBuf::from(".env"),
+            raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(&line));
     }
