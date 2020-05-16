@@ -1,18 +1,18 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct IncorrectDelimiterChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct IncorrectDelimiterChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl IncorrectDelimiterChecker {
+impl IncorrectDelimiterChecker<'_> {
     fn message(&self, key: &str) -> String {
         format!("{}: {}", self.name, self.template.replace("{}", &key))
     }
 }
 
-impl Default for IncorrectDelimiterChecker {
+impl Default for IncorrectDelimiterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "IncorrectDelimiter",
@@ -21,7 +21,7 @@ impl Default for IncorrectDelimiterChecker {
     }
 }
 
-impl Check for IncorrectDelimiterChecker {
+impl Check for IncorrectDelimiterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
