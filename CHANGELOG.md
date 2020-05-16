@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add check: TrailingWhitespace [#181](https://github.com/dotenv-linter/dotenv-linter/pull/181) ([@pineapplethief](https://github.com/pineapplethief))
 - Add check: ExtraBlankLine [#180](https://github.com/dotenv-linter/dotenv-linter/pull/180) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add check: EndingBlankLine [#170](https://github.com/dotenv-linter/dotenv-linter/pull/170) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add check: Quote characters [#174](https://github.com/dotenv-linter/dotenv-linter/pull/174) ([@sourabhmarathe](https://github.com/sourabhmarathe))
