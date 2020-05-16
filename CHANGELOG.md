@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔧 Changed
 - Replace `String` with `&'a str` for `KeyWithoutValueChecker` [#177](https://github.com/dotenv-linter/dotenv-linter/pull/177) ([@mgrachev](https://github.com/mgrachev))
 - Fix docker image [#160](https://github.com/dotenv-linter/dotenv-linter/pull/160) ([@mgrachev](https://github.com/mgrachev))
+- Replace `&'static str` with `&'a str` for `IncorrectDelimiterChecker` [#191](https://github.com/dotenv-linter/dotenv-linter/pull/191) ([@DDtKey](https://github.com/DDtKey))
 
 ## [v1.2.0] - 2020-04-20
 ### 🔧 Changed
