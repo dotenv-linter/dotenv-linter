@@ -2,29 +2,29 @@ use crate::checks::Check;
 use crate::common::*;
 use std::collections::HashSet;
 
-pub(crate) struct DuplicatedKeyChecker {
-    name: String,
-    template: String,
+pub(crate) struct DuplicatedKeyChecker<'a> {
+    name: &'a str,
+    template: &'a str,
     keys: HashSet<String>,
 }
 
-impl DuplicatedKeyChecker {
+impl DuplicatedKeyChecker<'_> {
     fn message(&self, key: &str) -> String {
         return format!("{}: {}", self.name, self.template.replace("{}", &key));
     }
 }
 
-impl Default for DuplicatedKeyChecker {
+impl Default for DuplicatedKeyChecker<'_> {
     fn default() -> Self {
         Self {
             keys: HashSet::new(),
-            name: String::from("DuplicatedKey"),
-            template: String::from("The {} key is duplicated"),
+            name: "DuplicatedKey",
+            template: "The {} key is duplicated",
         }
     }
 }
 
-impl Check for DuplicatedKeyChecker {
+impl Check for DuplicatedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
 
