@@ -1,19 +1,19 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct ExtraBlankLineChecker {
-    template: &'static str,
-    name: &'static str,
+pub(crate) struct ExtraBlankLineChecker<'a> {
+    template: &'a str,
+    name: &'a str,
     last_blank_number: Option<usize>,
 }
 
-impl ExtraBlankLineChecker {
+impl ExtraBlankLineChecker<'_> {
     fn message(&self) -> String {
         return format!("{}: {}", self.name, self.template);
     }
 }
 
-impl Default for ExtraBlankLineChecker {
+impl Default for ExtraBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
             name: "ExtraBlankLine",
@@ -23,7 +23,7 @@ impl Default for ExtraBlankLineChecker {
     }
 }
 
-impl Check for ExtraBlankLineChecker {
+impl Check for ExtraBlankLineChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if !line.is_empty() {
             return None;
