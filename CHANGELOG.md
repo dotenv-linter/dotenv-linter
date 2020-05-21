@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GitHub Workflow for AUR publishing [#161](https://github.com/dotenv-linter/dotenv-linter/pull/161) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
+- Replace `String` with `&'a str` for `UnorderedKeyChecker` [#196](https://github.com/dotenv-linter/dotenv-linter/pull/196) ([@k0va1](https://github.com/k0va1))
 - Replace `&'static str` with `&'a str` for `ExtraBlankLineChecker` [#193](https://github.com/dotenv-linter/dotenv-linter/pull/193) ([@vishalsodani](https://github.com/vishalsodani))
 - Replace `String` with `&'a str` for `DuplicatedKeyChecker` [#192](https://github.com/dotenv-linter/dotenv-linter/pull/192) ([@iamsaquib](https://github.com/iamsaquib))
 - Replace `String` with `&'a str` for `KeyWithoutValueChecker` [#177](https://github.com/dotenv-linter/dotenv-linter/pull/177) ([@mgrachev](https://github.com/mgrachev))
