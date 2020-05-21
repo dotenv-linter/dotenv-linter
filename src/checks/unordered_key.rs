@@ -1,13 +1,13 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct UnorderedKeyChecker {
-    template: String,
+pub(crate) struct UnorderedKeyChecker<'a> {
+    template: &'a str,
     keys: Vec<String>,
-    name: String,
+    name: &'a str,
 }
 
-impl UnorderedKeyChecker {
+impl UnorderedKeyChecker<'_> {
     fn message(&self, key_one: &str, key_two: &str) -> String {
         return format!(
             "{}: {}",
@@ -19,17 +19,17 @@ impl UnorderedKeyChecker {
     }
 }
 
-impl Default for UnorderedKeyChecker {
+impl Default for UnorderedKeyChecker<'_> {
     fn default() -> Self {
         Self {
             keys: Vec::new(),
-            name: String::from("UnorderedKey"),
-            template: String::from("The {1} key should go before the {2} key"),
+            name: "UnorderedKey",
+            template: "The {1} key should go before the {2} key",
         }
     }
 }
 
-impl Check for UnorderedKeyChecker {
+impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         self.keys.push(key.clone());
