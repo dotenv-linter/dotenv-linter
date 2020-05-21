@@ -10,7 +10,7 @@ pub(crate) struct DuplicatedKeyChecker<'a> {
 
 impl DuplicatedKeyChecker<'_> {
     fn message(&self, key: &str) -> String {
-        return format!("{}: {}", self.name, self.template.replace("{}", &key));
+        format!("{}: {}", self.name, self.template.replace("{}", &key))
     }
 }
 
@@ -34,6 +34,10 @@ impl Check for DuplicatedKeyChecker<'_> {
 
         self.keys.insert(key);
         None
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 

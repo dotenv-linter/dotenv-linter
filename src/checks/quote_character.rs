@@ -30,6 +30,10 @@ impl Check for QuoteCharacterChecker {
             None
         }
     }
+
+    fn name(&self) -> &str {
+        self.name
+    }
 }
 
 #[cfg(test)]
