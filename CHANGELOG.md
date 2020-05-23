@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- AAdd an argument to show available checks [#201](https://github.com/dotenv-linter/dotenv-linter/pull/201)  ([@DDtKey](https://github.com/DDtKey))
 - Add the ability to skip checks [#178](https://github.com/dotenv-linter/dotenv-linter/pull/178) ([@mgrachev](https://github.com/mgrachev))
 - Add check: ExtraBlankLine [#180](https://github.com/dotenv-linter/dotenv-linter/pull/180) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add check: EndingBlankLine [#170](https://github.com/dotenv-linter/dotenv-linter/pull/170) ([@evgeniy-r](https://github.com/evgeniy-r))
