@@ -32,6 +32,12 @@ fn checklist() -> Vec<Box<dyn Check>> {
     ]
 }
 
+pub fn check_names() -> Vec<String> {
+    checklist().iter()
+        .map(|check| check.name().to_string())
+        .collect()
+}
+
 pub fn run(lines: Vec<LineEntry>, skip_checks: &[&str]) -> Vec<Warning> {
     let mut checks = checklist();
     checks.retain(|c| !skip_checks.contains(&c.name()));

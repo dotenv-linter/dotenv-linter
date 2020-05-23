@@ -43,6 +43,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .multiple(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("show-checks")
+                .long("show-checks")
+                .help("Show check list"),
+        )
         .get_matches()
 }
 
@@ -56,6 +61,13 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     let current_dir = current_dir.as_os_str();
 
     let args = get_args(current_dir);
+
+    if args.is_present("show-checks") {
+        for name in checks::check_names() {
+            println!("{}", name);
+        }
+        return Ok(vec![]);
+    }
 
     let mut paths: Vec<PathBuf> = Vec::new();
     let mut files: Vec<FileEntry> = Vec::new();
