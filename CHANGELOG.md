@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Replace `&'static str` with `&'a str` for `QuoteCharacterChecker` [#198](https://github.com/dotenv-linter/dotenv-linter/pull/198) ([@duncandean](https://github.com/duncandean))
+- Replace `&'static str` with `&'a str` for `EndingBlankLineChecker` [#196](https://github.com/dotenv-linter/dotenv-linter/pull/197) ([@rossjones](https://github.com/rossjones))
 - Replace `String` with `&'a str` for `UnorderedKeyChecker` [#196](https://github.com/dotenv-linter/dotenv-linter/pull/196) ([@k0va1](https://github.com/k0va1))
 - Replace `String` with `&'a str` for `SpaceCharacterChecker` [#195](https://github.com/dotenv-linter/dotenv-linter/pull/195) ([@k0va1](https://github.com/k0va1))
 - Replace `String` with `&'a str` for `LowercaseKeyChecker` [#194](https://github.com/dotenv-linter/dotenv-linter/pull/194) ([@tisorlawan](https://github.com/tisorlawan))
