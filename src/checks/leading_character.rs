@@ -1,12 +1,12 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct LeadingCharacterChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct LeadingCharacterChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl Default for LeadingCharacterChecker {
+impl Default for LeadingCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "LeadingCharacter",
@@ -15,13 +15,13 @@ impl Default for LeadingCharacterChecker {
     }
 }
 
-impl LeadingCharacterChecker {
+impl LeadingCharacterChecker<'_> {
     fn message(&self) -> String {
         format!("{}: {}", self.name, self.template)
     }
 }
 
-impl Check for LeadingCharacterChecker {
+impl Check for LeadingCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if line.is_empty()
             || line
