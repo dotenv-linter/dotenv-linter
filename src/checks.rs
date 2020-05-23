@@ -184,9 +184,17 @@ mod tests {
 
     #[test]
     fn check_name_list() {
-        let expected_names = vec!["DuplicatedKey", "ExtraBlankLine", "IncorrectDelimiter",
-                                  "LeadingCharacter", "KeyWithoutValue", "LowercaseKey",
-                                  "QuoteCharacter", "SpaceCharacter", "UnorderedKey"];
+        let expected_names = vec![
+            "DuplicatedKey",
+            "ExtraBlankLine",
+            "IncorrectDelimiter",
+            "LeadingCharacter",
+            "KeyWithoutValue",
+            "LowercaseKey",
+            "QuoteCharacter",
+            "SpaceCharacter",
+            "UnorderedKey",
+        ];
         assert_eq!(expected_names, check_names())
     }
 }
