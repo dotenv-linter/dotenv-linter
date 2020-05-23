@@ -1,12 +1,12 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct EndingBlankLineChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct EndingBlankLineChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl Default for EndingBlankLineChecker {
+impl Default for EndingBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
             name: "EndingBlankLine",
@@ -15,13 +15,13 @@ impl Default for EndingBlankLineChecker {
     }
 }
 
-impl EndingBlankLineChecker {
+impl EndingBlankLineChecker<'_> {
     fn message(&self) -> String {
         format!("{}: {}", self.name, self.template)
     }
 }
 
-impl Check for EndingBlankLineChecker {
+impl Check for EndingBlankLineChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if line.raw_string.ends_with('\n') {
             None

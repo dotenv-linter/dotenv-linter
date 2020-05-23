@@ -1,18 +1,18 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct QuoteCharacterChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct QuoteCharacterChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl QuoteCharacterChecker {
+impl QuoteCharacterChecker<'_> {
     fn message(&self) -> String {
         format!("{}: {}", self.name, self.template)
     }
 }
 
-impl Default for QuoteCharacterChecker {
+impl Default for QuoteCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "QuoteCharacter",
@@ -21,7 +21,7 @@ impl Default for QuoteCharacterChecker {
     }
 }
 
-impl Check for QuoteCharacterChecker {
+impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
         if val.contains('\"') || val.contains('\'') {
