@@ -24,6 +24,10 @@ impl Check for LowercaseKeyChecker<'_> {
             Some(Warning::new(line.clone(), self.message(&key)))
         }
     }
+
+    fn name(&self) -> &str {
+        self.name
+    }
 }
 
 impl LowercaseKeyChecker<'_> {

@@ -33,6 +33,10 @@ impl Check for LeadingCharacterChecker<'_> {
             Some(Warning::new(line.clone(), self.message()))
         }
     }
+
+    fn name(&self) -> &str {
+        self.name
+    }
 }
 
 #[cfg(test)]

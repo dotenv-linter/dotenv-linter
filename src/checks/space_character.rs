@@ -8,7 +8,7 @@ pub(crate) struct SpaceCharacterChecker<'a> {
 
 impl SpaceCharacterChecker<'_> {
     fn message(&self) -> String {
-        return format!("{}: {}", self.name, self.template);
+        format!("{}: {}", self.name, self.template)
     }
 }
 
@@ -27,12 +27,15 @@ impl Check for SpaceCharacterChecker<'_> {
 
         if let [key, value] = &line_splitted[..] {
             if key.ends_with(' ') || value.starts_with(' ') {
-                let warning = Warning::new(line.clone(), self.message());
-                return Some(warning);
+                return Some(Warning::new(line.clone(), self.message()));
             }
         }
 
         None
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 

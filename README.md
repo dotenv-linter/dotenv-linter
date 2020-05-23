@@ -170,6 +170,13 @@ $ dotenv-linter --exclude .env.test
 .env:3 UnorderedKey: The BAR key should go before the FOO key
 ```
 
+If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME` (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172)):
+
+```shell script
+$ dotenv-linter --skip UnorderedKey EndingBlankLine
+.env:2 DuplicatedKey: The FOO key is duplicated
+```
+
 ## ✅ Checks
 
 ### Duplicated Key
@@ -188,7 +195,7 @@ BAR=FOO
 
 ### Ending Blank Line (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
 
-Detects if a file doesn't have a blank line at the end.
+Detects if a file doesn't have a blank line at the end:
 
 ```env
 ❌Wrong
@@ -203,7 +210,7 @@ FOO=BAR
 
 ### Extra Blank Line (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
 
-Detects if a file contains more than one blank line in a row.
+Detects if a file contains more than one blank line in a row:
 
 ```env
 ❌Wrong

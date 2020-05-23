@@ -2,8 +2,8 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct KeyWithoutValueChecker<'a> {
-    template: &'a str,
     name: &'a str,
+    template: &'a str,
 }
 
 impl Default for KeyWithoutValueChecker<'_> {
@@ -17,7 +17,7 @@ impl Default for KeyWithoutValueChecker<'_> {
 
 impl KeyWithoutValueChecker<'_> {
     fn message(&self, key: &str) -> String {
-        return format!("{}: {}", self.name, self.template.replace("{}", &key));
+        format!("{}: {}", self.name, self.template.replace("{}", &key))
     }
 }
 
@@ -28,6 +28,10 @@ impl Check for KeyWithoutValueChecker<'_> {
         } else {
             None
         }
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 
