@@ -33,7 +33,8 @@ fn checklist() -> Vec<Box<dyn Check>> {
 }
 
 pub fn check_names() -> Vec<String> {
-    checklist().iter()
+    checklist()
+        .iter()
         .map(|check| check.name().to_string())
         .collect()
 }
