@@ -43,6 +43,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .multiple(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("show-checks")
+                .long("show-checks")
+                .help("Show list of available checks"),
+        )
         .get_matches()
 }
 
@@ -63,6 +68,13 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
+    }
+
+    if args.is_present("show-checks") {
+        checks::available_check_names()
+            .iter()
+            .for_each(|name| println!("{}", name));
+        return Ok(vec![]);
     }
 
     if let Some(inputs) = args.values_of("input") {
