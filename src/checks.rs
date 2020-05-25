@@ -33,10 +33,13 @@ fn checklist() -> Vec<Box<dyn Check>> {
 }
 
 pub fn available_check_names() -> Vec<String> {
-    checklist()
+    let mut names: Vec<String> = checklist()
         .iter()
         .map(|check| check.name().to_string())
-        .collect()
+        .collect();
+    names.push(ending_blank_line::EndingBlankLineChecker::default().name().to_string());
+    names.sort();
+    names
 }
 
 pub fn run(lines: Vec<LineEntry>, skip_checks: &[&str]) -> Vec<Warning> {
@@ -189,5 +192,7 @@ mod tests {
             let check_name = check.name();
             assert!(available_check_names.contains(&check_name.to_string()));
         }
+        let ending_blank_line = ending_blank_line::EndingBlankLineChecker::default();
+        assert!(available_check_names.contains(&ending_blank_line.name().to_string()));
     }
 }

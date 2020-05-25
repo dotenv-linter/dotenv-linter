@@ -182,10 +182,11 @@ If you need to view all available checks, you can use the argument `--show-check
 ```shell script
 $ dotenv-linter --show-checks
 DuplicatedKey
+EndingBlankLine
 ExtraBlankLine
 IncorrectDelimiter
-LeadingCharacter
 KeyWithoutValue
+LeadingCharacter
 LowercaseKey
 QuoteCharacter
 SpaceCharacter
