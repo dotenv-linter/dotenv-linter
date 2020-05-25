@@ -1,12 +1,12 @@
 use crate::common::*;
 
 use clap::Arg;
-use std::env;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Seek, SeekFrom};
 use std::path::PathBuf;
+use std::{env, process};
 
 mod checks;
 mod common;
@@ -66,15 +66,15 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     let mut files: Vec<FileEntry> = Vec::new();
     let mut skip_checks: Vec<&str> = Vec::new();
 
-    if let Some(skip) = args.values_of("skip") {
-        skip_checks = skip.collect();
-    }
-
     if args.is_present("show-checks") {
         checks::available_check_names()
             .iter()
             .for_each(|name| println!("{}", name));
-        return Ok(vec![]);
+        process::exit(0);
+    }
+
+    if let Some(skip) = args.values_of("skip") {
+        skip_checks = skip.collect();
     }
 
     if let Some(inputs) = args.values_of("input") {
