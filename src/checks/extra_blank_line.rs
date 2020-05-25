@@ -56,7 +56,10 @@ mod tests {
             let (content, message) = *assert;
             let line = LineEntry {
                 number: i + 1,
-                file_path: PathBuf::from(".env"),
+                file: FileEntry {
+                    path: PathBuf::from(".env"),
+                    file_name: ".env".to_string(),
+                },
                 raw_string: String::from(content),
             };
             let expected = message.map(|msg| Warning::new(line.clone(), String::from(msg)));

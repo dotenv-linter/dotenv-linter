@@ -18,17 +18,21 @@ impl fmt::Display for Warning {
         write!(
             f,
             "{}:{} {}",
-            self.line.file_path.display(),
-            self.line.number,
-            self.message
+            self.line.file, self.line.number, self.message
         )
     }
 }
 
-#[derive(Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FileEntry {
     pub path: PathBuf,
     pub file_name: String,
+}
+
+impl fmt::Display for FileEntry {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.path.display())
+    }
 }
 
 impl FileEntry {
@@ -57,7 +61,7 @@ impl FileEntry {
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
     pub number: usize,
-    pub file_path: PathBuf,
+    pub file: FileEntry,
     pub raw_string: String,
 }
 
@@ -109,7 +113,10 @@ mod tests {
     fn warning_fmt_test() {
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO=BAR"),
         };
         let warning = Warning::new(
@@ -184,7 +191,10 @@ mod tests {
             fn run_with_empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from(""),
                 };
 
@@ -197,7 +207,10 @@ mod tests {
             fn run_with_comment_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("# Comment"),
                 };
 
@@ -210,7 +223,10 @@ mod tests {
             fn run_with_not_comment_or_empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("NotComment"),
                 };
 
@@ -227,7 +243,10 @@ mod tests {
             fn empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from(""),
                 };
                 let expected = None;
@@ -239,7 +258,10 @@ mod tests {
             fn correct_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 };
                 let expected = Some(String::from("FOO"));
@@ -251,7 +273,10 @@ mod tests {
             fn line_without_value_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO="),
                 };
                 let expected = Some(String::from("FOO"));
@@ -263,7 +288,10 @@ mod tests {
             fn missing_value_and_equal_sign_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOOBAR"),
                 };
                 let expected = None;
@@ -279,7 +307,10 @@ mod tests {
             fn empty_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from(""),
                 };
                 let expected = None;
@@ -291,7 +322,10 @@ mod tests {
             fn correct_line_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 };
                 let expected = Some(String::from("BAR"));
@@ -303,7 +337,10 @@ mod tests {
             fn line_without_key_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("=BAR"),
                 };
                 let expected = Some(String::from("BAR"));
@@ -315,7 +352,10 @@ mod tests {
             fn line_without_value_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO="),
                 };
                 let expected = Some(String::from(""));
@@ -327,7 +367,10 @@ mod tests {
             fn missing_value_and_equal_sign_test() {
                 let input = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOOBAR"),
                 };
                 let expected = None;
@@ -343,7 +386,10 @@ mod tests {
             fn line_without_blank_chars_test() {
                 let entry = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 };
 
@@ -354,7 +400,10 @@ mod tests {
             fn line_with_spaces_test() {
                 let entry = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("   FOO=BAR  "),
                 };
 
@@ -365,7 +414,10 @@ mod tests {
             fn line_with_tab_test() {
                 let entry = LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR\t"),
                 };
 

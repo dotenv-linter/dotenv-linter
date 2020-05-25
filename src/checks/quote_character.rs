@@ -56,7 +56,10 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -64,13 +67,19 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO='BAR'"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_path: PathBuf::from(".env"),
+                        file: FileEntry {
+                            path: PathBuf::from(".env"),
+                            file_name: ".env".to_string(),
+                        },
                         raw_string: String::from("FOO='BAR'"),
                     },
                     String::from("QuoteCharacter: The value is wrapped in quotes"),
@@ -87,7 +96,10 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -95,13 +107,19 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=\"BAR\""),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_path: PathBuf::from(".env"),
+                        file: FileEntry {
+                            path: PathBuf::from(".env"),
+                            file_name: ".env".to_string(),
+                        },
                         raw_string: String::from("FOO=\"BAR\""),
                     },
                     String::from("QuoteCharacter: The value is wrapped in quotes"),
@@ -117,7 +135,10 @@ mod tests {
         let asserts = vec![(
             LineEntry {
                 number: 1,
-                file_path: PathBuf::from(".env"),
+                file: FileEntry {
+                    path: PathBuf::from(".env"),
+                    file_name: ".env".to_string(),
+                },
                 raw_string: String::from("FOO=BAR"),
             },
             None,

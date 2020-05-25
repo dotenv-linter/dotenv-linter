@@ -39,7 +39,7 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .short("s")
                 .long("skip")
                 .value_name("CHECK_NAME")
-                .help("Skip checks")
+                .help("Skips checks")
                 .multiple(true)
                 .takes_value(true),
         )
@@ -120,7 +120,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     let mut warnings: Vec<Warning> = Vec::new();
     for file in new_files {
-        let lines = get_lines(&file)?;
+        let lines = get_lines(file)?;
 
         let result = checks::run(lines, &skip_checks);
         warnings.extend(result);
@@ -129,7 +129,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     Ok(warnings)
 }
 
-fn get_lines(fe: &FileEntry) -> io::Result<Vec<LineEntry>> {
+fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
     let mut f = File::open(&fe.path)?;
 
     let reader = BufReader::new(&f);
@@ -144,7 +144,7 @@ fn get_lines(fe: &FileEntry) -> io::Result<Vec<LineEntry>> {
 
         lines.push(LineEntry {
             number,
-            file_path: fe.path.clone(),
+            file: fe.clone(),
             raw_string,
         })
     }
@@ -160,7 +160,7 @@ fn get_lines(fe: &FileEntry) -> io::Result<Vec<LineEntry>> {
         if last_line.as_str() == "\n" {
             lines.push(LineEntry {
                 number: number + 1,
-                file_path: fe.path.clone(),
+                file: fe,
                 raw_string: last_line,
             });
         }
