@@ -37,7 +37,11 @@ pub fn available_check_names() -> Vec<String> {
         .iter()
         .map(|check| check.name().to_string())
         .collect();
-    names.push(ending_blank_line::EndingBlankLineChecker::default().name().to_string());
+    names.push(
+        ending_blank_line::EndingBlankLineChecker::default()
+            .name()
+            .to_string(),
+    );
     names.sort();
     names
 }
