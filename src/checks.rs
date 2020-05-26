@@ -46,13 +46,13 @@ pub fn available_check_names() -> Vec<String> {
     names
 }
 
-pub fn run(lines: Vec<LineEntry>, skip_checks: &[&str]) -> Vec<Warning> {
+pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
     let mut checks = checklist();
     checks.retain(|c| !skip_checks.contains(&c.name()));
 
     let mut warnings: Vec<Warning> = Vec::new();
 
-    for line in &lines {
+    for line in lines {
         if line.is_comment() {
             continue;
         }
@@ -110,7 +110,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(empty, &skip_checks));
+        assert_eq!(expected, run(&empty, &skip_checks));
     }
 
     #[test]
@@ -119,7 +119,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -128,7 +128,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -137,7 +137,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -145,15 +145,14 @@ mod tests {
         let line = line_entry(1, "FOO");
         let warning = Warning::new(
             line.clone(),
-            String::from(
-                "KeyWithoutValue: The FOO key should be with a value or have an equal sign",
-            ),
+            "KeyWithoutValue",
+            String::from("The FOO key should be with a value or have an equal sign"),
         );
         let lines: Vec<LineEntry> = vec![line, blank_line_entry(2)];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -161,13 +160,14 @@ mod tests {
         let line = line_entry(1, "FOO=BAR");
         let warning = Warning::new(
             line.clone(),
-            String::from("EndingBlankLine: No blank line at the end of the file"),
+            "EndingBlankLine",
+            String::from("No blank line at the end of the file"),
         );
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -176,13 +176,14 @@ mod tests {
         let line2 = line_entry(2, "1FOO");
         let warning = Warning::new(
             line2.clone(),
-            String::from("LeadingCharacter: Invalid leading character detected"),
+            "LeadingCharacter",
+            String::from("Invalid leading character detected"),
         );
         let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3)];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue"];
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -192,7 +193,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue", "EndingBlankLine"];
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]

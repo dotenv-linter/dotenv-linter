@@ -1,6 +1,6 @@
 use assert_cmd::Command;
 use std::ffi::OsStr;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
 use tempfile::{tempdir, tempdir_in, TempDir};
@@ -108,6 +108,21 @@ impl TestDir {
         self.close();
     }
 
+    /// Run the default CLI binary, with "-f" for the given test file, check it succeeds and
+    /// compare the fixed file's contents with provided.
+    /// This method removes the TestDir when command has finished.
+    pub fn test_command_fix_file(self, testfile: &TestFile, contents: &str) {
+        let mut cmd = Self::init_cmd();
+        cmd.current_dir(&self.current_dir)
+            .args(&["-f", testfile.as_str()])
+            .assert()
+            .success();
+
+        assert_eq!(testfile.contents().as_str(), contents);
+
+        self.close();
+    }
+
     fn init_cmd() -> Command {
         Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name")
     }
@@ -140,5 +155,10 @@ impl TestFile {
             .expect("get shortname")
             .to_str()
             .expect("convert shortname to &str")
+    }
+
+    /// Get file contents
+    pub fn contents(&self) -> String {
+        String::from_utf8_lossy(&fs::read(self.as_str()).unwrap()).into_owned()
     }
 }

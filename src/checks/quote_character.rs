@@ -8,7 +8,7 @@ pub(crate) struct QuoteCharacterChecker<'a> {
 
 impl QuoteCharacterChecker<'_> {
     fn message(&self) -> String {
-        format!("{}: {}", self.name, self.template)
+        String::from(self.template)
     }
 }
 
@@ -25,7 +25,7 @@ impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
         if val.contains('\"') || val.contains('\'') {
-            Some(Warning::new(line.clone(), self.message()))
+            Some(Warning::new(line.clone(), self.name(), self.message()))
         } else {
             None
         }
@@ -82,7 +82,8 @@ mod tests {
                         },
                         raw_string: String::from("FOO='BAR'"),
                     },
-                    String::from("QuoteCharacter: The value is wrapped in quotes"),
+                    "QuoteCharacter",
+                    String::from("The value is wrapped in quotes"),
                 )),
             ),
         ];
@@ -122,7 +123,8 @@ mod tests {
                         },
                         raw_string: String::from("FOO=\"BAR\""),
                     },
-                    String::from("QuoteCharacter: The value is wrapped in quotes"),
+                    "QuoteCharacter",
+                    String::from("The value is wrapped in quotes"),
                 )),
             ),
         ];

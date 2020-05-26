@@ -2,22 +2,22 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct ExtraBlankLineChecker<'a> {
-    template: &'a str,
     name: &'a str,
+    template: &'a str,
     last_blank_number: Option<usize>,
 }
 
 impl ExtraBlankLineChecker<'_> {
     fn message(&self) -> String {
-        return format!("{}: {}", self.name, self.template);
+        String::from(self.template)
     }
 }
 
 impl Default for ExtraBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "ExtraBlankLine",
             template: "Extra blank line detected",
+            name: "ExtraBlankLine",
             last_blank_number: None,
         }
     }
@@ -31,7 +31,7 @@ impl Check for ExtraBlankLineChecker<'_> {
 
         if let Some(last_blank_number) = self.last_blank_number {
             if last_blank_number + 1 == line.number {
-                return Some(Warning::new(line.clone(), self.message()));
+                return Some(Warning::new(line.clone(), self.name(), self.message()));
             }
         }
         self.last_blank_number = Some(line.number);
@@ -62,7 +62,8 @@ mod tests {
                 },
                 raw_string: String::from(content),
             };
-            let expected = message.map(|msg| Warning::new(line.clone(), String::from(msg)));
+            let expected =
+                message.map(|msg| Warning::new(line.clone(), "ExtraBlankLine", String::from(msg)));
 
             assert_eq!(checker.run(&line), expected);
         }
@@ -87,7 +88,7 @@ mod tests {
         let asserts = vec![
             ("A=B", None),
             ("", None),
-            ("", Some("ExtraBlankLine: Extra blank line detected")),
+            ("", Some("Extra blank line detected")),
             ("C=D", None),
         ];
 

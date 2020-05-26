@@ -17,14 +17,18 @@ impl Default for KeyWithoutValueChecker<'_> {
 
 impl KeyWithoutValueChecker<'_> {
     fn message(&self, key: &str) -> String {
-        format!("{}: {}", self.name, self.template.replace("{}", &key))
+        self.template.replace("{}", &key)
     }
 }
 
 impl Check for KeyWithoutValueChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if !(line.is_empty() || line.raw_string.contains('=')) {
-            Some(Warning::new(line.clone(), self.message(&line.raw_string)))
+            Some(Warning::new(
+                line.clone(),
+                self.name(),
+                self.message(&line.raw_string),
+            ))
         } else {
             None
         }
@@ -95,9 +99,8 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from(
-                "KeyWithoutValue: The FOO key should be with a value or have an equal sign",
-            ),
+            "KeyWithoutValue",
+            String::from("The FOO key should be with a value or have an equal sign"),
         ));
         assert_eq!(expected, checker.run(&line));
     }

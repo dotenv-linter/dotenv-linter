@@ -10,6 +10,8 @@ use std::{env, process};
 
 mod checks;
 mod common;
+mod file_writer;
+mod fixes;
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
     clap::App::new(env!("CARGO_PKG_NAME"))
@@ -47,6 +49,12 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
             Arg::with_name("show-checks")
                 .long("show-checks")
                 .help("Shows list of available checks"),
+        )
+        .arg(
+            Arg::with_name("autofix")
+                .short("f")
+                .long("autofix")
+                .help("Automatically fixes warnings if possible"),
         )
         .get_matches()
 }
@@ -130,18 +138,23 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         new_files.push(new_file);
     }
 
+    let autofix = args.is_present("autofix");
     let mut warnings: Vec<Warning> = Vec::new();
     for file in new_files {
-        let lines = get_lines(file)?;
+        let mut lines = get_lines(&file)?;
 
-        let result = checks::run(lines, &skip_checks);
+        let result = checks::run(&lines, &skip_checks);
         warnings.extend(result);
+
+        if autofix && fixes::run(&mut warnings, &mut lines) > 0 {
+            file_writer::write(&file.path, lines)?;
+        }
     }
 
     Ok(warnings)
 }
 
-fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
+fn get_lines(fe: &FileEntry) -> io::Result<Vec<LineEntry>> {
     let mut f = File::open(&fe.path)?;
 
     let reader = BufReader::new(&f);
@@ -172,7 +185,7 @@ fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
         if last_line.as_str() == "\n" {
             lines.push(LineEntry {
                 number: number + 1,
-                file: fe,
+                file: fe.clone(),
                 raw_string: last_line,
             });
         }

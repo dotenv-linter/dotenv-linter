@@ -21,7 +21,7 @@ impl Check for LowercaseKeyChecker<'_> {
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line.clone(), self.message(&key)))
+            Some(Warning::new(line.clone(), self.name(), self.message(&key)))
         }
     }
 
@@ -32,7 +32,7 @@ impl Check for LowercaseKeyChecker<'_> {
 
 impl LowercaseKeyChecker<'_> {
     fn message(&self, key: &str) -> String {
-        format!("{}: {}", self.name, self.template.replace("{}", key))
+        self.template.replace("{}", key)
     }
 }
 
@@ -68,7 +68,8 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("LowercaseKey: The foo_bar key should be in uppercase"),
+            "LowercaseKey",
+            String::from("The foo_bar key should be in uppercase"),
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -86,7 +87,8 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("LowercaseKey: The FOo_BAR key should be in uppercase"),
+            "LowercaseKey",
+            String::from("The FOo_BAR key should be in uppercase"),
         ));
         assert_eq!(expected, checker.run(&line));
     }

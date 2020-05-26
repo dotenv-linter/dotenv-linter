@@ -3,22 +3,57 @@ use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
+    pub check_name: String,
     line: LineEntry,
     message: String,
+    pub is_fixed: Option<bool>,
 }
 
 impl Warning {
-    pub fn new(line: LineEntry, message: String) -> Self {
-        Self { line, message }
+    pub fn new(line: LineEntry, check_name: &str, message: String) -> Self {
+        let check_name = String::from(check_name);
+        Self {
+            line,
+            check_name,
+            message,
+            is_fixed: None,
+        }
+    }
+
+    pub fn line_number(&self) -> usize {
+        self.line.number
+    }
+
+    pub fn file(&self) -> &FileEntry {
+        &self.line.file
+    }
+
+    pub fn set_fixed(&mut self, val: bool) {
+        self.is_fixed = Some(val);
     }
 }
 
 impl fmt::Display for Warning {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let fixed_prefix = match self.is_fixed {
+            Some(is_fixed) => {
+                if is_fixed {
+                    "  Fixed: "
+                } else {
+                    "Unfixed: "
+                }
+            }
+            None => "",
+        };
+
         write!(
             f,
-            "{}:{} {}",
-            self.line.file, self.line.number, self.message
+            "{}{}:{} {}: {}",
+            fixed_prefix,
+            self.file(),
+            self.line_number(),
+            self.check_name,
+            self.message
         )
     }
 }
@@ -121,7 +156,8 @@ mod tests {
         };
         let warning = Warning::new(
             line,
-            String::from("DuplicatedKey: The FOO key is duplicated"),
+            "DuplicatedKey",
+            String::from("The FOO key is duplicated"),
         );
 
         assert_eq!(

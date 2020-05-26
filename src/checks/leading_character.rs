@@ -17,7 +17,7 @@ impl Default for LeadingCharacterChecker<'_> {
 
 impl LeadingCharacterChecker<'_> {
     fn message(&self) -> String {
-        format!("{}: {}", self.name, self.template)
+        String::from(self.template)
     }
 }
 
@@ -30,7 +30,7 @@ impl Check for LeadingCharacterChecker<'_> {
         {
             None
         } else {
-            Some(Warning::new(line.clone(), self.message()))
+            Some(Warning::new(line.clone(), self.name(), self.message()))
         }
     }
 
@@ -44,7 +44,7 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    const MESSAGE: &str = "LeadingCharacter: Invalid leading character detected";
+    const MESSAGE: &str = "Invalid leading character detected";
 
     #[test]
     fn normal() {
@@ -100,7 +100,11 @@ mod tests {
             raw_string: String::from(".FOO=BAR"),
         };
         assert_eq!(
-            Some(Warning::new(line.clone(), MESSAGE.to_string())),
+            Some(Warning::new(
+                line.clone(),
+                "LeadingCharacter",
+                MESSAGE.to_string()
+            )),
             checker.run(&line)
         );
     }
@@ -117,7 +121,11 @@ mod tests {
             raw_string: String::from("*FOO=BAR"),
         };
         assert_eq!(
-            Some(Warning::new(line.clone(), MESSAGE.to_string())),
+            Some(Warning::new(
+                line.clone(),
+                "LeadingCharacter",
+                MESSAGE.to_string()
+            )),
             checker.run(&line)
         );
     }
@@ -134,7 +142,11 @@ mod tests {
             raw_string: String::from("1FOO=BAR"),
         };
         assert_eq!(
-            Some(Warning::new(line.clone(), MESSAGE.to_string())),
+            Some(Warning::new(
+                line.clone(),
+                "LeadingCharacter",
+                MESSAGE.to_string()
+            )),
             checker.run(&line)
         );
     }
@@ -150,7 +162,11 @@ mod tests {
             },
             raw_string: String::from(" FOO=BAR"),
         };
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "LeadingCharacter",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 
@@ -165,7 +181,11 @@ mod tests {
             },
             raw_string: String::from("  FOO=BAR"),
         };
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "LeadingCharacter",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 
@@ -180,7 +200,11 @@ mod tests {
             },
             raw_string: String::from("\tFOO=BAR"),
         };
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "LeadingCharacter",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 }

@@ -17,7 +17,7 @@ impl Default for EndingBlankLineChecker<'_> {
 
 impl EndingBlankLineChecker<'_> {
     fn message(&self) -> String {
-        format!("{}: {}", self.name, self.template)
+        String::from(self.template)
     }
 }
 
@@ -26,7 +26,7 @@ impl Check for EndingBlankLineChecker<'_> {
         if line.raw_string.ends_with('\n') {
             None
         } else {
-            Some(Warning::new(line.clone(), self.message()))
+            Some(Warning::new(line.clone(), self.name(), self.message()))
         }
     }
 
@@ -84,7 +84,8 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("EndingBlankLine: No blank line at the end of the file"),
+            "EndingBlankLine",
+            String::from("No blank line at the end of the file"),
         ));
 
         assert_eq!(expected, checker.run(&line));

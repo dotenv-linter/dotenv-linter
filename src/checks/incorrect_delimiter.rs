@@ -8,7 +8,7 @@ pub(crate) struct IncorrectDelimiterChecker<'a> {
 
 impl IncorrectDelimiterChecker<'_> {
     fn message(&self, key: &str) -> String {
-        format!("{}: {}", self.name, self.template.replace("{}", &key))
+        self.template.replace("{}", &key)
     }
 }
 
@@ -25,7 +25,7 @@ impl Check for IncorrectDelimiterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
-            return Some(Warning::new(line.clone(), self.message(&key)));
+            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
         }
 
         None
@@ -82,7 +82,8 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("IncorrectDelimiter: The FOO-BAR key has incorrect delimiter"),
+            "IncorrectDelimiter",
+            String::from("The FOO-BAR key has incorrect delimiter"),
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -100,7 +101,8 @@ mod tests {
         };
         let expected = Some(Warning::new(
             line.clone(),
-            String::from("IncorrectDelimiter: The FOO BAR key has incorrect delimiter"),
+            "IncorrectDelimiter",
+            String::from("The FOO BAR key has incorrect delimiter"),
         ));
         assert_eq!(expected, checker.run(&line));
     }

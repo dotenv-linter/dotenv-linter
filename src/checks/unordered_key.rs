@@ -2,28 +2,24 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct UnorderedKeyChecker<'a> {
+    name: &'a str,
     template: &'a str,
     keys: Vec<String>,
-    name: &'a str,
 }
 
 impl UnorderedKeyChecker<'_> {
     fn message(&self, key_one: &str, key_two: &str) -> String {
-        return format!(
-            "{}: {}",
-            self.name,
-            self.template
-                .replace("{1}", key_one)
-                .replace("{2}", key_two)
-        );
+        self.template
+            .replace("{1}", key_one)
+            .replace("{2}", key_two)
     }
 }
 
 impl Default for UnorderedKeyChecker<'_> {
     fn default() -> Self {
         Self {
-            keys: Vec::new(),
             name: "UnorderedKey",
+            keys: Vec::new(),
             template: "The {1} key should go before the {2} key",
         }
     }
@@ -41,7 +37,7 @@ impl Check for UnorderedKeyChecker<'_> {
 
             let another_key = sorted_keys.get(index + 1)?;
 
-            let warning = Warning::new(line.clone(), self.message(&key, &another_key));
+            let warning = Warning::new(line.clone(), self.name(), self.message(&key, &another_key));
             return Some(warning);
         }
 
@@ -146,7 +142,8 @@ mod tests {
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
+                    "UnorderedKey",
+                    String::from("The BAR key should go before the FOO key"),
                 )),
             ),
         ];
@@ -186,7 +183,8 @@ mod tests {
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
+                    "UnorderedKey",
+                    String::from("The BAR key should go before the FOO key"),
                 )),
             ),
             (
@@ -207,7 +205,8 @@ mod tests {
                         },
                         raw_string: String::from("ABC=BAR"),
                     },
-                    String::from("UnorderedKey: The ABC key should go before the BAR key"),
+                    "UnorderedKey",
+                    String::from("The ABC key should go before the BAR key"),
                 )),
             ),
         ];
@@ -247,7 +246,8 @@ mod tests {
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
+                    "UnorderedKey",
+                    String::from("The BAR key should go before the FOO key"),
                 )),
             ),
             (
@@ -268,7 +268,8 @@ mod tests {
                         },
                         raw_string: String::from("DDD=BAR"),
                     },
-                    String::from("UnorderedKey: The DDD key should go before the FOO key"),
+                    "UnorderedKey",
+                    String::from("The DDD key should go before the FOO key"),
                 )),
             ),
         ];
@@ -308,7 +309,8 @@ mod tests {
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("UnorderedKey: The BAR key should go before the FOO key"),
+                    "UnorderedKey",
+                    String::from("The BAR key should go before the FOO key"),
                 )),
             ),
             (
@@ -329,7 +331,8 @@ mod tests {
                         },
                         raw_string: String::from("DDD=BAR"),
                     },
-                    String::from("UnorderedKey: The DDD key should go before the FOO key"),
+                    "UnorderedKey",
+                    String::from("The DDD key should go before the FOO key"),
                 )),
             ),
             (
