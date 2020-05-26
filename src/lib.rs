@@ -46,7 +46,7 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
         .arg(
             Arg::with_name("show-checks")
                 .long("show-checks")
-                .help("Show list of available checks"),
+                .help("Shows list of available checks"),
         )
         .get_matches()
 }
