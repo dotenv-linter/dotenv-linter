@@ -4,9 +4,10 @@ use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
-    check_name: String,
+    pub check_name: String,
     line: LineEntry,
     message: String,
+    pub is_fixed: bool,
 }
 
 impl Warning {
@@ -16,7 +17,16 @@ impl Warning {
             line,
             check_name,
             message,
+            is_fixed: false,
         }
+    }
+
+    pub fn line_number(&self) -> usize {
+        self.line.number
+    }
+
+    pub fn mark_as_fixed(&mut self) {
+        self.is_fixed = true;
     }
 }
 
@@ -174,7 +184,6 @@ mod tests {
 
         mod from {
             use super::*;
-            use std::env::temp_dir;
             use std::fs::remove_file;
 
             #[test]
@@ -186,7 +195,8 @@ mod tests {
             #[test]
             fn path_with_file_test() {
                 let file_name = String::from(".env");
-                let path = temp_dir().join(&file_name);
+                let dir = tempfile::tempdir().expect("create temp dir");
+                let path = dir.path().join(&file_name);
                 fs::File::create(&path).expect("create testfile");
 
                 let f = FileEntry::from(path.clone());
