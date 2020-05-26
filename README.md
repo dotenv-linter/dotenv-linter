@@ -177,6 +177,22 @@ $ dotenv-linter --skip UnorderedKey EndingBlankLine
 .env:2 DuplicatedKey: The FOO key is duplicated
 ```
 
+If you need to view all available checks, you can use the argument `--show-checks` (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/199)):
+
+```shell script
+$ dotenv-linter --show-checks
+DuplicatedKey
+EndingBlankLine
+ExtraBlankLine
+IncorrectDelimiter
+KeyWithoutValue
+LeadingCharacter
+LowercaseKey
+QuoteCharacter
+SpaceCharacter
+UnorderedKey
+```
+
 ## ✅ Checks
 
 ### Duplicated Key
