@@ -51,7 +51,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG_HTTP=true"),
         };
         assert_eq!(None, checker.run(&line));
@@ -62,7 +65,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(" DEBUG_HTTP=true"),
         };
         assert_eq!(None, checker.run(&line));
@@ -73,7 +79,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG_HTTP=true "),
         };
         assert_eq!(None, checker.run(&line));
@@ -84,7 +93,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(&line));
@@ -95,7 +107,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG_HTTP true"),
         };
         assert_eq!(None, checker.run(&line));
@@ -106,7 +121,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG-HTTP = true"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
@@ -118,7 +136,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG-HTTP =true"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
@@ -130,7 +151,10 @@ mod tests {
         let mut checker = SpaceCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG-HTTP= true"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));

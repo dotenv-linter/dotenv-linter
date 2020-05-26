@@ -85,7 +85,10 @@ mod tests {
     fn blank_line_entry(number: usize) -> LineEntry {
         LineEntry {
             number,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("\n"),
         }
     }
@@ -93,7 +96,10 @@ mod tests {
     fn line_entry(number: usize, str: &str) -> LineEntry {
         LineEntry {
             number,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(str),
         }
     }
