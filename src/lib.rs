@@ -3,10 +3,8 @@ use crate::common::*;
 use clap::Arg;
 use std::error::Error;
 use std::ffi::OsStr;
-use std::fs::{self, File};
-use std::io::{self, BufRead, BufReader, Read, Seek, SeekFrom};
 use std::path::PathBuf;
-use std::{env, process};
+use std::{env, fs, io, process};
 
 mod checks;
 mod common;
@@ -62,8 +60,8 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     let args = get_args(current_dir);
 
-    let mut paths: Vec<PathBuf> = Vec::new();
-    let mut files: Vec<FileEntry> = Vec::new();
+    let mut dirs: Vec<PathBuf> = Vec::new();
+    let mut file_paths: Vec<PathBuf> = Vec::new();
     let mut skip_checks: Vec<&str> = Vec::new();
 
     if args.is_present("show-checks") {
@@ -78,29 +76,28 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     }
 
     if let Some(inputs) = args.values_of("input") {
-        paths = inputs
+        dirs = inputs
             .clone()
             .filter_map(|s| fs::canonicalize(s).ok())
             .filter(|p| p.is_dir())
             .collect();
 
-        files = inputs
+        file_paths = inputs
             .filter_map(|s| fs::canonicalize(s).ok())
             .filter(|p| p.is_file())
-            .filter_map(|p| FileEntry::from(p))
             .collect();
     }
 
-    for path in paths {
-        let entries = path.read_dir()?;
+    for dir_path in dirs {
+        let entries = dir_path.read_dir()?;
 
-        let mut file_paths: Vec<FileEntry> = entries
+        let mut dir_files: Vec<PathBuf> = entries
             .filter_map(|e| e.ok())
-            .filter_map(|e| FileEntry::from(e.path()))
-            .filter(|f| f.is_env_file())
+            .map(|e| e.path())
+            .filter(|path| FileEntry::is_env_file(path))
             .collect();
 
-        files.append(file_paths.as_mut());
+        file_paths.append(dir_files.as_mut());
     }
 
     // Removes files from paths if they should be excluded
@@ -108,31 +105,26 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         let excluded_paths: Vec<PathBuf> =
             excluded.filter_map(|f| fs::canonicalize(f).ok()).collect();
 
-        files.retain(|f| !excluded_paths.contains(&f.path));
+        file_paths.retain(|path| !excluded_paths.contains(&path));
     }
 
-    files.sort();
-    files.dedup();
+    file_paths.sort();
+    file_paths.dedup();
 
-    let mut new_files: Vec<FileEntry> = vec![];
-    for file in files {
-        let result = file.path.strip_prefix(&current_dir);
-        let strip_path = match result {
+    let mut warnings: Vec<Warning> = Vec::new();
+
+    for path in file_paths {
+        let strip_path = match path.strip_prefix(&current_dir) {
             Ok(p) => p,
             Err(_) => continue,
         };
 
-        let new_file = match FileEntry::from(strip_path.to_owned()) {
+        let file_with_lines = match FileEntry::from(strip_path.to_owned()) {
             Some(f) => f,
-            None => continue,
+            _ => continue,
         };
 
-        new_files.push(new_file);
-    }
-
-    let mut warnings: Vec<Warning> = Vec::new();
-    for file in new_files {
-        let lines = get_lines(file)?;
+        let lines = get_line_entries(file_with_lines.0, file_with_lines.1)?;
 
         let result = checks::run(lines, &skip_checks);
         warnings.extend(result);
@@ -141,42 +133,16 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     Ok(warnings)
 }
 
-fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
-    let mut f = File::open(&fe.path)?;
+fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> io::Result<Vec<LineEntry>> {
+    let mut entries: Vec<LineEntry> = Vec::with_capacity(fe.total_lines);
 
-    let reader = BufReader::new(&f);
-
-    // TODO: Initialize a vector with a capacity equal to the number of lines
-    let mut lines: Vec<LineEntry> = Vec::new();
-
-    let mut number = 0;
-    for (index, line) in reader.lines().enumerate() {
-        number = index + 1;
-        let raw_string = line?;
-
-        lines.push(LineEntry {
-            number,
+    for (index, line) in lines.into_iter().enumerate() {
+        entries.push(LineEntry {
+            number: index + 1,
             file: fe.clone(),
-            raw_string,
+            raw_string: line,
         })
     }
 
-    let mut last_line = String::new();
-    let ending_seq_length = 1;
-    if f.seek(SeekFrom::End(-ending_seq_length)).is_ok()
-        && f.read_to_string(&mut last_line)? == ending_seq_length as usize
-    {
-        // We add an one more LineEntry with the final character in the file
-        // for the "Ending Blank Line" check if this final character is the "\n"
-        // (the latter condition is needed because of "Extra Blank Line" check at the end of file).
-        if last_line.as_str() == "\n" {
-            lines.push(LineEntry {
-                number: number + 1,
-                file: fe,
-                raw_string: last_line,
-            });
-        }
-    }
-
-    Ok(lines)
+    Ok(entries)
 }

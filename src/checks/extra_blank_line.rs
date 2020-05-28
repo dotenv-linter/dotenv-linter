@@ -59,6 +59,7 @@ mod tests {
                 file: FileEntry {
                     path: PathBuf::from(".env"),
                     file_name: ".env".to_string(),
+                    total_lines: 1,
                 },
                 raw_string: String::from(content),
             };
