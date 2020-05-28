@@ -41,11 +41,6 @@ pub fn available_check_names() -> Vec<String> {
         .iter()
         .map(|check| check.name().to_string())
         .collect();
-    names.push(
-        ending_blank_line::EndingBlankLineChecker::default()
-            .name()
-            .to_string(),
-    );
     names.sort();
     names
 }
@@ -201,7 +196,5 @@ mod tests {
             let check_name = check.name();
             assert!(available_check_names.contains(&check_name.to_string()));
         }
-        let ending_blank_line = ending_blank_line::EndingBlankLineChecker::default();
-        assert!(available_check_names.contains(&ending_blank_line.name().to_string()));
     }
 }
