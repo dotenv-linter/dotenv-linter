@@ -29,12 +29,14 @@ impl Check for ExtraBlankLineChecker<'_> {
             return None;
         }
 
-        if let Some(last_blank_number) = self.last_blank_number {
-            if last_blank_number + 1 == line.number {
-                return Some(Warning::new(line.clone(), self.message()));
-            }
-        }
+        let is_extra = self
+            .last_blank_number
+            .map_or(false, |n| n + 1 == line.number);
         self.last_blank_number = Some(line.number);
+
+        if is_extra {
+            return Some(Warning::new(line.clone(), self.message()));
+        }
 
         None
     }
@@ -88,6 +90,19 @@ mod tests {
         let asserts = vec![
             ("A=B", None),
             ("", None),
+            ("", Some("ExtraBlankLine: Extra blank line detected")),
+            ("C=D", None),
+        ];
+
+        run_asserts(asserts);
+    }
+
+    #[test]
+    fn three_blank_lines() {
+        let asserts = vec![
+            ("A=B", None),
+            ("", None),
+            ("", Some("ExtraBlankLine: Extra blank line detected")),
             ("", Some("ExtraBlankLine: Extra blank line detected")),
             ("C=D", None),
         ];

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Refactor `EndingBlankLineChecker`: change last line check logic (add `total_lines` to `FileEntry`) [#207](https://github.com/dotenv-linter/dotenv-linter/pull/207) ([@DDtKey](https://github.com/DDtKey))
+- Fix check (for several successive blank lines): ExtraBlankLine [#208](https://github.com/dotenv-linter/dotenv-linter/pull/208) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Replace `PathBuf` with `FileEntry` for `LineEntry` [#203](https://github.com/dotenv-linter/dotenv-linter/pull/203) ([@mgrachev](https://github.com/mgrachev))
 - Replace `&'static str` with `&'a str` for ` LeadingCharacterChecker` [#200](https://github.com/dotenv-linter/dotenv-linter/pull/200) ([@rossjones](https://github.com/rossjones))
 - Replace `&'static str` with `&'a str` for `QuoteCharacterChecker` [#198](https://github.com/dotenv-linter/dotenv-linter/pull/198) ([@duncandean](https://github.com/duncandean))
