@@ -94,7 +94,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 2,
                     },
                     raw_string: String::from("BAR=FOO"),
                 },
@@ -106,7 +106,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 2,
                     },
                     raw_string: String::from("FOO=BAR"),
                 },
@@ -126,7 +126,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 2,
                     },
                     raw_string: String::from("FOO=BAR"),
                 },
@@ -138,7 +138,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 2,
                     },
                     raw_string: String::from("BAR=FOO"),
                 },
@@ -148,7 +148,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 2,
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
@@ -169,7 +169,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("FOO=BAR"),
                 },
@@ -181,7 +181,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("BAR=FOO"),
                 },
@@ -191,7 +191,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 3,
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
@@ -204,7 +204,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("ABC=BAR"),
                 },
@@ -214,7 +214,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 3,
                         },
                         raw_string: String::from("ABC=BAR"),
                     },
@@ -235,7 +235,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("FOO=BAR"),
                 },
@@ -247,7 +247,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("BAR=FOO"),
                 },
@@ -257,7 +257,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 3,
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
@@ -270,7 +270,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("DDD=BAR"),
                 },
@@ -280,7 +280,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 3,
                         },
                         raw_string: String::from("DDD=BAR"),
                     },
@@ -301,7 +301,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 4,
                     },
                     raw_string: String::from("FOO=BAR"),
                 },
@@ -313,7 +313,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 4,
                     },
                     raw_string: String::from("BAR=FOO"),
                 },
@@ -323,7 +323,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 4,
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
@@ -336,7 +336,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 4,
                     },
                     raw_string: String::from("DDD=BAR"),
                 },
@@ -346,7 +346,7 @@ mod tests {
                         file: FileEntry {
                             path: PathBuf::from(".env"),
                             file_name: ".env".to_string(),
-                            total_lines: 1,
+                            total_lines: 4,
                         },
                         raw_string: String::from("DDD=BAR"),
                     },
@@ -355,11 +355,11 @@ mod tests {
             ),
             (
                 LineEntry {
-                    number: 3,
+                    number: 4,
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 4,
                     },
                     raw_string: String::from("ZOO=BAR"),
                 },
