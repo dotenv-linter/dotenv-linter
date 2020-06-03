@@ -334,7 +334,7 @@ FOO = BAR
 FOO=BAR
 ```
 
-### Trailing whitespace
+### Trailing whitespace (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
 
 Detects if a line has a trailing whitespace.
 
