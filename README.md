@@ -36,6 +36,7 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character-will-be-available-in-v200">Quote character</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#trailing-whitespace-will-be-available-in-v200">Trailing whitespace</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a><br />
 </p>
 
@@ -355,6 +356,10 @@ FOO = BAR
 ✅Correct
 FOO=BAR
 ```
+
+### Trailing whitespace (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+
+Detects if a line has a trailing whitespace.
 
 ### Unordered Key
 
