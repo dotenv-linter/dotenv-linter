@@ -2,8 +2,8 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct KeyWithoutValueChecker<'a> {
-    template: &'a str,
     name: &'a str,
+    template: &'a str,
 }
 
 impl Default for KeyWithoutValueChecker<'_> {
@@ -17,7 +17,7 @@ impl Default for KeyWithoutValueChecker<'_> {
 
 impl KeyWithoutValueChecker<'_> {
     fn message(&self, key: &str) -> String {
-        return format!("{}: {}", self.name, self.template.replace("{}", &key));
+        format!("{}: {}", self.name, self.template.replace("{}", &key))
     }
 }
 
@@ -28,6 +28,10 @@ impl Check for KeyWithoutValueChecker<'_> {
         } else {
             None
         }
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 
@@ -41,7 +45,10 @@ mod tests {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -52,7 +59,10 @@ mod tests {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(&line));
@@ -63,7 +73,10 @@ mod tests {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO="),
         };
         assert_eq!(None, checker.run(&line));
@@ -74,7 +87,10 @@ mod tests {
         let mut checker = KeyWithoutValueChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO"),
         };
         let expected = Some(Warning::new(

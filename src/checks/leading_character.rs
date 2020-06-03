@@ -1,12 +1,12 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct LeadingCharacterChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct LeadingCharacterChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl Default for LeadingCharacterChecker {
+impl Default for LeadingCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "LeadingCharacter",
@@ -15,13 +15,13 @@ impl Default for LeadingCharacterChecker {
     }
 }
 
-impl LeadingCharacterChecker {
+impl LeadingCharacterChecker<'_> {
     fn message(&self) -> String {
         format!("{}: {}", self.name, self.template)
     }
 }
 
-impl Check for LeadingCharacterChecker {
+impl Check for LeadingCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         if line.is_empty()
             || line
@@ -32,6 +32,10 @@ impl Check for LeadingCharacterChecker {
         } else {
             Some(Warning::new(line.clone(), self.message()))
         }
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 
@@ -47,7 +51,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -58,7 +65,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(&line));
@@ -69,7 +79,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("_FOO=BAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -80,7 +93,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(".FOO=BAR"),
         };
         assert_eq!(
@@ -94,7 +110,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("*FOO=BAR"),
         };
         assert_eq!(
@@ -108,7 +127,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("1FOO=BAR"),
         };
         assert_eq!(
@@ -122,7 +144,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(" FOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
@@ -134,7 +159,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("  FOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
@@ -146,7 +174,10 @@ mod tests {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("\tFOO=BAR"),
         };
         let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));

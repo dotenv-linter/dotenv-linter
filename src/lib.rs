@@ -1,12 +1,12 @@
 use crate::common::*;
 
 use clap::Arg;
-use std::env;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Seek, SeekFrom};
 use std::path::PathBuf;
+use std::{env, process};
 
 mod checks;
 mod common;
@@ -34,47 +34,21 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .multiple(true)
                 .takes_value(true),
         )
+        .arg(
+            Arg::with_name("skip")
+                .short("s")
+                .long("skip")
+                .value_name("CHECK_NAME")
+                .help("Skips checks")
+                .multiple(true)
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("show-checks")
+                .long("show-checks")
+                .help("Shows list of available checks"),
+        )
         .get_matches()
-}
-
-fn run_checks(fe: &FileEntry) -> io::Result<Vec<Warning>> {
-    let mut f = File::open(&fe.path)?;
-
-    let reader = BufReader::new(&f);
-
-    // TODO: Initialize a vector with a capacity equal to the number of lines
-    let mut lines: Vec<LineEntry> = Vec::new();
-
-    let mut number = 0;
-    for (index, line) in reader.lines().enumerate() {
-        number = index + 1;
-        let raw_string = line?;
-
-        lines.push(LineEntry {
-            number,
-            file_path: fe.path.clone(),
-            raw_string,
-        })
-    }
-
-    let mut last_line = String::new();
-    let ending_seq_length = 1;
-    if f.seek(SeekFrom::End(-ending_seq_length)).is_ok()
-        && f.read_to_string(&mut last_line)? == ending_seq_length as usize
-    {
-        // We add an one more LineEntry with the final character in the file
-        // for the "Ending Blank Line" check if this final character is the "\n"
-        // (the latter condition is needed because of "Extra Blank Line" check at the end of file).
-        if last_line.as_str() == "\n" {
-            lines.push(LineEntry {
-                number: number + 1,
-                file_path: fe.path.clone(),
-                raw_string: last_line,
-            });
-        }
-    }
-
-    Ok(checks::run(lines))
 }
 
 #[allow(clippy::redundant_closure)]
@@ -88,8 +62,20 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     let args = get_args(current_dir);
 
-    let mut paths: Vec<PathBuf> = vec![];
-    let mut files: Vec<FileEntry> = vec![];
+    let mut paths: Vec<PathBuf> = Vec::new();
+    let mut files: Vec<FileEntry> = Vec::new();
+    let mut skip_checks: Vec<&str> = Vec::new();
+
+    if args.is_present("show-checks") {
+        checks::available_check_names()
+            .iter()
+            .for_each(|name| println!("{}", name));
+        process::exit(0);
+    }
+
+    if let Some(skip) = args.values_of("skip") {
+        skip_checks = skip.collect();
+    }
 
     if let Some(inputs) = args.values_of("input") {
         paths = inputs
@@ -146,9 +132,51 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     let mut warnings: Vec<Warning> = Vec::new();
     for file in new_files {
-        let result = run_checks(&file)?;
+        let lines = get_lines(file)?;
+
+        let result = checks::run(lines, &skip_checks);
         warnings.extend(result);
     }
 
     Ok(warnings)
+}
+
+fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
+    let mut f = File::open(&fe.path)?;
+
+    let reader = BufReader::new(&f);
+
+    // TODO: Initialize a vector with a capacity equal to the number of lines
+    let mut lines: Vec<LineEntry> = Vec::new();
+
+    let mut number = 0;
+    for (index, line) in reader.lines().enumerate() {
+        number = index + 1;
+        let raw_string = line?;
+
+        lines.push(LineEntry {
+            number,
+            file: fe.clone(),
+            raw_string,
+        })
+    }
+
+    let mut last_line = String::new();
+    let ending_seq_length = 1;
+    if f.seek(SeekFrom::End(-ending_seq_length)).is_ok()
+        && f.read_to_string(&mut last_line)? == ending_seq_length as usize
+    {
+        // We add an one more LineEntry with the final character in the file
+        // for the "Ending Blank Line" check if this final character is the "\n"
+        // (the latter condition is needed because of "Extra Blank Line" check at the end of file).
+        if last_line.as_str() == "\n" {
+            lines.push(LineEntry {
+                number: number + 1,
+                file: fe,
+                raw_string: last_line,
+            });
+        }
+    }
+
+    Ok(lines)
 }

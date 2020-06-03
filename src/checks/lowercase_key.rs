@@ -1,21 +1,21 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct LowercaseKeyChecker {
-    name: String,
-    template: String,
+pub(crate) struct LowercaseKeyChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl Default for LowercaseKeyChecker {
+impl Default for LowercaseKeyChecker<'_> {
     fn default() -> Self {
         Self {
-            name: String::from("LowercaseKey"),
-            template: String::from("The {} key should be in uppercase"),
+            name: "LowercaseKey",
+            template: "The {} key should be in uppercase",
         }
     }
 }
 
-impl Check for LowercaseKeyChecker {
+impl Check for LowercaseKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.to_uppercase() == key {
@@ -24,9 +24,13 @@ impl Check for LowercaseKeyChecker {
             Some(Warning::new(line.clone(), self.message(&key)))
         }
     }
+
+    fn name(&self) -> &str {
+        self.name
+    }
 }
 
-impl LowercaseKeyChecker {
+impl LowercaseKeyChecker<'_> {
     fn message(&self, key: &str) -> String {
         format!("{}: {}", self.name, self.template.replace("{}", key))
     }
@@ -42,7 +46,10 @@ mod tests {
         let mut checker = LowercaseKeyChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO=BAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -53,7 +60,10 @@ mod tests {
         let mut checker = LowercaseKeyChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("foo_bar=FOOBAR"),
         };
         let expected = Some(Warning::new(
@@ -68,7 +78,10 @@ mod tests {
         let mut checker = LowercaseKeyChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOo_BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(

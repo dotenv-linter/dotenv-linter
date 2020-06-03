@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add check: TrailingWhitespace [#190](https://github.com/dotenv-linter/dotenv-linter/pull/190) ([@pineapplethief](https://github.com/pineapplethief))
+- Add an argument to show available checks [#202](https://github.com/dotenv-linter/dotenv-linter/pull/202) ([@DDtKey](https://github.com/DDtKey))
+- Add the ability to skip checks [#178](https://github.com/dotenv-linter/dotenv-linter/pull/178) ([@mgrachev](https://github.com/mgrachev))
 - Add check: ExtraBlankLine [#180](https://github.com/dotenv-linter/dotenv-linter/pull/180) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add check: EndingBlankLine [#170](https://github.com/dotenv-linter/dotenv-linter/pull/170) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add check: Quote characters [#174](https://github.com/dotenv-linter/dotenv-linter/pull/174) ([@sourabhmarathe](https://github.com/sourabhmarathe))
@@ -14,8 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GitHub Workflow for AUR publishing [#161](https://github.com/dotenv-linter/dotenv-linter/pull/161) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
+- Fix check (for several successive blank lines): ExtraBlankLine [#208](https://github.com/dotenv-linter/dotenv-linter/pull/208) ([@evgeniy-r](https://github.com/evgeniy-r))
+- Replace `PathBuf` with `FileEntry` for `LineEntry` [#203](https://github.com/dotenv-linter/dotenv-linter/pull/203) ([@mgrachev](https://github.com/mgrachev))
+- Replace `&'static str` with `&'a str` for ` LeadingCharacterChecker` [#200](https://github.com/dotenv-linter/dotenv-linter/pull/200) ([@rossjones](https://github.com/rossjones))
+- Replace `&'static str` with `&'a str` for `QuoteCharacterChecker` [#198](https://github.com/dotenv-linter/dotenv-linter/pull/198) ([@duncandean](https://github.com/duncandean))
+- Replace `&'static str` with `&'a str` for `EndingBlankLineChecker` [#197](https://github.com/dotenv-linter/dotenv-linter/pull/197) ([@rossjones](https://github.com/rossjones))
+- Replace `String` with `&'a str` for `UnorderedKeyChecker` [#196](https://github.com/dotenv-linter/dotenv-linter/pull/196) ([@k0va1](https://github.com/k0va1))
+- Replace `String` with `&'a str` for `SpaceCharacterChecker` [#195](https://github.com/dotenv-linter/dotenv-linter/pull/195) ([@k0va1](https://github.com/k0va1))
+- Replace `String` with `&'a str` for `LowercaseKeyChecker` [#194](https://github.com/dotenv-linter/dotenv-linter/pull/194) ([@tisorlawan](https://github.com/tisorlawan))
+- Replace `&'static str` with `&'a str` for `ExtraBlankLineChecker` [#193](https://github.com/dotenv-linter/dotenv-linter/pull/193) ([@vishalsodani](https://github.com/vishalsodani))
+- Replace `String` with `&'a str` for `DuplicatedKeyChecker` [#192](https://github.com/dotenv-linter/dotenv-linter/pull/192) ([@iamsaquib](https://github.com/iamsaquib))
 - Replace `String` with `&'a str` for `KeyWithoutValueChecker` [#177](https://github.com/dotenv-linter/dotenv-linter/pull/177) ([@mgrachev](https://github.com/mgrachev))
 - Fix docker image [#160](https://github.com/dotenv-linter/dotenv-linter/pull/160) ([@mgrachev](https://github.com/mgrachev))
+- Replace `&'static str` with `&'a str` for `IncorrectDelimiterChecker` [#191](https://github.com/dotenv-linter/dotenv-linter/pull/191) ([@DDtKey](https://github.com/DDtKey))
 
 ## [v1.2.0] - 2020-04-20
 ### 🔧 Changed

@@ -1,18 +1,18 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct IncorrectDelimiterChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct IncorrectDelimiterChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl IncorrectDelimiterChecker {
+impl IncorrectDelimiterChecker<'_> {
     fn message(&self, key: &str) -> String {
         format!("{}: {}", self.name, self.template.replace("{}", &key))
     }
 }
 
-impl Default for IncorrectDelimiterChecker {
+impl Default for IncorrectDelimiterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "IncorrectDelimiter",
@@ -21,7 +21,7 @@ impl Default for IncorrectDelimiterChecker {
     }
 }
 
-impl Check for IncorrectDelimiterChecker {
+impl Check for IncorrectDelimiterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
         if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
@@ -29,6 +29,10 @@ impl Check for IncorrectDelimiterChecker {
         }
 
         None
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 
@@ -42,7 +46,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO_BAR=FOOBAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -53,7 +60,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("F1OO=BAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -64,7 +74,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO-BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(
@@ -79,7 +92,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO BAR=FOOBAR"),
         };
         let expected = Some(Warning::new(
@@ -94,7 +110,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO-BAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -105,7 +124,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(" FOO=FOOBAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -116,7 +138,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("FOO_BAR =FOOBAR"),
         };
         assert_eq!(None, checker.run(&line));
@@ -127,7 +152,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from(""),
         };
         assert_eq!(None, checker.run(&line));
@@ -138,7 +166,10 @@ mod tests {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("F=BAR"),
         };
         assert_eq!(None, checker.run(&line));
