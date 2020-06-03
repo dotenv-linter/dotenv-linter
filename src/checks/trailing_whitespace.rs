@@ -50,7 +50,10 @@ mod tests {
 
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG_HTTP=true"),
         };
         assert_eq!(None, checker.run(&line));
@@ -61,7 +64,10 @@ mod tests {
         let mut checker = TrailingWhitespaceChecker::default();
         let line = LineEntry {
             number: 1,
-            file_path: PathBuf::from(".env"),
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+            },
             raw_string: String::from("DEBUG_HTTP=true  "),
         };
 
