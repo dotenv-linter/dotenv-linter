@@ -1,18 +1,18 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct QuoteCharacterChecker {
-    name: &'static str,
-    template: &'static str,
+pub(crate) struct QuoteCharacterChecker<'a> {
+    name: &'a str,
+    template: &'a str,
 }
 
-impl QuoteCharacterChecker {
+impl QuoteCharacterChecker<'_> {
     fn message(&self) -> String {
         format!("{}: {}", self.name, self.template)
     }
 }
 
-impl Default for QuoteCharacterChecker {
+impl Default for QuoteCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "QuoteCharacter",
@@ -21,7 +21,7 @@ impl Default for QuoteCharacterChecker {
     }
 }
 
-impl Check for QuoteCharacterChecker {
+impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
         if val.contains('\"') || val.contains('\'') {
@@ -29,6 +29,10 @@ impl Check for QuoteCharacterChecker {
         } else {
             None
         }
+    }
+
+    fn name(&self) -> &str {
+        self.name
     }
 }
 
@@ -52,7 +56,10 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -60,13 +67,19 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO='BAR'"),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_path: PathBuf::from(".env"),
+                        file: FileEntry {
+                            path: PathBuf::from(".env"),
+                            file_name: ".env".to_string(),
+                        },
                         raw_string: String::from("FOO='BAR'"),
                     },
                     String::from("QuoteCharacter: The value is wrapped in quotes"),
@@ -83,7 +96,10 @@ mod tests {
             (
                 LineEntry {
                     number: 1,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=BAR"),
                 },
                 None,
@@ -91,13 +107,19 @@ mod tests {
             (
                 LineEntry {
                     number: 2,
-                    file_path: PathBuf::from(".env"),
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                    },
                     raw_string: String::from("FOO=\"BAR\""),
                 },
                 Some(Warning::new(
                     LineEntry {
                         number: 2,
-                        file_path: PathBuf::from(".env"),
+                        file: FileEntry {
+                            path: PathBuf::from(".env"),
+                            file_name: ".env".to_string(),
+                        },
                         raw_string: String::from("FOO=\"BAR\""),
                     },
                     String::from("QuoteCharacter: The value is wrapped in quotes"),
@@ -113,7 +135,10 @@ mod tests {
         let asserts = vec![(
             LineEntry {
                 number: 1,
-                file_path: PathBuf::from(".env"),
+                file: FileEntry {
+                    path: PathBuf::from(".env"),
+                    file_name: ".env".to_string(),
+                },
                 raw_string: String::from("FOO=BAR"),
             },
             None,
