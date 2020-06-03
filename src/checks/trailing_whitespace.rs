@@ -31,6 +31,10 @@ impl Check for TrailingWhitespaceChecker<'_> {
 
         None
     }
+
+    fn name(&self) -> &str {
+        self.name
+    }
 }
 
 #[cfg(test)]
