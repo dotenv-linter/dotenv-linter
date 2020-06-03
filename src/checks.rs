@@ -9,6 +9,7 @@ mod leading_character;
 mod lowercase_key;
 mod quote_character;
 mod space_character;
+mod trailing_whitespace;
 mod unordered_key;
 
 // This trait is used for checks which needs to know of only a single line
@@ -32,6 +33,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(quote_character::QuoteCharacterChecker::default()),
         Box::new(space_character::SpaceCharacterChecker::default()),
+        Box::new(trailing_whitespace::TrailingWhitespaceChecker::default()),
         Box::new(unordered_key::UnorderedKeyChecker::default()),
     ]
 }
