@@ -336,7 +336,7 @@ FOO=BAR
 
 ### Trailing whitespace
 
-Prohibits trailing whitespace at the end of the lines
+Detects if a line has a trailing whitespace.
 
 ### Unordered Key
 

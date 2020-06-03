@@ -1,33 +1,32 @@
 use crate::checks::Check;
 use crate::common::*;
 
-pub(crate) struct TrailingWhitespaceChecker {
-    template: String,
-    name: String,
+pub(crate) struct TrailingWhitespaceChecker<'a> {
+    template: &'a str,
+    name: &'a str,
 }
 
-impl TrailingWhitespaceChecker {
+impl TrailingWhitespaceChecker<'_> {
     fn message(&self) -> String {
         return format!("{}: {}", self.name, self.template);
     }
 }
 
-impl Default for TrailingWhitespaceChecker {
+impl Default for TrailingWhitespaceChecker<'_> {
     fn default() -> Self {
         Self {
-            name: String::from("TrailingWhitespace"),
-            template: String::from("The line has trailing whitespace")
+            name: "TrailingWhitespace",
+            template: "Trailing whitespace detected",
         }
     }
 }
 
-impl Check for TrailingWhitespaceChecker {
+impl Check for TrailingWhitespaceChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let raw_string = &line.raw_string;
 
         if raw_string.ends_with(' ') {
-            let warning = Warning::new(line.clone(), self.message());
-            return Some(warning);
+            return Some(Warning::new(line.clone(), self.message()));
         }
 
         None
@@ -39,7 +38,7 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    const MESSAGE: &str = "TrailingWhitespace: The line has trailing whitespace";
+    const MESSAGE: &str = "TrailingWhitespace: Trailing whitespace detected";
 
     #[test]
     fn working_run() {
