@@ -2,7 +2,6 @@ use crate::common::*;
 
 use clap::Arg;
 use std::error::Error;
-use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Seek, SeekFrom};
 use std::path::PathBuf;
@@ -11,7 +10,9 @@ use std::{env, process};
 mod checks;
 mod common;
 
-fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
+fn get_args(current_dir: &PathBuf) -> clap::ArgMatches {
+    let current_dir = current_dir.as_os_str();
+
     clap::App::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -58,9 +59,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         Err(e) => return Err(Box::new(e)),
     };
 
-    let current_dir = current_dir.as_os_str();
-
-    let args = get_args(current_dir);
+    let args = get_args(&current_dir);
 
     let mut paths: Vec<PathBuf> = Vec::new();
     let mut files: Vec<FileEntry> = Vec::new();
@@ -116,13 +115,12 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     let mut new_files: Vec<FileEntry> = vec![];
     for file in files {
-        let result = file.path.strip_prefix(&current_dir);
-        let strip_path = match result {
-            Ok(p) => p,
-            Err(_) => continue,
+        let relative_path = match get_relative_path(&file.path, &current_dir) {
+            Some(p) => p,
+            None => continue,
         };
 
-        let new_file = match FileEntry::from(strip_path.to_owned()) {
+        let new_file = match FileEntry::from(relative_path) {
             Some(f) => f,
             None => continue,
         };
@@ -139,6 +137,28 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     }
 
     Ok(warnings)
+}
+
+fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<PathBuf> {
+    let comp_target: Vec<_> = target_path.components().collect();
+    let comp_base: Vec<_> = base_path.components().collect();
+
+    let mut i = 0;
+    for (b, t) in comp_base.iter().zip(comp_target.iter()) {
+        if b != t {
+            break;
+        }
+        i += 1;
+    }
+
+    let mut relative_path = PathBuf::new();
+
+    for _ in 0..(comp_base.len() - i) {
+        relative_path.push("..");
+    }
+    relative_path.extend(comp_target.get(i..).unwrap());
+
+    Some(relative_path)
 }
 
 fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
@@ -179,4 +199,21 @@ fn get_lines(fe: FileEntry) -> io::Result<Vec<LineEntry>> {
     }
 
     Ok(lines)
+}
+
+#[test]
+fn test_relative_path() {
+    let assertions = vec![
+        ("/a/.env", "/a", ".env"),
+        ("/a/b/.env", "/a", "b/.env"),
+        ("/.env", "/a/b/c", "../../../.env"),
+        ("/a/b/c/d/.env", "/a/b/e/f", "../../c/d/.env"),
+    ];
+
+    for (target, base, relative) in assertions {
+        assert_eq!(
+            get_relative_path(&PathBuf::from(target), &PathBuf::from(base),),
+            Some(PathBuf::from(relative))
+        );
+    }
 }
