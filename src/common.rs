@@ -81,15 +81,15 @@ impl FileEntry {
     fn get_file_name(path: &PathBuf) -> Option<String> {
         path.file_name()
             .map(|file_name| file_name.to_str())
-            .filter(|s| s.is_some())
-            .map(|s| s.unwrap().to_string())
+            .unwrap_or(None)
+            .map(|s| s.to_string())
     }
 
     fn get_content_by_path(path: &PathBuf) -> Option<String> {
         let mut content = String::new();
         let mut f = match File::open(&path) {
             Ok(file) => file,
-            Err(_err) => return None,
+            Err(_) => return None,
         };
 
         match f.read_to_string(&mut content) {
@@ -182,6 +182,7 @@ mod tests {
         mod from {
             use super::*;
             use std::env::temp_dir;
+            use std::fs::remove_file;
 
             #[test]
             fn path_without_file_test() {
@@ -199,7 +200,7 @@ mod tests {
                 assert_eq!(
                     Some((
                         FileEntry {
-                            path,
+                            path: path.clone(),
                             file_name,
                             total_lines: 0
                         },
@@ -207,6 +208,7 @@ mod tests {
                     )),
                     f
                 );
+                remove_file(path).expect("temp file deleted");
             }
         }
 

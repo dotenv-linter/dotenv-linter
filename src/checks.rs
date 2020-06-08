@@ -25,8 +25,8 @@ trait Check {
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(duplicated_key::DuplicatedKeyChecker::default()),
-        Box::new(extra_blank_line::ExtraBlankLineChecker::default()),
         Box::new(ending_blank_line::EndingBlankLineChecker::default()),
+        Box::new(extra_blank_line::ExtraBlankLineChecker::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
         Box::new(leading_character::LeadingCharacterChecker::default()),
         Box::new(key_without_value::KeyWithoutValueChecker::default()),

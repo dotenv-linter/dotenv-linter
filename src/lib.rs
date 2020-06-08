@@ -4,7 +4,7 @@ use clap::Arg;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::path::PathBuf;
-use std::{env, fs, io, process};
+use std::{env, fs, process};
 
 mod checks;
 mod common;
@@ -124,7 +124,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
             _ => continue,
         };
 
-        let lines = get_line_entries(file_with_lines.0, file_with_lines.1)?;
+        let lines = get_line_entries(file_with_lines.0, file_with_lines.1);
 
         let result = checks::run(lines, &skip_checks);
         warnings.extend(result);
@@ -133,7 +133,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     Ok(warnings)
 }
 
-fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> io::Result<Vec<LineEntry>> {
+fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
     let mut entries: Vec<LineEntry> = Vec::with_capacity(fe.total_lines);
 
     for (index, line) in lines.into_iter().enumerate() {
@@ -144,5 +144,5 @@ fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> io::Result<Vec<LineEnt
         })
     }
 
-    Ok(entries)
+    entries
 }
