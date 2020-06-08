@@ -1,4 +1,6 @@
 use std::fmt;
+use std::fs::File;
+use std::io::Read;
 use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -23,10 +25,13 @@ impl fmt::Display for Warning {
     }
 }
 
+pub const LF: &str = "\n";
+
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FileEntry {
     pub path: PathBuf,
     pub file_name: String,
+    pub total_lines: usize,
 }
 
 impl fmt::Display for FileEntry {
@@ -36,25 +41,61 @@ impl fmt::Display for FileEntry {
 }
 
 impl FileEntry {
-    /// Converts `PathBuf` to `FileEntry`
-    pub fn from(path: PathBuf) -> Option<Self> {
-        let file_name = match path.file_name() {
+    /// Converts `PathBuf` to tuple of `(FileEntry, Vec<String>)`
+    pub fn from(path: PathBuf) -> Option<(Self, Vec<String>)> {
+        let file_name = match Self::get_file_name(&path) {
             Some(s) => s,
             None => return None,
         };
 
-        let file_name = match file_name.to_str() {
-            Some(s) => s.to_string(),
+        let content = match Self::get_content_by_path(&path) {
+            Some(s) => s,
             None => return None,
         };
 
-        Some(FileEntry { path, file_name })
+        let mut lines: Vec<String> = content.lines().map(|str| str.to_string()).collect();
+
+        // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
+        if content.ends_with(LF) {
+            lines.push(LF.to_string());
+        }
+
+        Some((
+            FileEntry {
+                path,
+                file_name,
+                total_lines: lines.len(),
+            },
+            lines,
+        ))
     }
 
     /// Checks a file name with the `.env` pattern
-    pub fn is_env_file(&self) -> bool {
+    pub fn is_env_file(path: &PathBuf) -> bool {
         let pattern = ".env";
-        self.file_name.starts_with(pattern) || self.file_name.ends_with(pattern)
+        Self::get_file_name(path)
+            .filter(|file_name| file_name.starts_with(pattern) || file_name.ends_with(pattern))
+            .is_some()
+    }
+
+    fn get_file_name(path: &PathBuf) -> Option<String> {
+        path.file_name()
+            .map(|file_name| file_name.to_str())
+            .unwrap_or(None)
+            .map(|s| s.to_string())
+    }
+
+    fn get_content_by_path(path: &PathBuf) -> Option<String> {
+        let mut content = String::new();
+        let mut f = match File::open(&path) {
+            Ok(file) => file,
+            Err(_) => return None,
+        };
+
+        match f.read_to_string(&mut content) {
+            Ok(_) => Some(content),
+            Err(_) => None,
+        }
     }
 }
 
@@ -103,6 +144,10 @@ impl LineEntry {
     pub fn trimmed_string(&self) -> &str {
         self.raw_string.trim()
     }
+
+    pub fn is_last_line(&self) -> bool {
+        self.file.total_lines == self.number
+    }
 }
 
 #[cfg(test)]
@@ -116,6 +161,7 @@ mod tests {
             file: FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
+                total_lines: 1,
             },
             raw_string: String::from("FOO=BAR"),
         };
@@ -135,6 +181,8 @@ mod tests {
 
         mod from {
             use super::*;
+            use std::env::temp_dir;
+            use std::fs::remove_file;
 
             #[test]
             fn path_without_file_test() {
@@ -144,10 +192,23 @@ mod tests {
 
             #[test]
             fn path_with_file_test() {
-                let path = PathBuf::from(".env");
                 let file_name = String::from(".env");
+                let path = temp_dir().join(&file_name);
+                File::create(&path).expect("create testfile");
+
                 let f = FileEntry::from(path.clone());
-                assert_eq!(Some(FileEntry { path, file_name }), f);
+                assert_eq!(
+                    Some((
+                        FileEntry {
+                            path: path.clone(),
+                            file_name,
+                            total_lines: 0
+                        },
+                        vec![]
+                    )),
+                    f
+                );
+                remove_file(path).expect("temp file deleted");
             }
         }
 
@@ -165,14 +226,9 @@ mod tests {
             ];
 
             for (file_name, expected) in assertions {
-                let f = FileEntry {
-                    path: PathBuf::new(),
-                    file_name: String::from(file_name),
-                };
-
                 assert_eq!(
                     expected,
-                    f.is_env_file(),
+                    FileEntry::is_env_file(&PathBuf::from(file_name)),
                     "Expected {} for the file name {}",
                     expected,
                     file_name
@@ -194,6 +250,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from(""),
                 };
@@ -210,6 +267,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("# Comment"),
                 };
@@ -226,6 +284,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("NotComment"),
                 };
@@ -246,6 +305,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from(""),
                 };
@@ -261,6 +321,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOO=BAR"),
                 };
@@ -276,6 +337,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOO="),
                 };
@@ -291,6 +353,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOOBAR"),
                 };
@@ -310,6 +373,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from(""),
                 };
@@ -325,6 +389,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOO=BAR"),
                 };
@@ -340,6 +405,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("=BAR"),
                 };
@@ -355,6 +421,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOO="),
                 };
@@ -370,6 +437,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOOBAR"),
                 };
@@ -389,6 +457,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOO=BAR"),
                 };
@@ -403,6 +472,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("   FOO=BAR  "),
                 };
@@ -417,6 +487,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
+                        total_lines: 1,
                     },
                     raw_string: String::from("FOO=BAR\t"),
                 };

@@ -16,12 +16,16 @@ mod unordered_key;
 trait Check {
     fn run(&mut self, line: &LineEntry) -> Option<Warning>;
     fn name(&self) -> &str;
+    fn skip_comments(&self) -> bool {
+        true
+    }
 }
 
 // Checklist for checks which needs to know of only a single line
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
         Box::new(duplicated_key::DuplicatedKeyChecker::default()),
+        Box::new(ending_blank_line::EndingBlankLineChecker::default()),
         Box::new(extra_blank_line::ExtraBlankLineChecker::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
         Box::new(leading_character::LeadingCharacterChecker::default()),
@@ -39,11 +43,6 @@ pub fn available_check_names() -> Vec<String> {
         .iter()
         .map(|check| check.name().to_string())
         .collect();
-    names.push(
-        ending_blank_line::EndingBlankLineChecker::default()
-            .name()
-            .to_string(),
-    );
     names.sort();
     names
 }
@@ -55,22 +54,12 @@ pub fn run(lines: Vec<LineEntry>, skip_checks: &[&str]) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in &lines {
-        if line.is_comment() {
-            continue;
-        }
-
+        let is_comment = line.is_comment();
         for ch in &mut checks {
-            if let Some(warning) = ch.run(line) {
-                warnings.push(warning);
+            if is_comment && ch.skip_comments() {
+                continue;
             }
-        }
-    }
-
-    if let Some(last_line) = lines.last() {
-        let mut ending_line_checker = ending_blank_line::EndingBlankLineChecker::default();
-
-        if !skip_checks.contains(&ending_line_checker.name()) {
-            if let Some(warning) = ending_line_checker.run(last_line) {
+            if let Some(warning) = ch.run(line) {
                 warnings.push(warning);
             }
         }
@@ -84,23 +73,25 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    fn blank_line_entry(number: usize) -> LineEntry {
+    fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
         LineEntry {
             number,
             file: FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
+                total_lines,
             },
             raw_string: String::from("\n"),
         }
     }
 
-    fn line_entry(number: usize, str: &str) -> LineEntry {
+    fn line_entry(number: usize, total_lines: usize, str: &str) -> LineEntry {
         LineEntry {
             number,
             file: FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
+                total_lines,
             },
             raw_string: String::from(str),
         }
@@ -117,7 +108,7 @@ mod tests {
 
     #[test]
     fn run_with_empty_line_test() {
-        let lines: Vec<LineEntry> = vec![blank_line_entry(1)];
+        let lines: Vec<LineEntry> = vec![blank_line_entry(1, 1)];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
@@ -126,7 +117,10 @@ mod tests {
 
     #[test]
     fn run_with_comment_line_test() {
-        let lines: Vec<LineEntry> = vec![line_entry(1, "# Comment = 'Value'"), blank_line_entry(2)];
+        let lines: Vec<LineEntry> = vec![
+            line_entry(1, 2, "# Comment = 'Value'"),
+            blank_line_entry(2, 2),
+        ];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
@@ -135,7 +129,7 @@ mod tests {
 
     #[test]
     fn run_with_valid_line_test() {
-        let lines: Vec<LineEntry> = vec![line_entry(1, "FOO=BAR"), blank_line_entry(2)];
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FOO=BAR"), blank_line_entry(2, 2)];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
@@ -144,14 +138,14 @@ mod tests {
 
     #[test]
     fn run_with_invalid_line_test() {
-        let line = line_entry(1, "FOO");
+        let line = line_entry(1, 2, "FOO");
         let warning = Warning::new(
             line.clone(),
             String::from(
                 "KeyWithoutValue: The FOO key should be with a value or have an equal sign",
             ),
         );
-        let lines: Vec<LineEntry> = vec![line, blank_line_entry(2)];
+        let lines: Vec<LineEntry> = vec![line, blank_line_entry(2, 2)];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = Vec::new();
 
@@ -160,7 +154,7 @@ mod tests {
 
     #[test]
     fn run_without_blank_line_test() {
-        let line = line_entry(1, "FOO=BAR");
+        let line = line_entry(1, 1, "FOO=BAR");
         let warning = Warning::new(
             line.clone(),
             String::from("EndingBlankLine: No blank line at the end of the file"),
@@ -174,13 +168,13 @@ mod tests {
 
     #[test]
     fn skip_one_check() {
-        let line1 = line_entry(1, "FOO");
-        let line2 = line_entry(2, "1FOO");
+        let line1 = line_entry(1, 3, "FOO\n");
+        let line2 = line_entry(2, 3, "1FOO\n");
         let warning = Warning::new(
             line2.clone(),
             String::from("LeadingCharacter: Invalid leading character detected"),
         );
-        let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3)];
+        let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3, 3)];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue"];
 
@@ -189,7 +183,7 @@ mod tests {
 
     #[test]
     fn skip_all_checks() {
-        let line = line_entry(1, "FOO");
+        let line = line_entry(1, 1, "FOO");
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue", "EndingBlankLine"];
@@ -204,7 +198,5 @@ mod tests {
             let check_name = check.name();
             assert!(available_check_names.contains(&check_name.to_string()));
         }
-        let ending_blank_line = ending_blank_line::EndingBlankLineChecker::default();
-        assert!(available_check_names.contains(&ending_blank_line.name().to_string()));
     }
 }
