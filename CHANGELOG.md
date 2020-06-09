@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add GitHub Workflow for AUR publishing [#161](https://github.com/dotenv-linter/dotenv-linter/pull/161) ([@mstruebing](https://github.com/mstruebing))
 
 ### 🔧 Changed
+- Enable checks for outside current directory [#209](https://github.com/dotenv-linter/dotenv-linter/pull/209) ([@tisorlawan](https://github.com/tisorlawan))
 - Refactor `EndingBlankLineChecker`: change last line check logic (add `total_lines` to `FileEntry`) [#207](https://github.com/dotenv-linter/dotenv-linter/pull/207) ([@DDtKey](https://github.com/DDtKey))
 - Fix check (for several successive blank lines): ExtraBlankLine [#208](https://github.com/dotenv-linter/dotenv-linter/pull/208) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Replace `PathBuf` with `FileEntry` for `LineEntry` [#203](https://github.com/dotenv-linter/dotenv-linter/pull/203) ([@mgrachev](https://github.com/mgrachev))
