@@ -27,24 +27,24 @@
 
 It checks `.env` files for problems that may cause the application to malfunction:
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#duplicated-key">Duplicated Key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#ending-blank-line-will-be-available-in-v200">Ending Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#extra-blank-line-will-be-available-in-v200">Extra Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#key-without-value">Key without value</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#leading-character">Leading character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#quote-character-will-be-available-in-v200">Quote character</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#trailing-whitespace-will-be-available-in-v200">Trailing whitespace</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅<a href="#unordered-Key">Unordered Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#duplicated-key">Duplicated Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#ending-blank-line-will-be-available-in-v200">Ending Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#extra-blank-line-will-be-available-in-v200">Extra Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#key-without-value">Key without value</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#leading-character">Leading character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#lowercase-key">Lowercase key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#quote-character-will-be-available-in-v200">Quote character</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#space-character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#trailing-whitespace-will-be-available-in-v200">Trailing whitespace</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#unordered-Key">Unordered Key</a><br />
 </p>
 
 The key features:
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;⚡️Lightning-fast because it is written in Rust 🦀<br />
-&nbsp;&nbsp;&nbsp;&nbsp;💣Can be used on any project regardless of the programming language 💥<br />
-&nbsp;&nbsp;&nbsp;&nbsp;🚀Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a>) 🔥
+&nbsp;&nbsp;&nbsp;&nbsp;⚡️&nbsp;Lightning-fast because it is written in Rust 🦀<br />
+&nbsp;&nbsp;&nbsp;&nbsp;💣&nbsp;Can be used on any project regardless of the programming language 💥<br />
+&nbsp;&nbsp;&nbsp;&nbsp;🚀&nbsp;Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
 Articles about dotenv-linter:
@@ -201,11 +201,11 @@ UnorderedKey
 Detects if a key is not unique:
 
 ```env
-❌Wrong
+❌ Wrong
 FOO=BAR
 FOO=BAR
 
-✅Correct
+✅ Correct
 FOO=BAR
 BAR=FOO
 ```
@@ -215,12 +215,12 @@ BAR=FOO
 Detects if a file doesn't have a blank line at the end:
 
 ```env
-❌Wrong
+❌ Wrong
 FOO=BAR
 ```
 
 ```env
-✅Correct
+✅ Correct
 FOO=BAR
 
 ```
@@ -230,7 +230,7 @@ FOO=BAR
 Detects if a file contains more than one blank line in a row:
 
 ```env
-❌Wrong
+❌ Wrong
 A=B
 
 
@@ -238,7 +238,7 @@ FOO=BAR
 ```
 
 ```env
-❌Wrong
+❌ Wrong
 A=B
 FOO=BAR
 
@@ -246,7 +246,7 @@ FOO=BAR
 ```
 
 ```env
-✅Correct
+✅ Correct
 A=B
 
 FOO=BAR
@@ -254,7 +254,7 @@ FOO=BAR
 ```
 
 ```env
-✅Correct
+✅ Correct
 A=B
 FOO=BAR
 
@@ -264,10 +264,10 @@ FOO=BAR
 
 Detects if a key does not use an underscore to separate words:
 ```env
-❌Wrong
+❌ Wrong
 FOO-BAR=FOOBAR
 
-✅Correct
+✅ Correct
 FOO_BAR=FOOBAR
 ```
 
@@ -275,13 +275,13 @@ FOO_BAR=FOOBAR
 
 Detects if a line has a key without a value:
 ```env
-❌Wrong
+❌ Wrong
 FOO
 
-✅Correct
+✅ Correct
 FOO=
 
-✅Correct
+✅ Correct
 FOO=BAR
 ```
 
@@ -290,22 +290,22 @@ FOO=BAR
 Detects if a line starts with an unallowed character (characters from `A` to `Z` and `_` (underscore) are allowed):
 
 ```env
-❌Wrong
+❌ Wrong
  FOO=BAR
 
-❌Wrong
+❌ Wrong
 .FOO=BAR
 
-❌Wrong
+❌ Wrong
 *FOO=BAR
 
-❌Wrong
+❌ Wrong
 1FOO=BAR
 
-✅Correct
+✅ Correct
 FOO=BAR
 
-✅Correct
+✅ Correct
 _FOO=BAR
 ```
 
@@ -314,13 +314,13 @@ _FOO=BAR
 Detects if a key has lowercase characters:
 
 ```env
-❌Wrong
+❌ Wrong
 FOo_BAR=FOOBAR
 
-❌Wrong
+❌ Wrong
 foo_bar=FOOBAR
 
-✅Correct
+✅ Correct
 FOO_BAR=FOOBAR
 ```
 
@@ -329,13 +329,13 @@ FOO_BAR=FOOBAR
 Detects if a value is wrapped in quotes:
 
 ```env
-❌Wrong
+❌ Wrong
 FOO="BAR"
 
-❌Wrong
+❌ Wrong
 FOO='BAR'
 
-✅Correct
+✅ Correct
 FOO=BAR
 ```
 
@@ -344,16 +344,16 @@ FOO=BAR
 Detects lines with a whitespace around equal sign character `=`:
 
 ```env
-❌Wrong
+❌ Wrong
 FOO =BAR
 
-❌Wrong
+❌ Wrong
 FOO= BAR
 
-❌Wrong
+❌ Wrong
 FOO = BAR
 
-✅Correct
+✅ Correct
 FOO=BAR
 ```
 
@@ -366,11 +366,11 @@ Detects if a line has a trailing whitespace.
 Detects if a key is not alphabetically ordered:
 
 ```env
-❌Wrong
+❌ Wrong
 FOO=BAR
 BAR=FOO
 
-✅Correct
+✅ Correct
 BAR=FOO
 FOO=BAR
 ```
