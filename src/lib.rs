@@ -2,6 +2,7 @@ use crate::common::*;
 
 use clap::Arg;
 use std::error::Error;
+use std::ffi::OsStr;
 use std::fs::{self, File};
 use std::io::{self, BufRead, BufReader, Read, Seek, SeekFrom};
 use std::path::PathBuf;
@@ -10,9 +11,7 @@ use std::{env, process};
 mod checks;
 mod common;
 
-fn get_args(current_dir: &PathBuf) -> clap::ArgMatches {
-    let current_dir = current_dir.as_os_str();
-
+fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
     clap::App::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -59,7 +58,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         Err(e) => return Err(Box::new(e)),
     };
 
-    let args = get_args(&current_dir);
+    let args = get_args(current_dir.as_os_str());
 
     let mut paths: Vec<PathBuf> = Vec::new();
     let mut files: Vec<FileEntry> = Vec::new();
