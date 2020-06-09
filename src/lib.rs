@@ -155,7 +155,7 @@ fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<PathB
     for _ in 0..(comp_base.len() - i) {
         relative_path.push("..");
     }
-    relative_path.extend(comp_target.get(i..).unwrap());
+    relative_path.extend(comp_target.get(i..)?);
 
     Some(relative_path)
 }
