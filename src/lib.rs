@@ -56,9 +56,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
         Err(e) => return Err(Box::new(e)),
     };
 
-    let current_dir = current_dir.as_os_str();
-
-    let args = get_args(current_dir);
+    let args = get_args(current_dir.as_os_str());
 
     let mut dirs: Vec<PathBuf> = Vec::new();
     let mut file_paths: Vec<PathBuf> = Vec::new();
@@ -114,12 +112,12 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for path in file_paths {
-        let strip_path = match path.strip_prefix(&current_dir) {
-            Ok(p) => p,
-            Err(_) => continue,
+        let relative_path = match get_relative_path(&path, &current_dir) {
+            Some(p) => p,
+            None => continue,
         };
 
-        let file_with_lines = match FileEntry::from(strip_path.to_owned()) {
+        let file_with_lines = match FileEntry::from(relative_path) {
             Some(f) => f,
             _ => continue,
         };
@@ -145,4 +143,48 @@ fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
     }
 
     entries
+}
+
+fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<PathBuf> {
+    let comp_target: Vec<_> = target_path.components().collect();
+    let comp_base: Vec<_> = base_path.components().collect();
+
+    let mut i = 0;
+    for (b, t) in comp_base.iter().zip(comp_target.iter()) {
+        if b != t {
+            break;
+        }
+        i += 1;
+    }
+
+    let mut relative_path = PathBuf::new();
+
+    for _ in 0..(comp_base.len() - i) {
+        relative_path.push("..");
+    }
+    relative_path.extend(comp_target.get(i..)?);
+
+    Some(relative_path)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_relative_path() {
+        let assertions = vec![
+            ("/a/.env", "/a", ".env"),
+            ("/a/b/.env", "/a", "b/.env"),
+            ("/.env", "/a/b/c", "../../../.env"),
+            ("/a/b/c/d/.env", "/a/b/e/f", "../../c/d/.env"),
+        ];
+
+        for (target, base, relative) in assertions {
+            assert_eq!(
+                get_relative_path(&PathBuf::from(target), &PathBuf::from(base),),
+                Some(PathBuf::from(relative))
+            );
+        }
+    }
 }
