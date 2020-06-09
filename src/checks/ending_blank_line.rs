@@ -23,15 +23,19 @@ impl EndingBlankLineChecker<'_> {
 
 impl Check for EndingBlankLineChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        if line.raw_string.ends_with('\n') {
-            None
-        } else {
+        if line.is_last_line() && !line.raw_string.ends_with(LF) {
             Some(Warning::new(line.clone(), self.message()))
+        } else {
+            None
         }
     }
 
     fn name(&self) -> &str {
         self.name
+    }
+
+    fn skip_comments(&self) -> bool {
+        false
     }
 }
 
@@ -49,6 +53,7 @@ mod tests {
             file: FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
+                total_lines: 1,
             },
             raw_string: String::from("\n"),
         };
@@ -64,6 +69,7 @@ mod tests {
             file: FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
+                total_lines: 1,
             },
             raw_string: String::from("\r\n"),
         };
@@ -79,6 +85,7 @@ mod tests {
             file: FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
+                total_lines: 1,
             },
             raw_string: String::from("a"),
         };
