@@ -117,11 +117,15 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Install 7Zip PowerShell Module
+        shell: powershell
+        run: Install-Module 7Zip4PowerShell -Force -Verbose
       - name: Build
+        shell: powershell
         run: |
           cargo build --release --target x86_64-pc-windows-msvc
-          mv target/x86_64-pc-windows-msvc/release/dotenv-linter.exe ./dotenv-linter-win-x86_64.exe
-        shell: bash
+          Move-Item -Path ".\target\x86_64-pc-windows-msvc\release\dotenv-linter.exe" -Destination ".\dotenv-linter.exe"
+          Compress-7Zip -Path ".\dotenv-linter.exe" -ArchiveFileName ".\dotenv-linter-win-x64.zip" -Format Zip
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
