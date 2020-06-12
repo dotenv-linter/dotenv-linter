@@ -2,6 +2,7 @@
 mod cli_common;
 
 use cli_common::TestDir;
+use std::path::Path;
 
 #[test]
 fn checks_one_specific_path() {
@@ -13,9 +14,10 @@ fn checks_one_specific_path() {
 
     let args = &[subdir.as_str()];
     let expected_output = format!(
-        "{}/{}:1 LeadingCharacter: Invalid leading character detected\n",
-        testdir.relative_path(&subdir),
-        testfile_2.shortname_as_str(),
+        "{}:1 LeadingCharacter: Invalid leading character detected\n",
+        Path::new(&testdir.relative_path(&subdir))
+            .join(testfile_2.shortname_as_str())
+            .to_str().unwrap()
     );
 
     testdir.test_command_fail_with_args(args, expected_output);
@@ -34,11 +36,13 @@ fn checks_two_specific_paths() {
 
     let args = &[subdir_1.as_str(), subdir_2.as_str()];
     let expected_output = format!(
-        "{}/{}:1 LeadingCharacter: Invalid leading character detected\n{}/{}:1 LeadingCharacter: Invalid leading character detected\n",
-        testdir.relative_path(&subdir_1),
-        testfile_2.shortname_as_str(),
-        testdir.relative_path(&subdir_2),
-        testfile_3.shortname_as_str(),
+        "{}:1 LeadingCharacter: Invalid leading character detected\n{}:1 LeadingCharacter: Invalid leading character detected\n",
+        Path::new(&testdir.relative_path(&subdir_1))
+            .join(testfile_2.shortname_as_str())
+            .to_str().unwrap(),
+        Path::new(&testdir.relative_path(&subdir_2))
+            .join(testfile_3.shortname_as_str())
+            .to_str().unwrap(),
     );
 
     testdir.test_command_fail_with_args(args, expected_output);
@@ -70,9 +74,10 @@ fn checks_two_specific_files() {
 
     let args = &[testfile_2.as_str(), testfile_3.as_str()];
     let expected_output = format!(
-        "{}/{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 SpaceCharacter: The line has spaces around equal sign\n",
-        testdir.relative_path(&subdir),
-        testfile_3.shortname_as_str(),
+        "{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 SpaceCharacter: The line has spaces around equal sign\n",
+        Path::new(&testdir.relative_path(&subdir))
+            .join(testfile_3.shortname_as_str())
+            .to_str().unwrap(),
         testfile_2.shortname_as_str(),
     );
 
@@ -90,9 +95,10 @@ fn checks_one_specific_file_and_one_path() {
 
     let args = &[testfile_2.as_str(), subdir.as_str()];
     let expected_output = format!(
-        "{}/{}:2 DuplicatedKey: The FOO key is duplicated\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
-        testdir.relative_path(&subdir),
-        testfile_3.shortname_as_str(),
+        "{}:2 DuplicatedKey: The FOO key is duplicated\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
+        Path::new(&testdir.relative_path(&subdir))
+            .join(testfile_3.shortname_as_str())
+            .to_str().unwrap(),
         testfile_2.shortname_as_str(),
     );
 
