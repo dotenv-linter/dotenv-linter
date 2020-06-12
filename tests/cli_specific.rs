@@ -17,7 +17,8 @@ fn checks_one_specific_path() {
         "{}:1 LeadingCharacter: Invalid leading character detected\n",
         Path::new(&testdir.relative_path(&subdir))
             .join(testfile_2.shortname_as_str())
-            .to_str().unwrap()
+            .to_str()
+            .unwrap()
     );
 
     testdir.test_command_fail_with_args(args, expected_output);
