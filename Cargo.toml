@@ -12,6 +12,7 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 clap = "2.33.0"
+dunce = "1.0.1"
 
 [dev-dependencies]
 assert_cmd = "0.12.0"
