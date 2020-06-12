@@ -82,6 +82,11 @@ $ trizen -S dotenv-linter-bin # for the binary distribution
 $ trizen -S dotenv-linter-git # for the current master branch
 ```
 
+### Windows / Scoop
+```shell script
+$ scoop install https://github.com/dotenv-linter/dotenv-linter/raw/master/.manifest/scoop/dotenv-linter.json
+````
+
 ### Docker
 
 ```shell script
