@@ -57,7 +57,7 @@ mod tests {
     #[cfg(windows)]
     fn test_relative_win_paths() {
         let assertions = vec![
-            ("C;\\a\\.env", "C:\\a", ".env"),
+            ("C:\\a\\.env", "C:\\a", ".env"),
             ("\\a\\b\\.env", "\\a", "b\\.env"),
             ("\\.env", "\\a\\b\\c", "../../../.env"),
             ("C:\\a\\b\\c\\.env", "C:\\a\\b\\e\\f", "..\\..\\c\\.env"),
