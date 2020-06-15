@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
-/// For the Windows platform, we need to remove the UNC prefix
+/// For the Windows platform, we need to remove the UNC prefix.
+/// For other platforms -  continue use `std:fs`
 pub use dunce::canonicalize;
 
 /// Returns the relative path for `target_path` relative to `base_path`
@@ -30,7 +31,17 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
 mod tests {
     use super::*;
 
+    fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
+        for (target, base, relative) in assertions {
+            assert_eq!(
+                get_relative_path(&PathBuf::from(target), &PathBuf::from(base),),
+                Some(PathBuf::from(relative))
+            );
+        }
+    }
+
     #[test]
+    #[cfg(not(windows))]
     fn test_relative_path() {
         let assertions = vec![
             ("/a/.env", "/a", ".env"),
@@ -39,11 +50,19 @@ mod tests {
             ("/a/b/c/d/.env", "/a/b/e/f", "../../c/d/.env"),
         ];
 
-        for (target, base, relative) in assertions {
-            assert_eq!(
-                get_relative_path(&PathBuf::from(target), &PathBuf::from(base),),
-                Some(PathBuf::from(relative))
-            );
-        }
+        run_relative_path_asserts(assertions)
+    }
+
+    #[test]
+    #[cfg(windows)]
+    fn test_relative_win_paths() {
+        let assertions = vec![
+            ("C;\\a\\.env", "C:\\a", ".env"),
+            ("\\a\\b\\.env", "\\a", "b\\.env"),
+            ("\\.env", "\\a\\b\\c", "../../../.env"),
+            ("C:\\a\\b\\c\\.env", "C:\\a\\b\\e\\f", "..\\..\\c\\.env"),
+        ];
+
+        run_relative_path_asserts(assertions)
     }
 }
