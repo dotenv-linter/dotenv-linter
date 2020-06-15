@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+
+### 🔧 Changed
+
+## [v2.0.0] - 2020-06-15
+### 🚀 Added
 - Add check: TrailingWhitespace [#190](https://github.com/dotenv-linter/dotenv-linter/pull/190) ([@pineapplethief](https://github.com/pineapplethief))
 - Add an argument to show available checks [#202](https://github.com/dotenv-linter/dotenv-linter/pull/202) ([@DDtKey](https://github.com/DDtKey))
 - Add the ability to skip checks [#178](https://github.com/dotenv-linter/dotenv-linter/pull/178) ([@mgrachev](https://github.com/mgrachev))
@@ -95,6 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v2.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.0.0
 [v1.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.2.0
 [v1.1.2]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.1.2
 [v1.1.1]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.1.1
