@@ -28,15 +28,15 @@
 It checks `.env` files for problems that may cause the application to malfunction:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#duplicated-key">Duplicated Key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#ending-blank-line-will-be-available-in-v200">Ending Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#extra-blank-line-will-be-available-in-v200">Extra Blank Line</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#ending-blank-line">Ending Blank Line</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#extra-blank-line">Extra Blank Line</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#key-without-value">Key without value</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#leading-character">Leading character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#quote-character-will-be-available-in-v200">Quote character</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#quote-character">Quote character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#trailing-whitespace-will-be-available-in-v200">Trailing whitespace</a> (will be available in <a href="https://github.com/dotenv-linter/dotenv-linter/issues/172">v2.0.0</a>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#trailing-whitespace">Trailing whitespace</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#unordered-Key">Unordered Key</a><br />
 </p>
 
@@ -59,13 +59,13 @@ Articles about dotenv-linter:
 
 ```shell script
 # Linux
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v1.2.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v2.0.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
 
 # Alpine Linux
-$ wget https://github.com/dotenv-linter/dotenv-linter/releases/download/v1.2.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/dotenv-linter/dotenv-linter/releases/download/v2.0.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v1.2.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v2.0.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ### Homebrew / Linuxbrew
@@ -141,7 +141,7 @@ jobs:
       - run:
           name: Run dotenv-linter
           command: |
-            DOTENV_LINTER_VERSION=v1.2.0
+            DOTENV_LINTER_VERSION=v2.0.0
             wget https://github.com/dotenv-linter/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
             -O - -q | tar -xzf -
             ./dotenv-linter
@@ -176,14 +176,14 @@ $ dotenv-linter --exclude .env.test
 .env:3 UnorderedKey: The BAR key should go before the FOO key
 ```
 
-If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME` (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172)):
+If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME`:
 
 ```shell script
 $ dotenv-linter --skip UnorderedKey EndingBlankLine
 .env:2 DuplicatedKey: The FOO key is duplicated
 ```
 
-If you need to view all available checks, you can use the argument `--show-checks` (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/199)):
+If you need to view all available checks, you can use the argument `--show-checks`:
 
 ```shell script
 $ dotenv-linter --show-checks
@@ -196,6 +196,7 @@ LeadingCharacter
 LowercaseKey
 QuoteCharacter
 SpaceCharacter
+TrailingWhitespace
 UnorderedKey
 ```
 
@@ -215,7 +216,7 @@ FOO=BAR
 BAR=FOO
 ```
 
-### Ending Blank Line (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+### Ending Blank Line
 
 Detects if a file doesn't have a blank line at the end:
 
@@ -230,7 +231,7 @@ FOO=BAR
 
 ```
 
-### Extra Blank Line (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+### Extra Blank Line
 
 Detects if a file contains more than one blank line in a row:
 
@@ -329,7 +330,7 @@ foo_bar=FOOBAR
 FOO_BAR=FOOBAR
 ```
 
-### Quote character (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+### Quote character
 
 Detects if a value is wrapped in quotes:
 
@@ -362,7 +363,7 @@ FOO = BAR
 FOO=BAR
 ```
 
-### Trailing whitespace (will be available in [v2.0.0](https://github.com/dotenv-linter/dotenv-linter/issues/172))
+### Trailing whitespace
 
 Detects if a line has a trailing whitespace.
 
