@@ -34,6 +34,8 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::env::temp_dir;
+    use std::fs::{remove_file, File};
 
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
         for (target, base, relative) in assertions {
@@ -69,5 +71,44 @@ mod tests {
         ];
 
         run_relative_path_asserts(assertions)
+    }
+
+    #[test]
+    #[cfg(not(windows))]
+    fn test_canonicalize() {
+        let path = temp_dir().join(".env");
+        File::create(&path).expect("file created");
+
+        let fs_canonical_path = std::fs::canonicalize(&path).expect("canonical path by std::fs");
+        let canonical_path = super::canonicalize(&path).expect("canonical path by fs_utils");
+
+        // The result of `fs_utils` must match `std::fs` for non-Windows platform
+        assert_eq!(canonical_path, fs_canonical_path);
+
+        remove_file(path).expect("temp file deleted");
+    }
+
+    #[test]
+    #[cfg(windows)]
+    fn test_canonicalize() {
+        const UNC_PREFIX: &str = "\\\\?\\";
+
+        let file_name = String::from(".env");
+        let path = temp_dir().join(&file_name);
+        File::create(&path).expect("create testfile");
+
+        let dunce_canonical_path = dunce::canonicalize(&path).expect("canonical path by `dunce`");
+        let canonical_path = super::canonicalize(&path).expect("canonical path by `fs_utils`");
+
+        let contains_unc = canonical_path
+            .to_str()
+            .filter(|path| path.contains(UNC_PREFIX))
+            .is_some();
+
+        // The result of `fs_utils` must match `dunce` on Windows
+        assert_eq!(canonical_path, dunce_canonical_path);
+        assert!(!contains_unc);
+
+        remove_file(path).expect("temp file deleted");
     }
 }
