@@ -12,6 +12,8 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 clap = "2.33.0"
+
+[target.'cfg(windows)'.dependencies]
 dunce = "1.0.1"
 
 [dev-dependencies]

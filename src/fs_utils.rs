@@ -1,8 +1,12 @@
 use std::path::PathBuf;
 
 /// For the Windows platform, we need to remove the UNC prefix.
-/// For other platforms -  continue use `std:fs`
+#[cfg(windows)]
 pub use dunce::canonicalize;
+
+/// For other platforms - continue use `std:fs`
+#[cfg(not(windows))]
+pub use std::fs::canonicalize;
 
 /// Returns the relative path for `target_path` relative to `base_path`
 pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<PathBuf> {
@@ -55,12 +59,13 @@ mod tests {
 
     #[test]
     #[cfg(windows)]
-    fn test_relative_win_paths() {
+    fn test_relative_path() {
         let assertions = vec![
             ("C:\\a\\.env", "C:\\a", ".env"),
             ("\\a\\b\\.env", "\\a", "b\\.env"),
-            ("\\.env", "\\a\\b\\c", "../../../.env"),
+            ("\\.env", "\\a\\b\\c", "..\\..\\..\\.env"),
             ("C:\\a\\b\\c\\.env", "C:\\a\\b\\e\\f", "..\\..\\c\\.env"),
+            ("\\\\?\\C:\\a\\.env", "C:\\a\\b", "\\\\?\\C:\\a\\.env"),
         ];
 
         run_relative_path_asserts(assertions)
