@@ -1,9 +1,15 @@
 use assert_cmd::Command;
 use std::ffi::OsStr;
-use std::fs::{canonicalize, File};
+use std::fs::File;
 use std::io::Write;
 use std::path::PathBuf;
 use tempfile::{tempdir, tempdir_in, TempDir};
+
+#[cfg(windows)]
+use dunce::canonicalize;
+
+#[cfg(not(windows))]
+use std::fs::canonicalize;
 
 /// Use to test commands in temporary directories
 pub struct TestDir {
