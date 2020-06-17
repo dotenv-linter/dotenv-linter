@@ -1,6 +1,6 @@
 use assert_cmd::Command;
 use std::ffi::OsStr;
-use std::fs::File;
+use std::fs::{canonicalize, File};
 use std::io::Write;
 use std::path::PathBuf;
 use tempfile::{tempdir, tempdir_in, TempDir};
@@ -80,7 +80,8 @@ impl TestDir {
         S: AsRef<OsStr>,
     {
         let mut cmd = Self::init_cmd();
-        cmd.current_dir(&self.current_dir)
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
             .args(args)
             .assert()
             .success();
@@ -98,7 +99,8 @@ impl TestDir {
         S: AsRef<OsStr>,
     {
         let mut cmd = Self::init_cmd();
-        cmd.current_dir(&self.current_dir)
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
             .args(args)
             .assert()
             .failure()
