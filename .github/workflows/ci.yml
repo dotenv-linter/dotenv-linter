@@ -9,7 +9,7 @@ on:
 
 jobs:
   check:
-    name: Check
+    name: Check / Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -43,7 +43,7 @@ jobs:
         if: steps.cache-target.outputs.cache-hit != 'true'
 
   fmt:
-    name: Rustfmt
+    name: Rustfmt / Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -58,7 +58,7 @@ jobs:
           args: --all -- --check
 
   clippy:
-    name: Clippy
+    name: Clippy / Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -98,7 +98,7 @@ jobs:
   #       args: --all-features -- -D warnings
 
   build:
-    name: Build
+    name: Build / Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -131,8 +131,8 @@ jobs:
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
-  tests:
-    name: Tests and coverage
+  test:
+    name: Test and coverage / Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -188,6 +188,72 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           file: ./lcov.info
+      - name: Cleanup for caching
+        uses: actions-rs/cargo@v1
+        with:
+          command: clean
+          args: --package dotenv-linter
+        if: steps.cache-target.outputs.cache-hit != 'true'
+
+  windows_build:
+    name: Build / Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        id: toolchain
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: registry-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache target
+        id: cache-target
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: build-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+      - name: Cleanup for caching
+        uses: actions-rs/cargo@v1
+        with:
+          command: clean
+          args: --package dotenv-linter
+        if: steps.cache-target.outputs.cache-hit != 'true'
+
+  windows_test:
+    name: Test / Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        id: toolchain
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: test-registry-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache target
+        id: cache-target
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: test-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+      - name: Run tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features --no-fail-fast
       - name: Cleanup for caching
         uses: actions-rs/cargo@v1
         with:
