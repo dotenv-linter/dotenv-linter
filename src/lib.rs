@@ -4,10 +4,11 @@ use clap::Arg;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::path::PathBuf;
-use std::{env, fs, process};
+use std::{env, process};
 
 mod checks;
 mod common;
+mod fs_utils;
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
     clap::App::new(env!("CARGO_PKG_NAME"))
@@ -76,12 +77,12 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     if let Some(inputs) = args.values_of("input") {
         dirs = inputs
             .clone()
-            .filter_map(|s| fs::canonicalize(s).ok())
+            .filter_map(|s| fs_utils::canonicalize(s).ok())
             .filter(|p| p.is_dir())
             .collect();
 
         file_paths = inputs
-            .filter_map(|s| fs::canonicalize(s).ok())
+            .filter_map(|s| fs_utils::canonicalize(s).ok())
             .filter(|p| p.is_file())
             .collect();
     }
@@ -100,8 +101,9 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
 
     // Removes files from paths if they should be excluded
     if let Some(excluded) = args.values_of("exclude") {
-        let excluded_paths: Vec<PathBuf> =
-            excluded.filter_map(|f| fs::canonicalize(f).ok()).collect();
+        let excluded_paths: Vec<PathBuf> = excluded
+            .filter_map(|f| fs_utils::canonicalize(f).ok())
+            .collect();
 
         file_paths.retain(|path| !excluded_paths.contains(&path));
     }
@@ -112,7 +114,7 @@ pub fn run() -> Result<Vec<Warning>, Box<dyn Error>> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for path in file_paths {
-        let relative_path = match get_relative_path(&path, &current_dir) {
+        let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
             Some(p) => p,
             None => continue,
         };
@@ -143,48 +145,4 @@ fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
     }
 
     entries
-}
-
-fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<PathBuf> {
-    let comp_target: Vec<_> = target_path.components().collect();
-    let comp_base: Vec<_> = base_path.components().collect();
-
-    let mut i = 0;
-    for (b, t) in comp_base.iter().zip(comp_target.iter()) {
-        if b != t {
-            break;
-        }
-        i += 1;
-    }
-
-    let mut relative_path = PathBuf::new();
-
-    for _ in 0..(comp_base.len() - i) {
-        relative_path.push("..");
-    }
-    relative_path.extend(comp_target.get(i..)?);
-
-    Some(relative_path)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_relative_path() {
-        let assertions = vec![
-            ("/a/.env", "/a", ".env"),
-            ("/a/b/.env", "/a", "b/.env"),
-            ("/.env", "/a/b/c", "../../../.env"),
-            ("/a/b/c/d/.env", "/a/b/e/f", "../../c/d/.env"),
-        ];
-
-        for (target, base, relative) in assertions {
-            assert_eq!(
-                get_relative_path(&PathBuf::from(target), &PathBuf::from(base),),
-                Some(PathBuf::from(relative))
-            );
-        }
-    }
 }
