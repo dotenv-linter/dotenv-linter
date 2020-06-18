@@ -83,9 +83,16 @@ $ trizen -S dotenv-linter-git # for the current master branch
 ```
 
 ### Windows / Scoop
+To install:
 ```shell script
-$ scoop install https://github.com/dotenv-linter/dotenv-linter/raw/master/.manifest/scoop/dotenv-linter.json
+$ scoop bucket add dotenv-linter https://github.com/dotenv-linter/scoop.git
+$ scoop install dotenv-linter/dotenv-linter
 ````
+
+To update:
+```shell script
+$ scoop update dotenv-linter
+```
 
 ### Docker
 
