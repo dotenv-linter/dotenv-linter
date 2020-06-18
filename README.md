@@ -83,16 +83,11 @@ $ trizen -S dotenv-linter-git # for the current master branch
 ```
 
 ### Windows / Scoop
-To install:
+
 ```shell script
 $ scoop bucket add dotenv-linter https://github.com/dotenv-linter/scoop.git
 $ scoop install dotenv-linter/dotenv-linter
 ````
-
-To update:
-```shell script
-$ scoop update dotenv-linter
-```
 
 ### Docker
 
@@ -124,7 +119,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v1
       - name: dotenv-linter
-        uses: dotenv-linter/action-dotenv-linter@v1
+        uses: dotenv-linter/action-dotenv-linter@v2
         with:
           github_token: ${{ secrets.github_token }}
 ```
