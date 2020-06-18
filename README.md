@@ -82,7 +82,7 @@ $ trizen -S dotenv-linter-bin # for the binary distribution
 $ trizen -S dotenv-linter-git # for the current master branch
 ```
 
-### Windows / Scoop
+### Windows / Scoop (will be available in [v2.1.0](https://github.com/dotenv-linter/dotenv-linter/issues/217))
 
 ```shell script
 $ scoop bucket add dotenv-linter https://github.com/dotenv-linter/scoop.git
