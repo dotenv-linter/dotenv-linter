@@ -1,7 +1,4 @@
-#[allow(dead_code)]
-mod cli_common;
-
-use cli_common::TestDir;
+use crate::common::TestDir;
 
 #[test]
 fn exclude_one_file() {

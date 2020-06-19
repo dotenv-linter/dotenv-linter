@@ -1,10 +1,7 @@
-#[allow(dead_code)]
-mod cli_common;
-
-use cli_common::TestDir;
+use crate::common::TestDir;
 
 #[test]
-fn exits_with_0_on_no_errors() {
+fn exits_with_0_on_no_warnings() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "FOO=bar\n");
     test_dir.test_command_success();
