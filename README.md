@@ -59,13 +59,13 @@ Articles about dotenv-linter:
 
 ```shell script
 # Linux
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v2.0.0/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
 
 # Alpine Linux
-$ wget https://github.com/dotenv-linter/dotenv-linter/releases/download/v2.0.0/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+$ wget https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
 
 # macOS
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/download/v2.0.0/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+$ curl https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
 ```
 
 ### Homebrew / Linuxbrew
@@ -143,8 +143,7 @@ jobs:
       - run:
           name: Run dotenv-linter
           command: |
-            DOTENV_LINTER_VERSION=v2.0.0
-            wget https://github.com/dotenv-linter/dotenv-linter/releases/download/$DOTENV_LINTER_VERSION/dotenv-linter-alpine-x86_64.tar.gz \
+            wget https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz \
             -O - -q | tar -xzf -
             ./dotenv-linter
 ```
