@@ -58,14 +58,15 @@ Articles about dotenv-linter:
 ### Binary
 
 ```shell script
-# Linux
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+# Linux / macOS / Windows (MINGW and etc)
+$ curl -sfl https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
-# Alpine Linux
-$ wget https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+# Alpine Linux (wget)
+$ wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
-# macOS
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+# Specific version
+$ curl -sfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s "v1.2.0"
+
 ```
 
 ### Homebrew / Linuxbrew
