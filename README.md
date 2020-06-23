@@ -59,13 +59,13 @@ Articles about dotenv-linter:
 
 ```shell script
 # Linux / macOS / Windows (MINGW and etc)
-$ curl -sfl https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
+$ curl -sfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s
 
 # Alpine Linux (wget)
-$ wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
+$ wget -q -O - "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s
 
 # Specific version
-$ curl -sfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s "v1.2.0"
+$ curl -sfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s "v1.2.0"
 
 ```
 

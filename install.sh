@@ -88,8 +88,7 @@ setup_executable() {
         case :$PATH: in
             *:$_bin_dir:*) ;; # do nothing, already exists
             *)  echo "export PATH=\"$_bin_dir:\$PATH\"" >> "${_shell_profile}"
-                # shellcheck source=$shell_profile
-                . "${_shell_profile}" # upd config
+                export PATH="${_bin_dir}:$PATH"
                 println "Will be available in new terminal sessions or after update config: \". ${_shell_profile}\""
             ;;
         esac
@@ -97,7 +96,7 @@ setup_executable() {
 
     if ! cmd_exists dotenv-linter ; then
         println ""
-	    println "Manually add the directory to your environment"
+	    println "Manually add the directory to your environment:"
         println "   export PATH=\"\$PATH:${_bin_dir}\""
         println ""
 	fi
