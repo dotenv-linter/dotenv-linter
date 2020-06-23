@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add install.sh for provide more short way to install [#220](https://github.com/dotenv-linter/dotenv-linter/pull/220) ([@DDtKey](https://github.com/DDtKey))
 - Add Windows publishing to release workflow [#211](https://github.com/dotenv-linter/dotenv-linter/pull/211) ([@DDtKey](https://github.com/DDtKey))
 - Add support canonicalize path for Windows [#213](https://github.com/dotenv-linter/dotenv-linter/pull/213) ([@DDtKey](https://github.com/DDtKey))
 - Add build and test steps running on Windows [#216](https://github.com/dotenv-linter/dotenv-linter/pull/216) ([@mgrachev](https://github.com/mgrachev))
