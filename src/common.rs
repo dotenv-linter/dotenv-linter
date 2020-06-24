@@ -218,11 +218,13 @@ mod tests {
                 (".env", true),
                 ("foo.env", true),
                 (".env.foo", true),
+                (".env.foo.common", true),
                 ("env", false),
                 ("env.foo", false),
                 ("foo_env", false),
                 ("foo-env", false),
                 (".my-env-file", false),
+                ("dev.env.js", false),
             ];
 
             for (file_name, expected) in assertions {

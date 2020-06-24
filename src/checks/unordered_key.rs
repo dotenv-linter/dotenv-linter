@@ -31,6 +31,11 @@ impl Default for UnorderedKeyChecker<'_> {
 
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+        if line.is_empty() {
+            self.keys.clear();
+            return None;
+        }
+
         let key = line.get_key()?;
         self.keys.push(key.clone());
         let mut sorted_keys = self.keys.clone();
@@ -362,6 +367,50 @@ mod tests {
                         total_lines: 4,
                     },
                     raw_string: String::from("ZOO=BAR"),
+                },
+                None,
+            ),
+        ];
+
+        run_unordered_tests(asserts);
+    }
+
+    #[test]
+    fn one_unordered_key_with_blank_line_test() {
+        let asserts = vec![
+            (
+                LineEntry {
+                    number: 1,
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                        total_lines: 3,
+                    },
+                    raw_string: String::from("FOO=BAR"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 2,
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                        total_lines: 3,
+                    },
+                    raw_string: String::from(""),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 3,
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                        total_lines: 3,
+                    },
+                    raw_string: String::from("BAR=FOO"),
                 },
                 None,
             ),
