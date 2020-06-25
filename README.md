@@ -383,6 +383,19 @@ BAR=FOO
 FOO=BAR
 ```
 
+You can use blank lines to split lines into groups:
+
+```env
+❌ Wrong
+FOO=BAR
+BAR=FOO
+
+✅ Correct 
+FOO=BAR
+
+BAR=FOO
+```
+
 ## 🤝 Contributing
 
 If you've ever wanted to contribute to open source, now you have a great opportunity:

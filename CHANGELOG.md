@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add build and test steps running on Windows [#216](https://github.com/dotenv-linter/dotenv-linter/pull/216) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Consider blank lines in `UnorderedKey` check [#221](https://github.com/dotenv-linter/dotenv-linter/pull/221) ([@mgrachev](https://github.com/mgrachev))
 - Optimize integration tests [#218](https://github.com/dotenv-linter/dotenv-linter/pull/218) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v2.0.0] - 2020-06-15
