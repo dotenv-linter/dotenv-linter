@@ -383,7 +383,7 @@ BAR=FOO
 FOO=BAR
 ```
 
-You can use blank lines to split lines into groups:
+You can use blank lines to split lines into groups (will be available in [v2.1.0](https://github.com/dotenv-linter/dotenv-linter/issues/217)):
 
 ```env
 ❌ Wrong
