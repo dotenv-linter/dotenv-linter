@@ -1,6 +1,6 @@
 # 📃 Introduction
 
-Dotenv-linter [checks](checks/index.md) `.env` files for problems that may cause the application to malfunction.
+Dotenv-linter [checks](checks/about.md) `.env` files for problems that may cause the application to malfunction.
 
 The key features:
 <p>
