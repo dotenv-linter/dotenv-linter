@@ -23,3 +23,4 @@
 	* [GitHub Actions](ci/actions.md)
 
 * [Contributing](contributing.md)
+* [Sponsors](sponsors.md)

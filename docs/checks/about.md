@@ -13,5 +13,5 @@ Here is a list of avaliable checks for `dotenv_linter`:
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#/checks/quote_character">Quote character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#/checks/space_character">Space character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#/checks/trailing_whitespace">Trailing whitespace</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#/checks/unordered_Key">Unordered Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#/checks/unordered_key">Unordered Key</a><br />
 </p>
