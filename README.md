@@ -151,7 +151,7 @@ jobs:
 
 ## 🚀 Usage
 
-By default, `dotenv-linter` checks all `.env` files in the current directory:
+By default, `dotenv-linter` checks all `.env` files in the current directory and in all subdirectories:
 
 ```shell script
 $ dotenv-linter
@@ -169,7 +169,7 @@ dir1/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
 dir2/.my-env-file:1 LowercaseKey: The bar key should be in uppercase
 ```
 
-If you need to exclude a file from check, you can use the argument `--exclude FILE_PATH` or its short version `-e FILE_PATH`:
+If you need to exclude a file or directory from check, you can use the argument `--exclude PATH` or its short version `-e PATH`:
 
 ```shell script
 $ dotenv-linter --exclude .env.test
