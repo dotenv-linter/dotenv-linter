@@ -93,11 +93,11 @@ fn checks_one_specific_file_and_one_path() {
 
     let args = &[testfile_2.as_str(), subdir.as_str()];
     let expected_output = format!(
-        "{}:2 DuplicatedKey: The FOO key is duplicated\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
+        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:2 DuplicatedKey: The FOO key is duplicated\n",
+        testfile_2.shortname_as_str(),
         Path::new(&testdir.relative_path(&subdir))
             .join(testfile_3.shortname_as_str())
             .to_str().expect("multi-platform path to test .env file"),
-        testfile_2.shortname_as_str(),
     );
 
     testdir.test_command_fail_with_args(args, expected_output);
