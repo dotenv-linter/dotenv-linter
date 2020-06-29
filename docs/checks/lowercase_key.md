@@ -2,16 +2,13 @@
 
 Detects if a key has lowercase characters:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOo_BAR=FOOBAR
 
+❌ Wrong
 foo_bar=FOOBAR
-```
 
-### ✅ Correct
-
-```env
+✅ Correct
 FOO_BAR=FOOBAR
 ```

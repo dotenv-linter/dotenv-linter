@@ -2,16 +2,13 @@
 
 Detects if a value is wrapped in quotes:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO="BAR"
 
+❌ Wrong
 FOO='BAR'
-```
 
-### ✅ Correct
-
-```env
+✅ Correct
 FOO=BAR
 ```

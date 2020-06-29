@@ -2,15 +2,13 @@
 
 Detects if a file doesn't have a blank line at the end:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO=BAR
 ```
 
-### ✅ Correct
-
 ```env
+✅ Correct
 FOO=BAR
 
 

@@ -2,15 +2,12 @@
 
 Detects if a key is not unique:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO=BAR
 FOO=BAR
-```
-### ✅ Correct
 
-```env
+✅ Correct
 FOO=BAR
 BAR=FOO
 ```

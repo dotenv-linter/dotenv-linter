@@ -2,8 +2,8 @@
 
 Detects if a file contains more than one blank line in a row:
 
-### ❌ Wrong
 ```env
+❌ Wrong
 A=B
 
 
@@ -11,14 +11,15 @@ FOO=BAR
 ```
 
 ```env
+❌ Wrong
 A=B
 FOO=BAR
 
 
 ```
 
-### ✅ Correct
 ```env
+✅ Correct
 A=B
 
 FOO=BAR
@@ -26,6 +27,7 @@ FOO=BAR
 ```
 
 ```env
+✅ Correct
 A=B
 FOO=BAR
 

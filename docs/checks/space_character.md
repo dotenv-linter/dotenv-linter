@@ -2,18 +2,16 @@
 
 Detects lines with a whitespace around equal sign character `=`:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO =BAR
 
+❌ Wrong
 FOO= BAR
 
+❌ Wrong
 FOO = BAR
-```
 
-### ✅ Correct
-
-```env
+✅ Correct
 FOO=BAR
 ```

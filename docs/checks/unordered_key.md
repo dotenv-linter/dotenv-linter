@@ -2,33 +2,24 @@
 
 Detects if a key is not alphabetically ordered:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO=BAR
 BAR=FOO
 
-```
-
-### ✅ Correct
-
-```env
+✅ Correct
 BAR=FOO
 FOO=BAR
 ```
 
 You can use blank lines to split lines into groups (will be available in [v2.1.0](https://github.com/dotenv-linter/dotenv-linter/issues/217)):
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO=BAR
 BAR=FOO
-```
 
-### ✅ Correct
-
-```env
+✅ Correct
 FOO=BAR
 
 BAR=FOO

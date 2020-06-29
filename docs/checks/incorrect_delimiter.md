@@ -2,14 +2,10 @@
 
 Detects if a key does not use an underscore to separate words:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO-BAR=FOOBAR
-```
 
-### ✅ Correct
-
-```env
+✅ Correct
 FOO_BAR=FOOBAR
 ```

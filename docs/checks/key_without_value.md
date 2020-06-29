@@ -2,16 +2,13 @@
 
 Detects if a line has a key without a value:
 
-### ❌ Wrong
-
 ```env
+❌ Wrong
 FOO
-```
 
-### ✅ Correct
-
-```
+✅ Correct
 FOO=
 
+✅ Correct
 FOO=BAR
 ```
