@@ -39,12 +39,10 @@ fn checklist() -> Vec<Box<dyn Check>> {
 }
 
 pub fn available_check_names() -> Vec<String> {
-    let mut names: Vec<String> = checklist()
+    checklist()
         .iter()
         .map(|check| check.name().to_string())
-        .collect();
-    names.sort();
-    names
+        .collect()
 }
 
 pub fn run(lines: Vec<LineEntry>, skip_checks: &[&str]) -> Vec<Warning> {
