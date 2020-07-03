@@ -61,11 +61,11 @@ Articles about dotenv-linter:
 # Linux / macOS / Windows (MINGW and etc)
 $ curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s
 
+# Specify installation directory and version.
+$ curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s -- -b usr/local/bin v2.0.0
+
 # Alpine Linux (wget)
 $ wget -q -O - "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s
-
-# Specific version
-$ curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s v1.2.0
 ```
 
 ### Homebrew / Linuxbrew
