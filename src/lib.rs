@@ -14,6 +14,7 @@ pub fn run(args: clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>
     let mut file_paths: Vec<PathBuf> = Vec::new();
     let mut skip_checks: Vec<&str> = Vec::new();
     let mut excluded_paths: Vec<PathBuf> = Vec::new();
+    let recursive_enable = args.is_present("recursive");
 
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
@@ -30,7 +31,11 @@ pub fn run(args: clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>
             .filter_map(|s| fs_utils::canonicalize(s).ok())
             .collect();
 
-        file_paths.extend(get_file_paths(input_paths, &excluded_paths));
+        file_paths.extend(get_file_paths(
+            input_paths,
+            &excluded_paths,
+            recursive_enable,
+        ));
     }
 
     let mut warnings: Vec<Warning> = Vec::new();
@@ -55,7 +60,11 @@ pub fn run(args: clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>
     Ok(warnings)
 }
 
-fn get_file_paths(dir_entries: Vec<PathBuf>, excludes: &[PathBuf]) -> Vec<PathBuf> {
+fn get_file_paths(
+    dir_entries: Vec<PathBuf>,
+    excludes: &[PathBuf],
+    recursive: bool,
+) -> Vec<PathBuf> {
     let nested_paths: Vec<PathBuf> = dir_entries
         .iter()
         .filter(|entry| entry.is_dir())
@@ -65,10 +74,10 @@ fn get_file_paths(dir_entries: Vec<PathBuf>, excludes: &[PathBuf]) -> Vec<PathBu
             read_dir
                 .filter_map(|e| e.ok())
                 .map(|e| e.path())
-                .filter(|path| path.is_dir() || FileEntry::is_env_file(path))
+                .filter(|path| FileEntry::is_env_file(path) || (recursive && path.is_dir()))
                 .collect()
         })
-        .flat_map(|dir_entries| get_file_paths(dir_entries, excludes))
+        .flat_map(|dir_entries| get_file_paths(dir_entries, excludes, recursive))
         .collect();
 
     let mut file_paths: Vec<PathBuf> = dir_entries

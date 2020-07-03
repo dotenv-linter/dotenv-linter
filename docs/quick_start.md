@@ -29,6 +29,14 @@ $ dotenv-linter --exclude .env.test
 .env:3 UnorderedKey: The BAR key should go before the FOO key
 ```
 
+If you need a recursive search inside directories (deeper than 1 level), you can use the flag `--recursive` or its short version `-r`:
+
+```shell script
+$ dotenv-linter --recursive
+./dir1/.env:2 DuplicatedKey: The FOO key is duplicated
+./dir2/subdir/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
+```
+
 If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME`:
 
 ```sh
