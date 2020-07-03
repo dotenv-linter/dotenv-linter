@@ -64,7 +64,7 @@ fn checks_recursive_with_exclude_subdir() {
     test_dir.create_testfile("correct.env", "FOO=BAR\n");
 
     let test_subdir_2 = test_dir.subdir();
-    let testfile_2 = test_subdir_2.create_testfile("correct.sub_1.env", "FOO=BAR\nBAR=FOO\n");
+    let testfile_2 = test_subdir_2.create_testfile("incorrect.sub_1.env", "FOO=BAR\nBAR=FOO\n");
 
     let test_subdir_3 = test_subdir_2.subdir();
     let testfile_to_exclude = test_subdir_3.create_testfile(".incorrect.env", "FOO=");
