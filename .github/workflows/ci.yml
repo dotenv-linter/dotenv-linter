@@ -199,10 +199,11 @@ jobs:
     name: Install / Linux
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
-          curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s -- -b $HOME/bin
+          sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
         run: $HOME/bin/dotenv-linter -v
 
@@ -276,9 +277,10 @@ jobs:
     name: Install / MacOS
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
-          curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s -- -b $HOME/bin
+          sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
         run: $HOME/bin/dotenv-linter -v
