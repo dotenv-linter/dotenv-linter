@@ -32,11 +32,7 @@ pub fn run(args: clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>
             .filter_map(|s| fs_utils::canonicalize(s).ok())
             .collect();
 
-        file_paths.extend(get_file_paths(
-            input_paths,
-            &excluded_paths,
-            is_recursive,
-        ));
+        file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
     }
 
     let mut warnings: Vec<Warning> = Vec::new();
