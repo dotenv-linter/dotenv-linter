@@ -195,6 +195,17 @@ jobs:
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
+  install:
+    name: Install / Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup dotenv-linter
+        run: |
+          mkdir -p $HOME/bin
+          curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s -- -b $HOME/bin
+      - name: Verify successful installation
+        run: $HOME/bin/dotenv-linter -v
+
   windows_build:
     name: Build / Windows
     runs-on: windows-latest
@@ -260,3 +271,14 @@ jobs:
           command: clean
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
+
+  macos_install:
+    name: Install / MacOS
+    runs-on: macos-latest
+    steps:
+      - name: Setup dotenv-linter
+        run: |
+          mkdir -p $HOME/bin
+          curl -sSfL "https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh" | sh -s -- -b $HOME/bin
+      - name: Verify successful installation
+        run: $HOME/bin/dotenv-linter -v
