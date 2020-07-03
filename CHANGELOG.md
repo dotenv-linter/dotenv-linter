@@ -6,12 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add docs [#226](https://github.com/dotenv-linter/dotenv-linter/pull/226) ([@wesleimp](https://github.com/wesleimp))
 - Add Windows publishing to release workflow [#211](https://github.com/dotenv-linter/dotenv-linter/pull/211) ([@DDtKey](https://github.com/DDtKey))
 - Add support canonicalize path for Windows [#213](https://github.com/dotenv-linter/dotenv-linter/pull/213) ([@DDtKey](https://github.com/DDtKey))
 - Add build and test steps running on Windows [#216](https://github.com/dotenv-linter/dotenv-linter/pull/216) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
 - Recursive search for `.env` files [#223](https://github.com/dotenv-linter/dotenv-linter/pull/223) ([@DDtKey](https://github.com/DDtKey))
+- Move show-checks flag to main.rs [#227](https://github.com/dotenv-linter/dotenv-linter/pull/227) ([@mgrachev](https://github.com/mgrachev))
+- Fix `total_lines` in some tests [#224](https://github.com/dotenv-linter/dotenv-linter/pull/224) ([@DDtKey](https://github.com/DDtKey))
 - Consider blank lines in `UnorderedKey` check [#221](https://github.com/dotenv-linter/dotenv-linter/pull/221) ([@mgrachev](https://github.com/mgrachev))
 - Optimize integration tests [#218](https://github.com/dotenv-linter/dotenv-linter/pull/218) ([@mgrachev](https://github.com/mgrachev))
 

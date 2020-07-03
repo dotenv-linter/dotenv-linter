@@ -217,7 +217,7 @@ mod tests {
                     file: FileEntry {
                         path: PathBuf::from(".env"),
                         file_name: ".env".to_string(),
-                        total_lines: 1,
+                        total_lines: 3,
                     },
                     raw_string: String::from("FOO=BAR"),
                 },
