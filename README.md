@@ -181,8 +181,8 @@ If you need a recursive `.env` file search inside directories, you can use the f
 
 ```shell script
 $ dotenv-linter --recursive
-./dir1/.env:2 DuplicatedKey: The FOO key is duplicated
-./dir2/subdir/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
+dir1/.env:2 DuplicatedKey: The FOO key is duplicated
+dir2/subdir/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
 ```
 
 If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME`:
