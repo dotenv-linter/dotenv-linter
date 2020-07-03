@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Changed the README.md to contain only basic information [#230](https://github.com/dotenv-linter/dotenv-linter/pull/230) ([@wesleimp](https://github.com/wesleimp))
 - Add docs [#226](https://github.com/dotenv-linter/dotenv-linter/pull/226) ([@wesleimp](https://github.com/wesleimp))
 - Add Windows publishing to release workflow [#211](https://github.com/dotenv-linter/dotenv-linter/pull/211) ([@DDtKey](https://github.com/DDtKey))
 - Add support canonicalize path for Windows [#213](https://github.com/dotenv-linter/dotenv-linter/pull/213) ([@DDtKey](https://github.com/DDtKey))
