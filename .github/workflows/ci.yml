@@ -195,7 +195,7 @@ jobs:
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
-  install:
+  linux_install:
     name: Install / Linux
     runs-on: ubuntu-latest
     steps:

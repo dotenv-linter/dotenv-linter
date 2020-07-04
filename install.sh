@@ -6,8 +6,10 @@ DOTENV_LINTER="dotenv-linter"
 DOTENV_LINTER_REPO="${DOTENV_LINTER}/${DOTENV_LINTER}"
 DOTENV_LINTER_GITHUB="https://github.com/${DOTENV_LINTER_REPO}"
 DOTENV_LINTER_RELEASES="${DOTENV_LINTER_GITHUB}/releases"
+DOTENV_LINTER_RELEASE_API="https://api.github.com/repos/${DOTENV_LINTER_REPO}/releases/latest"
 
 usage() {
+    require_cmd cat
     this=$1
     cat 1>&2 <<EOF
 $this: download binaries for dotenv-linter
@@ -19,7 +21,7 @@ FLAGS:
     -h, --help      Prints help information
 
 OPTIONS:
-    -b, --bindir <DIR_PATH>     Sets bindir or installation directory, Defaults to ./bin
+    -b, --bindir <DIR_PATH>     Sets bindir or installation directory. Defaults to ./bin
 
 ARGS:
     <tag>       is a tag from ${DOTENV_LINTER_RELEASES}. If tag is missing, then the latest will be used.
@@ -33,7 +35,7 @@ parse_args() {
     case $1 in
         -h|--help)
             usage "$0"
-            shift #past argument
+            shift # past argument
             ;;
         -b|--bindir)
             BINDIR="$2"
@@ -53,7 +55,6 @@ main() {
     require_cmd uname
     require_cmd mktemp
     require_cmd grep
-    require_cmd cat
     require_cmd rm
 
     get_architecture || return 1
@@ -67,12 +68,14 @@ main() {
     _archive_name="${DOTENV_LINTER}-${_arch}${_ext}"
 
     if [ -z "${TAG}" ]; then
-        println "The latest version will be installed."
-        _url="${DOTENV_LINTER_RELEASES}/latest/download/${_archive_name}"
+        get_latest_version || return 1
+        _target_version="$RETVAL"
     else
-        println "Version ${TAG} will be installed"
-        _url="${DOTENV_LINTER_RELEASES}/download/${TAG}/${_archive_name}"
+        _target_version="${TAG}"
     fi
+
+    println "Version ${_target_version} will be installed"
+    _url="${DOTENV_LINTER_RELEASES}/download/${_target_version}/${_archive_name}"
 
     # Installation
     _temp_dir=$(mktemp -d)
@@ -100,6 +103,17 @@ main() {
     rm -rf "${_temp_dir}"
 
     return 0;
+}
+
+get_latest_version() {
+    require_cmd cut
+
+    download "${DOTENV_LINTER_RELEASE_API}" || return 1
+    _latest_version=$(
+         echo "$RETVAL" | grep '"tag_name":' | cut -d'"' -f4
+    )
+
+    RETVAL=${_latest_version}
 }
 
 get_architecture() {
@@ -149,14 +163,24 @@ get_architecture() {
 # $1 - url for download. $2 - path to download
 # Wrapper function for curl/wget
 download() {
-    if [ ! $# -eq 2 ]; then
-        err "URL or target path not specified"
+    if [ $# -eq 0 ]; then
+        err "URL not specified"
     fi
 
     if cmd_exists curl; then
-        curl -sSfL "$1" -o "$2"
+        if [ $# -eq 2 ]; then
+            curl -sSfL "$1" -o "$2"
+        else
+            RETVAL=$(curl -sSfL "$1")
+        fi
+
     elif cmd_exists wget; then
-        wget -q "$1" -O "$2"
+        if [ $# -eq 2 ] ; then
+            wget -q "$1" -O "$2"
+        else
+            RETVAL=$(wget -q -O - "$1")
+        fi
+
     else
         err "Not found download command. 'curl' or 'wget' is required."
     fi
