@@ -95,7 +95,9 @@ main() {
     test ! -d "${BINDIR}" && install -d "${BINDIR}"
 
     install "${_temp_dir}/${_file_name}" "${BINDIR}/"
-    println "Successfully installed to ${BINDIR}/${_file_name}"
+    _exe_path=${BINDIR}/${_file_name}
+
+    println "Successfully installed $($_exe_path -v) to ${_exe_path}"
 
     rm -rf "${_temp_dir}"
 
