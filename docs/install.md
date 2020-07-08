@@ -5,14 +5,14 @@ You can install the pre-compiled binary (in several different ways), use Docker 
 **Binary**
 
 ```shell script
-# Linux
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-linux-x86_64.tar.gz -sSfL | tar -xzf -
+# Linux / macOS / Windows (MINGW and etc). Installs it into ./bin/ by default.
+$ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
-# Alpine Linux
-$ wget https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz -O - -q | tar -xzf -
+# Specify installation directory and version.
+$ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s -- -b usr/local/bin v2.0.0
 
-# macOS
-$ curl https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-darwin-x86_64.tar.gz -sSfL | tar -xzf -
+# Alpine Linux (wget)
+$ wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 ```
 
 **Homebrew / Linuxbrew**
