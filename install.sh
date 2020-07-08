@@ -6,7 +6,6 @@ DOTENV_LINTER="dotenv-linter"
 DOTENV_LINTER_REPO="${DOTENV_LINTER}/${DOTENV_LINTER}"
 DOTENV_LINTER_GITHUB="https://github.com/${DOTENV_LINTER_REPO}"
 DOTENV_LINTER_RELEASES="${DOTENV_LINTER_GITHUB}/releases"
-DOTENV_LINTER_RELEASE_API="https://api.github.com/repos/${DOTENV_LINTER_REPO}/releases/latest"
 
 usage() {
     require_cmd cat
@@ -68,14 +67,12 @@ main() {
     _archive_name="${DOTENV_LINTER}-${_arch}${_ext}"
 
     if [ -z "${TAG}" ]; then
-        get_latest_version || return 1
-        _target_version="$RETVAL"
+        println "The latest version will be installed."
+        _url="${DOTENV_LINTER_RELEASES}/latest/download/${_archive_name}"
     else
-        _target_version="${TAG}"
+        println "Version ${TAG} will be installed"
+        _url="${DOTENV_LINTER_RELEASES}/download/${TAG}/${_archive_name}"
     fi
-
-    println "Version ${_target_version} will be installed"
-    _url="${DOTENV_LINTER_RELEASES}/download/${_target_version}/${_archive_name}"
 
     # Installation
     _temp_dir=$(mktemp -d)
@@ -103,17 +100,6 @@ main() {
     rm -rf "${_temp_dir}"
 
     return 0;
-}
-
-get_latest_version() {
-    require_cmd cut
-
-    download "${DOTENV_LINTER_RELEASE_API}" || return 1
-    _latest_version=$(
-         echo "$RETVAL" | grep '"tag_name":' | cut -d'"' -f4
-    )
-
-    RETVAL=${_latest_version}
 }
 
 get_architecture() {
@@ -163,24 +149,14 @@ get_architecture() {
 # $1 - url for download. $2 - path to download
 # Wrapper function for curl/wget
 download() {
-    if [ $# -eq 0 ]; then
-        err "URL not specified"
+    if [ ! $# -eq 2 ]; then
+        err "URL or target path not specified"
     fi
 
     if cmd_exists curl; then
-        if [ $# -eq 2 ]; then
-            curl -sSfL "$1" -o "$2"
-        else
-            RETVAL=$(curl -sSfL "$1")
-        fi
-
+        curl -sSfL "$1" -o "$2"
     elif cmd_exists wget; then
-        if [ $# -eq 2 ] ; then
-            wget -q "$1" -O "$2"
-        else
-            RETVAL=$(wget -q -O - "$1")
-        fi
-
+        wget -q "$1" -O "$2"
     else
         err "Not found download command. 'curl' or 'wget' is required."
     fi
