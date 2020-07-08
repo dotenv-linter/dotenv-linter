@@ -1,6 +1,5 @@
 use std::fmt;
-use std::fs::File;
-use std::io::Read;
+use std::fs;
 use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -48,9 +47,9 @@ impl FileEntry {
             None => return None,
         };
 
-        let content = match Self::get_content_by_path(&path) {
-            Some(s) => s,
-            None => return None,
+        let content = match fs::read_to_string(&path) {
+            Ok(content) => content,
+            Err(_) => return None,
         };
 
         let mut lines: Vec<String> = content.lines().map(|str| str.to_string()).collect();
@@ -83,19 +82,6 @@ impl FileEntry {
             .map(|file_name| file_name.to_str())
             .unwrap_or(None)
             .map(|s| s.to_string())
-    }
-
-    fn get_content_by_path(path: &PathBuf) -> Option<String> {
-        let mut content = String::new();
-        let mut f = match File::open(&path) {
-            Ok(file) => file,
-            Err(_) => return None,
-        };
-
-        match f.read_to_string(&mut content) {
-            Ok(_) => Some(content),
-            Err(_) => None,
-        }
     }
 }
 
@@ -194,7 +180,7 @@ mod tests {
             fn path_with_file_test() {
                 let file_name = String::from(".env");
                 let path = temp_dir().join(&file_name);
-                File::create(&path).expect("create testfile");
+                fs::File::create(&path).expect("create testfile");
 
                 let f = FileEntry::from(path.clone());
                 assert_eq!(
