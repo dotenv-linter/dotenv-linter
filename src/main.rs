@@ -60,5 +60,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .long("show-checks")
                 .help("Shows list of available checks"),
         )
+        .arg(
+            Arg::with_name("recursive")
+                .short("r")
+                .long("recursive")
+                .help("Recursively search and check .env files"),
+        )
         .get_matches()
 }

@@ -169,12 +169,20 @@ dir1/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
 dir2/.my-env-file:1 LowercaseKey: The bar key should be in uppercase
 ```
 
-If you need to exclude a file from check, you can use the argument `--exclude FILE_PATH` or its short version `-e FILE_PATH`:
+If you need to exclude a file or directory from check, you can use the argument `--exclude PATH` or its short version `-e PATH`:
 
 ```shell script
 $ dotenv-linter --exclude .env.test
 .env:2 DuplicatedKey: The FOO key is duplicated
 .env:3 UnorderedKey: The BAR key should go before the FOO key
+```
+
+If you need a recursive `.env` file search inside directories, you can use the flag `--recursive` or its short version `-r`:
+
+```shell script
+$ dotenv-linter --recursive
+dir1/.env:2 DuplicatedKey: The FOO key is duplicated
+dir2/subdir/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
 ```
 
 If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME`:
@@ -184,7 +192,7 @@ $ dotenv-linter --skip UnorderedKey EndingBlankLine
 .env:2 DuplicatedKey: The FOO key is duplicated
 ```
 
-If you need to view all available checks, you can use the argument `--show-checks`:
+If you need to view all available checks, you can use the flag `--show-checks`:
 
 ```shell script
 $ dotenv-linter --show-checks
