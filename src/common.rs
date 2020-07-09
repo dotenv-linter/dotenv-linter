@@ -4,13 +4,19 @@ use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
+    pub check_name: String,
     line: LineEntry,
     message: String,
 }
 
 impl Warning {
-    pub fn new(line: LineEntry, message: String) -> Self {
-        Self { line, message }
+    pub fn new(line: LineEntry, check_name: &str, message: String) -> Self {
+        let check_name = String::from(check_name);
+        Self {
+            line,
+            check_name,
+            message,
+        }
     }
 }
 
@@ -18,8 +24,8 @@ impl fmt::Display for Warning {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}:{} {}",
-            self.line.file, self.line.number, self.message
+            "{}:{} {}: {}",
+            self.line.file, self.line.number, self.check_name, self.message
         )
     }
 }
@@ -153,7 +159,8 @@ mod tests {
         };
         let warning = Warning::new(
             line,
-            String::from("DuplicatedKey: The FOO key is duplicated"),
+            "DuplicatedKey",
+            String::from("The FOO key is duplicated"),
         );
 
         assert_eq!(
