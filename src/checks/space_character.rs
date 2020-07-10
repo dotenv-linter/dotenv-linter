@@ -8,7 +8,7 @@ pub(crate) struct SpaceCharacterChecker<'a> {
 
 impl SpaceCharacterChecker<'_> {
     fn message(&self) -> String {
-        format!("{}: {}", self.name, self.template)
+        String::from(self.template)
     }
 }
 
@@ -27,7 +27,7 @@ impl Check for SpaceCharacterChecker<'_> {
 
         if let [key, value] = &line_splitted[..] {
             if key.ends_with(' ') || value.starts_with(' ') {
-                return Some(Warning::new(line.clone(), self.message()));
+                return Some(Warning::new(line.clone(), self.name(), self.message()));
             }
         }
 
@@ -44,7 +44,7 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    const MESSAGE: &str = "SpaceCharacter: The line has spaces around equal sign";
+    const MESSAGE: &str = "The line has spaces around equal sign";
 
     #[test]
     fn working_run() {
@@ -133,7 +133,11 @@ mod tests {
             },
             raw_string: String::from("DEBUG-HTTP = true"),
         };
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "SpaceCharacter",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 
@@ -149,7 +153,11 @@ mod tests {
             },
             raw_string: String::from("DEBUG-HTTP =true"),
         };
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "SpaceCharacter",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 
@@ -165,7 +173,11 @@ mod tests {
             },
             raw_string: String::from("DEBUG-HTTP= true"),
         };
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "SpaceCharacter",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 }
