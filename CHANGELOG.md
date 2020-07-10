@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+
+### 🔧 Changed
+
+## [v2.1.0] - 2020-07-10
+### 🚀 Added
 - Add install.sh for provide more short way to install [#220](https://github.com/dotenv-linter/dotenv-linter/pull/220) ([@DDtKey](https://github.com/DDtKey))
 - Add flag to enable recursive search for `.env` files [#223](https://github.com/dotenv-linter/dotenv-linter/pull/223) ([@DDtKey](https://github.com/DDtKey))
 - Add docs [#226](https://github.com/dotenv-linter/dotenv-linter/pull/226) ([@wesleimp](https://github.com/wesleimp))
@@ -111,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v2.1.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.1.0
 [v2.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.0.0
 [v1.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.2.0
 [v1.1.2]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.1.2
