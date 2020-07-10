@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
-    pub check_name: String,
+    check_name: String,
     line: LineEntry,
     message: String,
 }
