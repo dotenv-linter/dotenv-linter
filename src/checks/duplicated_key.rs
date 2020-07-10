@@ -10,7 +10,7 @@ pub(crate) struct DuplicatedKeyChecker<'a> {
 
 impl DuplicatedKeyChecker<'_> {
     fn message(&self, key: &str) -> String {
-        format!("{}: {}", self.name, self.template.replace("{}", &key))
+        self.template.replace("{}", &key)
     }
 }
 
@@ -29,7 +29,7 @@ impl Check for DuplicatedKeyChecker<'_> {
         let key = line.get_key()?;
 
         if self.keys.contains(&key) {
-            return Some(Warning::new(line.clone(), self.message(&key)));
+            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
         }
 
         self.keys.insert(key);
@@ -90,7 +90,8 @@ mod tests {
                         },
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("DuplicatedKey: The FOO key is duplicated"),
+                    "DuplicatedKey",
+                    String::from("The FOO key is duplicated"),
                 )),
             ),
         ];
@@ -165,7 +166,8 @@ mod tests {
                         },
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("DuplicatedKey: The FOO key is duplicated"),
+                    "DuplicatedKey",
+                    String::from("The FOO key is duplicated"),
                 )),
             ),
             (
@@ -200,7 +202,8 @@ mod tests {
                         },
                         raw_string: String::from("BAR=FOO"),
                     },
-                    String::from("DuplicatedKey: The BAR key is duplicated"),
+                    "DuplicatedKey",
+                    String::from("The BAR key is duplicated"),
                 )),
             ),
         ];
@@ -243,7 +246,8 @@ mod tests {
                         },
                         raw_string: String::from("FOO=BAR"),
                     },
-                    String::from("DuplicatedKey: The FOO key is duplicated"),
+                    "DuplicatedKey",
+                    String::from("The FOO key is duplicated"),
                 )),
             ),
             (

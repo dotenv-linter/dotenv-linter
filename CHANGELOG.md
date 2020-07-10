@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add build and test steps running on Windows [#216](https://github.com/dotenv-linter/dotenv-linter/pull/216) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Add the field with a checker name to Warning [#234](https://github.com/dotenv-linter/dotenv-linter/pull/234) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Remove `FileEntry::get_content_by_path` in favor of `fs::read_to_string` [#233](https://github.com/dotenv-linter/dotenv-linter/pull/233) ([@mstruebing](https://github.com/mstruebing))
 - Move show-checks flag to main.rs [#227](https://github.com/dotenv-linter/dotenv-linter/pull/227) ([@mgrachev](https://github.com/mgrachev))
 - Fix `total_lines` in some tests [#224](https://github.com/dotenv-linter/dotenv-linter/pull/224) ([@DDtKey](https://github.com/DDtKey))
