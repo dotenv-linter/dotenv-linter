@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 
-## [v2.1.0] - 2020-07-10
+## [v2.1.0] - 2020-07-13
 ### 🚀 Added
 - Add install.sh for provide more short way to install [#220](https://github.com/dotenv-linter/dotenv-linter/pull/220) ([@DDtKey](https://github.com/DDtKey))
 - Add flag to enable recursive search for `.env` files [#223](https://github.com/dotenv-linter/dotenv-linter/pull/223) ([@DDtKey](https://github.com/DDtKey))
