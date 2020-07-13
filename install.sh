@@ -82,7 +82,7 @@ main() {
 
     case $_archive_path in
         *.zip)
-            required_cmd unzip
+            require_cmd unzip
             unzip "${_archive_path}" -d "${_temp_dir}"
             _file_name="${DOTENV_LINTER}.exe"
         ;;
