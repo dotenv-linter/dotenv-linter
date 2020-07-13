@@ -9,15 +9,15 @@ pub(crate) struct ExtraBlankLineChecker<'a> {
 
 impl ExtraBlankLineChecker<'_> {
     fn message(&self) -> String {
-        return format!("{}: {}", self.name, self.template);
+        String::from(self.template)
     }
 }
 
 impl Default for ExtraBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "ExtraBlankLine",
             template: "Extra blank line detected",
+            name: "ExtraBlankLine",
             last_blank_number: None,
         }
     }
@@ -35,7 +35,7 @@ impl Check for ExtraBlankLineChecker<'_> {
         self.last_blank_number = Some(line.number);
 
         if is_extra {
-            return Some(Warning::new(line.clone(), self.message()));
+            return Some(Warning::new(line.clone(), self.name(), self.message()));
         }
 
         None
@@ -65,7 +65,8 @@ mod tests {
                 },
                 raw_string: String::from(content),
             };
-            let expected = message.map(|msg| Warning::new(line.clone(), String::from(msg)));
+            let expected =
+                message.map(|msg| Warning::new(line.clone(), "ExtraBlankLine", String::from(msg)));
 
             assert_eq!(checker.run(&line), expected);
         }
@@ -90,7 +91,7 @@ mod tests {
         let asserts = vec![
             ("A=B", None),
             ("", None),
-            ("", Some("ExtraBlankLine: Extra blank line detected")),
+            ("", Some("Extra blank line detected")),
             ("C=D", None),
         ];
 
@@ -102,8 +103,8 @@ mod tests {
         let asserts = vec![
             ("A=B", None),
             ("", None),
-            ("", Some("ExtraBlankLine: Extra blank line detected")),
-            ("", Some("ExtraBlankLine: Extra blank line detected")),
+            ("", Some("Extra blank line detected")),
+            ("", Some("Extra blank line detected")),
             ("C=D", None),
         ];
 

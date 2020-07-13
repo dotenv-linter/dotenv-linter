@@ -8,7 +8,7 @@ pub(crate) struct TrailingWhitespaceChecker<'a> {
 
 impl TrailingWhitespaceChecker<'_> {
     fn message(&self) -> String {
-        return format!("{}: {}", self.name, self.template);
+        String::from(self.template)
     }
 }
 
@@ -26,7 +26,7 @@ impl Check for TrailingWhitespaceChecker<'_> {
         let raw_string = &line.raw_string;
 
         if raw_string.ends_with(' ') {
-            return Some(Warning::new(line.clone(), self.message()));
+            return Some(Warning::new(line.clone(), self.name, self.message()));
         }
 
         None
@@ -42,7 +42,7 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    const MESSAGE: &str = "TrailingWhitespace: Trailing whitespace detected";
+    const MESSAGE: &str = "Trailing whitespace detected";
 
     #[test]
     fn working_run() {
@@ -73,7 +73,11 @@ mod tests {
             raw_string: String::from("DEBUG_HTTP=true  "),
         };
 
-        let expected = Some(Warning::new(line.clone(), MESSAGE.to_string()));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "TrailingWhitespace",
+            MESSAGE.to_string(),
+        ));
         assert_eq!(expected, checker.run(&line));
     }
 }
