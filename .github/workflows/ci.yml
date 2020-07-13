@@ -284,6 +284,7 @@ jobs:
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}\install.sh" -b $HOME\bin
       - name: Verify successful installation
+        shell: bash
         run: $HOME\bin\dotenv-linter.exe -v
 
   macos_install:
