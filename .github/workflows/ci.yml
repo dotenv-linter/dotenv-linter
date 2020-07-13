@@ -282,9 +282,9 @@ jobs:
         shell: bash # it uses Git Bash, i.e. MinGW
         run: |
           mkdir -p $HOME/bin
-          sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
+          sh "${GITHUB_WORKSPACE}\install.sh" -b $HOME\bin
       - name: Verify successful installation
-        run: $HOME/bin/dotenv-linter.exe -v
+        run: $HOME\bin\dotenv-linter.exe -v
 
   macos_install:
     name: Install / MacOS
