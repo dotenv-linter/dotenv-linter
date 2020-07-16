@@ -18,6 +18,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let warnings = dotenv_linter::run(args, &current_dir)?;
 
+    if warnings.is_empty() {
+        process::exit(0);
+    }
+
     if is_fix {
         if warnings.iter().any(|w| w.is_fixed) {
             println!("Fixed warnings:");
@@ -37,10 +41,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             process::exit(0);
         }
     } else {
-        if warnings.is_empty() {
-            process::exit(0);
-        }
-
         warnings.iter().for_each(|w| println!("{}", w));
     }
 
