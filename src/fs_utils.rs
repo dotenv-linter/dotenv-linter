@@ -51,7 +51,7 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
 mod tests {
     use super::*;
     use crate::common::FileEntry;
-    use std::fs::{self, remove_file, File};
+    use std::fs::{self, File};
 
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
         for (target, base, relative) in assertions {
@@ -102,7 +102,7 @@ mod tests {
         // The result of `fs_utils` must match `std::fs` for non-Windows platform
         assert_eq!(canonical_path, fs_canonical_path);
 
-        remove_file(path).expect("temp file deleted");
+        dir.close().expect("temp dir deleted");
     }
 
     #[test]
@@ -127,7 +127,7 @@ mod tests {
         assert_eq!(canonical_path, dunce_canonical_path);
         assert!(!contains_unc);
 
-        remove_file(path).expect("temp file deleted");
+        dir.close().expect("temp dir deleted");
     }
 
     #[test]
@@ -166,6 +166,6 @@ mod tests {
             fs::read(path.as_path()).expect("file read").as_slice()
         );
 
-        remove_file(path).expect("temp file deleted");
+        dir.close().expect("temp dir deleted");
     }
 }

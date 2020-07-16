@@ -184,7 +184,6 @@ mod tests {
 
         mod from {
             use super::*;
-            use std::fs::remove_file;
 
             #[test]
             fn path_without_file_test() {
@@ -203,7 +202,7 @@ mod tests {
                 assert_eq!(
                     Some((
                         FileEntry {
-                            path: path.clone(),
+                            path,
                             file_name,
                             total_lines: 0
                         },
@@ -211,7 +210,7 @@ mod tests {
                     )),
                     f
                 );
-                remove_file(path).expect("temp file deleted");
+                dir.close().expect("temp dir deleted");
             }
         }
 
