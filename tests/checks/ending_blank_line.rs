@@ -32,7 +32,7 @@ fn incorrect_files() {
         let testfile = testdir.create_testfile(".env", content);
         let args = &[testfile.as_str()];
         let expected_output = format!(
-            "{}:{} EndingBlankLine: No blank line at the end of the file\n",
+            "{}:{} EndingBlankLine No blank line at the end of the file\n\n✗ 1 problems\n\n",
             testfile.shortname_as_str(),
             expected_line_numbers[i]
         );

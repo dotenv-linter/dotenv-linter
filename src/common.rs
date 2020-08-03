@@ -168,7 +168,7 @@ mod tests {
         );
 
         assert_eq!(
-            ".env:1 DuplicatedKey: The FOO key is duplicated",
+            "\u{1b}[3m.env\u{1b}[0m:\u{1b}[3m1\u{1b}[0m \u{1b}[1;31mDuplicatedKey\u{1b}[0m The FOO key is duplicated",
             format!("{}", warning)
         );
     }
