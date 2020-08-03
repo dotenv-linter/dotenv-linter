@@ -1,4 +1,5 @@
 use clap::Arg;
+use colored::*;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::{env, process};
@@ -20,6 +21,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     warnings.iter().for_each(|w| println!("{}", w));
+    println!();
+    println!(
+        "{} {} {}",
+        "\u{2717}".red().bold(),
+        warnings.len().to_string().red().bold(),
+        "problems".red().bold()
+    );
+    println!();
     process::exit(1);
 }
 
