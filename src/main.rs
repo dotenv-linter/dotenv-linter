@@ -15,21 +15,46 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let warnings = dotenv_linter::run(args, &current_dir)?;
+    let warnings = dotenv_linter::run(&args, &current_dir)?;
     if warnings.is_empty() {
         process::exit(0);
     }
 
-    warnings.iter().for_each(|w| println!("{}", w));
-    println!();
-    println!(
-        "{} {} {}",
-        "\u{2717}".red().bold(),
-        warnings.len().to_string().red().bold(),
-        "problems".red().bold()
-    );
-    println!();
-    process::exit(1);
+    print_warnings(args.is_present("no-color"), warnings);
+    process::exit(1)
+}
+
+fn print_warnings(no_color: bool, warnings: Vec<dotenv_linter::common::Warning>) {
+    if no_color {
+        warnings.iter().for_each(|w| {
+            println!(
+                "{}:{} {}: {}",
+                w.line.file.path.display(),
+                w.line.number,
+                w.check_name,
+                w.message
+            )
+        });
+        println!("{} problems", warnings.len());
+    } else {
+        warnings.iter().for_each(|w| {
+            println!(
+                "{}:{} {} {}",
+                w.line.file.path.display().to_string().italic(),
+                w.line.number.to_string().italic(),
+                w.check_name.red().bold(),
+                w.message
+            );
+        });
+        println!();
+        println!(
+            "{} {} {}",
+            "\u{2717}".red().bold(),
+            warnings.len().to_string().red().bold(),
+            "problems".red().bold()
+        );
+        println!();
+    }
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
@@ -74,6 +99,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .short("r")
                 .long("recursive")
                 .help("Recursively search and check .env files"),
+        )
+        .arg(
+            Arg::with_name("no-color")
+                .long("no-color")
+                .help("Turns off the colored output"),
         )
         .get_matches()
 }

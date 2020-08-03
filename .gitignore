@@ -7,3 +7,5 @@
 
 # IDEs
 /.idea/
+
+*.env*

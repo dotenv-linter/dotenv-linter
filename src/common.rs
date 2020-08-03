@@ -5,9 +5,9 @@ use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
-    check_name: String,
-    line: LineEntry,
-    message: String,
+    pub check_name: String,
+    pub line: LineEntry,
+    pub message: String,
 }
 
 impl Warning {
