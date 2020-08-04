@@ -59,6 +59,7 @@ LeadingCharacter
 LowercaseKey
 QuoteCharacter
 SpaceCharacter
+SpacedComment
 TrailingWhitespace
 UnorderedKey
 ```

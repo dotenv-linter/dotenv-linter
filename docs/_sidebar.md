@@ -14,6 +14,7 @@
 	* [Lowercase Key](checks/lowercase_key.md)
 	* [Quote Character](checks/quote_character.md)
 	* [Space Character](checks/space_character.md)
+	* [Spaced Comment](checks/spaced_comment.md)
 	* [Trailing whitespace](checks/trailing_whitespace.md)
 	* [Unordered Key](checks/unordered_key.md)
 

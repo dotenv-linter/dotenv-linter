@@ -36,6 +36,7 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#lowercase-key">Lowercase key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#quote-character">Quote character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#space-character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#spaced-comment">Spaced comment</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#trailing-whitespace">Trailing whitespace</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#unordered-Key">Unordered Key</a><br />
 </p>
@@ -205,6 +206,7 @@ LeadingCharacter
 LowercaseKey
 QuoteCharacter
 SpaceCharacter
+SpacedComment
 TrailingWhitespace
 UnorderedKey
 ```
@@ -370,6 +372,20 @@ FOO = BAR
 
 ✅ Correct
 FOO=BAR
+```
+
+### Spaced Comment
+
+Detects if there's a space after `#` in comment:
+
+```env
+❌ Wrong
+#Bad comment
+```
+
+```env
+✅ Correct
+# Good comment
 ```
 
 ### Trailing whitespace
