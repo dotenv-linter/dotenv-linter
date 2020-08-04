@@ -36,10 +36,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn print_total_problems(total_problems: usize) {
     println!();
     println!(
-        "{} {} {}",
-        "\u{2717}".red().bold(),
-        total_problems.to_string().red().bold(),
-        "problems".red().bold()
+        "{}",
+        format!("{} {} problems", "\u{2717}", total_problems)
+            .red()
+            .bold()
     );
     println!()
 }
