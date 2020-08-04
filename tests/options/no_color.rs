@@ -7,7 +7,7 @@ fn output_without_colors() {
 
     let args = &["--no-color"];
     let expected_output = format!(
-        "{a}:1 LeadingCharacter: Invalid leading character detected\n{a}:1 QuoteCharacter: The value is wrapped in quotes\n2 problems\n",
+        "{a}:1 LeadingCharacter: Invalid leading character detected\n{a}:1 QuoteCharacter: The value is wrapped in quotes\n",
         a=testfile_to_check.shortname_as_str()
     );
 

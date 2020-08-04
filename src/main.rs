@@ -20,41 +20,34 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    print_warnings(args.is_present("no-color"), warnings);
+    if args.is_present("no-color") {
+        warnings.iter().for_each(|w| println!("{}", w));
+        process::exit(1)
+    }
+
+    print_output_color(warnings);
     process::exit(1)
 }
 
-fn print_warnings(no_color: bool, warnings: Vec<dotenv_linter::common::Warning>) {
-    if no_color {
-        warnings.iter().for_each(|w| {
-            println!(
-                "{}:{} {}: {}",
-                w.line.file.path.display(),
-                w.line.number,
-                w.check_name,
-                w.message
-            )
-        });
-        println!("{} problems", warnings.len());
-    } else {
-        warnings.iter().for_each(|w| {
-            println!(
-                "{}:{} {} {}",
-                w.line.file.path.display().to_string().italic(),
-                w.line.number.to_string().italic(),
-                w.check_name.red().bold(),
-                w.message
-            );
-        });
-        println!();
+fn print_output_color(warnings: Vec<dotenv_linter::common::Warning>) {
+    warnings.iter().for_each(|w| {
         println!(
-            "{} {} {}",
-            "\u{2717}".red().bold(),
-            warnings.len().to_string().red().bold(),
-            "problems".red().bold()
+            "{}:{} {} {}",
+            w.line.file.path.display().to_string().italic(),
+            w.line.number.to_string().italic(),
+            w.check_name.red().bold(),
+            w.message
         );
-        println!();
-    }
+    });
+
+    println!();
+    println!(
+        "{} {} {}",
+        "\u{2717}".red().bold(),
+        warnings.len().to_string().red().bold(),
+        "problems".red().bold()
+    );
+    println!();
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
