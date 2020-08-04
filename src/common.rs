@@ -28,6 +28,10 @@ impl Warning {
     pub fn mark_as_fixed(&mut self) {
         self.is_fixed = true;
     }
+
+    pub fn mark_as_unfixed(&mut self) {
+        self.is_fixed = false;
+    }
 }
 
 impl fmt::Display for Warning {

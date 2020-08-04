@@ -12,7 +12,7 @@ trait Fix {
     ) -> Option<usize> {
         let mut count: usize = 0;
         for warning in warnings {
-            let line = &mut lines[warning.line_number() - 1];
+            let line = lines.get_mut(warning.line_number() - 1)?;
             if self.fix_line(line).is_some() {
                 warning.mark_as_fixed();
                 count += 1;
@@ -52,8 +52,17 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>) -> usize {
             .iter_mut()
             .filter(|w| w.check_name == fixer.name())
             .collect();
+
         if !fixer_warnings.is_empty() {
-            count += fixer.fix_warnings(fixer_warnings, lines).unwrap_or(0);
+            match fixer.fix_warnings(fixer_warnings, lines) {
+                Some(fixer_count) => count += fixer_count,
+                None => {
+                    for warning in warnings {
+                        warning.mark_as_unfixed();
+                    }
+                    return 0;
+                }
+            }
         }
     }
 
@@ -127,6 +136,30 @@ mod tests {
             "KeyWithoutValue",
             String::from("The C key should be with a value or have an equal sign"),
         )];
+
+        assert_eq!(0, run(&mut warnings, &mut lines));
+        assert!(!warnings[0].is_fixed);
+    }
+
+    #[test]
+    fn run_when_lines_do_not_fit_numbers_test() {
+        let mut lines = vec![
+            line_entry(1, 3, "a=B"),
+            line_entry(4, 3, "c=D"),
+            blank_line_entry(3, 3),
+        ];
+        let mut warnings = vec![
+            Warning::new(
+                lines[0].clone(),
+                "LowercaseKey",
+                String::from("The a key should be in uppercase"),
+            ),
+            Warning::new(
+                lines[1].clone(),
+                "LowercaseKey",
+                String::from("The c key should be in uppercase"),
+            ),
+        ];
 
         assert_eq!(0, run(&mut warnings, &mut lines));
         assert!(!warnings[0].is_fixed);
