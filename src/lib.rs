@@ -4,7 +4,7 @@ use std::error::Error;
 use std::path::PathBuf;
 
 mod checks;
-pub mod common;
+mod common;
 mod fs_utils;
 
 pub use checks::available_check_names;

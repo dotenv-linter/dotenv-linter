@@ -1,12 +1,13 @@
+use colored::*;
 use std::fmt;
 use std::fs;
 use std::path::PathBuf;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
-    pub check_name: String,
-    pub line: LineEntry,
-    pub message: String,
+    check_name: String,
+    line: LineEntry,
+    message: String,
 }
 
 impl Warning {
@@ -24,8 +25,11 @@ impl fmt::Display for Warning {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}:{} {}: {}",
-            self.line.file, self.line.number, self.check_name, self.message
+            "{}:{} {} {}",
+            self.line.file,
+            self.line.number.to_string().italic(),
+            self.check_name.red().bold(),
+            self.message
         )
     }
 }
@@ -41,7 +45,7 @@ pub struct FileEntry {
 
 impl fmt::Display for FileEntry {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.path.display())
+        write!(f, "{}", self.path.display().to_string().italic())
     }
 }
 
@@ -165,8 +169,11 @@ mod tests {
 
         assert_eq!(
             format!(
-                "{}:{} {}: {}",
-                ".env", "1", "DuplicatedKey", "The FOO key is duplicated"
+                "{}:{} {} {}",
+                ".env".italic(),
+                "1".italic(),
+                "DuplicatedKey".red().bold(),
+                "The FOO key is duplicated"
             ),
             format!("{}", warning)
         );

@@ -20,34 +20,28 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    if args.is_present("no-color") {
-        warnings.iter().for_each(|w| println!("{}", w));
-        process::exit(1)
+    let no_color = args.is_present("no-color");
+    let should_print_total_problems = !no_color;
+    if no_color {
+        control::set_override(false);
     }
 
-    print_output_color(warnings);
+    warnings.iter().for_each(|w| println!("{}", w));
+    if should_print_total_problems {
+        print_total_problems(warnings.len())
+    }
     process::exit(1)
 }
 
-fn print_output_color(warnings: Vec<dotenv_linter::common::Warning>) {
-    warnings.iter().for_each(|w| {
-        println!(
-            "{}:{} {} {}",
-            w.line.file.path.display().to_string().italic(),
-            w.line.number.to_string().italic(),
-            w.check_name.red().bold(),
-            w.message
-        );
-    });
-
+fn print_total_problems(total_problems: usize) {
     println!();
     println!(
         "{} {} {}",
         "\u{2717}".red().bold(),
-        warnings.len().to_string().red().bold(),
+        total_problems.to_string().red().bold(),
         "problems".red().bold()
     );
-    println!();
+    println!()
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
