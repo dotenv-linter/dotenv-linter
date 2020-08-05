@@ -32,7 +32,7 @@ fn print_total(total_problems: usize) {
     let mut problems = String::from("problem");
 
     if total_problems > 1 {
-        problems = problems + "s";
+        problems += "s";
     }
 
     println!("\n{}", format!("Found {} {}", total_problems, problems));
