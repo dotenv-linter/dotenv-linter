@@ -273,6 +273,20 @@ jobs:
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
+  windows_install:
+    name: Install / Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup dotenv-linter
+        shell: bash # it uses Git Bash, i.e. MinGW
+        run: |
+          mkdir -p $HOME/bin
+          sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
+      - name: Verify successful installation
+        shell: bash
+        run: $HOME/bin/dotenv-linter.exe -v
+
   macos_install:
     name: Install / MacOS
     runs-on: macos-latest
