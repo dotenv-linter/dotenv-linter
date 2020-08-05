@@ -28,14 +28,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     process::exit(1);
 }
 
-fn print_total(total_problems: usize) {
+fn print_total(total: usize) {
     let mut problems = String::from("problem");
 
-    if total_problems > 1 {
+    if total > 1 {
         problems += "s";
     }
 
-    println!("\n{}", format!("Found {} {}", total_problems, problems));
+    println!("\n{}", format!("Found {} {}", total, problems));
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {

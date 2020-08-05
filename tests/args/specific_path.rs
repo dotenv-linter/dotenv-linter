@@ -11,7 +11,7 @@ fn checks_one_specific_path() {
 
     let args = &[subdir.as_str()];
     let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n",
+        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
         Path::new(&testdir.relative_path(&subdir))
             .join(testfile_2.shortname_as_str())
             .to_str()
@@ -34,7 +34,7 @@ fn checks_two_specific_paths() {
 
     let args = &[subdir_1.as_str(), subdir_2.as_str()];
     let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n{}:1 LeadingCharacter: Invalid leading character detected\n",
+        "{}:1 LeadingCharacter: Invalid leading character detected\n{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 2 problems\n",
         Path::new(&testdir.relative_path(&subdir_1))
             .join(testfile_2.shortname_as_str())
             .to_str().expect("multi-platform path to test .env file"),
@@ -54,7 +54,7 @@ fn checks_one_specific_file() {
 
     let args = &[testfile_2.as_str()];
     let expected_output = format!(
-        "{}:1 SpaceCharacter: The line has spaces around equal sign\n",
+        "{}:1 SpaceCharacter: The line has spaces around equal sign\n\nFound 1 problem\n",
         testfile_2.shortname_as_str()
     );
 
@@ -72,7 +72,7 @@ fn checks_two_specific_files() {
 
     let args = &[testfile_2.as_str(), testfile_3.as_str()];
     let expected_output = format!(
-        "{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 SpaceCharacter: The line has spaces around equal sign\n",
+        "{}:2 DuplicatedKey: The FOO key is duplicated\n{}:1 SpaceCharacter: The line has spaces around equal sign\n\nFound 2 problems\n",
         Path::new(&testdir.relative_path(&subdir))
             .join(testfile_3.shortname_as_str())
             .to_str().expect("multi-platform path to test .env file"),
@@ -93,7 +93,7 @@ fn checks_one_specific_file_and_one_path() {
 
     let args = &[testfile_2.as_str(), subdir.as_str()];
     let expected_output = format!(
-        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:2 DuplicatedKey: The FOO key is duplicated\n",
+        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:2 DuplicatedKey: The FOO key is duplicated\n\nFound 2 problems\n",
         testfile_2.shortname_as_str(),
         Path::new(&testdir.relative_path(&subdir))
             .join(testfile_3.shortname_as_str())
@@ -111,7 +111,7 @@ fn checks_one_specific_file_twice() {
 
     let args = &[testfile_2.as_str(), testfile_2.as_str()];
     let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n",
+        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
         testfile_2.shortname_as_str()
     );
 

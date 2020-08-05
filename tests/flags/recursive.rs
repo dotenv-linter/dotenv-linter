@@ -10,7 +10,7 @@ fn checks_one_in_subdir() {
 
     let args = &["-r"];
     let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n",
+        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
         Path::new(&test_dir.relative_path(&test_subdir))
             .join(testfile_2.shortname_as_str())
             .to_str()
@@ -33,7 +33,7 @@ fn checks_files_in_deep_subdirs() {
 
     let args = &["--recursive"];
     let expected_output = format!(
-        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:1 EndingBlankLine: No blank line at the end of the file\n",
+        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:1 EndingBlankLine: No blank line at the end of the file\n\nFound 2 problems\n",
         Path::new(&test_dir.relative_path(&test_subdir_2))
             .join(testfile_2.shortname_as_str())
             .to_str()
@@ -71,7 +71,7 @@ fn checks_recursive_with_exclude_subdir() {
 
     let args = &["--exclude", testfile_to_exclude.as_str(), "--recursive"];
     let expected_output = format!(
-        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n",
+        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n\nFound 1 problem\n",
         Path::new(&test_dir.relative_path(&test_subdir_2))
             .join(testfile_2.shortname_as_str())
             .to_str()

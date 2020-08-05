@@ -29,7 +29,7 @@ fn exclude_one_file_check_one_file() {
 
     let args = &["--exclude", testfile_to_exclude.as_str()];
     let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n",
+        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
         testfile_to_check.shortname_as_str()
     );
 
