@@ -10,7 +10,7 @@ mod fs_utils;
 pub use checks::available_check_names;
 
 #[allow(clippy::redundant_closure)]
-pub fn run(args: clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>, Box<dyn Error>> {
+pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>, Box<dyn Error>> {
     let mut file_paths: Vec<PathBuf> = Vec::new();
     let mut skip_checks: Vec<&str> = Vec::new();
     let mut excluded_paths: Vec<PathBuf> = Vec::new();

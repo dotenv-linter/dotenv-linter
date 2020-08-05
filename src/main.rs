@@ -14,13 +14,28 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let warnings = dotenv_linter::run(args, &current_dir)?;
+    let warnings = dotenv_linter::run(&args, &current_dir)?;
     if warnings.is_empty() {
         process::exit(0);
     }
 
     warnings.iter().for_each(|w| println!("{}", w));
+
+    if !args.is_present("quiet") {
+        print_total(warnings.len());
+    }
+
     process::exit(1);
+}
+
+fn print_total(total_problems: usize) {
+    let mut problems = String::from("problem");
+
+    if total_problems > 1 {
+        problems = problems + "s";
+    }
+
+    println!("\n{}", format!("Found {} {}", total_problems, problems));
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
@@ -65,6 +80,12 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .short("r")
                 .long("recursive")
                 .help("Recursively search and check .env files"),
+        )
+        .arg(
+            Arg::with_name("quiet")
+                .short("q")
+                .long("quiet")
+                .help("Don't display additional information"),
         )
         .get_matches()
 }
