@@ -1,3 +1,6 @@
+use crate::common::LineEntry;
+use std::fs::File;
+use std::io::{self, Write};
 use std::path::PathBuf;
 
 /// For the Windows platform, we need to remove the UNC prefix.
@@ -31,11 +34,24 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
     Some(relative_path)
 }
 
+/// In the future versions we should create a backup copy, or at least notify the user about it
+pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
+    let mut file = File::create(path)?;
+
+    // We don't write the last line, because it contains only LF (common::FileEntry::from)
+    // and writeln! already adds LF.
+    for line in lines[..lines.len() - 1].iter() {
+        writeln!(file, "{}", line.raw_string)?;
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env::temp_dir;
-    use std::fs::{remove_file, File};
+    use crate::common::FileEntry;
+    use std::fs::{self, File};
 
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
         for (target, base, relative) in assertions {
@@ -76,7 +92,8 @@ mod tests {
     #[test]
     #[cfg(not(windows))]
     fn test_canonicalize() {
-        let path = temp_dir().join(".env");
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join(".env");
         File::create(&path).expect("file created");
 
         let fs_canonical_path = std::fs::canonicalize(&path).expect("canonical path by std::fs");
@@ -85,7 +102,7 @@ mod tests {
         // The result of `fs_utils` must match `std::fs` for non-Windows platform
         assert_eq!(canonical_path, fs_canonical_path);
 
-        remove_file(path).expect("temp file deleted");
+        dir.close().expect("temp dir deleted");
     }
 
     #[test]
@@ -94,7 +111,8 @@ mod tests {
         const UNC_PREFIX: &str = "\\\\?\\";
 
         let file_name = String::from(".env");
-        let path = temp_dir().join(&file_name);
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join(&file_name);
         File::create(&path).expect("create testfile");
 
         let dunce_canonical_path = dunce::canonicalize(&path).expect("canonical path by `dunce`");
@@ -109,6 +127,45 @@ mod tests {
         assert_eq!(canonical_path, dunce_canonical_path);
         assert!(!contains_unc);
 
-        remove_file(path).expect("temp file deleted");
+        dir.close().expect("temp dir deleted");
+    }
+
+    #[test]
+    fn write_file_test() {
+        let file_name = String::from(".env");
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join(&file_name);
+
+        let fe = FileEntry {
+            path: path.clone(),
+            file_name,
+            total_lines: 3,
+        };
+
+        let lines = vec![
+            LineEntry {
+                number: 1,
+                file: fe.clone(),
+                raw_string: String::from("A=B"),
+            },
+            LineEntry {
+                number: 2,
+                file: fe.clone(),
+                raw_string: String::from("Z=Y"),
+            },
+            LineEntry {
+                number: 3,
+                file: fe,
+                raw_string: String::from("\n"),
+            },
+        ];
+
+        assert!(write_file(&path, lines).is_ok());
+        assert_eq!(
+            b"A=B\nZ=Y\n",
+            fs::read(path.as_path()).expect("file read").as_slice()
+        );
+
+        dir.close().expect("temp dir deleted");
     }
 }
