@@ -25,7 +25,7 @@ fn two_blank_lines_at_the_beginning() {
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
     let expected_output = format!(
-        "{}:{} ExtraBlankLine Extra blank line detected\n\n✗ 1 problems\n\n",
+        "{}:{} ExtraBlankLine: Extra blank line detected\n\n✗ 1 problems\n\n",
         testfile.shortname_as_str(),
         2
     );
@@ -41,7 +41,7 @@ fn two_blank_lines_in_the_middle() {
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
     let expected_output = format!(
-        "{}:{} ExtraBlankLine Extra blank line detected\n\n✗ 1 problems\n\n",
+        "{}:{} ExtraBlankLine: Extra blank line detected\n\n✗ 1 problems\n\n",
         testfile.shortname_as_str(),
         4
     );
@@ -57,7 +57,7 @@ fn two_blank_lines_at_the_end() {
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
     let expected_output = format!(
-        "{}:{} ExtraBlankLine Extra blank line detected\n\n✗ 1 problems\n\n",
+        "{}:{} ExtraBlankLine: Extra blank line detected\n\n✗ 1 problems\n\n",
         testfile.shortname_as_str(),
         5
     );

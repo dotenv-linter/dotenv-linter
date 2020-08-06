@@ -25,10 +25,9 @@ impl fmt::Display for Warning {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}:{} {} {}",
-            self.line.file,
-            self.line.number.to_string().italic(),
-            self.check_name.red().bold(),
+            "{} {} {}",
+            format!("{}:{}", self.line.file, self.line.number).italic(),
+            format!("{}:", self.check_name).red().bold(),
             self.message
         )
     }
@@ -45,7 +44,7 @@ pub struct FileEntry {
 
 impl fmt::Display for FileEntry {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.path.display().to_string().italic())
+        write!(f, "{}", self.path.display())
     }
 }
 
@@ -169,10 +168,9 @@ mod tests {
 
         assert_eq!(
             format!(
-                "{}:{} {} {}",
-                ".env".italic(),
-                "1".italic(),
-                "DuplicatedKey".red().bold(),
+                "{} {} {}",
+                format!("{}:{}", ".env", "1").italic(),
+                "DuplicatedKey:".red().bold(),
                 "The FOO key is duplicated"
             ),
             format!("{}", warning)
