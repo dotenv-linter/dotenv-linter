@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 mod checks;
 mod common;
+mod fixes;
 mod fs_utils;
 
 pub use checks::available_check_names;
@@ -35,6 +36,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
         file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
     }
 
+    let is_fix = args.is_present("fix");
     let mut warnings: Vec<Warning> = Vec::new();
 
     for path in file_paths {
@@ -43,14 +45,18 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             None => continue,
         };
 
-        let file_with_lines = match FileEntry::from(relative_path) {
+        let (fe, strs) = match FileEntry::from(relative_path) {
             Some(f) => f,
             None => continue,
         };
 
-        let lines = get_line_entries(file_with_lines.0, file_with_lines.1);
+        let mut lines = get_line_entries(&fe, strs);
 
-        let result = checks::run(lines, &skip_checks);
+        let mut result = checks::run(&lines, &skip_checks);
+        if is_fix && fixes::run(&mut result, &mut lines) > 0 {
+            fs_utils::write_file(&fe.path, lines)?;
+        }
+
         warnings.extend(result);
     }
 
@@ -89,7 +95,7 @@ fn get_file_paths(
     file_paths
 }
 
-fn get_line_entries(fe: FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
+fn get_line_entries(fe: &FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
     let mut entries: Vec<LineEntry> = Vec::with_capacity(fe.total_lines);
 
     for (index, line) in lines.into_iter().enumerate() {

@@ -15,7 +15,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let warnings = dotenv_linter::run(&args, &current_dir)?;
+    let is_fix = args.is_present("fix");
+
+    let warnings = dotenv_linter::run(args, &current_dir)?;
+
     if warnings.is_empty() {
         process::exit(0);
     }
@@ -26,12 +29,34 @@ fn main() -> Result<(), Box<dyn Error>> {
         control::set_override(false);
     }
 
-    warnings.iter().for_each(|w| println!("{}", w));
+    if is_fix {
+        if warnings.iter().any(|w| w.is_fixed) {
+            println!("Fixed warnings:");
+            warnings
+                .iter()
+                .filter(|w| w.is_fixed)
+                .for_each(|w| println!("{}", w));
+        }
+
+        if warnings.iter().any(|w| !w.is_fixed) {
+            println!("\nUnfixed warnings:");
+            warnings
+                .iter()
+                .filter(|w| !w.is_fixed)
+                .for_each(|w| println!("{}", w));
+        } else {
+            process::exit(0);
+        }
+    } else {
+        warnings.iter().for_each(|w| println!("{}", w));
+    }
+  
     if should_print_total_problems {
         print_total_problems(warnings.len())
     }
     process::exit(1)
 }
+
 
 fn print_total_problems(total_problems: usize) {
     println!();
@@ -91,6 +116,12 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
             Arg::with_name("no-color")
                 .long("no-color")
                 .help("Turns off the colored output"),
+        )
+        .arg(
+            Arg::with_name("fix")
+                .short("f")
+                .long("fix")
+                .help("Automatically fixes warnings if possible"),
         )
         .get_matches()
 }

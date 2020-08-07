@@ -45,13 +45,13 @@ pub fn available_check_names() -> Vec<String> {
         .collect()
 }
 
-pub fn run(lines: Vec<LineEntry>, skip_checks: &[&str]) -> Vec<Warning> {
+pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
     let mut checks = checklist();
     checks.retain(|c| !skip_checks.contains(&c.name()));
 
     let mut warnings: Vec<Warning> = Vec::new();
 
-    for line in &lines {
+    for line in lines {
         let is_comment = line.is_comment();
         for ch in &mut checks {
             if is_comment && ch.skip_comments() {
@@ -101,7 +101,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(empty, &skip_checks));
+        assert_eq!(expected, run(&empty, &skip_checks));
     }
 
     #[test]
@@ -110,7 +110,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -122,7 +122,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -131,7 +131,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -146,7 +146,7 @@ mod tests {
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -161,7 +161,7 @@ mod tests {
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = Vec::new();
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -177,7 +177,7 @@ mod tests {
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue"];
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]
@@ -187,7 +187,7 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue", "EndingBlankLine"];
 
-        assert_eq!(expected, run(lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks));
     }
 
     #[test]

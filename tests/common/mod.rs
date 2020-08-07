@@ -1,6 +1,6 @@
 use assert_cmd::Command;
 use std::ffi::OsStr;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
 use tempfile::{tempdir, tempdir_in, TempDir};
@@ -116,6 +116,29 @@ impl TestDir {
         self.close();
     }
 
+    /// Run the default CLI binary, with "-f", in this TestDir and check it succeeds.
+    pub fn test_command_fix_success(&self, expected_output: String) {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(&["-f"])
+            .assert()
+            .success()
+            .stdout(expected_output);
+    }
+
+    /// Run the default CLI binary, with "-f", in this TestDir and check it fails.
+    pub fn test_command_fix_fail(&self, expected_output: String) {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(&["-f"])
+            .assert()
+            .failure()
+            .code(1)
+            .stdout(expected_output);
+    }
+
     fn init_cmd() -> Command {
         Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name")
     }
@@ -148,5 +171,10 @@ impl TestFile {
             .expect("get shortname")
             .to_str()
             .expect("convert shortname to &str")
+    }
+
+    /// Get file contents
+    pub fn contents(&self) -> String {
+        String::from_utf8_lossy(&fs::read(self.as_str()).expect("read file")).into_owned()
     }
 }
