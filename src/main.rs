@@ -42,10 +42,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     } else {
         warnings.iter().for_each(|w| println!("{}", w));
-    }
-      
-    if !args.is_present("quiet") {
-        print_total(warnings.len());
+
+        if !args.is_present("quiet") {
+            print_total(warnings.len());
+        }
     }
 
     process::exit(1);

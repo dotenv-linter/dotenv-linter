@@ -76,3 +76,15 @@ SpaceCharacter
 TrailingWhitespace
 UnorderedKey
 ```
+
+`dotenv-linter` can also automatically fix warnings in the files. Currently only one kind of warnings is fixed
+(`LowercaseKey`). You should use the argument `--fix` (or its short version `-f`) for this (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
+
+```shell script
+$ dotenv-linter -f
+Fixed warnings:
+.env:3 LowercaseKey: The foo key should be in uppercase
+
+Unfixed warnings:
+.env:2 DuplicatedKey: The BAR key is duplicated
+```
