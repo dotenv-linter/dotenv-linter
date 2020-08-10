@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add total problems to output and `--quiet` argument [#242](https://github.com/dotenv-linter/dotenv-linter/pull/242) ([@wesleimp](https://github.com/wesleimp), [@mgrachev](https://github.com/mgrachev))
 - Add autofix feature (for LowercaseKey check) [#228](https://github.com/dotenv-linter/dotenv-linter/pull/228) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 

@@ -16,7 +16,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let is_fix = args.is_present("fix");
 
-    let warnings = dotenv_linter::run(args, &current_dir)?;
+    let warnings = dotenv_linter::run(&args, &current_dir)?;
 
     if warnings.is_empty() {
         process::exit(0);
@@ -42,9 +42,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     } else {
         warnings.iter().for_each(|w| println!("{}", w));
+
+        if !args.is_present("quiet") {
+            print_total(warnings.len());
+        }
     }
 
     process::exit(1);
+}
+
+fn print_total(total: usize) {
+    let mut problems = String::from("problem");
+
+    if total > 1 {
+        problems += "s";
+    }
+
+    println!("\n{}", format!("Found {} {}", total, problems));
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
@@ -95,6 +109,12 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .short("f")
                 .long("fix")
                 .help("Automatically fixes warnings if possible"),
+        )
+        .arg(
+            Arg::with_name("quiet")
+                .short("q")
+                .long("quiet")
+                .help("Don't display additional information"),
         )
         .get_matches()
 }
