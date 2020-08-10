@@ -12,10 +12,12 @@ fn checks_current_dir() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", "FOO\n");
 
-    testdir.test_command_fail(format!(
-        "{}:1 KeyWithoutValue: The FOO key should be with a value or have an equal sign\n",
-        testfile.shortname_as_str()
-    ));
+    testdir.test_command_fail(
+        format!(
+            "{}:1 KeyWithoutValue: The FOO key should be with a value or have an equal sign\n\nFound 1 problem\n",
+            testfile.shortname_as_str()
+        )
+    );
 }
 
 #[test]
@@ -25,7 +27,7 @@ fn checks_current_dir_with_dot_arg() {
 
     let args = &["."];
     let expected_output = format!(
-        "{}:1 LowercaseKey: The foo key should be in uppercase\n",
+        "{}:1 LowercaseKey: The foo key should be in uppercase\n\nFound 1 problem\n",
         testfile.shortname_as_str(),
     );
 
