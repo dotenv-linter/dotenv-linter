@@ -1,5 +1,7 @@
 use crate::common::TestDir;
 
+mod space_character;
+
 #[test]
 fn correct_file() {
     let testdir = TestDir::new();
