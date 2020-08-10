@@ -21,12 +21,9 @@ impl Fix for SpaceCharacterFixer<'_> {
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
         let value = line.get_value()?;
-        if key.ends_with(' ') || value.starts_with(' ') {
-            line.raw_string = format!("{}={}", key.trim_end(), value.trim_start());
-            Some(())
-        } else {
-            None
-        }
+        line.raw_string = format!("{}={}", key.trim_end(), value.trim_start());
+
+        Some(())
     }
 }
 
@@ -63,7 +60,6 @@ mod tests {
             },
             raw_string: String::from("DEBUG_HTTP=true "),
         };
-        assert_eq!(None, fixer.fix_line(&mut line));
         assert_eq!("DEBUG_HTTP=true ", line.raw_string);
     }
 
