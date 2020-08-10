@@ -60,6 +60,7 @@ mod tests {
             },
             raw_string: String::from("DEBUG_HTTP=true "),
         };
+        assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("DEBUG_HTTP=true ", line.raw_string);
     }
 
