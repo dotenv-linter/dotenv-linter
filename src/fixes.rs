@@ -2,8 +2,8 @@ use crate::common::*;
 
 mod key_without_value;
 mod lowercase_key;
-mod space_character;
 mod quote_character;
+mod space_character;
 
 trait Fix {
     fn name(&self) -> &str;
