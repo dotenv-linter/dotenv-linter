@@ -1,6 +1,7 @@
 use crate::common::*;
 
 mod lowercase_key;
+mod space_character;
 
 trait Fix {
     fn name(&self) -> &str;
@@ -34,6 +35,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         // At first we run the fixers that handle a single line entry (they use default
         // implementation of the fix_warnings() function)
         Box::new(lowercase_key::LowercaseKeyFixer::default()),
+        Box::new(space_character::SpaceCharacterFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
