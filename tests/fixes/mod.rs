@@ -1,6 +1,7 @@
 use crate::common::TestDir;
 
 mod space_character;
+mod trailing_whitespace;
 
 #[test]
 fn correct_file() {
