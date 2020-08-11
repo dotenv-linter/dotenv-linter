@@ -3,6 +3,7 @@ use crate::common::*;
 mod key_without_value;
 mod lowercase_key;
 mod space_character;
+mod quote_character;
 
 trait Fix {
     fn name(&self) -> &str;
@@ -38,6 +39,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(key_without_value::KeyWithoutValueFixer::default()),
         Box::new(lowercase_key::LowercaseKeyFixer::default()),
         Box::new(space_character::SpaceCharacterFixer::default()),
+        Box::new(quote_character::QuoteCharacterFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
