@@ -1,5 +1,6 @@
 use crate::common::*;
 
+mod key_without_value;
 mod lowercase_key;
 mod space_character;
 
@@ -34,6 +35,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     vec![
         // At first we run the fixers that handle a single line entry (they use default
         // implementation of the fix_warnings() function)
+        Box::new(key_without_value::KeyWithoutValueFixer::default()),
         Box::new(lowercase_key::LowercaseKeyFixer::default()),
         Box::new(space_character::SpaceCharacterFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
@@ -130,13 +132,13 @@ mod tests {
     fn run_with_unfixable_warning_test() {
         let mut lines = vec![
             line_entry(1, 3, "A=B"),
-            line_entry(2, 3, "C"),
+            line_entry(2, 3, "UNFIXABLE-"),
             blank_line_entry(3, 3),
         ];
         let mut warnings = vec![Warning::new(
             lines[1].clone(),
-            "KeyWithoutValue",
-            String::from("The C key should be with a value or have an equal sign"),
+            "Unfixable",
+            String::from("The UNFIXABLE- key is not fixable"),
         )];
 
         assert_eq!(0, run(&mut warnings, &mut lines));
