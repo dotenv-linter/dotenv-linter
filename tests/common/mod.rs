@@ -128,6 +128,7 @@ impl TestDir {
     }
 
     /// Run the default CLI binary, with "-f", in this TestDir and check it fails.
+    #[allow(dead_code)]
     pub fn test_command_fix_fail(&self, expected_output: String) {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");

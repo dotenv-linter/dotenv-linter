@@ -10,6 +10,7 @@ mod lowercase_key;
 mod quote_character;
 mod space_character;
 mod trailing_whitespace;
+mod unordered_key;
 
 trait Fix {
     fn name(&self) -> &str;
@@ -49,11 +50,9 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(quote_character::QuoteCharacterFixer::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
         Box::new(duplicated_key::DuplicatedKeyFixer::default()),
-        // Then we should run the fixers that handle the line entry collection at whole.
-        // And at the end we should run the fixer for ExtraBlankLine check (because the previous
-        // fixers can create additional extra blank lines).
         Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
-        // UnorderedKeyFixer should be here
+        // Then we should run the fixers that handle the line entry collection at whole
+        Box::new(unordered_key::UnorderedKeyFixer::default()),
         Box::new(ending_blank_line::EndingBlankLineFixer::default()),
     ]
 }
