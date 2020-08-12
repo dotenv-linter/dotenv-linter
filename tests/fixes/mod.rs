@@ -1,3 +1,5 @@
+mod quote_character;
+
 use crate::common::TestDir;
 
 mod space_character;
