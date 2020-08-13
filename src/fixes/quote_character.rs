@@ -19,9 +19,8 @@ impl Fix for QuoteCharacterFixer<'_> {
     }
 
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
-        let quotes: &[_] = &['\'', '\"'];
         let value = line.get_value()?;
-        let pure_val = value.trim_start_matches(quotes).trim_end_matches(quotes);
+        let pure_val = value.replace("'", "").replace("\"", "");
 
         line.raw_string = format!("{}={}", line.get_key()?, pure_val);
 
@@ -44,7 +43,7 @@ mod tests {
                 file_name: ".env".to_string(),
                 total_lines: 1,
             },
-            raw_string: String::from("foo=\'\"bar\"\'"),
+            raw_string: String::from("foo=\'\"b\'\"ar\"\'"),
         };
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("foo=bar", line.raw_string);
@@ -61,7 +60,7 @@ mod tests {
                     file_name: ".env".to_string(),
                     total_lines: 3,
                 },
-                raw_string: String::from("foo=\"bar\""),
+                raw_string: String::from("foo=\"bar\'\""),
             },
             LineEntry {
                 number: 2,
@@ -85,7 +84,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[0].clone(),
             "QuoteCharacter",
-            String::from("The value is wrapped in quotes"),
+            String::from("The value has quote characters (\', \") in it"),
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

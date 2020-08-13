@@ -16,7 +16,7 @@ impl Default for QuoteCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "QuoteCharacter",
-            template: "The value is wrapped in quotes",
+            template: "The value has quote characters (\', \") in it",
         }
     }
 }
@@ -86,7 +86,7 @@ mod tests {
                         raw_string: String::from("FOO='BAR'"),
                     },
                     "QuoteCharacter",
-                    String::from("The value is wrapped in quotes"),
+                    String::from("The value has quote characters (\', \") in it"),
                 )),
             ),
         ];
@@ -130,7 +130,7 @@ mod tests {
                         raw_string: String::from("FOO=\"BAR\""),
                     },
                     "QuoteCharacter",
-                    String::from("The value is wrapped in quotes"),
+                    String::from("The value has quote characters (\', \") in it"),
                 )),
             ),
         ];
