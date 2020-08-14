@@ -24,7 +24,13 @@ impl Default for IncorrectDelimiterChecker<'_> {
 impl Check for IncorrectDelimiterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
-        if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
+
+        // delimiters occur /between/ characters, not as the initial character, so we should only check those cases
+        if key
+            .trim()
+            .starts_with(|c: char| c.is_alphabetic() || c == '_')
+            && key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_')
+        {
             return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
         }
 
@@ -122,21 +128,6 @@ mod tests {
                 total_lines: 1,
             },
             raw_string: String::from("FOO-BAR"),
-        };
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn leading_space_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from(" FOO=FOOBAR"),
         };
         assert_eq!(None, checker.run(&line));
     }
