@@ -6,8 +6,8 @@ fn quote_character() {
     let testfile = testdir.create_testfile(".env", "ABC=\"DEF\"\n\nFOO=\'B\"AR\'\n");
     let expected_output = String::from(
         "Fixed warnings:\n\
-        .env:1 QuoteCharacter: The value has quote characters (\', \") in it\n\
-        .env:3 QuoteCharacter: The value has quote characters (\', \") in it\n",
+        .env:1 QuoteCharacter: The value has quote characters (\', \")\n\
+        .env:3 QuoteCharacter: The value has quote characters (\', \")\n",
     );
     testdir.test_command_fix_success(expected_output);
 

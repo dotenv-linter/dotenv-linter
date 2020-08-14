@@ -16,7 +16,7 @@ impl Default for QuoteCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             name: "QuoteCharacter",
-            template: "The value has quote characters (\', \") in it",
+            template: "The value has quote characters (\', \")",
         }
     }
 }
@@ -86,7 +86,7 @@ mod tests {
                         raw_string: String::from("FOO='BAR'"),
                     },
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \") in it"),
+                    String::from("The value has quote characters (\', \")"),
                 )),
             ),
             (
@@ -110,7 +110,7 @@ mod tests {
                         raw_string: String::from("FOO='B\"AR'"),
                     },
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \") in it"),
+                    String::from("The value has quote characters (\', \")"),
                 )),
             ),
         ];
@@ -154,7 +154,7 @@ mod tests {
                         raw_string: String::from("FOO=\"BAR\""),
                     },
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \") in it"),
+                    String::from("The value has quote characters (\', \")"),
                 )),
             ),
         ];
