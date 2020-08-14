@@ -19,8 +19,6 @@ impl Fix for LeadingCharacterFixer<'_> {
     }
 
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
-        line.raw_string = line.raw_string.to_string();
-
         let mut key = line.get_key()?;
 
         if key.starts_with(|c: char| !c.is_alphabetic() && c != '_') {
