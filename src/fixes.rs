@@ -2,6 +2,7 @@ use crate::common::*;
 
 mod key_without_value;
 mod lowercase_key;
+mod quote_character;
 mod space_character;
 mod trailing_whitespace;
 
@@ -40,6 +41,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(lowercase_key::LowercaseKeyFixer::default()),
         Box::new(space_character::SpaceCharacterFixer::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceFixer::default()),
+        Box::new(quote_character::QuoteCharacterFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
