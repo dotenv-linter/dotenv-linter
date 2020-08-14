@@ -1,8 +1,8 @@
 use crate::common::TestDir;
 
+mod extract_blank_line;
 mod space_character;
 mod trailing_whitespace;
-mod extract_blank_line;
 
 #[test]
 fn correct_file() {

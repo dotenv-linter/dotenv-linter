@@ -1,10 +1,10 @@
 use crate::common::*;
 
+mod extract_blank_line;
 mod key_without_value;
 mod lowercase_key;
 mod space_character;
 mod trailing_whitespace;
-mod extract_blank_line;
 
 trait Fix {
     fn name(&self) -> &str;
