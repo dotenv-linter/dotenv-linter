@@ -202,6 +202,19 @@ $ dotenv-linter --skip UnorderedKey EndingBlankLine
 Found 1 problem
 ```
 
+You can also disable checks for a specific file or line using comments:
+
+```dotenv
+# .env
+# At the beginning - it disables checks for the whole file
+# dotenv-linter:off DuplicatedKey, EndingBlankLine
+
+# dotenv-linter:off UnorderedKey (You can disable a check for only some lines)
+FOO=BAR
+BAR=FOO
+# dotenv-linter:on UnorderedKey (And enable it again)
+```
+
 If you want to see only warnings without additional information, use the argument `--quiet` or its short version `-q`:
 
 ```shell script

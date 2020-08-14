@@ -31,7 +31,6 @@ trait Fix {
     }
 }
 
-// TODO: skip fixes (like checks)
 // The fix order is matter
 fn fixlist() -> Vec<Box<dyn Fix>> {
     vec![

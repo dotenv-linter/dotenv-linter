@@ -1,3 +1,4 @@
+use crate::comment;
 use crate::common::*;
 
 mod duplicated_key;
@@ -47,16 +48,38 @@ pub fn available_check_names() -> Vec<String> {
 
 pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
     let mut checks = checklist();
+
+    // Skip checks with the --skip argument (globally)
     checks.retain(|c| !skip_checks.contains(&c.name()));
+
+    // Skip checks with comments (dotenv-linter:on/off)
+    let mut disabled_checks: Vec<&str> = Vec::new();
 
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
         let is_comment = line.is_comment();
+        if is_comment {
+            if let Some(comment) = comment::parse(&line.raw_string) {
+                if comment.is_disabled() {
+                    // Disable checks from a comment using the dotenv-linter:off flag
+                    disabled_checks.extend(comment.checks);
+                } else {
+                    // Enable checks if the comment has the dotenv-linter:on flag
+                    disabled_checks.retain(|&s| !comment.checks.contains(&s));
+                }
+            }
+        }
+
         for ch in &mut checks {
             if is_comment && ch.skip_comments() {
                 continue;
             }
+
+            if disabled_checks.contains(&ch.name()) {
+                continue;
+            }
+
             if let Some(warning) = ch.run(line) {
                 warnings.push(warning);
             }
@@ -186,6 +209,77 @@ mod tests {
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<&str> = vec!["KeyWithoutValue", "EndingBlankLine"];
+
+        assert_eq!(expected, run(&lines, &skip_checks));
+    }
+
+    #[test]
+    fn skip_one_check_via_comment() {
+        let line1 = line_entry(1, 4, "# dotenv-linter:off KeyWithoutValue\n");
+        let line2 = line_entry(2, 4, "FOO\n");
+        let line3 = line_entry(3, 4, "1FOO\n");
+        let warning = Warning::new(
+            line3.clone(),
+            "LeadingCharacter",
+            String::from("Invalid leading character detected"),
+        );
+        let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
+        let expected: Vec<Warning> = vec![warning];
+        let skip_checks: Vec<&str> = Vec::new();
+
+        assert_eq!(expected, run(&lines, &skip_checks));
+    }
+
+    #[test]
+    fn skip_collision() {
+        let line1 = line_entry(1, 4, "# dotenv-linter:on KeyWithoutValue\n");
+        let line2 = line_entry(2, 4, "FOO\n");
+        let line3 = line_entry(3, 4, "1FOO\n");
+        let warning = Warning::new(
+            line3.clone(),
+            "LeadingCharacter",
+            String::from("Invalid leading character detected"),
+        );
+        let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
+        let expected: Vec<Warning> = vec![warning];
+        let skip_checks: Vec<&str> = vec!["KeyWithoutValue"];
+
+        assert_eq!(expected, run(&lines, &skip_checks));
+    }
+
+    #[test]
+    fn on_and_off_same_checks() {
+        let line1 = line_entry(
+            1,
+            5,
+            "# dotenv-linter:off KeyWithoutValue, LeadingCharacter\n",
+        );
+        let line2 = line_entry(2, 5, "FOO\n");
+        let line3 = line_entry(3, 5, "# dotenv-linter:on LeadingCharacter\n");
+        let line4 = line_entry(4, 5, "1FOO\n");
+        let warning = Warning::new(
+            line4.clone(),
+            "LeadingCharacter",
+            String::from("Invalid leading character detected"),
+        );
+        let lines: Vec<LineEntry> = vec![line1, line2, line3, line4, blank_line_entry(5, 5)];
+        let expected: Vec<Warning> = vec![warning];
+        let skip_checks: Vec<&str> = Vec::new();
+
+        assert_eq!(expected, run(&lines, &skip_checks));
+    }
+
+    #[test]
+    fn only_simple_comment() {
+        let line = line_entry(1, 1, "# Simple comment");
+        let warning = Warning::new(
+            line.clone(),
+            "EndingBlankLine",
+            String::from("No blank line at the end of the file"),
+        );
+        let lines: Vec<LineEntry> = vec![line];
+        let expected: Vec<Warning> = vec![warning];
+        let skip_checks: Vec<&str> = Vec::new();
 
         assert_eq!(expected, run(&lines, &skip_checks));
     }

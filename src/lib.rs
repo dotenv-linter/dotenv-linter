@@ -4,6 +4,7 @@ use std::error::Error;
 use std::path::PathBuf;
 
 mod checks;
+mod comment;
 mod common;
 mod fixes;
 mod fs_utils;

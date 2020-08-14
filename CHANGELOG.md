@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add support of comments to disable checks [#239](https://github.com/dotenv-linter/dotenv-linter/pull/239) ([@mgrachev](https://github.com/mgrachev))
 - Add autofix for TrailingWhitespace [#255](https://github.com/dotenv-linter/dotenv-linter/pull/255) ([@gregcline](https://github.com/gregcline))
 - Add fixer: KeyWithoutValueFixer [#254](https://github.com/dotenv-linter/dotenv-linter/pull/254) ([@unexge](https://github.com/unexge))
 - Add fixer: QuoteCharacterFixer [#257](https://github.com/dotenv-linter/dotenv-linter/pull/257) ([@lensvol](https://github.com/lensvol))
