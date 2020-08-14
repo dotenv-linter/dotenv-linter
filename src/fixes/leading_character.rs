@@ -22,15 +22,20 @@ impl Fix for LeadingCharacterFixer<'_> {
         let mut key = line.get_key()?;
 
         if key.starts_with(|c: char| !c.is_alphabetic() && c != '_') {
-            let mut chars = key.chars();
-            chars.next();
-            key = chars.as_str().to_string();
+            key = remove_leading_char(&key);
         }
 
         line.raw_string = format!("{}={}", key, line.get_value()?);
 
         Some(())
     }
+}
+
+fn remove_leading_char(string: &str) -> String {
+    let mut chars = string.chars();
+    chars.next();
+
+    chars.as_str().to_string()
 }
 
 #[cfg(test)]
