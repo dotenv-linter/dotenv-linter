@@ -43,7 +43,7 @@ mod tests {
                 file_name: ".env".to_string(),
                 total_lines: 1,
             },
-            raw_string: String::from("foo=\'\"b\'\"ar\"\'"),
+            raw_string: String::from("FOO=\'\"b\'\"ar\"\'"),
         };
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("FOO=bar", line.raw_string);
