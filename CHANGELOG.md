@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add autofix for TrailingWhitespace [#255](https://github.com/dotenv-linter/dotenv-linter/pull/255) ([@gregcline](https://github.com/gregcline))
 - Add fixer: KeyWithoutValueFixer [#254](https://github.com/dotenv-linter/dotenv-linter/pull/254) ([@unexge](https://github.com/unexge))
 - Add fixer: QuoteCharacterFixer [#249](https://github.com/dotenv-linter/dotenv-linter/pull/249) ([@lensvol](https://github.com/lensvol))
 - Add fixer: SpaceCharacterFixer [#253](https://github.com/dotenv-linter/dotenv-linter/pull/253) ([@DDtKey](https://github.com/DDtKey))
