@@ -156,6 +156,16 @@ impl LineEntry {
     }
 }
 
+pub fn remove_all_invalid_leading_chars(string: &str) -> String {
+    let mut cleaned_string = string;
+
+    while !cleaned_string.starts_with(|c: char| c.is_alphabetic() || c == '_') {
+        cleaned_string = &cleaned_string[1..]
+    }
+
+    cleaned_string.to_string()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

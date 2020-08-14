@@ -19,23 +19,14 @@ impl Fix for LeadingCharacterFixer<'_> {
     }
 
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
-        let mut key = line.get_key()?;
+        let key = line.get_key()?;
 
-        if key.starts_with(|c: char| !c.is_alphabetic() && c != '_') {
-            key = remove_leading_char(&key);
-        }
+        let cleaned_key = remove_all_invalid_leading_chars(&key);
 
-        line.raw_string = format!("{}={}", key, line.get_value()?);
+        line.raw_string = format!("{}={}", cleaned_key, line.get_value()?);
 
         Some(())
     }
-}
-
-fn remove_leading_char(string: &str) -> String {
-    let mut chars = string.chars();
-    chars.next();
-
-    chars.as_str().to_string()
 }
 
 #[cfg(test)]
@@ -115,6 +106,23 @@ mod tests {
         assert_eq!("FOO=BAR", leading_number.raw_string);
     }
 
+    #[test]
+    fn fix_many_invalid_leading_chars() {
+        let fixer = LeadingCharacterFixer::default();
+
+        let mut leading_number = LineEntry {
+            number: 4,
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+                total_lines: 7,
+            },
+            raw_string: String::from("-1&*FOO=BAR"),
+        };
+
+        assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
+        assert_eq!("FOO=BAR", leading_number.raw_string);
+    }
     #[test]
     fn leading_underscore() {
         let fixer = LeadingCharacterFixer::default();
