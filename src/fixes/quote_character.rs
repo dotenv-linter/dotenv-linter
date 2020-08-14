@@ -46,7 +46,7 @@ mod tests {
             raw_string: String::from("foo=\'\"b\'\"ar\"\'"),
         };
         assert_eq!(Some(()), fixer.fix_line(&mut line));
-        assert_eq!("foo=bar", line.raw_string);
+        assert_eq!("FOO=bar", line.raw_string);
     }
 
     #[test]
@@ -60,7 +60,7 @@ mod tests {
                     file_name: ".env".to_string(),
                     total_lines: 3,
                 },
-                raw_string: String::from("foo=\"bar\'\""),
+                raw_string: String::from("FOO=\"bar\'\""),
             },
             LineEntry {
                 number: 2,
@@ -88,7 +88,7 @@ mod tests {
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
-        assert_eq!("foo=bar", lines[0].raw_string);
+        assert_eq!("FOO=bar", lines[0].raw_string);
         assert!(warning.is_fixed);
     }
 }

@@ -89,6 +89,30 @@ mod tests {
                     String::from("The value has quote characters (\', \") in it"),
                 )),
             ),
+            (
+                LineEntry {
+                    number: 2,
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                        total_lines: 2,
+                    },
+                    raw_string: String::from("FOO='B\"AR'"),
+                },
+                Some(Warning::new(
+                    LineEntry {
+                        number: 2,
+                        file: FileEntry {
+                            path: PathBuf::from(".env"),
+                            file_name: ".env".to_string(),
+                            total_lines: 2,
+                        },
+                        raw_string: String::from("FOO='B\"AR'"),
+                    },
+                    "QuoteCharacter",
+                    String::from("The value has quote characters (\', \") in it"),
+                )),
+            ),
         ];
 
         run_quote_char_tests(asserts);
