@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add fixer: LeadingCharacter [#259](https://github.com/dotenv-linter/dotenv-linter/pull/259) ([@baile320](https://github.com/baile320))
 - Add autofix for TrailingWhitespace [#255](https://github.com/dotenv-linter/dotenv-linter/pull/255) ([@gregcline](https://github.com/gregcline))
 - Add fixer: KeyWithoutValueFixer [#254](https://github.com/dotenv-linter/dotenv-linter/pull/254) ([@unexge](https://github.com/unexge))
+- Add fixer: QuoteCharacterFixer [#257](https://github.com/dotenv-linter/dotenv-linter/pull/257) ([@lensvol](https://github.com/lensvol))
 - Add fixer: SpaceCharacterFixer [#253](https://github.com/dotenv-linter/dotenv-linter/pull/253) ([@DDtKey](https://github.com/DDtKey))
 - Add total problems to output and `--quiet` argument [#242](https://github.com/dotenv-linter/dotenv-linter/pull/242) ([@wesleimp](https://github.com/wesleimp), [@mgrachev](https://github.com/mgrachev))
 - Add autofix feature (for LowercaseKey check) [#228](https://github.com/dotenv-linter/dotenv-linter/pull/228) ([@evgeniy-r](https://github.com/evgeniy-r))
