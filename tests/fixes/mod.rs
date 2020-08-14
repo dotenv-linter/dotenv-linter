@@ -1,5 +1,6 @@
 use crate::common::TestDir;
 
+mod leading_character;
 mod space_character;
 mod trailing_whitespace;
 
