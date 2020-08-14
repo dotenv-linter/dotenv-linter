@@ -56,13 +56,11 @@ fn unfixed_warnings() {
         "Fixed warnings:\n\
         .env:2 TrailingWhitespace: Trailing whitespace detected\n\
         .env:3 LowercaseKey: The f key should be in uppercase\n\
-        \n\
-        Unfixed warnings:\n\
         .env:5 ExtraBlankLine: Extra blank line detected\n",
     );
-    testdir.test_command_fix_fail(expected_output);
+    testdir.test_command_fix_success(expected_output);
 
-    assert_eq!(testfile.contents().as_str(), "A=DEF\nB=BAR\nF=BAR\n\n");
+    assert_eq!(testfile.contents().as_str(), "A=DEF\nB=BAR\nF=BAR\n");
 
     testdir.close();
 }
@@ -80,15 +78,13 @@ fn multiple_files() {
         2.env:1 LowercaseKey: The abc key should be in uppercase\n\
         3.env:1 TrailingWhitespace: Trailing whitespace detected\n\
         3.env:2 LowercaseKey: The ab key should be in uppercase\n\
-        \n\
-        Unfixed warnings:\n\
         3.env:4 ExtraBlankLine: Extra blank line detected\n",
     );
-    testdir.test_command_fix_fail(expected_output);
+    testdir.test_command_fix_success(expected_output);
 
     assert_eq!(testfile1.contents().as_str(), "AB=DEF\nD=BAR\n\nF=BAR\n");
     assert_eq!(testfile2.contents().as_str(), "ABC=DEF\n\nF=BAR\n");
-    assert_eq!(testfile3.contents().as_str(), "A=b\nAB=DEF\n\n");
+    assert_eq!(testfile3.contents().as_str(), "A=b\nAB=DEF\n");
 
     testdir.close();
 }
