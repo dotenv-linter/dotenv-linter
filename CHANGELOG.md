@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Actions uses cache@v2 [#262](https://github.com/dotenv-linter/dotenv-linter/pull/262) ([@gillespiecd](https://github.com/gillespiecd))
 - Add tests for default implementation of Fix::fix_warnings [#266](https://github.com/dotenv-linter/dotenv-linter/pull/266) ([@kilotaras](https://github.com/kilotaras))
 - Modularize common.rs [#264](https://github.com/dotenv-linter/dotenv-linter/pull/264) ([@gillespeicd](https://github.com/gillespiecd))
 

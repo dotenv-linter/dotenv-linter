@@ -20,17 +20,13 @@ jobs:
           toolchain: stable
       - name: Chown cargo registry because of caching
         run: sudo chown -R runner ~/.cargo/registry
-      - name: Cache cargo registry
-        uses: actions/cache@v1
+      - name: Cache cargo registry and target
+        uses: actions/cache@v2
         with:
-          path: ~/.cargo/registry
-          key: registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache target
-        id: cache-target
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: check-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry
+            target
+          key: linux-check-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Check
         uses: actions-rs/cargo@v1
         with:
@@ -70,17 +66,13 @@ jobs:
           components: clippy
       - name: Chown cargo registry because of caching
         run: sudo chown -R runner ~/.cargo/registry
-      - name: Cache cargo registry
-        uses: actions/cache@v1
+      - name: Cache cargo registry and target
+        uses: actions/cache@v2
         with:
-          path: ~/.cargo/registry
-          key: registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache target
-        id: cache-target
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: clippy-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry
+            target
+          key: clippy-linux-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Check with Clippy
         uses: actions-rs/cargo@v1
         with:
@@ -109,17 +101,13 @@ jobs:
           toolchain: stable
       - name: Chown cargo registry because of caching
         run: sudo chown -R runner ~/.cargo/registry
-      - name: Cache cargo registry
-        uses: actions/cache@v1
+      - name: Cache cargo registry and target
+        uses: actions/cache@v2
         with:
-          path: ~/.cargo/registry
-          key: registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache target
-        id: cache-target
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: build-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+            path: |
+              ~/.cargo/registry
+              target
+            key: build-linux-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Build
         uses: actions-rs/cargo@v1
         with:
@@ -146,31 +134,19 @@ jobs:
         run: sudo chown -R runner ~/.cargo/registry
       - name: Set grcov version
         run: echo "::set-env name=GRCOV_VERSION::$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)"
-      - name: Cache cargo registry
-        uses: actions/cache@v1
+      - name: Cache cargo registry, target, and grcov binary
+        id: test-grcov
+        uses: actions/cache@v2
         with:
-          path: ~/.cargo/registry
-          key: test-registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache target
-        id: cache-target
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: test-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
-      # actions/cache does not cache files, only directories, so we handle the Grcov executable separately.
-      - name: Cache grcov
-        id: cache-grcov
-        uses: actions/cache@v1
-        with:
-          path: ~/grcov
-          key: grcov-${{ env.GRCOV_VERSION }}
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/bin/grcov
+            target
+          key: grcov-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}-${{ env.GRCOV_VERSION }}
       - name: Install grcov
         run: |
-          mkdir -p ~/grcov
-          cargo install --root ~/grcov --version $GRCOV_VERSION grcov
-        if: steps.cache-grcov.outputs.cache-hit != 'true'
-      - name: Copy grcov from cache
-        run: cp ~/grcov/bin/grcov ~/.cargo/bin
+          cargo install --version $GRCOV_VERSION grcov
+        if: steps.test-grcov.outputs.cache-hit != 'true'
       - name: Clean coverage
         run: |
           rm -f target/debug/deps/*.gcda
@@ -217,17 +193,13 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-      - name: Cache cargo registry
-        uses: actions/cache@v1
+      - name: Cache cargo registry and target
+        uses: actions/cache@v2
         with:
-          path: ~/.cargo/registry
-          key: registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache target
-        id: cache-target
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: build-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry
+            target
+          key: build-windows-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Build
         uses: actions-rs/cargo@v1
         with:
@@ -250,17 +222,13 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-      - name: Cache cargo registry
-        uses: actions/cache@v1
+      - name: Cache cargo registry and target
+        uses: actions/cache@v2
         with:
-          path: ~/.cargo/registry
-          key: test-registry-${{ hashFiles('**/Cargo.lock') }}
-      - name: Cache target
-        id: cache-target
-        uses: actions/cache@v1
-        with:
-          path: target
-          key: test-target-${{ steps.toolchain.outputs.rustc_hash }}-${{ hashFiles('**/Cargo.lock') }}
+          path: |
+            ~/.cargo/registry
+            target
+          key: test-windows-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Run tests
         uses: actions-rs/cargo@v1
         with:
