@@ -5,16 +5,6 @@ pub(crate) struct ExtraBlankLineFixer<'a> {
     name: &'a str,
 }
 
-impl ExtraBlankLineFixer<'_> {
-    fn fix_multiple_lines(&self, lines: &mut Vec<LineEntry>, line_number: usize) -> Option<()> {
-        let position = lines
-            .iter()
-            .position(|line_entry| line_entry.number == line_number)?;
-        lines.remove(position);
-        Some(())
-    }
-}
-
 impl Default for ExtraBlankLineFixer<'_> {
     fn default() -> Self {
         Self {
@@ -34,14 +24,22 @@ impl Fix for ExtraBlankLineFixer<'_> {
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         let mut count: usize = 0;
-        for warning in warnings {
-            if self
-                .fix_multiple_lines(lines, warning.line_number())
-                .is_some()
-            {
-                warning.mark_as_fixed();
+
+        // check and remove all blank lines.
+        let mut is_preview_line_blank = false;
+        lines.clone().iter().enumerate().for_each(|(i, line)| {
+            let is_empty = line.is_empty();
+            if is_empty && is_preview_line_blank {
+                lines.remove(i - count);
                 count += 1;
             }
+
+            is_preview_line_blank = is_empty;
+        });
+
+        // mark as fixed
+        for warnig in  warnings {
+            warnig.mark_as_fixed();
         }
 
         Some(count)
