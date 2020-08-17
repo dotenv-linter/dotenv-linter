@@ -38,7 +38,7 @@ impl Fix for ExtraBlankLineFixer<'_> {
         });
 
         // mark as fixed
-        for warnig in  warnings {
+        for warnig in warnings {
             warnig.mark_as_fixed();
         }
 

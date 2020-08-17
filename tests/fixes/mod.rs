@@ -59,7 +59,7 @@ fn unfixed_warnings() {
         \n\
         Unfixed warnings:\n\
         .env:4 DuplicatedKey: The A key is duplicated\n\
-        .env:4 UnorderedKey: The A key should go before the A key\n"
+        .env:4 UnorderedKey: The A key should go before the A key\n",
     );
     testdir.test_command_fix_fail(expected_output);
 
