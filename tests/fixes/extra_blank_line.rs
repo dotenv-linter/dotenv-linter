@@ -1,7 +1,7 @@
 use crate::common::TestDir;
 
 #[test]
-fn extract_blank_line() {
+fn extra_blank_line() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", "ABC=DEF\n\n\nFOO=BAR\n");
     let expected_output = String::from(
