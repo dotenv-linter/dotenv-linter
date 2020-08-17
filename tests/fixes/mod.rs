@@ -50,17 +50,20 @@ fn key_without_value() {
 #[test]
 fn unfixed_warnings() {
     let testdir = TestDir::new();
-    let testfile = testdir.create_testfile(".env", "A=DEF\nB=BAR \nf=BAR\n\n");
+    let testfile = testdir.create_testfile(".env", "A=DEF\nB=BAR \nf=BAR\nA=FOO\n");
 
     let expected_output = String::from(
         "Fixed warnings:\n\
         .env:2 TrailingWhitespace: Trailing whitespace detected\n\
         .env:3 LowercaseKey: The f key should be in uppercase\n\
-        .env:5 ExtraBlankLine: Extra blank line detected\n",
+        \n\
+        Unfixed warnings:\n\
+        .env:4 DuplicatedKey: The A key is duplicated\n\
+        .env:4 UnorderedKey: The A key should go before the A key\n"
     );
-    testdir.test_command_fix_success(expected_output);
+    testdir.test_command_fix_fail(expected_output);
 
-    assert_eq!(testfile.contents().as_str(), "A=DEF\nB=BAR\nF=BAR\n");
+    assert_eq!(testfile.contents().as_str(), "A=DEF\nB=BAR\nF=BAR\nA=FOO\n");
 
     testdir.close();
 }
