@@ -1,6 +1,6 @@
 use crate::common::TestDir;
 
-mod extract_blank_line;
+mod extra_blank_line;
 mod space_character;
 mod trailing_whitespace;
 

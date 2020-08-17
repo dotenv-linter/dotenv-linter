@@ -1,6 +1,6 @@
 use crate::common::*;
 
-mod extract_blank_line;
+mod extra_blank_line;
 mod key_without_value;
 mod lowercase_key;
 mod space_character;
@@ -44,7 +44,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
-        Box::new(extract_blank_line::ExtraBlankLineFixer::default()),
+        Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
     ]
 }
 
