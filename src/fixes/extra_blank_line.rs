@@ -23,26 +23,17 @@ impl Fix for ExtraBlankLineFixer<'_> {
         warnings: Vec<&mut Warning>,
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
-        let mut count: usize = 0;
+        let warning_count = warnings.len();
 
         // check and remove all blank lines.
-        let mut is_preview_line_blank = false;
-        lines.clone().iter().enumerate().for_each(|(i, line)| {
-            let is_empty = line.is_empty();
-            if is_empty && is_preview_line_blank {
-                lines.remove(i - count);
-                count += 1;
-            }
-
-            is_preview_line_blank = is_empty;
-        });
-
+        lines.dedup_by(|a, b| a.is_empty() && b.is_empty());
+        
         // mark as fixed
-        for warnig in warnings {
-            warnig.mark_as_fixed();
+        for warning in warnings {
+            warning.mark_as_fixed();
         }
 
-        Some(count)
+        Some(warning_count)
     }
 }
 
