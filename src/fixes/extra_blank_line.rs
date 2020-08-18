@@ -27,7 +27,7 @@ impl Fix for ExtraBlankLineFixer<'_> {
 
         // check and remove all blank lines.
         lines.dedup_by(|a, b| a.is_empty() && b.is_empty());
-        
+
         // mark as fixed
         for warning in warnings {
             warning.mark_as_fixed();
