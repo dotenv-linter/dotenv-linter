@@ -202,7 +202,7 @@ $ dotenv-linter --skip UnorderedKey EndingBlankLine
 Found 1 problem
 ```
 
-If you want to see only warnings without additional information, use the argument `--quiet` or its short version `-q`:
+If you want to see only warnings without additional information, use the argument `--quiet` or its short version `-q` (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
 
 ```shell script
 $ dotenv-linter --quiet
@@ -228,8 +228,7 @@ TrailingWhitespace
 UnorderedKey
 ```
 
-`dotenv-linter` can also automatically fix warnings in the files. Currently only one kind of warnings is fixed
-(`LowercaseKey`). You should use the argument `--fix` (or its short version `-f`) for this (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
+`dotenv-linter` can also automatically fix warnings in the files. You should use the argument `--fix` (or its short version `-f`) for this (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
 
 ```shell script
 $ dotenv-linter -f
