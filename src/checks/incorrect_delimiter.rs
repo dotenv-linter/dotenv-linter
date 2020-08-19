@@ -20,12 +20,24 @@ impl Default for IncorrectDelimiterChecker<'_> {
         }
     }
 }
-
 impl Check for IncorrectDelimiterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
-        if key.trim().chars().any(|c| !c.is_alphanumeric() && c != '_') {
-            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
+
+        // delimiters occur /between/ characters, not as the initial character, so we should
+        // remove all invalid leading characters before checking for incorrect delimiters
+        let cleaned_key = remove_all_invalid_leading_chars(&key);
+
+        if cleaned_key
+            .trim()
+            .chars()
+            .any(|c| !c.is_alphanumeric() && c != '_')
+        {
+            return Some(Warning::new(
+                line.clone(),
+                self.name(),
+                self.message(&line.get_key()?),
+            ));
         }
 
         None
@@ -69,6 +81,45 @@ mod tests {
             raw_string: String::from("F1OO=BAR"),
         };
         assert_eq!(None, checker.run(&line));
+    }
+
+    #[test]
+    fn incorrect_leading_char() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+                total_lines: 1,
+            },
+            raw_string: String::from("*FOO=BAR"),
+        };
+
+        // expect None because this warning should be found by LeadingCharacterChecker
+        assert_eq!(None, checker.run(&line));
+    }
+
+    #[test]
+    fn incorrect_leading_chars_and_invalid_delimiter() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+                total_lines: 1,
+            },
+            raw_string: String::from("***F-OOBAR=BAZ"),
+        };
+
+        let expected = Some(Warning::new(
+            line.clone(),
+            "IncorrectDelimiter",
+            String::from("The ***F-OOBAR key has incorrect delimiter"),
+        ));
+
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
@@ -122,21 +173,6 @@ mod tests {
                 total_lines: 1,
             },
             raw_string: String::from("FOO-BAR"),
-        };
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn leading_space_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from(" FOO=FOOBAR"),
         };
         assert_eq!(None, checker.run(&line));
     }
