@@ -34,8 +34,10 @@ impl Fix for EndingBlankLineFixer<'_> {
             });
         }
 
-        for warning in warnings {
-            warning.mark_as_fixed();
+        if !warnings.is_empty() {
+            for warning in warnings {
+                warning.mark_as_fixed()
+            }
             return Some(1);
         }
 
