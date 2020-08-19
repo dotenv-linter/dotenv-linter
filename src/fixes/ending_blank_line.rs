@@ -35,10 +35,8 @@ impl Fix for EndingBlankLineFixer<'_> {
         }
 
         for warning in warnings {
-            if warning.check_name == self.name {
-                warning.mark_as_fixed();
-                return Some(1);
-            }
+            warning.mark_as_fixed();
+            return Some(1);
         }
 
         Some(0)
