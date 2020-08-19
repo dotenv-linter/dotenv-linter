@@ -20,6 +20,7 @@ impl Default for IncorrectDelimiterChecker<'_> {
         }
     }
 }
+
 impl Check for IncorrectDelimiterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let key = line.get_key()?;
@@ -95,7 +96,6 @@ mod tests {
             },
             raw_string: String::from("*FOO=BAR"),
         };
-
         // expect None because this warning should be found by LeadingCharacterChecker
         assert_eq!(None, checker.run(&line));
     }
@@ -174,6 +174,7 @@ mod tests {
             },
             raw_string: String::from("FOO-BAR"),
         };
+        // there's no key, so KeyWithoutValueChecker should catch this error
         assert_eq!(None, checker.run(&line));
     }
 
@@ -189,6 +190,7 @@ mod tests {
             },
             raw_string: String::from("FOO_BAR =FOOBAR"),
         };
+        // has a trailing space, so SpaceCharacterChecker should catch this error
         assert_eq!(None, checker.run(&line));
     }
 
