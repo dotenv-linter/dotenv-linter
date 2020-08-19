@@ -32,12 +32,11 @@ impl Fix for EndingBlankLineFixer<'_> {
                 file,
                 raw_string: LF.to_string(),
             });
-        }
 
-        if !warnings.is_empty() {
             for warning in warnings {
                 warning.mark_as_fixed()
             }
+
             return Some(1);
         }
 
