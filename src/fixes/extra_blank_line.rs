@@ -43,7 +43,7 @@ mod tests {
     use std::path::PathBuf;
 
     #[test]
-    fn fix_multiple_lines_test() {
+    fn no_blank_lines_test() {
         let fixer = ExtraBlankLineFixer::default();
         let file = FileEntry {
             path: PathBuf::from(".env"),
@@ -71,15 +71,12 @@ mod tests {
         ];
         let mut fixing_lines = lines.clone();
 
-        assert_eq!(
-            Some(0 as usize),
-            fixer.fix_warnings(warnings, &mut fixing_lines)
-        );
+        assert_eq!(Some(0), fixer.fix_warnings(warnings, &mut fixing_lines));
         assert_eq!(lines, fixing_lines);
     }
 
     #[test]
-    fn fix_multiple_lines_test_double() {
+    fn fix_one_extra_blank_line_test() {
         let fixer = ExtraBlankLineFixer::default();
         let file = FileEntry {
             path: PathBuf::from(".env"),
@@ -114,13 +111,13 @@ mod tests {
         );
         let warnings = vec![&mut warning];
         let mut lines = vec![line1.clone(), line2.clone(), line3.clone(), line4.clone()];
-        assert_eq!(Some(1 as usize), fixer.fix_warnings(warnings, &mut lines));
+        assert_eq!(Some(1), fixer.fix_warnings(warnings, &mut lines));
         assert!(warning.is_fixed);
-        assert_eq!(vec!(line1.clone(), line2.clone(), line4.clone(),), lines);
+        assert_eq!(vec!(line1.clone(), line2.clone(), line4.clone()), lines);
     }
 
     #[test]
-    fn fix_multiple_lines_test_triple() {
+    fn fix_multiple_blank_lines_test() {
         let fixer = ExtraBlankLineFixer::default();
         let file = FileEntry {
             path: PathBuf::from(".env"),
@@ -171,9 +168,9 @@ mod tests {
             line4.clone(),
             line5.clone(),
         ];
-        assert_eq!(Some(2 as usize), fixer.fix_warnings(warnings, &mut lines));
+        assert_eq!(Some(2), fixer.fix_warnings(warnings, &mut lines));
         assert!(warning1.is_fixed);
         assert!(warning2.is_fixed);
-        assert_eq!(vec!(line1.clone(), line2.clone(), line5.clone(),), lines);
+        assert_eq!(vec!(line1.clone(), line2.clone(), line5.clone()), lines);
     }
 }
