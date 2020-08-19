@@ -85,7 +85,7 @@ mod tests {
     }
 
     #[test]
-    fn normal() {
+    fn ending_blank_line_exist_test() {
         let fixer = EndingBlankLineFixer::default();
         let mut lines = vec![
             LineEntry {
