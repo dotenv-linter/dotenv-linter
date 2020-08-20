@@ -7,14 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add fixer: ExtraBlankLineFixer [#260](https://github.com/dotenv-linter/dotenv-linter/pull/260) ([@diggymo](https://github.com/diggymo))
+- Add test for two keys that only differ in case [#269](https://github.com/dotenv-linter/dotenv-linter/pull/269) ([@yanakad](https://github.com/yanakad))
 - Add autofix for TrailingWhitespace [#255](https://github.com/dotenv-linter/dotenv-linter/pull/255) ([@gregcline](https://github.com/gregcline))
 - Add fixer: KeyWithoutValueFixer [#254](https://github.com/dotenv-linter/dotenv-linter/pull/254) ([@unexge](https://github.com/unexge))
+- Add fixer: QuoteCharacterFixer [#257](https://github.com/dotenv-linter/dotenv-linter/pull/257) ([@lensvol](https://github.com/lensvol))
 - Add fixer: SpaceCharacterFixer [#253](https://github.com/dotenv-linter/dotenv-linter/pull/253) ([@DDtKey](https://github.com/DDtKey))
 - Add total problems to output and `--quiet` argument [#242](https://github.com/dotenv-linter/dotenv-linter/pull/242) ([@wesleimp](https://github.com/wesleimp), [@mgrachev](https://github.com/mgrachev))
 - Add autofix feature (for LowercaseKey check) [#228](https://github.com/dotenv-linter/dotenv-linter/pull/228) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Actions uses cache@v2 [#262](https://github.com/dotenv-linter/dotenv-linter/pull/262) ([@gillespiecd](https://github.com/gillespiecd))
+- Update logic for IncorrectDelimiterCheck [#267](https://github.com/dotenv-linter/dotenv-linter/pull/267) ([@baile320](https://github.com/baile320))
+- Add tests for default implementation of Fix::fix_warnings [#266](https://github.com/dotenv-linter/dotenv-linter/pull/266) ([@kilotaras](https://github.com/kilotaras))
+- Modularize common.rs [#264](https://github.com/dotenv-linter/dotenv-linter/pull/264) ([@gillespeicd](https://github.com/gillespiecd))
 
 ## [v2.1.0] - 2020-07-13
 ### 🚀 Added
