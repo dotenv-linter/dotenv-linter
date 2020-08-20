@@ -1,5 +1,6 @@
 use crate::common::*;
 
+mod duplicated_key;
 mod ending_blank_line;
 mod key_without_value;
 mod lowercase_key;
@@ -17,7 +18,10 @@ trait Fix {
     ) -> Option<usize> {
         let mut count: usize = 0;
         for warning in warnings {
-            let line = lines.get_mut(warning.line_number() - 1)?;
+            let line = lines
+                .get_mut(warning.line_number() - 1)
+                .expect("warning references inexistent line");
+
             if self.fix_line(line).is_some() {
                 warning.mark_as_fixed();
                 count += 1;
@@ -45,6 +49,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
+        Box::new(duplicated_key::DuplicatedKeyFixer::default()),
         Box::new(ending_blank_line::EndingBlankLineFixer::default()),
     ]
 }
