@@ -259,5 +259,8 @@ mod tests {
         assert_eq!("Z=Y", lines[1].raw_string);
         assert_eq!("BAR=BAZ", lines[2].raw_string);
         assert_eq!("QUX=QUUX", lines[3].raw_string);
+        assert_eq!("_QUUX=FOOBAR", lines[4].raw_string);
+        assert_eq!("KEY=VALUE", lines[5].raw_string);
+        assert_eq!("\n", lines[6].raw_string);
     }
 }
