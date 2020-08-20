@@ -21,7 +21,7 @@ impl Fix for LeadingCharacterFixer<'_> {
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
 
-        let cleaned_key = remove_all_invalid_leading_chars(&key);
+        let cleaned_key = remove_invalid_leading_chars(&key);
 
         line.raw_string = format!("{}={}", cleaned_key, line.get_value()?);
 

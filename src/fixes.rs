@@ -174,4 +174,48 @@ mod tests {
         assert_eq!(0, run(&mut warnings, &mut lines));
         assert!(!warnings[0].is_fixed);
     }
+
+    struct TestFixer<'a> {
+        name: &'a str,
+    }
+
+    impl Fix for TestFixer<'_> {
+        fn name(&self) -> &str {
+            self.name
+        }
+
+        fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+            if line.raw_string.chars().count() > 5 {
+                Some(())
+            } else {
+                None
+            }
+        }
+    }
+
+    #[test]
+    fn warnings_are_marked_as_fixed_if_fix_returns_some() {
+        let mut lines = vec![line_entry(1, 2, "foo=bar"), blank_line_entry(2, 2)];
+
+        let mut warning = Warning::new(lines[0].clone(), "", String::from(""));
+
+        let fixer = TestFixer { name: "fixer" };
+
+        fixer.fix_warnings(vec![&mut warning], &mut lines);
+
+        assert!(warning.is_fixed)
+    }
+
+    #[test]
+    fn warnings_are_not_marked_as_fixed_if_fix_returns_none() {
+        let mut lines = vec![line_entry(1, 2, "a=b"), blank_line_entry(2, 2)];
+
+        let mut warning = Warning::new(lines[0].clone(), "", String::from(""));
+
+        let fixer = TestFixer { name: "fixer" };
+
+        fixer.fix_warnings(vec![&mut warning], &mut lines);
+
+        assert!(!warning.is_fixed)
+    }
 }

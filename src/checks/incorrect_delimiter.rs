@@ -27,18 +27,14 @@ impl Check for IncorrectDelimiterChecker<'_> {
 
         // delimiters occur /between/ characters, not as the initial character, so we should
         // remove all invalid leading characters before checking for incorrect delimiters
-        let cleaned_key = remove_all_invalid_leading_chars(&key);
+        let cleaned_key = remove_invalid_leading_chars(&key);
 
         if cleaned_key
             .trim()
             .chars()
             .any(|c| !c.is_alphanumeric() && c != '_')
         {
-            return Some(Warning::new(
-                line.clone(),
-                self.name(),
-                self.message(&line.get_key()?),
-            ));
+            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
         }
 
         None
@@ -96,7 +92,6 @@ mod tests {
             },
             raw_string: String::from("*FOO=BAR"),
         };
-
         // expect None because this warning should be found by LeadingCharacterChecker
         assert_eq!(None, checker.run(&line));
     }
@@ -175,6 +170,7 @@ mod tests {
             },
             raw_string: String::from("FOO-BAR"),
         };
+        // there's no key, so KeyWithoutValueChecker should catch this error
         assert_eq!(None, checker.run(&line));
     }
 
@@ -190,6 +186,7 @@ mod tests {
             },
             raw_string: String::from("FOO_BAR =FOOBAR"),
         };
+        // has a trailing space, so SpaceCharacterChecker should catch this error
         assert_eq!(None, checker.run(&line));
     }
 
