@@ -130,6 +130,37 @@ mod tests {
 
         run_duplicated_tests(asserts);
     }
+    #[test]
+    fn with_two_unique_keys_case_sensitive_test() {
+        let asserts = vec![
+            (
+                LineEntry {
+                    number: 1,
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                        total_lines: 2,
+                    },
+                    raw_string: String::from("FOO=BAR"),
+                },
+                None,
+            ),
+            (
+                LineEntry {
+                    number: 2,
+                    file: FileEntry {
+                        path: PathBuf::from(".env"),
+                        file_name: ".env".to_string(),
+                        total_lines: 2,
+                    },
+                    raw_string: String::from("Foo=FOO"),
+                },
+                None,
+            ),
+        ];
+
+        run_duplicated_tests(asserts);
+    }
 
     #[test]
     fn with_two_duplicated_keys_test() {
