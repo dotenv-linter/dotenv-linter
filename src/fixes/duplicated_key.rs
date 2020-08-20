@@ -95,46 +95,58 @@ mod tests {
             ),
         ];
 
-        assert_eq!(Some(2), fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines));
+        assert_eq!(
+            Some(2),
+            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
+        );
         // what needed to be changed is changed
-        assert_eq!(lines[2], LineEntry {
-            number: 3,
-            file: FileEntry {
-                path: ".env".into(),
-                file_name: ".env".to_string(),
-                total_lines: 4,
-            },
-            raw_string: "#FOO=BAZ".to_string(),
-        });
-        assert_eq!(lines[3], LineEntry {
-            number: 4,
-            file: FileEntry {
-                path: ".env".into(),
-                file_name: ".env".to_string(),
-                total_lines: 4,
-            },
-            raw_string: "#Z=X".to_string(),
-        });
-        // anything else left untouched
-        assert_eq!(&lines[..2], &[
+        assert_eq!(
+            lines[2],
             LineEntry {
-                number: 1,
+                number: 3,
                 file: FileEntry {
                     path: ".env".into(),
                     file_name: ".env".to_string(),
                     total_lines: 4,
                 },
-                raw_string: "FOO=BAR".to_string(),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "Z=Y".to_string(),
+                raw_string: "#FOO=BAZ".to_string(),
             }
-        ]);
+        );
+        assert_eq!(
+            lines[3],
+            LineEntry {
+                number: 4,
+                file: FileEntry {
+                    path: ".env".into(),
+                    file_name: ".env".to_string(),
+                    total_lines: 4,
+                },
+                raw_string: "#Z=X".to_string(),
+            }
+        );
+        // anything else left untouched
+        assert_eq!(
+            &lines[..2],
+            &[
+                LineEntry {
+                    number: 1,
+                    file: FileEntry {
+                        path: ".env".into(),
+                        file_name: ".env".to_string(),
+                        total_lines: 4,
+                    },
+                    raw_string: "FOO=BAR".to_string(),
+                },
+                LineEntry {
+                    number: 2,
+                    file: FileEntry {
+                        path: ".env".into(),
+                        file_name: ".env".to_string(),
+                        total_lines: 4,
+                    },
+                    raw_string: "Z=Y".to_string(),
+                }
+            ]
+        );
     }
 }

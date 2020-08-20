@@ -155,30 +155,6 @@ mod tests {
         assert!(!warnings[0].is_fixed);
     }
 
-    #[test]
-    fn run_when_lines_do_not_fit_numbers_test() {
-        let mut lines = vec![
-            line_entry(1, 3, "a=B"),
-            line_entry(4, 3, "c=D"),
-            blank_line_entry(3, 3),
-        ];
-        let mut warnings = vec![
-            Warning::new(
-                lines[0].clone(),
-                "LowercaseKey",
-                String::from("The a key should be in uppercase"),
-            ),
-            Warning::new(
-                lines[1].clone(),
-                "LowercaseKey",
-                String::from("The c key should be in uppercase"),
-            ),
-        ];
-
-        assert_eq!(0, run(&mut warnings, &mut lines));
-        assert!(!warnings[0].is_fixed);
-    }
-
     struct TestFixer<'a> {
         name: &'a str,
     }
