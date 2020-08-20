@@ -42,7 +42,6 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(lowercase_key::LowercaseKeyFixer::default()),
         Box::new(space_character::SpaceCharacterFixer::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceFixer::default()),
-        Box::new(ending_blank_line::EndingBlankLineFixer::default()),
         Box::new(quote_character::QuoteCharacterFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
