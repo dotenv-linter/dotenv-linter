@@ -35,7 +35,7 @@ mod tests {
     use std::path::PathBuf;
 
     #[test]
-    fn fix_leading_period() {
+    fn fix_leading_dot() {
         let fixer = LeadingCharacterFixer::default();
 
         let mut leading_period = LineEntry {
