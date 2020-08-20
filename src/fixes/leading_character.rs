@@ -123,6 +123,7 @@ mod tests {
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
         assert_eq!("FOO=BAR", leading_number.raw_string);
     }
+
     #[test]
     fn leading_underscore_is_unchanged() {
         let fixer = LeadingCharacterFixer::default();
