@@ -11,7 +11,7 @@ pub const LF: &str = "\n";
 pub fn remove_invalid_leading_chars(string: &str) -> String {
     string
         .chars()
-        .skip_while(|c| !(c.is_alphabetic() || *c == '_'))
+        .skip_while(|&c| !(c.is_alphabetic() || c == '_'))
         .collect()
 }
 
