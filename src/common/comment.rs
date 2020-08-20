@@ -12,10 +12,6 @@ pub fn parse(s: &str) -> Option<Comment> {
     // A comment without the # character
     let line_comment = s.trim_start()[1..].trim();
 
-    if !line_comment.starts_with(PREFIX) {
-        return None;
-    }
-
     // Getting the right side of the comment ["off", "UnorderedKey,", "DuplicatedKey"]
     let flag_with_checks: Vec<&str> = line_comment
         .strip_prefix(format!("{}:", PREFIX).as_str())?
