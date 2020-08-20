@@ -124,7 +124,7 @@ mod tests {
         assert_eq!("FOO=BAR", leading_number.raw_string);
     }
     #[test]
-    fn leading_underscore() {
+    fn leading_underscore_is_unchanged() {
         let fixer = LeadingCharacterFixer::default();
         let mut leading_underscore = LineEntry {
             number: 5,
@@ -141,7 +141,7 @@ mod tests {
     }
 
     #[test]
-    fn normal() {
+    fn no_leading_char_is_unchanged() {
         let fixer = LeadingCharacterFixer::default();
 
         let mut normal = LineEntry {
