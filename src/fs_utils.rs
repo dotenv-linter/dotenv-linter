@@ -1,7 +1,9 @@
-use crate::common::LineEntry;
+use crate::common::{FileEntry, LineEntry};
+use std::error::Error;
 use std::fs::File;
 use std::io::{self, Write};
 use std::path::PathBuf;
+use std::time::SystemTime;
 
 /// For the Windows platform, we need to remove the UNC prefix.
 #[cfg(windows)]
@@ -34,6 +36,7 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
     Some(relative_path)
 }
 
+// TODO: add the notification if user doesn't use -c/--copy flag
 /// In the future versions we should create a backup copy, or at least notify the user about it
 pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     let mut file = File::create(path)?;
@@ -45,6 +48,21 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     }
 
     Ok(())
+}
+
+pub fn copy_file(fe: &FileEntry, lines: Vec<LineEntry>) -> Result<PathBuf, Box<dyn Error>> {
+    let timestamp = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)?
+        .as_secs();
+    let new_filepath = PathBuf::from(format!(
+        "{file_entry}_{timestamp}",
+        file_entry = fe,
+        timestamp = timestamp
+    ));
+    match write_file(&new_filepath, lines) {
+        Ok(_) => Ok(new_filepath),
+        Err(e) => Err(Box::new(e)),
+    }
 }
 
 #[cfg(test)]
@@ -165,6 +183,49 @@ mod tests {
             b"A=B\nZ=Y\n",
             fs::read(path.as_path()).expect("file read").as_slice()
         );
+
+        dir.close().expect("temp dir deleted");
+    }
+
+    #[test]
+    fn copy_file_test() {
+        let file_name = String::from(".env");
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join(&file_name);
+
+        let fe = FileEntry {
+            path,
+            file_name,
+            total_lines: 3,
+        };
+
+        let lines = vec![
+            LineEntry {
+                number: 1,
+                file: fe.clone(),
+                raw_string: String::from("A=B"),
+            },
+            LineEntry {
+                number: 2,
+                file: fe.clone(),
+                raw_string: String::from("Z=Y"),
+            },
+            LineEntry {
+                number: 3,
+                file: fe.clone(),
+                raw_string: String::from("\n"),
+            },
+        ];
+
+        match copy_file(&fe, lines) {
+            Ok(path) => {
+                assert_eq!(
+                    b"A=B\nZ=Y\n",
+                    fs::read(path.as_path()).expect("file read").as_slice()
+                );
+            }
+            Err(_) => panic!("could not copy file - test failed"),
+        }
 
         dir.close().expect("temp dir deleted");
     }
