@@ -2,6 +2,7 @@ mod quote_character;
 
 use crate::common::TestDir;
 
+mod duplicated_key;
 mod ending_blank_line;
 mod space_character;
 mod trailing_whitespace;

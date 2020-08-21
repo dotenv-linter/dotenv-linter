@@ -19,7 +19,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
     }
 
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
-        line.raw_string = format!("#{}", line.raw_string);
+        line.raw_string = format!("# {}", line.raw_string);
 
         Some(())
     }
@@ -97,7 +97,7 @@ mod tests {
                     file_name: ".env".to_string(),
                     total_lines: 4,
                 },
-                raw_string: "#FOO=BAZ".to_string(),
+                raw_string: "# FOO=BAZ".to_string(),
             }
         );
         assert_eq!(
@@ -109,7 +109,7 @@ mod tests {
                     file_name: ".env".to_string(),
                     total_lines: 4,
                 },
-                raw_string: "#Z=X".to_string(),
+                raw_string: "# Z=X".to_string(),
             }
         );
         // anything else left untouched
