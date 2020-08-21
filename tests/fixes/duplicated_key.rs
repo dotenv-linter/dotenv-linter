@@ -11,7 +11,10 @@ fn ending_blank_line() {
     );
     testdir.test_command_fix_success(expected_output);
 
-    assert_eq!(testfile.contents().as_str(), "ABC=DEF\n# ABC=XYZ\nFOO=BAR\n# FOO=BAZ\n");
+    assert_eq!(
+        testfile.contents().as_str(),
+        "ABC=DEF\n# ABC=XYZ\nFOO=BAR\n# FOO=BAZ\n"
+    );
 
     testdir.close();
 }
