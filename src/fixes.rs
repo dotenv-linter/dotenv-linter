@@ -18,10 +18,7 @@ trait Fix {
     ) -> Option<usize> {
         let mut count: usize = 0;
         for warning in warnings {
-            let line = lines
-                .get_mut(warning.line_number() - 1)
-                .expect("warning references inexistent line");
-
+            let line = lines.get_mut(warning.line_number() - 1)?;
             if self.fix_line(line).is_some() {
                 warning.mark_as_fixed();
                 count += 1;
@@ -150,6 +147,30 @@ mod tests {
             "Unfixable",
             String::from("The UNFIXABLE- key is not fixable"),
         )];
+
+        assert_eq!(0, run(&mut warnings, &mut lines));
+        assert!(!warnings[0].is_fixed);
+    }
+
+    #[test]
+    fn run_when_lines_do_not_fit_numbers_test() {
+        let mut lines = vec![
+            line_entry(1, 3, "a=B"),
+            line_entry(4, 3, "c=D"),
+            blank_line_entry(3, 3),
+        ];
+        let mut warnings = vec![
+            Warning::new(
+                lines[0].clone(),
+                "LowercaseKey",
+                String::from("The a key should be in uppercase"),
+            ),
+            Warning::new(
+                lines[1].clone(),
+                "LowercaseKey",
+                String::from("The c key should be in uppercase"),
+            ),
+        ];
 
         assert_eq!(0, run(&mut warnings, &mut lines));
         assert!(!warnings[0].is_fixed);

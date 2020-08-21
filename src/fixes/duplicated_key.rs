@@ -18,24 +18,10 @@ impl Fix for DuplicatedKeyFixer<'_> {
         self.name
     }
 
-    fn fix_warnings(
-        &self,
-        warnings: Vec<&mut Warning>,
-        lines: &mut Vec<LineEntry>,
-    ) -> Option<usize> {
-        let len = warnings.len();
+    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+        line.raw_string = format!("#{}", line.raw_string);
 
-        for warning in warnings {
-            let line = lines
-                .get_mut(warning.line_number() - 1)
-                .expect("warning references inexistent line");
-
-            line.raw_string = format!("#{}", line.trimmed_string());
-
-            warning.mark_as_fixed();
-        }
-
-        Some(len)
+        Some(())
     }
 }
 
