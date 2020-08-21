@@ -31,6 +31,8 @@ impl Fix for DuplicatedKeyFixer<'_> {
                 .expect("warning references inexistent line");
 
             line.raw_string = format!("#{}", line.trimmed_string());
+
+            warning.mark_as_fixed();
         }
 
         Some(len)
@@ -148,5 +150,7 @@ mod tests {
                 }
             ]
         );
+
+        assert!(warnings.iter().all(|w| w.is_fixed));
     }
 }
