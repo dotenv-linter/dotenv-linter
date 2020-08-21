@@ -119,6 +119,28 @@ mod tests {
     }
 
     #[test]
+    fn incorrect_ending_delimiter() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = LineEntry {
+            number: 1,
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+                total_lines: 1,
+            },
+            raw_string: String::from("FOO*=BAR"),
+        };
+
+        let expected = Some(Warning::new(
+            line.clone(),
+            "IncorrectDelimiter",
+            String::from("The FOO* key has incorrect delimiter"),
+        ));
+
+        assert_eq!(expected, checker.run(&line));
+    }
+
+    #[test]
     fn failing_run() {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = LineEntry {
