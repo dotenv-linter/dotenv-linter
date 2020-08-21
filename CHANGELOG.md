@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add copy flag for fixers [#272](https://github.com/dotenv-linter/dotenv-linter/pull/272) ([@baile320](https://github.com/baile320))
 - Add autofix for EndingBlankLine [#263](https://github.com/dotenv-linter/dotenv-linter/pull/263) ([@baile320](https://github.com/baile320))
 - Add test for two keys that only differ in case [#269](https://github.com/dotenv-linter/dotenv-linter/pull/269) ([@yanakad](https://github.com/yanakad))
 - Add autofix for TrailingWhitespace [#255](https://github.com/dotenv-linter/dotenv-linter/pull/255) ([@gregcline](https://github.com/gregcline))
