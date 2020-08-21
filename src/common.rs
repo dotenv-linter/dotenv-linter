@@ -1,3 +1,4 @@
+pub(crate) mod comment;
 mod file_entry;
 mod line_entry;
 mod warning;
