@@ -50,6 +50,8 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             None => continue,
         };
 
+        println!("Linting {:?}", fe.path.as_os_str());
+
         let mut lines = get_line_entries(&fe, strs);
 
         let mut result = checks::run(&lines, &skip_checks);

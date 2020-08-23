@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if is_fix {
         if warnings.iter().any(|w| w.is_fixed) {
-            println!("Fixed warnings:");
+            println!("\nFixed warnings:");
             warnings
                 .iter()
                 .filter(|w| w.is_fixed)
@@ -41,6 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             process::exit(0);
         }
     } else {
+        println!("\nWarnings Found:");
         warnings.iter().for_each(|w| println!("{}", w));
 
         if !args.is_present("quiet") {
