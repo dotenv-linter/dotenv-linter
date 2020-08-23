@@ -1,6 +1,7 @@
 use crate::common::*;
 
 mod ending_blank_line;
+mod incorrect_delimiter;
 mod key_without_value;
 mod lowercase_key;
 mod quote_character;
@@ -32,7 +33,7 @@ trait Fix {
     }
 }
 
-// The fix order is matter
+// Fix order matters
 fn fixlist() -> Vec<Box<dyn Fix>> {
     vec![
         // At first we run the fixers that handle a single line entry (they use default
@@ -42,6 +43,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(space_character::SpaceCharacterFixer::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceFixer::default()),
         Box::new(quote_character::QuoteCharacterFixer::default()),
+        Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
