@@ -2,6 +2,7 @@ mod quote_character;
 
 use crate::common::TestDir;
 
+mod duplicated_key;
 mod ending_blank_line;
 mod incorrect_delimiter;
 mod leading_character;
