@@ -1,7 +1,7 @@
 use crate::common::TestDir;
 
 #[test]
-fn ending_blank_line() {
+fn duplicated_key() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", "ABC=DEF\nABC=XYZ\nFOO=BAR\nFOO=BAZ\n");
     let expected_output = String::from(
