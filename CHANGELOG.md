@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add fixer: LeadingCharacter [#259](https://github.com/dotenv-linter/dotenv-linter/pull/259) ([@baile320](https://github.com/baile320))
 - Add fixer: IncorrectDelimiter [#258]((https://github.com/dotenv-linter/dotenv-linter/pull/258) ([@gillespiecd](https://github.com/gillespiecd))
 - Add support of comments to disable checks [#239](https://github.com/dotenv-linter/dotenv-linter/pull/239) ([@mgrachev](https://github.com/mgrachev))
 - Add autofix for EndingBlankLine [#263](https://github.com/dotenv-linter/dotenv-linter/pull/263) ([@baile320](https://github.com/baile320))
