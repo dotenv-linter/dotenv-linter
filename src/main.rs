@@ -14,29 +14,29 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let is_fix = args.is_present("fix");
-
     let warnings = dotenv_linter::run(&args, &current_dir)?;
 
     if warnings.is_empty() {
         process::exit(0);
     }
 
+    let is_fix = args.is_present("fix");
+
     if is_fix {
-        if warnings.iter().any(|w| w.is_fixed) {
+        let (fixed, unfixed): (Vec<_>, Vec<_>) = warnings.iter().partition(|w| w.is_fixed);
+
+        if !fixed.is_empty() {
             println!("Fixed warnings:");
-            warnings
-                .iter()
-                .filter(|w| w.is_fixed)
-                .for_each(|w| println!("{}", w));
+            for w in fixed {
+                println!("{}", w);
+            }
         }
 
-        if warnings.iter().any(|w| !w.is_fixed) {
+        if !unfixed.is_empty() {
             println!("\nUnfixed warnings:");
-            warnings
-                .iter()
-                .filter(|w| !w.is_fixed)
-                .for_each(|w| println!("{}", w));
+            for w in unfixed {
+                println!("{}", w);
+            }
         } else {
             process::exit(0);
         }

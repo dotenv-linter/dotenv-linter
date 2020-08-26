@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Partition fixed/unfixed warnings [#275](https://github.com/dotenv-linter/dotenv-linter/pull/275) ([@gillespiecd](https://github.com/gillespiecd))
 - Add missing test for IncorrectDelimiterChecker [#273](https://github.com/dotenv-linter/dotenv-linter/pull/273) ([@mgrachev](https://github.com/mgrachev))
 - Add *.env to gitignore [#271](https://github.com/dotenv-linter/dotenv-linter/pull/271) ([@baile320](https://github.com/baile320))
 - Actions uses cache@v2 [#262](https://github.com/dotenv-linter/dotenv-linter/pull/262) ([@gillespiecd](https://github.com/gillespiecd))
