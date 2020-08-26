@@ -47,7 +47,7 @@ mod tests {
     const MESSAGE: &str = "Invalid leading character detected";
 
     #[test]
-    fn normal() {
+    fn no_leading_chars_test() {
         let mut checker = LeadingCharacterChecker::default();
         let line = LineEntry {
             number: 1,

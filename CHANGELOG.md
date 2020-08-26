@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add fixer: DuplicatedKeyFixer [#270](https://github.com/dotenv-linter/dotenv-linter/pull/270) ([@utter-step](https://github.com/utter-step))
+- Add fixer: LeadingCharacter [#259](https://github.com/dotenv-linter/dotenv-linter/pull/259) ([@baile320](https://github.com/baile320))
+- Add fixer: IncorrectDelimiter [#258]((https://github.com/dotenv-linter/dotenv-linter/pull/258) ([@gillespiecd](https://github.com/gillespiecd))
 - Add support of comments to disable checks [#239](https://github.com/dotenv-linter/dotenv-linter/pull/239) ([@mgrachev](https://github.com/mgrachev))
 - Add autofix for EndingBlankLine [#263](https://github.com/dotenv-linter/dotenv-linter/pull/263) ([@baile320](https://github.com/baile320))
 - Add test for two keys that only differ in case [#269](https://github.com/dotenv-linter/dotenv-linter/pull/269) ([@yanakad](https://github.com/yanakad))
@@ -19,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Add missing test for IncorrectDelimiterChecker [#273](https://github.com/dotenv-linter/dotenv-linter/pull/273) ([@mgrachev](https://github.com/mgrachev))
 - Add *.env to gitignore [#271](https://github.com/dotenv-linter/dotenv-linter/pull/271) ([@baile320](https://github.com/baile320))
 - Actions uses cache@v2 [#262](https://github.com/dotenv-linter/dotenv-linter/pull/262) ([@gillespiecd](https://github.com/gillespiecd))
 - Update logic for IncorrectDelimiterCheck [#267](https://github.com/dotenv-linter/dotenv-linter/pull/267) ([@baile320](https://github.com/baile320))
