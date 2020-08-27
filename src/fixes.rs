@@ -2,6 +2,7 @@ use crate::common::*;
 
 mod duplicated_key;
 mod ending_blank_line;
+mod extra_blank_line;
 mod incorrect_delimiter;
 mod key_without_value;
 mod leading_character;
@@ -50,6 +51,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
+        Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
         Box::new(duplicated_key::DuplicatedKeyFixer::default()),
         Box::new(ending_blank_line::EndingBlankLineFixer::default()),
     ]

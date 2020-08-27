@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add fixer: ExtraBlankLineFixer [#260](https://github.com/dotenv-linter/dotenv-linter/pull/260) ([@diggymo](https://github.com/diggymo))
 - Add fixer: DuplicatedKeyFixer [#270](https://github.com/dotenv-linter/dotenv-linter/pull/270) ([@utter-step](https://github.com/utter-step))
 - Add fixer: LeadingCharacter [#259](https://github.com/dotenv-linter/dotenv-linter/pull/259) ([@baile320](https://github.com/baile320))
 - Add fixer: IncorrectDelimiter [#258]((https://github.com/dotenv-linter/dotenv-linter/pull/258) ([@gillespiecd](https://github.com/gillespiecd))
