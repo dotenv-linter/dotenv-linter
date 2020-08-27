@@ -3,6 +3,10 @@ mod quote_character;
 use crate::common::TestDir;
 
 mod extra_blank_line;
+mod duplicated_key;
+mod ending_blank_line;
+mod incorrect_delimiter;
+mod leading_character;
 mod space_character;
 mod trailing_whitespace;
 
@@ -52,20 +56,36 @@ fn key_without_value() {
 #[test]
 fn unfixed_warnings() {
     let testdir = TestDir::new();
-    let testfile = testdir.create_testfile(".env", "A=DEF\nB=BAR \nf=BAR\nA=FOO\n");
+//<<<<<<< extractBlankLineFixer
+//    let testfile = testdir.create_testfile(".env", "A=DEF\nB=BAR \nf=BAR\nA=FOO\n");
+//=======
+//     let testfile = testdir.create_testfile(".env", "A=DEF\nB=BAR \nX-Y=Z\nf=BAR\n\n");
+// >>>>>>> master
 
     let expected_output = String::from(
         "Fixed warnings:\n\
         .env:2 TrailingWhitespace: Trailing whitespace detected\n\
-        .env:3 LowercaseKey: The f key should be in uppercase\n\
+        .env:3 IncorrectDelimiter: The X-Y key has incorrect delimiter\n\
+        .env:4 LowercaseKey: The f key should be in uppercase\n\
         \n\
         Unfixed warnings:\n\
-        .env:4 DuplicatedKey: The A key is duplicated\n\
-        .env:4 UnorderedKey: The A key should go before the A key\n",
-    );
-    testdir.test_command_fix_fail(expected_output);
-
-    assert_eq!(testfile.contents().as_str(), "A=DEF\nB=BAR\nF=BAR\nA=FOO\n");
+//<<<<<<< extractBlankLineFixer
+//        .env:4 DuplicatedKey: The A key is duplicated\n\
+//        .env:4 UnorderedKey: The A key should go before the A key\n",
+//     );
+//     testdir.test_command_fix_fail(expected_output);
+// 
+//     assert_eq!(testfile.contents().as_str(), "A=DEF\nB=BAR\nF=BAR\nA=FOO\n");
+// =======
+//         .env:6 ExtraBlankLine: Extra blank line detected\n",
+//     );
+//     testdir.test_command_fix_fail(expected_output);
+// 
+//     assert_eq!(
+//         testfile.contents().as_str(),
+//         "A=DEF\nB=BAR\nX_Y=Z\nF=BAR\n\n"
+//     );
+// >>>>>>> master
 
     testdir.close();
 }
