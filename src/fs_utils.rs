@@ -36,7 +36,6 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
     Some(relative_path)
 }
 
-// TODO: add the notification if user doesn't use -c/--copy flag
 /// In the future versions we should create a backup copy, or at least notify the user about it
 pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     let mut file = File::create(path)?;
