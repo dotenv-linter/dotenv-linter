@@ -10,3 +10,4 @@
 
 # Environment Files
 *.env
+*.env_*
