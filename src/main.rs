@@ -111,10 +111,9 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Automatically fixes warnings if possible"),
         )
         .arg(
-            Arg::with_name("copy")
-                .short("c")
-                .long("copy")
-                .help("Copies .env files before modifying with -f or --fix flag"),
+            Arg::with_name("no-backup")
+                .long("no-backup")
+                .help("Prevents .env files from being backed up when modified by -f/--fix"),
         )
         .arg(
             Arg::with_name("quiet")

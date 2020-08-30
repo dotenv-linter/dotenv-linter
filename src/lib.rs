@@ -55,11 +55,11 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
         // run fixers & write results to file
         let mut result = checks::run(&lines, &skip_checks);
         if is_fix && fixes::run(&mut result, &mut lines) > 0 {
-            // create copy of file if user requests it
-            let should_copy = args.is_present("copy");
-            if is_fix && should_copy {
-                println!("well we made it here so what's the issue");
-                fs_utils::copy_file(&fe.path)?;
+            // create backup copy unless user specifies not to
+            let should_backup = !args.is_present("no-backup");
+            if is_fix && should_backup {
+                let backup_file = fs_utils::backup_file(&fe.path)?;
+                println!("Original file was backed up to: {:?}\n", backup_file);
             }
 
             // write corrected file

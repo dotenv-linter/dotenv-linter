@@ -50,7 +50,7 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     Ok(())
 }
 
-pub fn copy_file(path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
+pub fn backup_file(path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
     let timestamp = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
@@ -189,7 +189,7 @@ mod tests {
     }
 
     #[test]
-    fn copy_file_test() {
+    fn backup_file_test() {
         let file_name = String::from(".env");
         let dir = tempfile::tempdir().expect("create temp dir");
         let path = dir.path().join(&file_name);
@@ -219,7 +219,7 @@ mod tests {
         ];
 
         if write_file(&fe.path, lines).is_ok() {
-            match copy_file(&fe.path) {
+            match backup_file(&fe.path) {
                 Ok(path) => {
                     assert_eq!(
                         b"A=B\nZ=Y\n",
