@@ -1,6 +1,6 @@
-use crate::common::{FileEntry, LineEntry};
+use crate::common::LineEntry;
 use std::error::Error;
-use std::fs::File;
+use std::fs::{copy, File};
 use std::io::{self, Write};
 use std::path::PathBuf;
 use std::time::SystemTime;
@@ -50,16 +50,17 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     Ok(())
 }
 
-pub fn copy_file(fe: &FileEntry, lines: Vec<LineEntry>) -> Result<PathBuf, Box<dyn Error>> {
+pub fn copy_file(path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
     let timestamp = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
+    let orig_path = path.to_str().unwrap();
     let new_filepath = PathBuf::from(format!(
-        "{file_entry}_{timestamp}",
-        file_entry = fe,
+        "{orig_path}_{timestamp}",
+        orig_path = orig_path,
         timestamp = timestamp
     ));
-    match write_file(&new_filepath, lines) {
+    match copy(path, &new_filepath) {
         Ok(_) => Ok(new_filepath),
         Err(e) => Err(Box::new(e)),
     }
@@ -217,14 +218,18 @@ mod tests {
             },
         ];
 
-        match copy_file(&fe, lines) {
-            Ok(path) => {
-                assert_eq!(
-                    b"A=B\nZ=Y\n",
-                    fs::read(path.as_path()).expect("file read").as_slice()
-                );
+        if write_file(&fe.path, lines).is_ok() {
+            match copy_file(&fe.path) {
+                Ok(path) => {
+                    assert_eq!(
+                        b"A=B\nZ=Y\n",
+                        fs::read(path.as_path()).expect("file read").as_slice()
+                    );
+                }
+                Err(_) => panic!("could not copy file - test failed"),
             }
-            Err(_) => panic!("could not copy file - test failed"),
+        } else {
+            panic!("could not write file - test failed")
         }
 
         dir.close().expect("temp dir deleted");

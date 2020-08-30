@@ -52,15 +52,17 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
 
         let mut lines = get_line_entries(&fe, strs);
 
-        // create copy of file if user requests it
-        let should_copy = args.is_present("copy");
-        if is_fix && should_copy {
-            fs_utils::copy_file(&fe, lines.clone())?;
-        }
-
         // run fixers & write results to file
         let mut result = checks::run(&lines, &skip_checks);
         if is_fix && fixes::run(&mut result, &mut lines) > 0 {
+            // create copy of file if user requests it
+            let should_copy = args.is_present("copy");
+            if is_fix && should_copy {
+                println!("well we made it here so what's the issue");
+                fs_utils::copy_file(&fe.path)?;
+            }
+
+            // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
         }
 
