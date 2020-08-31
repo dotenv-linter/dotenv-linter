@@ -27,6 +27,7 @@ impl Default for UnorderedKeyChecker<'_> {
 
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+        // Support of grouping variables through blank lines
         if line.is_empty() {
             self.keys.clear();
             return None;
@@ -34,19 +35,21 @@ impl Check for UnorderedKeyChecker<'_> {
 
         let key = line.get_key()?;
         self.keys.push(key.clone());
+
         let mut sorted_keys = self.keys.clone();
         sorted_keys.sort();
 
-        if !sorted_keys.eq(&self.keys) {
-            let index = sorted_keys.iter().position(|p| p == &key)?;
-
-            let another_key = sorted_keys.get(index + 1)?;
-
-            let warning = Warning::new(line.clone(), self.name(), self.message(&key, &another_key));
-            return Some(warning);
+        if sorted_keys.eq(&self.keys) {
+            return None;
         }
 
-        None
+        let another_key = sorted_keys.iter().skip_while(|&s| s != &key).nth(1)?;
+
+        Some(Warning::new(
+            line.clone(),
+            self.name(),
+            self.message(&key, &another_key),
+        ))
     }
 
     fn name(&self) -> &str {
