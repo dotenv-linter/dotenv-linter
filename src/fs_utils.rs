@@ -228,6 +228,7 @@ mod tests {
                         b"A=B\nZ=Y\n",
                         fs::read(path.as_path()).expect("file read").as_slice()
                     );
+                    assert_ne!(path, fe.path);
                 }
                 Err(_) => panic!("could not copy file - test failed"),
             }
