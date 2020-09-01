@@ -53,12 +53,16 @@ pub fn backup_file(path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
     let timestamp = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
-    let orig_path = path.to_str().unwrap();
-    let new_filepath = PathBuf::from(format!(
-        "{orig_path}_{timestamp}",
-        orig_path = orig_path,
-        timestamp = timestamp
-    ));
+
+    let mut new_filepath = PathBuf::new();
+    if let Some(orig_path) = path.to_str() {
+        new_filepath = PathBuf::from(format!(
+            "{orig_path}_{timestamp}",
+            orig_path = orig_path,
+            timestamp = timestamp
+        ));
+    }
+
     match copy(path, &new_filepath) {
         Ok(_) => Ok(new_filepath),
         Err(e) => Err(Box::new(e)),
