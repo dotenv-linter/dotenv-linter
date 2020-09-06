@@ -139,27 +139,21 @@ impl TestDir {
             .stdout(expected_output);
     }
 
-    /// Run the default CLI binary, with "-f", in this TestDir and checks a backup file is created
-    pub fn test_command_fix_backs_up_files(self) {
+    /// Run the default CLI binary, with command line arguments,
+    /// in this TestDir and check it succeeds.
+    ///
+    /// This method does NOT remove TestDir when finished
+    pub fn test_command_success_with_args_without_closing<I, S>(&self, args: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<OsStr>,
+    {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
-
-        let paths = fs::read_dir(&canonical_current_dir)
-            .unwrap()
-            .filter_map(|path| path.ok())
-            .collect::<Vec<fs::DirEntry>>();
-        assert_eq!(paths.len(), 1);
-
         cmd.current_dir(&canonical_current_dir)
-            .args(&["-f"])
+            .args(args)
             .assert()
             .success();
-
-        let paths = fs::read_dir(&canonical_current_dir)
-            .unwrap()
-            .filter_map(|path| path.ok())
-            .collect::<Vec<fs::DirEntry>>();
-        assert_eq!(paths.len(), 2);
     }
 
     fn init_cmd() -> Command {
