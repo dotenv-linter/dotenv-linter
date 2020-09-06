@@ -58,7 +58,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             // create backup copy unless user specifies not to
             let should_backup = !args.is_present("no-backup");
             if should_backup {
-                let backup_file = fs_utils::backup_file(&fe.path)?;
+                let backup_file = fs_utils::backup_file(&fe)?;
                 println!("Original file was backed up to: {:?}\n", backup_file);
             }
 

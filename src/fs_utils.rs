@@ -1,4 +1,4 @@
-use crate::common::LineEntry;
+use crate::common::{FileEntry, LineEntry};
 use std::error::Error;
 use std::fs::{copy, File};
 use std::io::{self, Write};
@@ -49,22 +49,16 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     Ok(())
 }
 
-pub fn backup_file(path: &PathBuf) -> Result<PathBuf, Box<dyn Error>> {
+pub fn backup_file(fe: &FileEntry) -> Result<PathBuf, Box<dyn Error>> {
     let timestamp = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
 
-    let mut new_filepath = PathBuf::new();
-    if let Some(orig_path) = path.to_str() {
-        new_filepath = PathBuf::from(format!(
-            "{orig_path}_{timestamp}",
-            orig_path = orig_path,
-            timestamp = timestamp
-        ));
-    }
+    let mut new_path = fe.path.to_owned();
+    new_path.set_file_name(format!("{}_{}", &fe.file_name, timestamp));
 
-    match copy(path, &new_filepath) {
-        Ok(_) => Ok(new_filepath),
+    match copy(&fe.path, &new_path) {
+        Ok(_) => Ok(new_path),
         Err(e) => Err(Box::new(e)),
     }
 }
@@ -222,7 +216,7 @@ mod tests {
         ];
 
         if write_file(&fe.path, lines).is_ok() {
-            match backup_file(&fe.path) {
+            match backup_file(&fe) {
                 Ok(path) => {
                     assert_eq!(
                         b"A=B\nZ=Y\n",
