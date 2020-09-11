@@ -91,31 +91,7 @@ pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
-
-    fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
-        LineEntry {
-            number,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines,
-            },
-            raw_string: String::from("\n"),
-        }
-    }
-
-    fn line_entry(number: usize, total_lines: usize, str: &str) -> LineEntry {
-        LineEntry {
-            number,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines,
-            },
-            raw_string: String::from(str),
-        }
-    }
+    use crate::common::tests::*;
 
     #[test]
     fn run_with_empty_vec_test() {

@@ -32,6 +32,7 @@ impl Check for ExtraBlankLineChecker<'_> {
         let is_extra = self
             .last_blank_number
             .map_or(false, |n| n + 1 == line.number);
+
         self.last_blank_number = Some(line.number);
 
         if is_extra {
@@ -49,22 +50,15 @@ impl Check for ExtraBlankLineChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     fn run_asserts(asserts: Vec<(&str, Option<&str>)>) {
         let mut checker = ExtraBlankLineChecker::default();
 
         for (i, assert) in asserts.iter().enumerate() {
             let (content, message) = *assert;
-            let line = LineEntry {
-                number: i + 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: asserts.len(),
-                },
-                raw_string: String::from(content),
-            };
+            let line = line_entry(i + 1, asserts.len(), content);
+
             let expected =
                 message.map(|msg| Warning::new(line.clone(), "ExtraBlankLine", String::from(msg)));
 

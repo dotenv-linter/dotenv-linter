@@ -47,31 +47,12 @@ impl Fix for EndingBlankLineFixer<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn fix_warnings_test() {
         let fixer = EndingBlankLineFixer::default();
-        let mut lines = vec![
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 2,
-                },
-                raw_string: String::from("FOO=BAR"),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 2,
-                },
-                raw_string: String::from("Z=Y"),
-            },
-        ];
+        let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, "Z=Y")];
         let mut warning = Warning::new(
             lines[1].clone(),
             "EndingBlankLine",
@@ -86,26 +67,7 @@ mod tests {
     #[test]
     fn ending_blank_line_exist_test() {
         let fixer = EndingBlankLineFixer::default();
-        let mut lines = vec![
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 2,
-                },
-                raw_string: String::from("FOO=BAR"),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 2,
-                },
-                raw_string: String::from(LF),
-            },
-        ];
+        let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, LF)];
 
         assert_eq!(Some(0), fixer.fix_warnings(vec![], &mut lines));
         assert_eq!(lines.len(), 2);

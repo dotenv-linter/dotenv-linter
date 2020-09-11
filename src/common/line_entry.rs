@@ -53,22 +53,14 @@ impl LineEntry {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     mod is_empty_or_comment {
         use super::*;
+
         #[test]
         fn run_with_empty_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from(""),
-            };
+            let input = line_entry(1, 1, "");
 
             assert_eq!(input.is_empty(), true);
             assert_eq!(input.is_comment(), false);
@@ -77,15 +69,7 @@ mod tests {
 
         #[test]
         fn run_with_comment_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("# Comment"),
-            };
+            let input = line_entry(1, 1, "# Comment");
 
             assert_eq!(input.is_empty(), false);
             assert_eq!(input.is_comment(), true);
@@ -94,15 +78,7 @@ mod tests {
 
         #[test]
         fn run_with_not_comment_or_empty_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("NotComment"),
-            };
+            let input = line_entry(1, 1, "NotComment");
 
             assert_eq!(input.is_empty(), false);
             assert_eq!(input.is_comment(), false);
@@ -114,15 +90,7 @@ mod tests {
         use super::*;
         #[test]
         fn empty_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from(""),
-            };
+            let input = line_entry(1, 1, "");
             let expected = None;
 
             assert_eq!(expected, input.get_key());
@@ -130,15 +98,7 @@ mod tests {
 
         #[test]
         fn correct_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO=BAR"),
-            };
+            let input = line_entry(1, 1, "FOO=BAR");
             let expected = Some(String::from("FOO"));
 
             assert_eq!(expected, input.get_key());
@@ -146,15 +106,7 @@ mod tests {
 
         #[test]
         fn line_without_value_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO="),
-            };
+            let input = line_entry(1, 1, "FOO=");
             let expected = Some(String::from("FOO"));
 
             assert_eq!(expected, input.get_key());
@@ -162,15 +114,7 @@ mod tests {
 
         #[test]
         fn missing_value_and_equal_sign_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOOBAR"),
-            };
+            let input = line_entry(1, 1, "FOOBAR");
             let expected = None;
 
             assert_eq!(expected, input.get_key());
@@ -179,17 +123,10 @@ mod tests {
 
     mod get_value {
         use super::*;
+
         #[test]
         fn empty_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from(""),
-            };
+            let input = line_entry(1, 1, "");
             let expected = None;
 
             assert_eq!(expected, input.get_value());
@@ -197,15 +134,7 @@ mod tests {
 
         #[test]
         fn correct_line_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO=BAR"),
-            };
+            let input = line_entry(1, 1, "FOO=BAR");
             let expected = Some(String::from("BAR"));
 
             assert_eq!(expected, input.get_value());
@@ -213,15 +142,7 @@ mod tests {
 
         #[test]
         fn line_without_key_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("=BAR"),
-            };
+            let input = line_entry(1, 1, "=BAR");
             let expected = Some(String::from("BAR"));
 
             assert_eq!(expected, input.get_value());
@@ -229,15 +150,7 @@ mod tests {
 
         #[test]
         fn line_without_value_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO="),
-            };
+            let input = line_entry(1, 1, "FOO=");
             let expected = Some(String::from(""));
 
             assert_eq!(expected, input.get_value());
@@ -245,15 +158,7 @@ mod tests {
 
         #[test]
         fn missing_value_and_equal_sign_test() {
-            let input = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOOBAR"),
-            };
+            let input = line_entry(1, 1, "FOOBAR");
             let expected = None;
 
             assert_eq!(expected, input.get_value());
@@ -262,47 +167,24 @@ mod tests {
 
     mod trimmed_string {
         use super::*;
+
         #[test]
         fn line_without_blank_chars_test() {
-            let entry = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO=BAR"),
-            };
+            let entry = line_entry(1, 1, "FOO=BAR");
 
             assert_eq!("FOO=BAR", entry.trimmed_string());
         }
 
         #[test]
         fn line_with_spaces_test() {
-            let entry = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("   FOO=BAR  "),
-            };
+            let entry = line_entry(1, 1, "   FOO=BAR  ");
 
             assert_eq!("FOO=BAR", entry.trimmed_string());
         }
 
         #[test]
         fn line_with_tab_test() {
-            let entry = LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO=BAR\t"),
-            };
+            let entry = line_entry(1, 1, "FOO=BAR\t");
 
             assert_eq!("FOO=BAR", entry.trimmed_string());
         }

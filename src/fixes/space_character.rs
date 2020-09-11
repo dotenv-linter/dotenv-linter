@@ -30,20 +30,13 @@ impl Fix for SpaceCharacterFixer<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn fix_line_test() {
         let fixer = SpaceCharacterFixer::default();
-        let mut line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO = BAR"),
-        };
+        let mut line = line_entry(1, 1, "FOO = BAR");
+
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("FOO=BAR", line.raw_string);
     }
@@ -51,15 +44,8 @@ mod tests {
     #[test]
     fn trailing_should_not_be_fixed() {
         let fixer = SpaceCharacterFixer::default();
-        let mut line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("DEBUG_HTTP=true "),
-        };
+        let mut line = line_entry(1, 1, "DEBUG_HTTP=true ");
+
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("DEBUG_HTTP=true ", line.raw_string);
     }
@@ -68,33 +54,9 @@ mod tests {
     fn fix_warnings_test() {
         let fixer = SpaceCharacterFixer::default();
         let mut lines = vec![
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 3,
-                },
-                raw_string: String::from("FOO= BAR"),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 3,
-                },
-                raw_string: String::from("Z =Y"),
-            },
-            LineEntry {
-                number: 3,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 3,
-                },
-                raw_string: String::from("\n"),
-            },
+            line_entry(1, 3, "FOO= BAR"),
+            line_entry(2, 3, "Z =Y"),
+            blank_line_entry(3, 3),
         ];
         let mut warnings = vec![
             Warning::new(

@@ -42,65 +42,33 @@ impl Check for KeyWithoutValueChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn working_run_with_value() {
         let mut checker = KeyWithoutValueChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "FOO=BAR");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn working_run_with_blank_line() {
         let mut checker = KeyWithoutValueChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from(""),
-        };
+        let line = line_entry(1, 1, "");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn working_run_without_value() {
         let mut checker = KeyWithoutValueChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO="),
-        };
+        let line = line_entry(1, 1, "FOO=");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn failing_run() {
         let mut checker = KeyWithoutValueChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO"),
-        };
+        let line = line_entry(1, 1, "FOO");
         let expected = Some(Warning::new(
             line.clone(),
             "KeyWithoutValue",

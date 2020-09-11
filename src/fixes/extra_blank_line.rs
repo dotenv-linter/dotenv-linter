@@ -40,34 +40,17 @@ impl Fix for ExtraBlankLineFixer<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn no_blank_lines_test() {
         let fixer = ExtraBlankLineFixer::default();
-        let file = FileEntry {
-            path: PathBuf::from(".env"),
-            file_name: ".env".to_string(),
-            total_lines: 3,
-        };
 
         let warnings = vec![];
         let lines = vec![
-            LineEntry {
-                number: 1,
-                file: file.clone(),
-                raw_string: String::from("FOO=BAR"),
-            },
-            LineEntry {
-                number: 2,
-                file: file.clone(),
-                raw_string: String::from(""),
-            },
-            LineEntry {
-                number: 3,
-                file: file.clone(),
-                raw_string: String::from("HOGE=HUGA"),
-            },
+            line_entry(1, 3, "FOO=BAR"),
+            line_entry(2, 3, ""),
+            line_entry(3, 3, "HOGE=HUGA"),
         ];
         let mut fixing_lines = lines.clone();
 
@@ -78,32 +61,11 @@ mod tests {
     #[test]
     fn fix_one_extra_blank_line_test() {
         let fixer = ExtraBlankLineFixer::default();
-        let file = FileEntry {
-            path: PathBuf::from(".env"),
-            file_name: ".env".to_string(),
-            total_lines: 4,
-        };
 
-        let line1 = LineEntry {
-            number: 1,
-            file: file.clone(),
-            raw_string: String::from("FOO=BAR"),
-        };
-        let line2 = LineEntry {
-            number: 2,
-            file: file.clone(),
-            raw_string: String::from(""),
-        };
-        let line3 = LineEntry {
-            number: 3,
-            file: file.clone(),
-            raw_string: String::from(""),
-        };
-        let line4 = LineEntry {
-            number: 4,
-            file: file.clone(),
-            raw_string: String::from("HOGE=HUGA"),
-        };
+        let line1 = line_entry(1, 4, "FOO=BAR");
+        let line2 = line_entry(2, 4, "");
+        let line3 = line_entry(3, 4, "");
+        let line4 = line_entry(4, 4, "HOGE=HUGA");
         let mut warning = Warning::new(
             line3.clone(),
             "ExtraBlankLine",
@@ -113,43 +75,17 @@ mod tests {
         let mut lines = vec![line1.clone(), line2.clone(), line3.clone(), line4.clone()];
         assert_eq!(Some(1), fixer.fix_warnings(warnings, &mut lines));
         assert!(warning.is_fixed);
-        assert_eq!(vec!(line1.clone(), line2.clone(), line4.clone()), lines);
     }
 
     #[test]
     fn fix_multiple_blank_lines_test() {
         let fixer = ExtraBlankLineFixer::default();
-        let file = FileEntry {
-            path: PathBuf::from(".env"),
-            file_name: ".env".to_string(),
-            total_lines: 4,
-        };
 
-        let line1 = LineEntry {
-            number: 1,
-            file: file.clone(),
-            raw_string: String::from("FOO=BAR"),
-        };
-        let line2 = LineEntry {
-            number: 2,
-            file: file.clone(),
-            raw_string: String::from(""),
-        };
-        let line3 = LineEntry {
-            number: 3,
-            file: file.clone(),
-            raw_string: String::from(""),
-        };
-        let line4 = LineEntry {
-            number: 4,
-            file: file.clone(),
-            raw_string: String::from(""),
-        };
-        let line5 = LineEntry {
-            number: 5,
-            file: file.clone(),
-            raw_string: String::from("HOGE=HUGA"),
-        };
+        let line1 = line_entry(1, 5, "FOO=BAR");
+        let line2 = line_entry(2, 5, "");
+        let line3 = line_entry(3, 5, "");
+        let line4 = line_entry(4, 5, "");
+        let line5 = line_entry(5, 5, "HOGE=HUGA");
         let mut warning1 = Warning::new(
             line3.clone(),
             "ExtraBlankLine",
@@ -171,6 +107,5 @@ mod tests {
         assert_eq!(Some(2), fixer.fix_warnings(warnings, &mut lines));
         assert!(warning1.is_fixed);
         assert!(warning2.is_fixed);
-        assert_eq!(vec!(line1.clone(), line2.clone(), line5.clone()), lines);
     }
 }

@@ -28,47 +28,16 @@ impl Fix for DuplicatedKeyFixer<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::common::tests::*;
 
     #[test]
     fn fix_warnings() {
         let fixer = DuplicatedKeyFixer::default();
         let mut lines = vec![
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "FOO=BAR".to_string(),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "Z=Y".to_string(),
-            },
-            LineEntry {
-                number: 3,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "FOO=BAZ".to_string(),
-            },
-            LineEntry {
-                number: 4,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "Z=X".to_string(),
-            },
+            line_entry(1, 4, "FOO=BAR"),
+            line_entry(2, 4, "Z=Y"),
+            line_entry(3, 4, "FOO=BAZ"),
+            line_entry(4, 4, "Z=X"),
         ];
         let mut warnings = vec![
             Warning::new(
@@ -88,53 +57,12 @@ mod tests {
             fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
         );
         // what needed to be changed is changed
-        assert_eq!(
-            lines[2],
-            LineEntry {
-                number: 3,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "# FOO=BAZ".to_string(),
-            }
-        );
-        assert_eq!(
-            lines[3],
-            LineEntry {
-                number: 4,
-                file: FileEntry {
-                    path: ".env".into(),
-                    file_name: ".env".to_string(),
-                    total_lines: 4,
-                },
-                raw_string: "# Z=X".to_string(),
-            }
-        );
+        assert_eq!(lines[2], line_entry(3, 4, "# FOO=BAZ"));
+        assert_eq!(lines[3], line_entry(4, 4, "# Z=X"));
         // anything else left untouched
         assert_eq!(
             &lines[..2],
-            &[
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: ".env".into(),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: "FOO=BAR".to_string(),
-                },
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: ".env".into(),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: "Z=Y".to_string(),
-                }
-            ]
+            &[line_entry(1, 4, "FOO=BAR"), line_entry(2, 4, "Z=Y")]
         );
 
         assert!(warnings.iter().all(|w| w.is_fixed));

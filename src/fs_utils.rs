@@ -50,7 +50,7 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::FileEntry;
+    use crate::common::tests::*;
     use std::fs::{self, File};
 
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
@@ -136,28 +136,10 @@ mod tests {
         let dir = tempfile::tempdir().expect("create temp dir");
         let path = dir.path().join(&file_name);
 
-        let fe = FileEntry {
-            path: path.clone(),
-            file_name,
-            total_lines: 3,
-        };
-
         let lines = vec![
-            LineEntry {
-                number: 1,
-                file: fe.clone(),
-                raw_string: String::from("A=B"),
-            },
-            LineEntry {
-                number: 2,
-                file: fe.clone(),
-                raw_string: String::from("Z=Y"),
-            },
-            LineEntry {
-                number: 3,
-                file: fe,
-                raw_string: String::from("\n"),
-            },
+            line_entry(1, 3, "A=B"),
+            line_entry(2, 3, "Z=Y"),
+            blank_line_entry(3, 3),
         ];
 
         assert!(write_file(&path, lines).is_ok());

@@ -32,21 +32,12 @@ impl Fix for LeadingCharacterFixer<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn fix_leading_dot() {
         let fixer = LeadingCharacterFixer::default();
-
-        let mut leading_period = LineEntry {
-            number: 2,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from(".FOO=BAR"),
-        };
+        let mut leading_period = line_entry(1, 1, ".FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_period));
         assert_eq!("FOO=BAR", leading_period.raw_string);
@@ -55,16 +46,7 @@ mod tests {
     #[test]
     fn fix_leading_space() {
         let fixer = LeadingCharacterFixer::default();
-
-        let mut leading_space = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from(" FOO=BAR"),
-        };
+        let mut leading_space = line_entry(1, 1, " FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_space));
         assert_eq!("FOO=BAR", leading_space.raw_string);
@@ -73,16 +55,7 @@ mod tests {
     #[test]
     fn fix_leading_asterisk() {
         let fixer = LeadingCharacterFixer::default();
-
-        let mut leading_asterisk = LineEntry {
-            number: 3,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from("*FOO=BAR"),
-        };
+        let mut leading_asterisk = line_entry(1, 1, "*FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_asterisk));
         assert_eq!("FOO=BAR", leading_asterisk.raw_string);
@@ -91,16 +64,7 @@ mod tests {
     #[test]
     fn fix_leading_number() {
         let fixer = LeadingCharacterFixer::default();
-
-        let mut leading_number = LineEntry {
-            number: 4,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from("1FOO=BAR"),
-        };
+        let mut leading_number = line_entry(1, 1, "1FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
         assert_eq!("FOO=BAR", leading_number.raw_string);
@@ -109,16 +73,7 @@ mod tests {
     #[test]
     fn fix_many_invalid_leading_chars() {
         let fixer = LeadingCharacterFixer::default();
-
-        let mut leading_number = LineEntry {
-            number: 4,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from("-1&*FOO=BAR"),
-        };
+        let mut leading_number = line_entry(1, 1, "-1&*FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
         assert_eq!("FOO=BAR", leading_number.raw_string);
@@ -127,15 +82,7 @@ mod tests {
     #[test]
     fn leading_underscore_is_unchanged() {
         let fixer = LeadingCharacterFixer::default();
-        let mut leading_underscore = LineEntry {
-            number: 5,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from("_FOO=BAR"),
-        };
+        let mut leading_underscore = line_entry(1, 1, "_FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_underscore));
         assert_eq!("_FOO=BAR", leading_underscore.raw_string);
@@ -144,16 +91,7 @@ mod tests {
     #[test]
     fn no_leading_char_is_unchanged() {
         let fixer = LeadingCharacterFixer::default();
-
-        let mut normal = LineEntry {
-            number: 6,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 7,
-            },
-            raw_string: String::from("FOO=BAR"),
-        };
+        let mut normal = line_entry(1, 1, "FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut normal));
         assert_eq!("FOO=BAR", normal.raw_string);
@@ -163,69 +101,13 @@ mod tests {
     fn fix_warnings_test() {
         let fixer = LeadingCharacterFixer::default();
         let mut lines = vec![
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from(".FOO=BAR"),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from(" Z=Y"),
-            },
-            LineEntry {
-                number: 3,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from("*BAR=BAZ"),
-            },
-            LineEntry {
-                number: 4,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from("1QUX=QUUX"),
-            },
-            LineEntry {
-                number: 5,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from("_QUUX=FOOBAR"),
-            },
-            LineEntry {
-                number: 6,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from("KEY=VALUE"),
-            },
-            LineEntry {
-                number: 7,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 7,
-                },
-                raw_string: String::from("\n"),
-            },
+            line_entry(1, 7, ".FOO=BAR"),
+            line_entry(2, 7, " Z=Y"),
+            line_entry(3, 7, "*BAR=BAZ"),
+            line_entry(4, 7, "1QUX=QUUX"),
+            line_entry(5, 7, "_QUUX=FOOBAR"),
+            line_entry(6, 7, "KEY=VALUE"),
+            blank_line_entry(6, 7),
         ];
 
         let mut warnings = vec![

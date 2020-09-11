@@ -39,7 +39,7 @@ impl Check for QuoteCharacterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     fn run_quote_char_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = QuoteCharacterChecker::default();
@@ -53,62 +53,19 @@ mod tests {
     #[test]
     fn with_single_quote_test() {
         let asserts = vec![
+            (line_entry(1, 3, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO='BAR'"),
-                },
+                line_entry(2, 3, "FOO='BAR'"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 2,
-                        },
-                        raw_string: String::from("FOO='BAR'"),
-                    },
+                    line_entry(2, 3, "FOO='BAR'"),
                     "QuoteCharacter",
                     String::from("The value has quote characters (\', \")"),
                 )),
             ),
             (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO='B\"AR'"),
-                },
+                line_entry(3, 3, "FOO='B\"AR'"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 2,
-                        },
-                        raw_string: String::from("FOO='B\"AR'"),
-                    },
+                    line_entry(3, 3, "FOO='B\"AR'"),
                     "QuoteCharacter",
                     String::from("The value has quote characters (\', \")"),
                 )),
@@ -121,38 +78,11 @@ mod tests {
     #[test]
     fn with_double_quote_test() {
         let asserts = vec![
+            (line_entry(1, 2, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=\"BAR\""),
-                },
+                line_entry(2, 2, "FOO=\"BAR\""),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 2,
-                        },
-                        raw_string: String::from("FOO=\"BAR\""),
-                    },
+                    line_entry(2, 2, "FOO=\"BAR\""),
                     "QuoteCharacter",
                     String::from("The value has quote characters (\', \")"),
                 )),
@@ -164,18 +94,7 @@ mod tests {
 
     #[test]
     fn with_no_quotes_test() {
-        let asserts = vec![(
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO=BAR"),
-            },
-            None,
-        )];
+        let asserts = vec![(line_entry(1, 1, "FOO=BAR"), None)];
 
         run_quote_char_tests(asserts);
     }

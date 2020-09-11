@@ -44,7 +44,7 @@ impl Check for DuplicatedKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     fn run_duplicated_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = DuplicatedKeyChecker::default();
@@ -58,38 +58,11 @@ mod tests {
     #[test]
     fn with_one_duplicated_key_test() {
         let asserts = vec![
+            (line_entry(1, 2, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
+                line_entry(2, 2, "FOO=BAR"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 2,
-                        },
-                        raw_string: String::from("FOO=BAR"),
-                    },
+                    line_entry(2, 2, "FOO=BAR"),
                     "DuplicatedKey",
                     String::from("The FOO key is duplicated"),
                 )),
@@ -102,30 +75,8 @@ mod tests {
     #[test]
     fn with_two_unique_keys_test() {
         let asserts = vec![
-            (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
-                None,
-            ),
+            (line_entry(1, 2, "FOO=BAR"), None),
+            (line_entry(2, 2, "BAR=FOO"), None),
         ];
 
         run_duplicated_tests(asserts);
@@ -133,30 +84,8 @@ mod tests {
     #[test]
     fn with_two_unique_keys_case_sensitive_test() {
         let asserts = vec![
-            (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("Foo=FOO"),
-                },
-                None,
-            ),
+            (line_entry(1, 2, "FOO=BAR"), None),
+            (line_entry(2, 2, "Foo=FOO"), None),
         ];
 
         run_duplicated_tests(asserts);
@@ -165,74 +94,20 @@ mod tests {
     #[test]
     fn with_two_duplicated_keys_test() {
         let asserts = vec![
+            (line_entry(1, 4, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
+                line_entry(2, 4, "FOO=BAR"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 4,
-                        },
-                        raw_string: String::from("FOO=BAR"),
-                    },
+                    line_entry(2, 4, "FOO=BAR"),
                     "DuplicatedKey",
                     String::from("The FOO key is duplicated"),
                 )),
             ),
+            (line_entry(3, 4, "BAR=FOO"), None),
             (
-                LineEntry {
-                    number: 3,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 4,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
+                line_entry(4, 4, "BAR=FOO"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 4,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 4,
-                        },
-                        raw_string: String::from("BAR=FOO"),
-                    },
+                    line_entry(4, 4, "BAR=FOO"),
                     "DuplicatedKey",
                     String::from("The BAR key is duplicated"),
                 )),
@@ -245,54 +120,16 @@ mod tests {
     #[test]
     fn one_duplicated_and_one_unique_key_test() {
         let asserts = vec![
+            (line_entry(1, 3, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
+                line_entry(2, 3, "FOO=BAR"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 3,
-                        },
-                        raw_string: String::from("FOO=BAR"),
-                    },
+                    line_entry(2, 3, "FOO=BAR"),
                     "DuplicatedKey",
                     String::from("The FOO key is duplicated"),
                 )),
             ),
-            (
-                LineEntry {
-                    number: 3,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
-                None,
-            ),
+            (line_entry(3, 3, "BAR=FOO"), None),
         ];
 
         run_duplicated_tests(asserts);
