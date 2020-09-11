@@ -39,35 +39,19 @@ impl LowercaseKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn working_run() {
         let mut checker = LowercaseKeyChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "FOO=BAR");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn failing_run_with_lowercase_key() {
         let mut checker = LowercaseKeyChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("foo_bar=FOOBAR"),
-        };
+        let line = line_entry(1, 1, "foo_bar=FOOBAR");
         let expected = Some(Warning::new(
             line.clone(),
             "LowercaseKey",
@@ -79,15 +63,7 @@ mod tests {
     #[test]
     fn failing_run_with_lowercase_letter() {
         let mut checker = LowercaseKeyChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOo_BAR=FOOBAR"),
-        };
+        let line = line_entry(1, 1, "FOo_BAR=FOOBAR");
         let expected = Some(Warning::new(
             line.clone(),
             "LowercaseKey",

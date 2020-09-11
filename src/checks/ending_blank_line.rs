@@ -42,37 +42,19 @@ impl Check for EndingBlankLineChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn blank_line() {
         let mut checker = EndingBlankLineChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("\n"),
-        };
-
+        let line = line_entry(1, 1, "\n");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn blank_line_rn() {
         let mut checker = EndingBlankLineChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("\r\n"),
-        };
+        let line = line_entry(1, 1, "\r\n");
 
         assert_eq!(None, checker.run(&line));
     }
@@ -80,15 +62,7 @@ mod tests {
     #[test]
     fn no_blank_line() {
         let mut checker = EndingBlankLineChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("a"),
-        };
+        let line = line_entry(1, 1, "a");
         let expected = Some(Warning::new(
             line.clone(),
             "EndingBlankLine",

@@ -24,3 +24,34 @@ fn remove_invalid_leading_chars_test() {
     let string = String::from("***FOO-BAR");
     assert_eq!("FOO-BAR", remove_invalid_leading_chars(&string));
 }
+
+pub(crate) mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    #[allow(dead_code)]
+    pub fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
+        LineEntry {
+            number,
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+                total_lines,
+            },
+            raw_string: String::from("\n"),
+        }
+    }
+
+    #[allow(dead_code)]
+    pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
+        LineEntry {
+            number,
+            file: FileEntry {
+                path: PathBuf::from(".env"),
+                file_name: ".env".to_string(),
+                total_lines,
+            },
+            raw_string: String::from(raw_string),
+        }
+    }
+}

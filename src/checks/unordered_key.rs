@@ -60,7 +60,7 @@ impl Check for UnorderedKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     fn run_unordered_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
         let mut checker = UnorderedKeyChecker::default();
@@ -73,50 +73,14 @@ mod tests {
 
     #[test]
     fn one_key_test() {
-        let asserts = vec![(
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 1,
-                },
-                raw_string: String::from("FOO=BAR"),
-            },
-            None,
-        )];
+        let asserts = vec![(line_entry(1, 1, ""), None)];
 
         run_unordered_tests(asserts);
     }
 
     #[test]
     fn two_ordered_keys_test() {
-        let asserts = vec![
-            (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-        ];
+        let asserts = vec![(line_entry(1, 2, ""), None), (line_entry(2, 2, ""), None)];
 
         run_unordered_tests(asserts);
     }
@@ -124,38 +88,11 @@ mod tests {
     #[test]
     fn one_unordered_key_test() {
         let asserts = vec![
+            (line_entry(1, 2, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 2,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
+                line_entry(2, 2, "BAR=FOO"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 2,
-                        },
-                        raw_string: String::from("BAR=FOO"),
-                    },
+                    line_entry(2, 2, "BAR=FOO"),
                     "UnorderedKey",
                     String::from("The BAR key should go before the FOO key"),
                 )),
@@ -168,62 +105,19 @@ mod tests {
     #[test]
     fn two_unordered_keys_before_test() {
         let asserts = vec![
+            (line_entry(1, 3, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
+                line_entry(2, 3, "BAR=FOO"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 3,
-                        },
-                        raw_string: String::from("BAR=FOO"),
-                    },
+                    line_entry(2, 3, "BAR=FOO"),
                     "UnorderedKey",
                     String::from("The BAR key should go before the FOO key"),
                 )),
             ),
             (
-                LineEntry {
-                    number: 3,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("ABC=BAR"),
-                },
+                line_entry(3, 3, "ABC=BAR"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 3,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 3,
-                        },
-                        raw_string: String::from("ABC=BAR"),
-                    },
+                    line_entry(3, 3, "ABC=BAR"),
                     "UnorderedKey",
                     String::from("The ABC key should go before the BAR key"),
                 )),
@@ -236,62 +130,19 @@ mod tests {
     #[test]
     fn two_unordered_keys_before_and_after_test() {
         let asserts = vec![
+            (line_entry(1, 3, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
+                line_entry(2, 3, "BAR=FOO"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 3,
-                        },
-                        raw_string: String::from("BAR=FOO"),
-                    },
+                    line_entry(2, 3, "BAR=FOO"),
                     "UnorderedKey",
                     String::from("The BAR key should go before the FOO key"),
                 )),
             ),
             (
-                LineEntry {
-                    number: 3,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("DDD=BAR"),
-                },
+                line_entry(3, 3, "DDD=BAR"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 3,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 3,
-                        },
-                        raw_string: String::from("DDD=BAR"),
-                    },
+                    line_entry(3, 3, "DDD=BAR"),
                     "UnorderedKey",
                     String::from("The DDD key should go before the FOO key"),
                 )),
@@ -304,78 +155,24 @@ mod tests {
     #[test]
     fn two_ordered_and_two_unordered_keys_test() {
         let asserts = vec![
+            (line_entry(1, 4, "FOO=BAR"), None),
             (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
+                line_entry(2, 4, "BAR=FOO"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 2,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 4,
-                        },
-                        raw_string: String::from("BAR=FOO"),
-                    },
+                    line_entry(2, 4, "BAR=FOO"),
                     "UnorderedKey",
                     String::from("The BAR key should go before the FOO key"),
                 )),
             ),
             (
-                LineEntry {
-                    number: 3,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("DDD=BAR"),
-                },
+                line_entry(3, 4, "DDD=BAR"),
                 Some(Warning::new(
-                    LineEntry {
-                        number: 3,
-                        file: FileEntry {
-                            path: PathBuf::from(".env"),
-                            file_name: ".env".to_string(),
-                            total_lines: 4,
-                        },
-                        raw_string: String::from("DDD=BAR"),
-                    },
+                    line_entry(3, 4, "DDD=BAR"),
                     "UnorderedKey",
                     String::from("The DDD key should go before the FOO key"),
                 )),
             ),
-            (
-                LineEntry {
-                    number: 4,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 4,
-                    },
-                    raw_string: String::from("ZOO=BAR"),
-                },
-                None,
-            ),
+            (line_entry(4, 4, "ZOO=BAR"), None),
         ];
 
         run_unordered_tests(asserts);
@@ -384,42 +181,9 @@ mod tests {
     #[test]
     fn one_unordered_key_with_blank_line_test() {
         let asserts = vec![
-            (
-                LineEntry {
-                    number: 1,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("FOO=BAR"),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 2,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from(""),
-                },
-                None,
-            ),
-            (
-                LineEntry {
-                    number: 3,
-                    file: FileEntry {
-                        path: PathBuf::from(".env"),
-                        file_name: ".env".to_string(),
-                        total_lines: 3,
-                    },
-                    raw_string: String::from("BAR=FOO"),
-                },
-                None,
-            ),
+            (line_entry(1, 3, "FOO=BAR"), None),
+            (line_entry(2, 3, ""), None),
+            (line_entry(3, 3, "BAR=FOO"), None),
         ];
 
         run_unordered_tests(asserts);

@@ -41,20 +41,13 @@ impl Fix for IncorrectDelimiterFixer<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn fix_line_test() {
         let fixer = IncorrectDelimiterFixer::default();
-        let mut line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("RAILS-ENV=development"),
-        };
+        let mut line = line_entry(1, 1, "RAILS-ENV=development");
+
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("RAILS_ENV=development", line.raw_string);
     }
@@ -62,15 +55,8 @@ mod tests {
     #[test]
     fn fix_line_with_invalid_prefix_test() {
         let fixer = IncorrectDelimiterFixer::default();
-        let mut line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("**RAILS-ENV=development"),
-        };
+        let mut line = line_entry(1, 1, "**RAILS-ENV=development");
+
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("**RAILS_ENV=development", line.raw_string);
     }
@@ -78,15 +64,8 @@ mod tests {
     #[test]
     fn fix_line_with_invalid_suffix_test() {
         let fixer = IncorrectDelimiterFixer::default();
-        let mut line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("RAILS-ENV--=development"),
-        };
+        let mut line = line_entry(1, 1, "RAILS-ENV--=development");
+
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("RAILS_ENV__=development", line.raw_string);
     }
@@ -95,33 +74,9 @@ mod tests {
     fn fix_warnings_test() {
         let fixer = IncorrectDelimiterFixer::default();
         let mut lines = vec![
-            LineEntry {
-                number: 1,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 3,
-                },
-                raw_string: String::from("RAILS-ENV=development"),
-            },
-            LineEntry {
-                number: 2,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 3,
-                },
-                raw_string: String::from("RAILS_ENV=true"),
-            },
-            LineEntry {
-                number: 3,
-                file: FileEntry {
-                    path: PathBuf::from(".env"),
-                    file_name: ".env".to_string(),
-                    total_lines: 3,
-                },
-                raw_string: String::from("\n"),
-            },
+            line_entry(1, 3, "RAILS-ENV=development"),
+            line_entry(2, 3, "RAILS_ENV=true"),
+            blank_line_entry(3, 3),
         ];
         let mut warning = Warning::new(
             lines[0].clone(),

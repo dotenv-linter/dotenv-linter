@@ -89,31 +89,7 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
-
-    fn line_entry(number: usize, total_lines: usize, str: &str) -> LineEntry {
-        LineEntry {
-            number,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines,
-            },
-            raw_string: String::from(str),
-        }
-    }
-
-    fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
-        LineEntry {
-            number,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines,
-            },
-            raw_string: String::from("\n"),
-        }
-    }
+    use crate::common::tests::*;
 
     #[test]
     fn run_with_empty_warnings_test() {

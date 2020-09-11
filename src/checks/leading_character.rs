@@ -42,67 +42,35 @@ impl Check for LeadingCharacterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     const MESSAGE: &str = "Invalid leading character detected";
 
     #[test]
     fn no_leading_chars_test() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "FOO=BAR");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn blank_line() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from(""),
-        };
+        let line = line_entry(1, 1, "");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn leading_underscore() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("_FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "_FOO=BAR");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn leading_dot() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from(".FOO=BAR"),
-        };
+        let line = line_entry(1, 1, ".FOO=BAR");
         assert_eq!(
             Some(Warning::new(
                 line.clone(),
@@ -116,15 +84,7 @@ mod tests {
     #[test]
     fn leading_asterisk() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("*FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "*FOO=BAR");
         assert_eq!(
             Some(Warning::new(
                 line.clone(),
@@ -138,15 +98,7 @@ mod tests {
     #[test]
     fn leading_number() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("1FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "1FOO=BAR");
         assert_eq!(
             Some(Warning::new(
                 line.clone(),
@@ -160,15 +112,7 @@ mod tests {
     #[test]
     fn leading_space() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from(" FOO=BAR"),
-        };
+        let line = line_entry(1, 1, " FOO=BAR");
         let expected = Some(Warning::new(
             line.clone(),
             "LeadingCharacter",
@@ -180,15 +124,7 @@ mod tests {
     #[test]
     fn two_leading_spaces() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("  FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "  FOO=BAR");
         let expected = Some(Warning::new(
             line.clone(),
             "LeadingCharacter",
@@ -200,15 +136,7 @@ mod tests {
     #[test]
     fn leading_tab() {
         let mut checker = LeadingCharacterChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("\tFOO=BAR"),
-        };
+        let line = line_entry(1, 1, "\tFOO=BAR");
         let expected = Some(Warning::new(
             line.clone(),
             "LeadingCharacter",

@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Move logic for creating `LineEntry` for tests to `common` module [#280](https://github.com/dotenv-linter/dotenv-linter/pull/280) ([@mgrachev](https://github.com/mgrachev))
 - Simplify UnorderedKeyChecker [#277](https://github.com/dotenv-linter/dotenv-linter/pull/277) ([@mgrachev](https://github.com/mgrachev))
 - Partition fixed/unfixed warnings [#275](https://github.com/dotenv-linter/dotenv-linter/pull/275) ([@gillespiecd](https://github.com/gillespiecd))
 - Add missing test for IncorrectDelimiterChecker [#273](https://github.com/dotenv-linter/dotenv-linter/pull/273) ([@mgrachev](https://github.com/mgrachev))

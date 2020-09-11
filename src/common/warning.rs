@@ -47,19 +47,11 @@ impl fmt::Display for Warning {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     #[test]
     fn warning_fmt_test() {
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("FOO=BAR"),
-        };
+        let line = line_entry(1, 1, "FOO=BAR");
         let warning = Warning::new(
             line,
             "DuplicatedKey",

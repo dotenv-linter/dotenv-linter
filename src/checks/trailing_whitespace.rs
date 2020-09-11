@@ -40,39 +40,21 @@ impl Check for TrailingWhitespaceChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::path::PathBuf;
+    use crate::common::tests::*;
 
     const MESSAGE: &str = "Trailing whitespace detected";
 
     #[test]
     fn working_run() {
         let mut checker = TrailingWhitespaceChecker::default();
-
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("DEBUG_HTTP=true"),
-        };
+        let line = line_entry(1, 1, "DEBUG_HTTP=true");
         assert_eq!(None, checker.run(&line));
     }
 
     #[test]
     fn failing_trailing_run() {
         let mut checker = TrailingWhitespaceChecker::default();
-        let line = LineEntry {
-            number: 1,
-            file: FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines: 1,
-            },
-            raw_string: String::from("DEBUG_HTTP=true  "),
-        };
-
+        let line = line_entry(1, 1, "DEBUG_HTTP=true  ");
         let expected = Some(Warning::new(
             line.clone(),
             "TrailingWhitespace",
