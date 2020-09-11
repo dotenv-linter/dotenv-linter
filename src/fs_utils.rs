@@ -1,7 +1,9 @@
-use crate::common::LineEntry;
-use std::fs::File;
+use crate::common::{FileEntry, LineEntry};
+use std::error::Error;
+use std::fs::{copy, File};
 use std::io::{self, Write};
 use std::path::PathBuf;
+use std::time::SystemTime;
 
 /// For the Windows platform, we need to remove the UNC prefix.
 #[cfg(windows)]
@@ -45,6 +47,20 @@ pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
     }
 
     Ok(())
+}
+
+pub fn backup_file(fe: &FileEntry) -> Result<PathBuf, Box<dyn Error>> {
+    let timestamp = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)?
+        .as_secs();
+
+    let mut new_path = fe.path.to_owned();
+    new_path.set_file_name(format!("{}_{}", &fe.file_name, timestamp));
+
+    match copy(&fe.path, &new_path) {
+        Ok(_) => Ok(new_path),
+        Err(e) => Err(Box::new(e)),
+    }
 }
 
 #[cfg(test)]
@@ -165,6 +181,54 @@ mod tests {
             b"A=B\nZ=Y\n",
             fs::read(path.as_path()).expect("file read").as_slice()
         );
+
+        dir.close().expect("temp dir deleted");
+    }
+
+    #[test]
+    fn backup_file_test() {
+        let file_name = String::from(".env");
+        let dir = tempfile::tempdir().expect("create temp dir");
+        let path = dir.path().join(&file_name);
+
+        let fe = FileEntry {
+            path,
+            file_name,
+            total_lines: 3,
+        };
+
+        let lines = vec![
+            LineEntry {
+                number: 1,
+                file: fe.clone(),
+                raw_string: String::from("A=B"),
+            },
+            LineEntry {
+                number: 2,
+                file: fe.clone(),
+                raw_string: String::from("Z=Y"),
+            },
+            LineEntry {
+                number: 3,
+                file: fe.clone(),
+                raw_string: String::from("\n"),
+            },
+        ];
+
+        if write_file(&fe.path, lines).is_ok() {
+            match backup_file(&fe) {
+                Ok(path) => {
+                    assert_eq!(
+                        b"A=B\nZ=Y\n",
+                        fs::read(path.as_path()).expect("file read").as_slice()
+                    );
+                    assert_ne!(path, fe.path);
+                }
+                Err(_) => panic!("could not copy file - test failed"),
+            }
+        } else {
+            panic!("could not write file - test failed")
+        }
 
         dir.close().expect("temp dir deleted");
     }
