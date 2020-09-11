@@ -180,21 +180,9 @@ mod tests {
         };
 
         let lines = vec![
-            LineEntry {
-                number: 1,
-                file: fe.clone(),
-                raw_string: String::from("A=B"),
-            },
-            LineEntry {
-                number: 2,
-                file: fe.clone(),
-                raw_string: String::from("Z=Y"),
-            },
-            LineEntry {
-                number: 3,
-                file: fe.clone(),
-                raw_string: String::from("\n"),
-            },
+            line_entry(1, 3, "A=B"),
+            line_entry(2, 3, "Z=Y"),
+            blank_line_entry(3, 3),
         ];
 
         if write_file(&fe.path, lines).is_ok() {

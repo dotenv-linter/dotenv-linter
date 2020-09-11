@@ -5,6 +5,9 @@ pub struct LineEntry {
     pub number: usize,
     pub file: FileEntry,
     pub raw_string: String,
+
+    /// Used in ExtraBlankLineFixer
+    pub is_deleted: bool,
 }
 
 impl LineEntry {
@@ -48,6 +51,10 @@ impl LineEntry {
 
     pub fn is_last_line(&self) -> bool {
         self.file.total_lines == self.number
+    }
+
+    pub fn mark_as_deleted(&mut self) {
+        self.is_deleted = true;
     }
 }
 

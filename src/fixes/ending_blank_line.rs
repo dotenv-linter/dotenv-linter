@@ -19,7 +19,7 @@ impl Fix for EndingBlankLineFixer<'_> {
     }
 
     fn fix_warnings(
-        &self,
+        &mut self,
         warnings: Vec<&mut Warning>,
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
@@ -31,6 +31,7 @@ impl Fix for EndingBlankLineFixer<'_> {
                 number: lines.len() + 1,
                 file,
                 raw_string: LF.to_string(),
+                is_deleted: false,
             });
 
             for warning in warnings {
@@ -51,7 +52,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = EndingBlankLineFixer::default();
+        let mut fixer = EndingBlankLineFixer::default();
         let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, "Z=Y")];
         let mut warning = Warning::new(
             lines[1].clone(),
@@ -66,7 +67,7 @@ mod tests {
 
     #[test]
     fn ending_blank_line_exist_test() {
-        let fixer = EndingBlankLineFixer::default();
+        let mut fixer = EndingBlankLineFixer::default();
         let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, LF)];
 
         assert_eq!(Some(0), fixer.fix_warnings(vec![], &mut lines));

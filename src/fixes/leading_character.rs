@@ -18,7 +18,7 @@ impl Fix for LeadingCharacterFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
 
         let cleaned_key = remove_invalid_leading_chars(&key);
@@ -36,7 +36,7 @@ mod tests {
 
     #[test]
     fn fix_leading_dot() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut leading_period = line_entry(1, 1, ".FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_period));
@@ -45,7 +45,7 @@ mod tests {
 
     #[test]
     fn fix_leading_space() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut leading_space = line_entry(1, 1, " FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_space));
@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn fix_leading_asterisk() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut leading_asterisk = line_entry(1, 1, "*FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_asterisk));
@@ -63,7 +63,7 @@ mod tests {
 
     #[test]
     fn fix_leading_number() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut leading_number = line_entry(1, 1, "1FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
@@ -72,7 +72,7 @@ mod tests {
 
     #[test]
     fn fix_many_invalid_leading_chars() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut leading_number = line_entry(1, 1, "-1&*FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
@@ -81,7 +81,7 @@ mod tests {
 
     #[test]
     fn leading_underscore_is_unchanged() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut leading_underscore = line_entry(1, 1, "_FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_underscore));
@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn no_leading_char_is_unchanged() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut normal = line_entry(1, 1, "FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut normal));
@@ -99,7 +99,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = LeadingCharacterFixer::default();
+        let mut fixer = LeadingCharacterFixer::default();
         let mut lines = vec![
             line_entry(1, 7, ".FOO=BAR"),
             line_entry(2, 7, " Z=Y"),

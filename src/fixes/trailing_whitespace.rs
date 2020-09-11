@@ -18,7 +18,7 @@ impl Fix for TrailingWhitespaceFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         line.raw_string = line.raw_string.trim_end().to_string();
 
         Some(())
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn fix_line_test() {
-        let fixer = TrailingWhitespaceFixer::default();
+        let mut fixer = TrailingWhitespaceFixer::default();
         let mut line = line_entry(1, 1, "DEBUG_HTTP=true  ");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -41,7 +41,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = TrailingWhitespaceFixer::default();
+        let mut fixer = TrailingWhitespaceFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "FOO=BAR "),
             line_entry(2, 3, "Z=Y"),

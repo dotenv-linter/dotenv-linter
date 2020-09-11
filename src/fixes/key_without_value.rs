@@ -18,7 +18,7 @@ impl Fix for KeyWithoutValueFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         line.raw_string.push('=');
 
         Some(())
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn fix_line_test() {
-        let fixer = KeyWithoutValueFixer::default();
+        let mut fixer = KeyWithoutValueFixer::default();
         let mut line = line_entry(1, 1, "FOO");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -41,7 +41,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = KeyWithoutValueFixer::default();
+        let mut fixer = KeyWithoutValueFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "FOO"),
             line_entry(2, 3, "Z=Y"),

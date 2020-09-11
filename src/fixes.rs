@@ -15,7 +15,7 @@ trait Fix {
     fn name(&self) -> &str;
 
     fn fix_warnings(
-        &self,
+        &mut self,
         warnings: Vec<&mut Warning>,
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
@@ -31,7 +31,7 @@ trait Fix {
         Some(count)
     }
 
-    fn fix_line(&self, _line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, _line: &mut LineEntry) -> Option<()> {
         None
     }
 }
@@ -48,11 +48,12 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(leading_character::LeadingCharacterFixer::default()),
         Box::new(quote_character::QuoteCharacterFixer::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
+        Box::new(duplicated_key::DuplicatedKeyFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole.
         // And at the end we should run the fixer for ExtraBlankLine check (because the previous
         // fixers can create additional extra blank lines).
         Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
-        Box::new(duplicated_key::DuplicatedKeyFixer::default()),
+        // UnorderedKeyFixer should be here
         Box::new(ending_blank_line::EndingBlankLineFixer::default()),
     ]
 }
@@ -63,7 +64,7 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>) -> usize {
     }
 
     let mut count = 0;
-    for fixer in fixlist() {
+    for mut fixer in fixlist() {
         // We can optimize it: create check_name:warnings map in advance
         let fixer_warnings: Vec<&mut Warning> = warnings
             .iter_mut()
@@ -82,6 +83,9 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>) -> usize {
             }
         }
     }
+
+    // Removes extra blank lines
+    lines.retain(|l| !l.is_deleted);
 
     count
 }
@@ -167,7 +171,7 @@ mod tests {
             self.name
         }
 
-        fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+        fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
             if line.raw_string.chars().count() > 5 {
                 Some(())
             } else {
@@ -182,7 +186,7 @@ mod tests {
 
         let mut warning = Warning::new(lines[0].clone(), "", String::from(""));
 
-        let fixer = TestFixer { name: "fixer" };
+        let mut fixer = TestFixer { name: "fixer" };
 
         fixer.fix_warnings(vec![&mut warning], &mut lines);
 
@@ -195,7 +199,7 @@ mod tests {
 
         let mut warning = Warning::new(lines[0].clone(), "", String::from(""));
 
-        let fixer = TestFixer { name: "fixer" };
+        let mut fixer = TestFixer { name: "fixer" };
 
         fixer.fix_warnings(vec![&mut warning], &mut lines);
 

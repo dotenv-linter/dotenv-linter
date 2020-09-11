@@ -18,7 +18,7 @@ impl Fix for QuoteCharacterFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         let value = line.get_value()?;
         let pure_val = value.replace("'", "").replace("\"", "");
 
@@ -35,7 +35,7 @@ mod tests {
 
     #[test]
     fn fix_line_test() {
-        let fixer = QuoteCharacterFixer::default();
+        let mut fixer = QuoteCharacterFixer::default();
         let mut line = line_entry(1, 1, "FOO=\'\"b\'\"ar\"\'");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -44,7 +44,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = QuoteCharacterFixer::default();
+        let mut fixer = QuoteCharacterFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "FOO=\"bar\'\""),
             line_entry(2, 3, "Z=Y"),

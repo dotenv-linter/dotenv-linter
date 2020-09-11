@@ -18,7 +18,7 @@ impl Fix for IncorrectDelimiterFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
 
         let cleaned_key = remove_invalid_leading_chars(&key);
@@ -45,7 +45,7 @@ mod tests {
 
     #[test]
     fn fix_line_test() {
-        let fixer = IncorrectDelimiterFixer::default();
+        let mut fixer = IncorrectDelimiterFixer::default();
         let mut line = line_entry(1, 1, "RAILS-ENV=development");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn fix_line_with_invalid_prefix_test() {
-        let fixer = IncorrectDelimiterFixer::default();
+        let mut fixer = IncorrectDelimiterFixer::default();
         let mut line = line_entry(1, 1, "**RAILS-ENV=development");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -63,7 +63,7 @@ mod tests {
 
     #[test]
     fn fix_line_with_invalid_suffix_test() {
-        let fixer = IncorrectDelimiterFixer::default();
+        let mut fixer = IncorrectDelimiterFixer::default();
         let mut line = line_entry(1, 1, "RAILS-ENV--=development");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -72,7 +72,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = IncorrectDelimiterFixer::default();
+        let mut fixer = IncorrectDelimiterFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "RAILS-ENV=development"),
             line_entry(2, 3, "RAILS_ENV=true"),
