@@ -121,7 +121,7 @@ impl TestDir {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
-            .args(&["-f"])
+            .args(&["-f", "--no-backup"])
             .assert()
             .success()
             .stdout(expected_output);
@@ -132,11 +132,28 @@ impl TestDir {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
-            .args(&["-f"])
+            .args(&["-f", "--no-backup"])
             .assert()
             .failure()
             .code(1)
             .stdout(expected_output);
+    }
+
+    /// Run the default CLI binary, with command line arguments,
+    /// in this TestDir and check it succeeds.
+    ///
+    /// This method does NOT remove TestDir when finished
+    pub fn test_command_success_with_args_without_closing<I, S>(&self, args: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<OsStr>,
+    {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(args)
+            .assert()
+            .success();
     }
 
     fn init_cmd() -> Command {

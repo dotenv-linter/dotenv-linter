@@ -111,6 +111,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Automatically fixes warnings if possible"),
         )
         .arg(
+            Arg::with_name("no-backup")
+                .long("no-backup")
+                .help("Prevents .env files from being backed up when modified by -f/--fix"),
+        )
+        .arg(
             Arg::with_name("quiet")
                 .short("q")
                 .long("quiet")
