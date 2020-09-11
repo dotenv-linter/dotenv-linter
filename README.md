@@ -449,6 +449,19 @@ FOO=BAR
 BAR=FOO
 ```
 
+Control comments also split lines (this is done to make the linter logic more predictable):
+
+```env
+❌ Wrong
+FOO=BAR
+BAR=FOO
+
+✅ Correct 
+FOO=BAR
+# dotenv-linter:off LowercaseKey
+bar=FOO
+```
+
 ## 🤝 Contributing
 
 If you've ever wanted to contribute to open source, now you have a great opportunity:

@@ -1,4 +1,5 @@
 use crate::common::*;
+use comment::Comment;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
@@ -7,7 +8,8 @@ pub struct LineEntry {
     pub raw_string: String,
 
     /// Used in ExtraBlankLineFixer
-    pub is_deleted: bool,
+    pub is_deleted: bool
+    // pub comment: Option<Comment<'a>>
 }
 
 impl LineEntry {
@@ -55,6 +57,15 @@ impl LineEntry {
 
     pub fn mark_as_deleted(&mut self) {
         self.is_deleted = true;
+    }
+
+    // Maybe we should add the comment field to the LineEntry struct (but this requires some
+    // refactoring of the line entries creation)
+    pub fn get_comment(&self) -> Option<Comment> {
+        if !self.is_comment() {
+            return None;
+        }
+        comment::parse(self.raw_string.as_str())
     }
 }
 
@@ -194,6 +205,28 @@ mod tests {
             let entry = line_entry(1, 1, "FOO=BAR\t");
 
             assert_eq!("FOO=BAR", entry.trimmed_string());
+        }
+    }
+
+    mod get_comment {
+        use super::*;
+
+        #[test]
+        fn line_with_control_comment_test() {
+            let entry = line_entry(1, 1, "# dotenv-linter:off LowercaseKey");
+            let comment = entry.get_comment();
+            assert!(comment.is_some());
+
+            let comment = entry.get_comment().expect("comment");
+            assert_eq!(comment.is_disabled(), true);
+            assert_eq!(comment.checks, vec!["LowercaseKey"]);
+        }
+
+        #[test]
+        fn line_with_no_comment_test() {
+            let entry = line_entry(1, 1, "A=B");
+            let comment = entry.get_comment();
+            assert!(comment.is_none());
         }
     }
 }
