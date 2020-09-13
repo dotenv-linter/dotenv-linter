@@ -39,6 +39,7 @@ pub(crate) mod tests {
                 total_lines,
             },
             raw_string: String::from("\n"),
+            is_deleted: false,
         }
     }
 
@@ -52,6 +53,7 @@ pub(crate) mod tests {
                 total_lines,
             },
             raw_string: String::from(raw_string),
+            is_deleted: false,
         }
     }
 }

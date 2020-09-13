@@ -112,6 +112,7 @@ fn get_line_entries(fe: &FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
             number: index + 1,
             file: fe.clone(),
             raw_string: line,
+            is_deleted: false,
         })
     }
 

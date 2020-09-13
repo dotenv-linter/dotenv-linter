@@ -18,22 +18,9 @@ impl Fix for ExtraBlankLineFixer<'_> {
         self.name
     }
 
-    fn fix_warnings(
-        &self,
-        warnings: Vec<&mut Warning>,
-        lines: &mut Vec<LineEntry>,
-    ) -> Option<usize> {
-        let warning_count = warnings.len();
-
-        // check and remove all blank lines.
-        lines.dedup_by(|a, b| a.is_empty() && b.is_empty());
-
-        // mark as fixed
-        for warning in warnings {
-            warning.mark_as_fixed();
-        }
-
-        Some(warning_count)
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
+        line.mark_as_deleted();
+        Some(())
     }
 }
 
@@ -44,7 +31,7 @@ mod tests {
 
     #[test]
     fn no_blank_lines_test() {
-        let fixer = ExtraBlankLineFixer::default();
+        let mut fixer = ExtraBlankLineFixer::default();
 
         let warnings = vec![];
         let lines = vec![
@@ -60,7 +47,7 @@ mod tests {
 
     #[test]
     fn fix_one_extra_blank_line_test() {
-        let fixer = ExtraBlankLineFixer::default();
+        let mut fixer = ExtraBlankLineFixer::default();
 
         let line1 = line_entry(1, 4, "FOO=BAR");
         let line2 = line_entry(2, 4, "");
@@ -79,7 +66,7 @@ mod tests {
 
     #[test]
     fn fix_multiple_blank_lines_test() {
-        let fixer = ExtraBlankLineFixer::default();
+        let mut fixer = ExtraBlankLineFixer::default();
 
         let line1 = line_entry(1, 5, "FOO=BAR");
         let line2 = line_entry(2, 5, "");

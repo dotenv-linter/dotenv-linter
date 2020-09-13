@@ -18,7 +18,7 @@ impl Fix for SpaceCharacterFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
         let value = line.get_value()?;
         line.raw_string = format!("{}={}", key.trim_end(), value.trim_start());
@@ -34,7 +34,7 @@ mod tests {
 
     #[test]
     fn fix_line_test() {
-        let fixer = SpaceCharacterFixer::default();
+        let mut fixer = SpaceCharacterFixer::default();
         let mut line = line_entry(1, 1, "FOO = BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -43,7 +43,7 @@ mod tests {
 
     #[test]
     fn trailing_should_not_be_fixed() {
-        let fixer = SpaceCharacterFixer::default();
+        let mut fixer = SpaceCharacterFixer::default();
         let mut line = line_entry(1, 1, "DEBUG_HTTP=true ");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -52,7 +52,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let fixer = SpaceCharacterFixer::default();
+        let mut fixer = SpaceCharacterFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "FOO= BAR"),
             line_entry(2, 3, "Z =Y"),

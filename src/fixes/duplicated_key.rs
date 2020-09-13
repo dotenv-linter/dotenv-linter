@@ -18,7 +18,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
         self.name
     }
 
-    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         line.raw_string = format!("# {}", line.raw_string);
 
         Some(())
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn fix_warnings() {
-        let fixer = DuplicatedKeyFixer::default();
+        let mut fixer = DuplicatedKeyFixer::default();
         let mut lines = vec![
             line_entry(1, 4, "FOO=BAR"),
             line_entry(2, 4, "Z=Y"),
