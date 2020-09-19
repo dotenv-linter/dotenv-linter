@@ -25,7 +25,7 @@ FOO=BAR
 BAR=FOO
 ```
 
-Control comments also split lines (this is done to make the linter logic more predictable):
+Control comments also split lines (this is done to make the linter logic more predictable, will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
 
 ```env
 ❌ Wrong
