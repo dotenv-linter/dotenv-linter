@@ -264,4 +264,22 @@ mod tests {
             assert!(available_check_names.contains(&check_name.to_string()));
         }
     }
+
+    #[test]
+    fn unordered_key_with_control_comment_test() {
+        let line_entries = vec![
+            line_entry(1, 7, "FOO=BAR"),
+            line_entry(2, 7, "# dotenv-linter:off LowercaseKey"),
+            line_entry(3, 7, "Bar=FOO"),
+            line_entry(4, 7, "bar=FOO"),
+            line_entry(5, 7, "# dotenv-linter:on LowercaseKey"),
+            line_entry(6, 7, "X=X"),
+            blank_line_entry(7, 7),
+        ];
+
+        let expected: Vec<Warning> = Vec::new();
+        let skip_checks: Vec<&str> = Vec::new();
+
+        assert_eq!(expected, run(&line_entries, &skip_checks));
+    }
 }
