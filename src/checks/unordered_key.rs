@@ -28,7 +28,7 @@ impl Default for UnorderedKeyChecker<'_> {
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         // Support of grouping variables through blank lines and control comments
-        if line.is_empty() || line.get_comment().is_some() {
+        if line.is_empty() || line.get_control_comment().is_some() {
             self.keys.clear();
             return None;
         }

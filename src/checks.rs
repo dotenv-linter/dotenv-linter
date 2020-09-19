@@ -57,7 +57,7 @@ pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
-        if let Some(comment) = line.get_comment() {
+        if let Some(comment) = line.get_control_comment() {
             if comment.is_disabled() {
                 // Disable checks from a comment using the dotenv-linter:off flag
                 disabled_checks.extend(comment.checks);

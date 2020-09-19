@@ -60,8 +60,8 @@ impl LineEntry {
 
     // Maybe we should add the comment field to the LineEntry struct (but this requires some
     // refactoring of the line entries creation)
-    // pub comment: Option<Comment<'a>>
-    pub fn get_comment(&self) -> Option<Comment> {
+    // pub control_comment: Option<Comment<'a>>
+    pub fn get_control_comment(&self) -> Option<Comment> {
         if !self.is_comment() {
             return None;
         }
@@ -208,16 +208,16 @@ mod tests {
         }
     }
 
-    mod get_comment {
+    mod get_control_comment {
         use super::*;
 
         #[test]
         fn line_with_control_comment_test() {
             let entry = line_entry(1, 1, "# dotenv-linter:off LowercaseKey");
-            let comment = entry.get_comment();
+            let comment = entry.get_control_comment();
             assert!(comment.is_some());
 
-            let comment = entry.get_comment().expect("comment");
+            let comment = entry.get_control_comment().expect("comment");
             assert_eq!(comment.is_disabled(), true);
             assert_eq!(comment.checks, vec!["LowercaseKey"]);
         }
@@ -225,7 +225,7 @@ mod tests {
         #[test]
         fn line_with_no_comment_test() {
             let entry = line_entry(1, 1, "A=B");
-            let comment = entry.get_comment();
+            let comment = entry.get_control_comment();
             assert!(comment.is_none());
         }
     }
