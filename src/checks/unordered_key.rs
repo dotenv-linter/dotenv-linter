@@ -27,8 +27,8 @@ impl Default for UnorderedKeyChecker<'_> {
 
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        // Support of grouping variables through blank lines
-        if line.is_empty() {
+        // Support of grouping variables through blank lines and control comments
+        if line.is_empty() || line.get_control_comment().is_some() {
             self.keys.clear();
             return None;
         }
@@ -184,6 +184,17 @@ mod tests {
             (line_entry(1, 3, "FOO=BAR"), None),
             (line_entry(2, 3, ""), None),
             (line_entry(3, 3, "BAR=FOO"), None),
+        ];
+
+        run_unordered_tests(asserts);
+    }
+
+    #[test]
+    fn one_unordered_key_with_control_comment_test() {
+        let asserts = vec![
+            (line_entry(1, 3, "FOO=BAR"), None),
+            (line_entry(2, 3, "# dotenv-linter:off LowercaseKey"), None),
+            (line_entry(3, 3, "bar=FOO"), None),
         ];
 
         run_unordered_tests(asserts);

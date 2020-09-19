@@ -57,21 +57,18 @@ pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
-        let is_comment = line.is_comment();
-        if is_comment {
-            if let Some(comment) = comment::parse(&line.raw_string) {
-                if comment.is_disabled() {
-                    // Disable checks from a comment using the dotenv-linter:off flag
-                    disabled_checks.extend(comment.checks);
-                } else {
-                    // Enable checks if the comment has the dotenv-linter:on flag
-                    disabled_checks.retain(|&s| !comment.checks.contains(&s));
-                }
+        if let Some(comment) = line.get_control_comment() {
+            if comment.is_disabled() {
+                // Disable checks from a comment using the dotenv-linter:off flag
+                disabled_checks.extend(comment.checks);
+            } else {
+                // Enable checks if the comment has the dotenv-linter:on flag
+                disabled_checks.retain(|&s| !comment.checks.contains(&s));
             }
         }
 
         for ch in &mut checks {
-            if is_comment && ch.skip_comments() {
+            if line.is_comment() && ch.skip_comments() {
                 continue;
             }
 
