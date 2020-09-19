@@ -55,6 +55,10 @@ impl Check for UnorderedKeyChecker<'_> {
     fn name(&self) -> &str {
         self.name
     }
+
+    fn skip_comments(&self) -> bool {
+        false
+    }
 }
 
 #[cfg(test)]
@@ -194,7 +198,7 @@ mod tests {
         let asserts = vec![
             (line_entry(1, 3, "FOO=BAR"), None),
             (line_entry(2, 3, "# dotenv-linter:off LowercaseKey"), None),
-            (line_entry(3, 3, "bar=FOO"), None),
+            (line_entry(3, 3, "Bar=FOO"), None),
         ];
 
         run_unordered_tests(asserts);
