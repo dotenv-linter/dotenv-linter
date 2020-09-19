@@ -8,8 +8,7 @@ pub struct LineEntry {
     pub raw_string: String,
 
     /// Used in ExtraBlankLineFixer
-    pub is_deleted: bool
-    // pub comment: Option<Comment<'a>>
+    pub is_deleted: bool,
 }
 
 impl LineEntry {
@@ -61,6 +60,7 @@ impl LineEntry {
 
     // Maybe we should add the comment field to the LineEntry struct (but this requires some
     // refactoring of the line entries creation)
+    // pub comment: Option<Comment<'a>>
     pub fn get_comment(&self) -> Option<Comment> {
         if !self.is_comment() {
             return None;
