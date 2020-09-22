@@ -127,19 +127,6 @@ impl TestDir {
             .stdout(expected_output);
     }
 
-    /// Run the default CLI binary, with "-f", in this TestDir and check it fails.
-    #[allow(dead_code)]
-    pub fn test_command_fix_fail(&self, expected_output: String) {
-        let mut cmd = Self::init_cmd();
-        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
-        cmd.current_dir(&canonical_current_dir)
-            .args(&["-f", "--no-backup"])
-            .assert()
-            .failure()
-            .code(1)
-            .stdout(expected_output);
-    }
-
     /// Run the default CLI binary, with command line arguments,
     /// in this TestDir and check it succeeds.
     ///

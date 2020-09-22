@@ -62,8 +62,7 @@ impl Fix for UnorderedKeyFixer<'_> {
                     end.replace(i + 1);
                 }
 
-                let is_last = i == lines.len() - 1;
-                if line.is_empty() || is_last || is_control_comment {
+                if line.is_empty() || line.is_last_line() || is_control_comment {
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
                         end = None;
@@ -102,7 +101,7 @@ impl UnorderedKeyFixer<'_> {
         slices.sort_by_cached_key(|slice| {
             // I think, that we should modify get_key() so it will return Option<&str> instead of
             // Option<String>.
-            slice.last().expect("significant line").get_key()
+            slice.last()?.get_key()
         });
 
         let mut sorted_lines = Vec::with_capacity(part.len());
@@ -119,18 +118,20 @@ mod tests {
     use super::*;
     use crate::common::tests::line_entry;
 
-    fn get_lines(strs: Vec<&str>) -> Vec<LineEntry> {
-        let total = strs.len();
+    fn get_lines(lines: Vec<&str>) -> Vec<LineEntry> {
+        let total = lines.len();
 
-        strs.iter()
+        lines
+            .iter()
             .enumerate()
-            .map(|(i, &str)| line_entry(i + 1, total, str))
+            .map(|(i, &line)| line_entry(i + 1, total, line))
             .collect()
     }
 
-    fn get_warnings(lines: &[LineEntry], wrns: Vec<(usize, &str)>) -> Vec<Warning> {
-        wrns.into_iter()
-            .map(|(i, str)| Warning::new(lines[i].clone(), "UnorderedKey", String::from(str)))
+    fn get_warnings(lines: &[LineEntry], warnings: Vec<(usize, &str)>) -> Vec<Warning> {
+        warnings
+            .into_iter()
+            .map(|(i, line)| Warning::new(lines[i].clone(), "UnorderedKey", String::from(line)))
             .collect()
     }
 
@@ -141,9 +142,9 @@ mod tests {
         fixer.fix_warnings(warning_refs, lines)
     }
 
-    fn assert_lines(lines: &[LineEntry], strs: Vec<&str>) {
-        for (i, &str) in strs.iter().enumerate() {
-            assert_eq!(str, lines[i].raw_string.as_str());
+    fn assert_lines(result: &[LineEntry], lines: Vec<&str>) {
+        for (i, &line) in lines.iter().enumerate() {
+            assert_eq!(line, result[i].raw_string.as_str());
         }
     }
 
