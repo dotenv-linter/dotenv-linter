@@ -26,9 +26,6 @@ fn correct_file() {
 }
 
 #[test]
-fn new_warnings_after_fixes() {}
-
-#[test]
 fn multiple_files() {
     let testdir = TestDir::new();
 
