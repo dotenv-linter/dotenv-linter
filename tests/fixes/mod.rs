@@ -26,6 +26,27 @@ fn correct_file() {
 }
 
 #[test]
+fn skip_checks() {
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", "A1=1\nA2=2\na0=0\na2=2\n");
+
+    let expected_output = String::from(
+        "Fixed warnings:\n\
+        .env:3 LowercaseKey: The a0 key should be in uppercase\n\
+        .env:4 LowercaseKey: The a2 key should be in uppercase\n",
+    );
+
+    testdir.test_command_fix_success_with_args(
+        expected_output,
+        &["--skip", "DuplicatedKey", "UnorderedKey"],
+    );
+
+    assert_eq!(testfile.contents().as_str(), "A1=1\nA2=2\nA0=0\nA2=2\n");
+
+    testdir.close();
+}
+
+#[test]
 fn multiple_files() {
     let testdir = TestDir::new();
 

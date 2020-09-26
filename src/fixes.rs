@@ -196,6 +196,66 @@ mod tests {
         assert_eq!("\n", lines[4].raw_string);
     }
 
+    #[test]
+    fn skip_duplicated_key() {
+        let mut lines = vec![
+            line_entry(1, 5, "A1=1"),
+            line_entry(2, 5, "A2=2"),
+            line_entry(3, 5, "a0=0"),
+            line_entry(4, 5, "a2=2"),
+            blank_line_entry(5, 5),
+        ];
+        let mut warnings = vec![
+            Warning::new(
+                lines[2].clone(),
+                "LowercaseKey",
+                String::from("The a0 key should be in uppercase"),
+            ),
+            Warning::new(
+                lines[3].clone(),
+                "LowercaseKey",
+                String::from("The a2 key should be in uppercase"),
+            ),
+        ];
+
+        assert_eq!(2, run(&mut warnings, &mut lines, &["DuplicatedKey"]));
+        assert_eq!("A0=0", lines[0].raw_string);
+        assert_eq!("A1=1", lines[1].raw_string);
+        assert_eq!("A2=2", lines[2].raw_string);
+        assert_eq!("A2=2", lines[3].raw_string);
+        assert_eq!("\n", lines[4].raw_string);
+    }
+
+    #[test]
+    fn skip_unordered_key() {
+        let mut lines = vec![
+            line_entry(1, 5, "A1=1"),
+            line_entry(2, 5, "A2=2"),
+            line_entry(3, 5, "a0=0"),
+            line_entry(4, 5, "a2=2"),
+            blank_line_entry(5, 5),
+        ];
+        let mut warnings = vec![
+            Warning::new(
+                lines[2].clone(),
+                "LowercaseKey",
+                String::from("The a0 key should be in uppercase"),
+            ),
+            Warning::new(
+                lines[3].clone(),
+                "LowercaseKey",
+                String::from("The a2 key should be in uppercase"),
+            ),
+        ];
+
+        assert_eq!(2, run(&mut warnings, &mut lines, &["UnorderedKey"]));
+        assert_eq!("A1=1", lines[0].raw_string);
+        assert_eq!("A2=2", lines[1].raw_string);
+        assert_eq!("A0=0", lines[2].raw_string);
+        assert_eq!("# A2=2", lines[3].raw_string);
+        assert_eq!("\n", lines[4].raw_string);
+    }
+
     struct TestFixer<'a> {
         name: &'a str,
     }

@@ -127,6 +127,23 @@ impl TestDir {
             .stdout(expected_output);
     }
 
+    /// Run the default CLI binary, with "-f" and other provided arguments,
+    /// in this TestDir and check it succeeds.
+    pub fn test_command_fix_success_with_args<I, S>(&self, expected_output: String, ext_args: I)
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<OsStr>,
+    {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(&["-f", "--no-backup"])
+            .args(ext_args)
+            .assert()
+            .success()
+            .stdout(expected_output);
+    }
+
     /// Run the default CLI binary, with command line arguments,
     /// in this TestDir and check it succeeds.
     ///
