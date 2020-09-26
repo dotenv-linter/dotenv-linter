@@ -15,7 +15,7 @@ fn leading_character() {
 
     assert_eq!(
         testfile.contents().as_str(),
-        "BAR=BAZ\nABC=DEF\nQUX=QUUX\n_FOO=BAR\n"
+        "ABC=DEF\nBAR=BAZ\nQUX=QUUX\n_FOO=BAR\n"
     );
 
     testdir.close();

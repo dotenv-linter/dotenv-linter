@@ -1,5 +1,6 @@
 use super::Fix;
 use crate::common::*;
+use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyFixer<'a> {
     name: &'a str,
@@ -16,6 +17,41 @@ impl Default for DuplicatedKeyFixer<'_> {
 impl Fix for DuplicatedKeyFixer<'_> {
     fn name(&self) -> &str {
         self.name
+    }
+
+    fn fix_warnings(
+        &mut self,
+        warnings: Vec<&mut Warning>,
+        lines: &mut Vec<LineEntry>,
+    ) -> Option<usize> {
+        let mut keys = HashSet::with_capacity(lines.len());
+        let mut is_disabled = false;
+
+        for line in lines {
+            if let Some(comment) = line.get_control_comment() {
+                if comment.checks.contains(&self.name) {
+                    is_disabled = comment.is_disabled();
+                }
+            }
+            if is_disabled {
+                continue;
+            }
+
+            if let Some(key) = line.get_key() {
+                if keys.contains(&key) {
+                    self.fix_line(line)?;
+                } else {
+                    keys.insert(key);
+                }
+            }
+        }
+
+        let count = warnings.len();
+        for warning in warnings {
+            warning.mark_as_fixed();
+        }
+
+        Some(count)
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

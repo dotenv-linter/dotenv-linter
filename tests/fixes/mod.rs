@@ -6,7 +6,9 @@ mod duplicated_key;
 mod ending_blank_line;
 mod extra_blank_line;
 mod incorrect_delimiter;
+mod key_without_value;
 mod leading_character;
+mod lowercase_key;
 mod space_character;
 mod trailing_whitespace;
 mod unordered_key;
@@ -24,35 +26,7 @@ fn correct_file() {
 }
 
 #[test]
-fn lowercase_key() {
-    let testdir = TestDir::new();
-    let testfile = testdir.create_testfile(".env", "abc=DEF\n\nfOO=BAR\n");
-    let expected_output = String::from(
-        "Fixed warnings:\n\
-        .env:1 LowercaseKey: The abc key should be in uppercase\n\
-        .env:3 LowercaseKey: The fOO key should be in uppercase\n",
-    );
-    testdir.test_command_fix_success(expected_output);
-
-    assert_eq!(testfile.contents().as_str(), "ABC=DEF\n\nFOO=BAR\n");
-
-    testdir.close();
-}
-
-#[test]
-fn key_without_value() {
-    let testdir = TestDir::new();
-    let testfile = testdir.create_testfile(".env", "FOO\n\nBAR=\n\nBAZ=QUX\n");
-    let expected_output = String::from(
-        "Fixed warnings:\n\
-        .env:1 KeyWithoutValue: The FOO key should be with a value or have an equal sign\n",
-    );
-    testdir.test_command_fix_success(expected_output);
-
-    assert_eq!(testfile.contents().as_str(), "FOO=\n\nBAR=\n\nBAZ=QUX\n");
-
-    testdir.close();
-}
+fn new_warnings_after_fixes() {}
 
 #[test]
 fn multiple_files() {

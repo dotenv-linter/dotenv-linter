@@ -49,28 +49,33 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(leading_character::LeadingCharacterFixer::default()),
         Box::new(quote_character::QuoteCharacterFixer::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
-        Box::new(duplicated_key::DuplicatedKeyFixer::default()),
         Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole
         Box::new(unordered_key::UnorderedKeyFixer::default()),
+        Box::new(duplicated_key::DuplicatedKeyFixer::default()),
         Box::new(ending_blank_line::EndingBlankLineFixer::default()),
     ]
 }
 
-pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>) -> usize {
+pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[&str]) -> usize {
     if warnings.is_empty() {
         return 0;
     }
+    let mut fixes = fixlist();
+
+    // Skip fixes for checks in --skip argument (globally)
+    fixes.retain(|f| !skip_checks.contains(&f.name()));
 
     let mut count = 0;
-    for mut fixer in fixlist() {
+    for mut fixer in fixes {
         // We can optimize it: create check_name:warnings map in advance
         let fixer_warnings: Vec<&mut Warning> = warnings
             .iter_mut()
             .filter(|w| w.check_name == fixer.name())
             .collect();
 
-        if !fixer_warnings.is_empty() {
+        // Some fixers are mandatory because previous fixers can spawn warnings for them
+        if ["DuplicatedKey", "UnorderedKey"].contains(&fixer.name()) || !fixer_warnings.is_empty() {
             match fixer.fix_warnings(fixer_warnings, lines) {
                 Some(fixer_count) => count += fixer_count,
                 None => {
@@ -99,7 +104,7 @@ mod tests {
         let mut lines = vec![line_entry(1, 2, "A=B"), blank_line_entry(2, 2)];
         let mut warnings: Vec<Warning> = Vec::new();
 
-        assert_eq!(0, run(&mut warnings, &mut lines));
+        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
     }
 
     #[test]
@@ -115,7 +120,7 @@ mod tests {
             String::from("The c key should be in uppercase"),
         )];
 
-        assert_eq!(1, run(&mut warnings, &mut lines));
+        assert_eq!(1, run(&mut warnings, &mut lines, &[]));
         assert_eq!("C=d", lines[1].raw_string);
         assert!(warnings[0].is_fixed);
     }
@@ -133,7 +138,7 @@ mod tests {
             String::from("The UNFIXABLE- key is not fixable"),
         )];
 
-        assert_eq!(0, run(&mut warnings, &mut lines));
+        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
         assert!(!warnings[0].is_fixed);
     }
 
@@ -157,8 +162,38 @@ mod tests {
             ),
         ];
 
-        assert_eq!(0, run(&mut warnings, &mut lines));
+        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
         assert!(!warnings[0].is_fixed);
+    }
+
+    #[test]
+    fn new_warnings_after_fix_test() {
+        let mut lines = vec![
+            line_entry(1, 5, "A1=1"),
+            line_entry(2, 5, "A2=2"),
+            line_entry(3, 5, "a0=0"),
+            line_entry(4, 5, "a2=2"),
+            blank_line_entry(5, 5),
+        ];
+        let mut warnings = vec![
+            Warning::new(
+                lines[2].clone(),
+                "LowercaseKey",
+                String::from("The a0 key should be in uppercase"),
+            ),
+            Warning::new(
+                lines[3].clone(),
+                "LowercaseKey",
+                String::from("The a2 key should be in uppercase"),
+            ),
+        ];
+
+        assert_eq!(2, run(&mut warnings, &mut lines, &[]));
+        assert_eq!("A0=0", lines[0].raw_string);
+        assert_eq!("A1=1", lines[1].raw_string);
+        assert_eq!("A2=2", lines[2].raw_string);
+        assert_eq!("# A2=2", lines[3].raw_string);
+        assert_eq!("\n", lines[4].raw_string);
     }
 
     struct TestFixer<'a> {
