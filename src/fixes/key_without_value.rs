@@ -55,6 +55,5 @@ mod tests {
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
         assert_eq!("FOO=", lines[0].raw_string);
-        assert!(warning.is_fixed);
     }
 }

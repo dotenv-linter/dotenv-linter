@@ -20,28 +20,24 @@ impl Fix for EndingBlankLineFixer<'_> {
 
     fn fix_warnings(
         &mut self,
-        warnings: Vec<&mut Warning>,
+        _warnings: Vec<&mut Warning>,
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         let file = lines.first()?.file.clone();
         let last_line = lines.last()?;
 
-        if !last_line.raw_string.ends_with(LF) {
-            lines.push(LineEntry {
-                number: lines.len() + 1,
-                file,
-                raw_string: LF.to_string(),
-                is_deleted: false,
-            });
-
-            for warning in warnings {
-                warning.mark_as_fixed()
-            }
-
-            return Some(1);
+        if last_line.raw_string.ends_with(LF) {
+            return Some(0);
         }
 
-        Some(0)
+        lines.push(LineEntry {
+            number: lines.len() + 1,
+            file,
+            raw_string: LF.to_string(),
+            is_deleted: false,
+        });
+
+        Some(1)
     }
 }
 
@@ -62,7 +58,6 @@ mod tests {
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
         assert_eq!("\n", lines[2].raw_string);
-        assert!(warning.is_fixed);
     }
 
     #[test]

@@ -61,7 +61,6 @@ mod tests {
         let warnings = vec![&mut warning];
         let mut lines = vec![line1.clone(), line2.clone(), line3.clone(), line4.clone()];
         assert_eq!(Some(1), fixer.fix_warnings(warnings, &mut lines));
-        assert!(warning.is_fixed);
     }
 
     #[test]
@@ -92,7 +91,5 @@ mod tests {
             line5.clone(),
         ];
         assert_eq!(Some(2), fixer.fix_warnings(warnings, &mut lines));
-        assert!(warning1.is_fixed);
-        assert!(warning2.is_fixed);
     }
 }

@@ -20,31 +20,22 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let is_fix = args.is_present("fix");
+    let total = warnings.len();
+    let is_not_quiet = !args.is_present("quiet");
 
-    if is_fix {
-        let (fixed, unfixed): (Vec<_>, Vec<_>) = warnings.iter().partition(|w| w.is_fixed);
-
-        if !fixed.is_empty() {
-            println!("Fixed warnings:");
-            for w in fixed {
-                println!("{}", w);
-            }
+    if args.is_present("fix") {
+        if is_not_quiet {
+            warnings.iter().for_each(|w| println!("{}", w));
+            println!();
         }
 
-        if !unfixed.is_empty() {
-            println!("\nUnfixed warnings:");
-            for w in unfixed {
-                println!("{}", w);
-            }
-        } else {
-            process::exit(0);
-        }
+        println!("All warnings are fixed. Total: {}", total);
+        process::exit(0);
     } else {
         warnings.iter().for_each(|w| println!("{}", w));
 
-        if !args.is_present("quiet") {
-            print_total(warnings.len());
+        if is_not_quiet {
+            print_total(total);
         }
     }
 

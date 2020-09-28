@@ -46,12 +46,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
             }
         }
 
-        let count = warnings.len();
-        for warning in warnings {
-            warning.mark_as_fixed();
-        }
-
-        Some(count)
+        Some(warnings.len())
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -100,8 +95,6 @@ mod tests {
             &lines[..2],
             &[line_entry(1, 4, "FOO=BAR"), line_entry(2, 4, "Z=Y")]
         );
-
-        assert!(warnings.iter().all(|w| w.is_fixed));
     }
 
     #[test]
