@@ -161,6 +161,16 @@ mod tests {
     }
 
     #[test]
+    fn fix_when_no_warnings_test() {
+        let mut lines = get_lines(vec!["B=C", "A=B", "D=E", "\n"]);
+        let mut warnings = get_warnings(&lines, vec![]);
+
+        assert_eq!(Some(0), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(&lines, vec!["A=B", "B=C", "D=E", "\n"]);
+    }
+
+    #[test]
     fn many_moves_test() {
         let mut lines = get_lines(vec!["X=X", "A=A", "D=D", "Z=Z", "Y=Y", "KLM=123", "\n"]);
         let mut warnings = get_warnings(

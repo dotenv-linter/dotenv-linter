@@ -54,7 +54,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
 
         // run fixers & write results to file
         let mut result = checks::run(&lines, &skip_checks);
-        if is_fix && fixes::run(&mut result, &mut lines) > 0 {
+        if is_fix && !result.is_empty() && fixes::run(&mut result, &mut lines, &skip_checks) > 0 {
             // create backup copy unless user specifies not to
             let should_backup = !args.is_present("no-backup");
             if should_backup {
