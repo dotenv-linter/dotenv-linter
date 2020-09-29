@@ -245,11 +245,12 @@ UnorderedKey
 
 ```shell script
 $ dotenv-linter -f
-Fixed warnings:
+Original file was backed up to: ".env_1601378896"
+
+.env:2 DuplicatedKey: The BAR key is duplicated
 .env:3 LowercaseKey: The foo key should be in uppercase
 
-Unfixed warnings:
-.env:2 DuplicatedKey: The BAR key is duplicated
+All warnings are fixed. Total: 2
 ```
 
 ## ✅ Checks

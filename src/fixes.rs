@@ -24,7 +24,6 @@ trait Fix {
         for warning in warnings {
             let line = lines.get_mut(warning.line_number() - 1)?;
             if self.fix_line(line).is_some() {
-                warning.mark_as_fixed();
                 count += 1;
             }
         }
@@ -79,9 +78,6 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[
             match fixer.fix_warnings(fixer_warnings, lines) {
                 Some(fixer_count) => count += fixer_count,
                 None => {
-                    for warning in warnings {
-                        warning.mark_as_unfixed();
-                    }
                     return 0;
                 }
             }
@@ -122,7 +118,6 @@ mod tests {
 
         assert_eq!(1, run(&mut warnings, &mut lines, &[]));
         assert_eq!("C=d", lines[1].raw_string);
-        assert!(warnings[0].is_fixed);
     }
 
     #[test]
@@ -139,7 +134,6 @@ mod tests {
         )];
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
-        assert!(!warnings[0].is_fixed);
     }
 
     #[test]
@@ -163,7 +157,6 @@ mod tests {
         ];
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
-        assert!(!warnings[0].is_fixed);
     }
 
     #[test]
@@ -272,31 +265,5 @@ mod tests {
                 None
             }
         }
-    }
-
-    #[test]
-    fn warnings_are_marked_as_fixed_if_fix_returns_some() {
-        let mut lines = vec![line_entry(1, 2, "foo=bar"), blank_line_entry(2, 2)];
-
-        let mut warning = Warning::new(lines[0].clone(), "", String::from(""));
-
-        let mut fixer = TestFixer { name: "fixer" };
-
-        fixer.fix_warnings(vec![&mut warning], &mut lines);
-
-        assert!(warning.is_fixed)
-    }
-
-    #[test]
-    fn warnings_are_not_marked_as_fixed_if_fix_returns_none() {
-        let mut lines = vec![line_entry(1, 2, "a=b"), blank_line_entry(2, 2)];
-
-        let mut warning = Warning::new(lines[0].clone(), "", String::from(""));
-
-        let mut fixer = TestFixer { name: "fixer" };
-
-        fixer.fix_warnings(vec![&mut warning], &mut lines);
-
-        assert!(!warning.is_fixed)
     }
 }

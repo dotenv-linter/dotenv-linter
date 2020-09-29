@@ -39,7 +39,6 @@ impl Fix for UnorderedKeyFixer<'_> {
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         // We find all sorting groups and sort them
-
         let mut start_index = 0;
         let mut end = None;
         let mut is_disabled = false;
@@ -77,12 +76,7 @@ impl Fix for UnorderedKeyFixer<'_> {
             }
         }
 
-        let count = warnings.len();
-        for warning in warnings {
-            warning.mark_as_fixed();
-        }
-
-        Some(count)
+        Some(warnings.len())
     }
 }
 
@@ -156,8 +150,6 @@ mod tests {
         assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
 
         assert_lines(&lines, vec!["A=B", "B=C", "D=E", "\n"]);
-
-        assert!(warnings[0].is_fixed);
     }
 
     #[test]
@@ -188,10 +180,6 @@ mod tests {
             &lines,
             vec!["A=A", "D=D", "KLM=123", "X=X", "Y=Y", "Z=Z", "\n"],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -223,8 +211,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        assert!(warnings[0].is_fixed);
     }
 
     #[test]
@@ -282,10 +268,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -296,8 +278,6 @@ mod tests {
         assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
 
         assert_lines(&lines, vec!["A=B", "B=C", "D=E"]);
-
-        assert!(warnings[0].is_fixed);
     }
 
     #[test]
@@ -366,10 +346,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -410,10 +386,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -459,10 +431,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -498,8 +466,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        assert!(warnings[0].is_fixed);
     }
 
     #[test]
@@ -545,10 +511,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -599,10 +561,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -642,10 +600,6 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 
     #[test]
@@ -727,9 +681,5 @@ mod tests {
                 "\n",
             ],
         );
-
-        for warning in warnings {
-            assert!(warning.is_fixed);
-        }
     }
 }

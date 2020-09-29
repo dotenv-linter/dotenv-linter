@@ -1,7 +1,7 @@
 use crate::common::TestDir;
 
 #[test]
-fn output_without_total() {
+fn check_output_in_quiet_mode() {
     let test_dir = TestDir::new();
     let testfile_to_check = test_dir.create_testfile(".env", " BAR='Baz'\n");
 
@@ -12,4 +12,16 @@ fn output_without_total() {
     );
 
     test_dir.test_command_fail_with_args(args, expected_output);
+}
+
+#[test]
+fn fix_output_in_quiet_mode() {
+    let test_dir = TestDir::new();
+    let _ = test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
+
+    let args = &["--quiet"];
+    let expected_output = format!("All warnings are fixed. Total: {}\n", 2);
+
+    test_dir.test_command_fix_success_with_args(expected_output, args);
+    test_dir.close();
 }

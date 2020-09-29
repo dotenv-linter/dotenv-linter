@@ -86,6 +86,5 @@ mod tests {
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
         assert_eq!("RAILS_ENV=development", lines[0].raw_string);
-        assert!(warning.is_fixed);
     }
 }

@@ -7,7 +7,6 @@ pub struct Warning {
     pub check_name: String,
     line: LineEntry,
     message: String,
-    pub is_fixed: bool,
 }
 
 impl Warning {
@@ -17,20 +16,11 @@ impl Warning {
             line,
             check_name,
             message,
-            is_fixed: false,
         }
     }
 
     pub fn line_number(&self) -> usize {
         self.line.number
-    }
-
-    pub fn mark_as_fixed(&mut self) {
-        self.is_fixed = true;
-    }
-
-    pub fn mark_as_unfixed(&mut self) {
-        self.is_fixed = false;
     }
 }
 

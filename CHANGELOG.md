@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Remove code related to "Fixed/Unfixed warnings" [#289](https://github.com/dotenv-linter/dotenv-linter/pull/289) ([@mgrachev](https://github.com/mgrachev))
 - Refactoring integration tests [#288](https://github.com/dotenv-linter/dotenv-linter/pull/288) ([@mgrachev](https://github.com/mgrachev))
 - Fix a bug with fixers spawning new warnings [#287](https://github.com/dotenv-linter/dotenv-linter/pull/287) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Fix a bug with `UnorderedKeyChecker` and control comments [#283](https://github.com/dotenv-linter/dotenv-linter/pull/283) ([@mgrachev](https://github.com/mgrachev))
