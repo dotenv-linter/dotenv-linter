@@ -3,6 +3,10 @@ on:
   push:
     tags:
       - '*.*.*'
+
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   release-linux:
     runs-on: ubuntu-latest
