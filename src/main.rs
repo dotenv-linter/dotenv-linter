@@ -99,7 +99,7 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
             Arg::with_name("fix")
                 .short("f")
                 .long("fix")
-                .help("Automatically fixes warnings if possible"),
+                .help("Automatically fixes warnings"),
         )
         .arg(
             Arg::with_name("no-backup")
@@ -110,7 +110,7 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
             Arg::with_name("quiet")
                 .short("q")
                 .long("quiet")
-                .help("Don't display additional information"),
+                .help("Doesn't display additional information"),
         )
         .get_matches()
 }
