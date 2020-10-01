@@ -18,15 +18,23 @@ $ wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/mas
 **Homebrew / Linuxbrew**
 
 ```shell script
+# Installs the latest stable release
 $ brew install dotenv-linter/tap/dotenv-linter
+
+# Builds the latest version from the repository
+$ brew install --HEAD dotenv-linter/tap/dotenv-linter
 ```
 
 **Arch Linux / AUR**
 
 ```shell script
-# use your favourite AUR-helper
-$ trizen -S dotenv-linter-bin # for the binary distribution
-$ trizen -S dotenv-linter-git # for the current master branch
+# Use your favourite AUR-helper, e.g. trizen
+
+# Installs the latest stable release
+$ trizen -S dotenv-linter-bin
+
+# Builds the latest version from the repository
+$ trizen -S dotenv-linter-git
 ```
 
 **Windows / Scoop**
