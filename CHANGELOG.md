@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
-- Add fixer: Add CARGO_TERM_COLOR to CI [#290](https://github.com/dotenv-linter/dotenv-linter/issues/290)
 - Add fixer: UnorderedKeyFixer [#261](https://github.com/dotenv-linter/dotenv-linter/pull/261) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add backup feature and `--no-backup` flag for fixers [#272](https://github.com/dotenv-linter/dotenv-linter/pull/272) ([@baile320](https://github.com/baile320))
 - Add fixer: ExtraBlankLineFixer [#260](https://github.com/dotenv-linter/dotenv-linter/pull/260) ([@diggymo](https://github.com/diggymo))
@@ -25,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Add `CARGO_TERM_COLOR` env variable to the actions [#296](https://github.com/dotenv-linter/dotenv-linter/pull/296) ([@skippednote](https://github.com/skippednote))
 - Remove code related to "Fixed/Unfixed warnings" [#289](https://github.com/dotenv-linter/dotenv-linter/pull/289) ([@mgrachev](https://github.com/mgrachev))
 - Refactoring integration tests [#288](https://github.com/dotenv-linter/dotenv-linter/pull/288) ([@mgrachev](https://github.com/mgrachev))
 - Fix a bug with fixers spawning new warnings [#287](https://github.com/dotenv-linter/dotenv-linter/pull/287) ([@evgeniy-r](https://github.com/evgeniy-r))
