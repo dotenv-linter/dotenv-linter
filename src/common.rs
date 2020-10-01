@@ -16,15 +16,6 @@ pub fn remove_invalid_leading_chars(string: &str) -> String {
         .collect()
 }
 
-#[test]
-fn remove_invalid_leading_chars_test() {
-    let string = String::from("-1&*FOO");
-    assert_eq!("FOO", remove_invalid_leading_chars(&string));
-
-    let string = String::from("***FOO-BAR");
-    assert_eq!("FOO-BAR", remove_invalid_leading_chars(&string));
-}
-
 pub(crate) mod tests {
     use super::*;
     use std::path::PathBuf;
@@ -55,5 +46,14 @@ pub(crate) mod tests {
             raw_string: String::from(raw_string),
             is_deleted: false,
         }
+    }
+
+    #[test]
+    fn remove_invalid_leading_chars_test() {
+        let string = String::from("-1&*FOO");
+        assert_eq!("FOO", remove_invalid_leading_chars(&string));
+
+        let string = String::from("***FOO-BAR");
+        assert_eq!("FOO-BAR", remove_invalid_leading_chars(&string));
     }
 }

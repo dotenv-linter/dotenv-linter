@@ -30,7 +30,7 @@ impl FileEntry {
             Err(_) => return None,
         };
 
-        let mut lines: Vec<String> = content.lines().map(|str| str.to_string()).collect();
+        let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
 
         // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
         if content.ends_with(LF) {
