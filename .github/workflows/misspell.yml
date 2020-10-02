@@ -1,0 +1,16 @@
+name: misspell
+on:
+  push:
+    branches: [master]
+
+  pull_request:
+
+jobs:
+  misspell:
+    name: misspell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: reviewdog/action-misspell@v1
+        with:
+          locale: "US"
