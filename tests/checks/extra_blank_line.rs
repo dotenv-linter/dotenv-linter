@@ -1,4 +1,4 @@
-use crate::common::TestDir;
+use crate::common::*;
 
 #[test]
 fn correct_files() {
@@ -24,11 +24,7 @@ fn two_blank_lines_at_the_beginning() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
-    let expected_output = format!(
-        "{}:{} ExtraBlankLine: Extra blank line detected\n\nFound 1 problem\n",
-        testfile.shortname_as_str(),
-        2
-    );
+    let expected_output = check_output(&[".env:2 ExtraBlankLine: Extra blank line detected"]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }
@@ -40,11 +36,7 @@ fn two_blank_lines_in_the_middle() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
-    let expected_output = format!(
-        "{}:{} ExtraBlankLine: Extra blank line detected\n\nFound 1 problem\n",
-        testfile.shortname_as_str(),
-        4
-    );
+    let expected_output = check_output(&[".env:4 ExtraBlankLine: Extra blank line detected"]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }
@@ -56,11 +48,7 @@ fn two_blank_lines_at_the_end() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
-    let expected_output = format!(
-        "{}:{} ExtraBlankLine: Extra blank line detected\n\nFound 1 problem\n",
-        testfile.shortname_as_str(),
-        5
-    );
+    let expected_output = check_output(&[".env:5 ExtraBlankLine: Extra blank line detected"]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }

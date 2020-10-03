@@ -1,4 +1,4 @@
-use crate::common::TestDir;
+use crate::common::*;
 
 #[test]
 fn correct_files() {
@@ -31,11 +31,11 @@ fn incorrect_files() {
         let testdir = TestDir::new();
         let testfile = testdir.create_testfile(".env", content);
         let args = &[testfile.as_str()];
-        let expected_output = format!(
-            "{}:{} EndingBlankLine: No blank line at the end of the file\n\nFound 1 problem\n",
-            testfile.shortname_as_str(),
+        let expected_output = check_output(&[format!(
+            ".env:{} EndingBlankLine: No blank line at the end of the file",
             expected_line_numbers[i]
-        );
+        )
+        .as_str()]);
 
         testdir.test_command_fail_with_args(args, expected_output);
     }
