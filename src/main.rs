@@ -59,9 +59,9 @@ fn print_total(total: usize) {
         "\n{}",
         format!(
             "{} {} {}",
-            String::from("Found").to_string().red().bold(),
+            String::from("Found").red().bold(),
             total.to_string().red().bold(),
-            problems.to_string().red().bold()
+            problems.red().bold()
         )
     );
 }
