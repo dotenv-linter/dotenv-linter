@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add `check_output` helper function for integration tests [#305](https://github.com/dotenv-linter/dotenv-linter/pull/305) ([@Anthuang](https://github.com/anthuang))
 - Add action-misspell [#304](https://github.com/dotenv-linter/dotenv-linter/pull/304) ([@PurpleMyst](https://github.com/PurpleMyst))
 - Add action-shellcheck [#303](https://github.com/dotenv-linter/dotenv-linter/pull/303) ([@amd-9](https://github.com/amd-9))
 - Add fixer: UnorderedKeyFixer [#261](https://github.com/dotenv-linter/dotenv-linter/pull/261) ([@evgeniy-r](https://github.com/evgeniy-r))
