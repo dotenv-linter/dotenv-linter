@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add action-misspell [#304](https://github.com/dotenv-linter/dotenv-linter/pull/304) ([@PurpleMyst](https://github.com/PurpleMyst))
+- Add action-shellcheck [#303](https://github.com/dotenv-linter/dotenv-linter/pull/303) ([@amd-9](https://github.com/amd-9))
 - Add fixer: UnorderedKeyFixer [#261](https://github.com/dotenv-linter/dotenv-linter/pull/261) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add backup feature and `--no-backup` flag for fixers [#272](https://github.com/dotenv-linter/dotenv-linter/pull/272) ([@baile320](https://github.com/baile320))
 - Add fixer: ExtraBlankLineFixer [#260](https://github.com/dotenv-linter/dotenv-linter/pull/260) ([@diggymo](https://github.com/diggymo))
