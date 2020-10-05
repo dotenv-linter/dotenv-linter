@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Add `check_output` helper function for integration tests [#305](https://github.com/dotenv-linter/dotenv-linter/pull/305) ([@Anthuang](https://github.com/anthuang))
 - Update args help [#299](https://github.com/dotenv-linter/dotenv-linter/pull/299) ([@mgrachev](https://github.com/mgrachev))
 - Move `remove_invalid_leading_chars_test` to `tests` module [#298](https://github.com/dotenv-linter/dotenv-linter/pull/298) ([@mgrachev](https://github.com/mgrachev))
 - Add command to install latest version via `Homebrew` [#297](https://github.com/dotenv-linter/dotenv-linter/pull/297) ([@mgrachev](https://github.com/mgrachev))
