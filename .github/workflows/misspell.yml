@@ -9,4 +9,4 @@ jobs:
       - uses: actions/checkout@v1
       - uses: reviewdog/action-misspell@v1
         with:
-          locale: "UK"
+          locale: "US"
