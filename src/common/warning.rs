@@ -29,7 +29,10 @@ impl fmt::Display for Warning {
         write!(
             f,
             "{}:{} {}: {}",
-            self.line.file, self.line.number, self.check_name, self.message
+            self.line.file,
+            self.line.number.to_string().italic(),
+            self.check_name.red().bold(),
+            self.message
         )
     }
 }
@@ -49,7 +52,7 @@ mod tests {
         );
 
         assert_eq!(
-            ".env:1 DuplicatedKey: The FOO key is duplicated",
+            ".env:\u{1b}[3m1\u{1b}[0m \u{1b}[1;31mDuplicatedKey\u{1b}[0m: The FOO key is duplicated",
             format!("{}", warning)
         );
     }

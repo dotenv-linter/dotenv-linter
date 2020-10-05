@@ -1,4 +1,5 @@
 use clap::Arg;
+use colored::*;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::{env, process};
@@ -19,6 +20,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     if warnings.is_empty() {
         process::exit(0);
     }
+    let no_color = args.is_present("no-color");
 
     let total = warnings.len();
     let is_not_quiet = !args.is_present("quiet");
@@ -35,7 +37,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         warnings.iter().for_each(|w| println!("{}", w));
 
         if is_not_quiet {
-            print_total(total);
+            if !no_color {
+                print_total(total);
+            } else {
+                print_total_no_color(total);
+            }
         }
     }
 
@@ -43,6 +49,24 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn print_total(total: usize) {
+    let mut problems = String::from("problem");
+
+    if total > 1 {
+        problems += "s";
+    }
+
+    println!(
+        "\n{}",
+        format!(
+            "{} {} {}",
+            String::from("Found").to_string().red().bold(),
+            total.to_string().red().bold(),
+            problems.to_string().red().bold()
+        )
+    );
+}
+
+fn print_total_no_color(total: usize) {
     let mut problems = String::from("problem");
 
     if total > 1 {
@@ -94,6 +118,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .short("r")
                 .long("recursive")
                 .help("Recursively search and check .env files"),
+        )
+        .arg(
+            Arg::with_name("no-color")
+                .long("no-color")
+                .help("Turns off the colored output"),
         )
         .arg(
             Arg::with_name("fix")
