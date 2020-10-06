@@ -9,12 +9,6 @@ pub fn fix_output(warnings: &[&str]) -> String {
 pub fn check_output(warnings: &[&str]) -> String {
     let total = warnings.len();
     let output: &str = &warnings.join("\n");
-    format!("{}\n\nFound {} problem\n", output, total)
-}
-
-pub fn check_output(warnings: &[&str]) -> String {
-    let total = warnings.len();
-    let output: &str = &warnings.join("\n");
     if total == 1 {
         return format!("{}\n\nFound {} problem\n", output, total);
     } else {
