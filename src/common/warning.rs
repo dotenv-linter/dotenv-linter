@@ -53,9 +53,9 @@ mod tests {
 
         assert_eq!(
             format!(
-                "{} {} {}",
-                format!("{}:{}", ".env", "1").italic(),
-                "DuplicatedKey:".red().bold(),
+                "{} {}: {}",
+                format!("{}:{}", ".env", "1".italic()),
+                "DuplicatedKey".red().bold(),
                 "The FOO key is duplicated"
             ),
             format!("{}", warning)
