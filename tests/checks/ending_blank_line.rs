@@ -13,7 +13,9 @@ fn correct_files() {
         let testfile = testdir.create_testfile(".env", content);
         let args = &[testfile.as_str()];
 
-        testdir.test_command_success_with_args(args);
+        let expected_output = check_output(&[(".env", &[])]);
+
+        testdir.test_command_success_with_args(args, expected_output);
     }
 }
 
@@ -31,11 +33,14 @@ fn incorrect_files() {
         let testdir = TestDir::new();
         let testfile = testdir.create_testfile(".env", content);
         let args = &[testfile.as_str()];
-        let expected_output = check_output(&[format!(
-            ".env:{} EndingBlankLine: No blank line at the end of the file",
-            expected_line_numbers[i]
-        )
-        .as_str()]);
+        let expected_output = check_output(&[(
+            ".env",
+            &[format!(
+                ".env:{} EndingBlankLine: No blank line at the end of the file",
+                expected_line_numbers[i]
+            )
+            .as_str()],
+        )]);
 
         testdir.test_command_fail_with_args(args, expected_output);
     }

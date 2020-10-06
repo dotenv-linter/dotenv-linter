@@ -27,11 +27,14 @@ fn unordered_key() {
         \n\
         # end comment\n",
     );
-    let expected_output = fix_output(&[
-        ".env:5 UnorderedKey: The A key should go before the C key",
-        ".env:13 UnorderedKey: The K key should go before the M key",
-        ".env:16 UnorderedKey: The I key should go before the K key",
-    ]);
+    let expected_output = fix_output(&[(
+        ".env",
+        &[
+            ".env:5 UnorderedKey: The A key should go before the C key",
+            ".env:13 UnorderedKey: The K key should go before the M key",
+            ".env:16 UnorderedKey: The I key should go before the K key",
+        ],
+    )]);
     testdir.test_command_fix_success(expected_output);
 
     assert_eq!(

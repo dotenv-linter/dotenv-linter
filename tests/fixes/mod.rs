@@ -19,7 +19,7 @@ fn correct_file() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", "ABC=DEF\nD=BAR\n\nFOO=BAR\n");
 
-    testdir.test_command_fix_success(String::new());
+    testdir.test_command_fix_success(fix_output(&[(".env", &[])]));
 
     assert_eq!(testfile.contents().as_str(), "ABC=DEF\nD=BAR\n\nFOO=BAR\n");
 
@@ -31,10 +31,13 @@ fn skip_checks() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", "A1=1\nA2=2\na0=0\na2=2\n");
 
-    let expected_output = fix_output(&[
-        ".env:3 LowercaseKey: The a0 key should be in uppercase",
-        ".env:4 LowercaseKey: The a2 key should be in uppercase",
-    ]);
+    let expected_output = fix_output(&[(
+        ".env",
+        &[
+            ".env:3 LowercaseKey: The a0 key should be in uppercase",
+            ".env:4 LowercaseKey: The a2 key should be in uppercase",
+        ],
+    )]);
 
     testdir.test_command_fix_success_with_args(
         expected_output,
@@ -55,11 +58,22 @@ fn multiple_files() {
     let testfile3 = testdir.create_testfile("3.env", "A=b \nab=DEF\n\nA=c\n");
 
     let expected_output = fix_output(&[
-        "2.env:1 LowercaseKey: The abc key should be in uppercase",
-        "2.env:4 UnorderedKey: The B key should go before the F key",
-        "3.env:1 TrailingWhitespace: Trailing whitespace detected",
-        "3.env:2 LowercaseKey: The ab key should be in uppercase",
-        "3.env:4 DuplicatedKey: The A key is duplicated",
+        ("1.env", &[]),
+        (
+            "2.env",
+            &[
+                "2.env:1 LowercaseKey: The abc key should be in uppercase",
+                "2.env:4 UnorderedKey: The B key should go before the F key",
+            ],
+        ),
+        (
+            "3.env",
+            &[
+                "3.env:1 TrailingWhitespace: Trailing whitespace detected",
+                "3.env:2 LowercaseKey: The ab key should be in uppercase",
+                "3.env:4 DuplicatedKey: The A key is duplicated",
+            ],
+        ),
     ]);
     testdir.test_command_fix_success(expected_output);
 
@@ -103,4 +117,18 @@ fn fixtures() {
         // Check the fixed file again and then clean up
         testdir.test_command_success();
     }
+}
+
+#[test]
+fn no_warnings() {
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", "A1=1\n");
+
+    let expected_output = fix_output(&[(".env", &[])]);
+
+    testdir.test_command_fix_success(expected_output);
+
+    assert_eq!(testfile.contents().as_str(), "A1=1\n");
+
+    testdir.close();
 }

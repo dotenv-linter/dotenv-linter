@@ -68,9 +68,9 @@ impl TestDir {
     /// Run the default CLI binary in this TestDir and check it succeeds.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_success(self) {
+    pub fn test_command_success(self, expected_output: String) {
         let args: &[&str; 0] = &[];
-        self.test_command_success_with_args(args);
+        self.test_command_success_with_args(args, expected_output);
     }
 
     /// Run the default CLI binary in this TestDir and check it fails.
@@ -85,7 +85,7 @@ impl TestDir {
     /// in this TestDir and check it succeeds.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_success_with_args<I, S>(self, args: I)
+    pub fn test_command_success_with_args<I, S>(self, args: I, expected_output: String)
     where
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
@@ -95,7 +95,8 @@ impl TestDir {
         cmd.current_dir(&canonical_current_dir)
             .args(args)
             .assert()
-            .success();
+            .success()
+            .stdout(expected_output);
 
         self.close();
     }
