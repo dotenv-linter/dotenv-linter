@@ -49,6 +49,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn print_total(total: usize) {
+    #[cfg(windows)]
+    colored::control::set_virtual_terminal(true).ok();
     let mut problems = String::from("problem");
 
     if total > 1 {
