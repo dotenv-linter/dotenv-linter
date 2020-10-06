@@ -37,10 +37,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         warnings.iter().for_each(|w| println!("{}", w));
 
         if is_not_quiet {
-            if !no_color {
-                print_total(total);
-            } else {
+            if no_color {
                 print_total_no_color(total);
+            } else {
+                print_total(total);
             }
         }
     }
@@ -59,10 +59,12 @@ fn print_total(total: usize) {
         "\n{}",
         format!(
             "{} {} {}",
-            String::from("Found").red().bold(),
-            total.to_string().red().bold(),
-            problems.red().bold()
+            String::from("Found"),
+            total.to_string(),
+            problems
         )
+        .red()
+        .bold()
     );
 }
 
