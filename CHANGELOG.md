@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Remove `CARGO_TERM_COLOR` from the shellcheck workflow [#313](https://github.com/dotenv-linter/dotenv-linter/pull/313)
 - Add `check_output` helper function for integration tests [#305](https://github.com/dotenv-linter/dotenv-linter/pull/305) ([@Anthuang](https://github.com/anthuang))
 - Add an additional test for `LineEntry.get_value` [#306](https://github.com/dotenv-linter/dotenv-linter/pull/306) ([@vvkpd](https://github.com/vvkpd))
 - Update args help [#299](https://github.com/dotenv-linter/dotenv-linter/pull/299) ([@mgrachev](https://github.com/mgrachev))
