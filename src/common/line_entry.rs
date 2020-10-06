@@ -159,6 +159,22 @@ mod tests {
         }
 
         #[test]
+        fn correct_line_with_single_quote_test() {
+            let input = line_entry(1, 1, "FOO='BAR'");
+            let expected = Some(String::from("'BAR'"));
+
+            assert_eq!(expected, input.get_value());
+        }
+
+        #[test]
+        fn correct_line_with_double_quote_test() {
+            let input = line_entry(1, 1, "FOO=\"BAR\"");
+            let expected = Some(String::from("\"BAR\""));
+
+            assert_eq!(expected, input.get_value());
+        }
+
+        #[test]
         fn line_without_key_test() {
             let input = line_entry(1, 1, "=BAR");
             let expected = Some(String::from("BAR"));
