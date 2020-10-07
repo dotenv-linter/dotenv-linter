@@ -3,7 +3,7 @@ mod file_entry;
 mod line_entry;
 mod warning;
 
-pub use colored::*;
+use colored::*;
 pub use file_entry::FileEntry;
 pub use line_entry::LineEntry;
 pub use warning::Warning;
