@@ -28,9 +28,8 @@ impl fmt::Display for Warning {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}:{} {}: {}",
-            self.line.file,
-            self.line.number.to_string().italic(),
+            "{} {}: {}",
+            format!("{}:{}", self.line.file, self.line.number).italic(),
             self.check_name.red().bold(),
             self.message
         )
@@ -54,7 +53,7 @@ mod tests {
         assert_eq!(
             format!(
                 "{} {}: {}",
-                format!("{}:{}", ".env", "1".italic()),
+                format!("{}:{}", ".env", "1").italic(),
                 "DuplicatedKey".red().bold(),
                 "The FOO key is duplicated"
             ),
