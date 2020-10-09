@@ -115,6 +115,8 @@ impl TestDir {
     }
 
     /// Run the default CLI binary, with "-f", in this TestDir and check it succeeds.
+    ///
+    /// This method does NOT remove TestDir when finished
     pub fn test_command_fix_success(&self, expected_output: String) {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
@@ -125,8 +127,22 @@ impl TestDir {
             .stdout(expected_output);
     }
 
+    /// Run the default CLI binary, with "-f", in this TestDir and check it succeeds.
+    ///
+    /// This method does NOT remove TestDir when finished
+    pub fn test_command_fix_success_without_output(&self) {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(&["-f", "--no-backup"])
+            .assert()
+            .success();
+    }
+
     /// Run the default CLI binary, with "-f" and other provided arguments,
     /// in this TestDir and check it succeeds.
+    ///
+    /// This method does NOT remove TestDir when finished
     pub fn test_command_fix_success_with_args<I, S>(&self, expected_output: String, ext_args: I)
     where
         I: IntoIterator<Item = S>,

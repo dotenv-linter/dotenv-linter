@@ -218,6 +218,8 @@ jobs:
     name: Test / Windows
     runs-on: windows-latest
     steps:
+      - name: Disable EOL conversion
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
         id: toolchain
