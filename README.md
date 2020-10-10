@@ -27,27 +27,29 @@
 
 It checks `.env` files for problems that may cause the application to malfunction:
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#duplicated-key">Duplicated Key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#ending-blank-line">Ending Blank Line</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#extra-blank-line">Extra Blank Line</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#incorrect-delimiter">Incorrect delimiter</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#key-without-value">Key without value</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#leading-character">Leading character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#lowercase-key">Lowercase key</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#quote-character">Quote character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#space-character">Space character</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#trailing-whitespace">Trailing whitespace</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="#unordered-Key">Unordered Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/duplicated_key">Duplicated Key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/ending_blank_line">Ending Blank Line</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/extra_blank_line">Extra Blank Line</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/incorrect_delimiter">Incorrect delimiter</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/key_without_value">Key without value</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/leading_character">Leading character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/lowercase_key">Lowercase key</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/quote_character">Quote character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/space_character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/trailing_whitespace">Trailing whitespace</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/unordered_key">Unordered Key</a><br />
 </p>
 
-The key features:
+And automatically fixes them all 😱
+
+**The key features**:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️&nbsp;Lightning-fast because it is written in Rust 🦀<br />
 &nbsp;&nbsp;&nbsp;&nbsp;💣&nbsp;Can be used on any project regardless of the programming language 💥<br />
 &nbsp;&nbsp;&nbsp;&nbsp;🚀&nbsp;Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a>) 🔥
 </p>
 
-Articles about dotenv-linter:
+**Articles about dotenv-linter**:
 * [In English](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
 * [In Russian](https://www.mgrachev.com/2020/04/20/dotenv-linter)
 
@@ -55,107 +57,20 @@ Articles about dotenv-linter:
 
 ## 👨‍💻 Installation
 
-### Binary
+### Pre-compiled binary
 
 ```shell script
-# Linux / macOS / Windows (MINGW and etc). Installs it into ./bin/ by default.
+# Linux / macOS / Windows (MINGW and etc). Installs it into ./bin/ by default
 $ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
-# Specify installation directory and version.
+# Specify installation directory and version
 $ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s -- -b usr/local/bin v2.0.0
 
 # Alpine Linux (wget)
 $ wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 ```
 
-### Homebrew / Linuxbrew
-
-```shell script
-# Installs the latest stable release
-$ brew install dotenv-linter/tap/dotenv-linter
-
-# Builds the latest version from the repository
-$ brew install --HEAD dotenv-linter/tap/dotenv-linter
-```
-
-### Arch Linux / AUR
-
-```shell script
-# Use your favourite AUR-helper, e.g. trizen
-
-# Installs the latest stable release
-$ trizen -S dotenv-linter-bin
-
-# Builds the latest version from the repository
-$ trizen -S dotenv-linter-git
-```
-
-### Windows / Scoop
-
-```shell script
-$ scoop bucket add dotenv-linter https://github.com/dotenv-linter/scoop.git
-$ scoop install dotenv-linter/dotenv-linter
-````
-
-### Docker
-
-```shell script
-$ docker run --rm -v `pwd`:/app -w /app dotenvlinter/dotenv-linter
-```
-
-### Cargo
-
-If you are a **Rust** programmer, you can install `dotenv-linter` via `cargo`:
-
-```shell script
-$ cargo install dotenv-linter
-```
-
-### GitHub Action
-
-<details>
-<summary>Example: <code>.github/workflows/dotenv_linter.yml</code></summary>
-
-```yaml
-name: dotenv-linter
-on: [pull_request]
-jobs:
-  dotenv-linter:
-    name: runner / dotenv-linter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v1
-      - name: dotenv-linter
-        uses: dotenv-linter/action-dotenv-linter@v2
-        with:
-          github_token: ${{ secrets.github_token }}
-```
-
-In the example above, [action-dotenv-linter](https://github.com/dotenv-linter/action-dotenv-linter) is used to run `dotenv-linter`.
-</details>
-
-### CircleCI
-
-<details>
-<summary>Example: <code>.circleci/config.yml</code></summary>
-
-```yaml
-version: 2.1
-jobs:
-  dotenv-linter:
-    docker:
-      - image: circleci/rust:latest
-    steps:
-      - checkout
-      - run:
-          name: Run dotenv-linter
-          command: |
-            wget https://github.com/dotenv-linter/dotenv-linter/releases/latest/download/dotenv-linter-alpine-x86_64.tar.gz \
-            -O - -q | tar -xzf -
-            ./dotenv-linter
-```
-</details>
+You can find other installation methods here: https://dotenv-linter.github.io/#/installation
 
 ## 🚀 Usage
 
@@ -170,86 +85,7 @@ $ dotenv-linter
 Found 3 problems
 ```
 
-To check another directory, just pass its path as an argument. The same approach works if you need to check any files individually:
-
-```shell script
-$ dotenv-linter dir1 dir2/.my-env-file
-dir1/.env:1 LeadingCharacter: Invalid leading character detected
-dir1/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
-dir2/.my-env-file:1 LowercaseKey: The bar key should be in uppercase
-
-Found 3 problems
-```
-
-If you need to exclude a file or directory from check, you can use the argument `--exclude PATH` or its short version `-e PATH`:
-
-```shell script
-$ dotenv-linter --exclude .env.test
-.env:2 DuplicatedKey: The FOO key is duplicated
-.env:3 UnorderedKey: The BAR key should go before the FOO key
-
-Found 2 problems
-```
-
-If you need a recursive `.env` file search inside directories, you can use the flag `--recursive` or its short version `-r`:
-
-```shell script
-$ dotenv-linter --recursive
-dir1/.env:2 DuplicatedKey: The FOO key is duplicated
-dir2/subdir/.env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter
-
-Found 2 problems
-```
-
-If you need to skip some checks, you can use the argument `--skip CHECK_NAME` or its short version `-s CHECK_NAME`:
-
-```shell script
-$ dotenv-linter --skip UnorderedKey EndingBlankLine
-.env:2 DuplicatedKey: The FOO key is duplicated
-
-Found 1 problem
-```
-
-You can also disable checks for a specific file or line using comments:
-
-```dotenv
-# .env
-# At the beginning - it disables checks for the whole file
-# dotenv-linter:off DuplicatedKey, EndingBlankLine
-
-# dotenv-linter:off UnorderedKey (You can disable a check for only some lines)
-FOO=BAR
-BAR=FOO
-# dotenv-linter:on UnorderedKey (And enable it again)
-```
-
-If you want to see only warnings without additional information, use the argument `--quiet` or its short version `-q` (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
-
-```shell script
-$ dotenv-linter --quiet
-.env:2 DuplicatedKey: The FOO key is duplicated
-.env:3 UnorderedKey: The BAR key should go before the FOO key
-.env.test:1 LeadingCharacter: Invalid leading character detected
-```
-
-If you need to view all available checks, you can use the flag `--show-checks`:
-
-```shell script
-$ dotenv-linter --show-checks
-DuplicatedKey
-EndingBlankLine
-ExtraBlankLine
-IncorrectDelimiter
-KeyWithoutValue
-LeadingCharacter
-LowercaseKey
-QuoteCharacter
-SpaceCharacter
-TrailingWhitespace
-UnorderedKey
-```
-
-`dotenv-linter` can also automatically fix warnings in the files. You should use the argument `--fix` (or its short version `-f`) for this (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
+It can also fix found warnings. You should use the argument `--fix` (or its short version `-f`) for this (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
 
 ```shell script
 $ dotenv-linter -f
@@ -261,215 +97,11 @@ Original file was backed up to: ".env_1601378896"
 All warnings are fixed. Total: 2
 ```
 
-## ✅ Checks
+Other use cases you can find here: https://dotenv-linter.github.io/#/usage
 
-### Duplicated Key
+## 🚦 Continuous Integration 
 
-Detects if a key is not unique:
-
-```env
-❌ Wrong
-FOO=BAR
-FOO=BAR
-
-✅ Correct
-FOO=BAR
-BAR=FOO
-```
-
-### Ending Blank Line
-
-Detects if a file doesn't have a blank line at the end:
-
-```env
-❌ Wrong
-FOO=BAR
-```
-
-```env
-✅ Correct
-FOO=BAR
-
-```
-
-### Extra Blank Line
-
-Detects if a file contains more than one blank line in a row:
-
-```env
-❌ Wrong
-A=B
-
-
-FOO=BAR
-```
-
-```env
-❌ Wrong
-A=B
-FOO=BAR
-
-
-```
-
-```env
-✅ Correct
-A=B
-
-FOO=BAR
-
-```
-
-```env
-✅ Correct
-A=B
-FOO=BAR
-
-```
-
-### Incorrect delimiter
-
-Detects if a key does not use an underscore to separate words:
-```env
-❌ Wrong
-FOO-BAR=FOOBAR
-
-✅ Correct
-FOO_BAR=FOOBAR
-```
-
-### Key without value
-
-Detects if a line has a key without a value:
-```env
-❌ Wrong
-FOO
-
-✅ Correct
-FOO=
-
-✅ Correct
-FOO=BAR
-```
-
-### Leading character
-
-Detects if a line starts with an unallowed character (characters from `A` to `Z` and `_` (underscore) are allowed):
-
-```env
-❌ Wrong
- FOO=BAR
-
-❌ Wrong
-.FOO=BAR
-
-❌ Wrong
-*FOO=BAR
-
-❌ Wrong
-1FOO=BAR
-
-✅ Correct
-FOO=BAR
-
-✅ Correct
-_FOO=BAR
-```
-
-### Lowercase key
-
-Detects if a key has lowercase characters:
-
-```env
-❌ Wrong
-FOo_BAR=FOOBAR
-
-❌ Wrong
-foo_bar=FOOBAR
-
-✅ Correct
-FOO_BAR=FOOBAR
-```
-
-### Quote character
-
-Detects if a value contains quote characters (`'` / `"`):
-
-```env
-❌ Wrong
-FOO="BAR"
-
-❌ Wrong
-FOO='BAR'
-
-❌ Wrong
-FOO='B"AR'
-
-✅ Correct
-FOO=BAR
-```
-
-### Space character
-
-Detects lines with a whitespace around equal sign character `=`:
-
-```env
-❌ Wrong
-FOO =BAR
-
-❌ Wrong
-FOO= BAR
-
-❌ Wrong
-FOO = BAR
-
-✅ Correct
-FOO=BAR
-```
-
-### Trailing whitespace
-
-Detects if a line has a trailing whitespace.
-
-### Unordered Key
-
-Detects if a key is not alphabetically ordered:
-
-```env
-❌ Wrong
-FOO=BAR
-BAR=FOO
-
-✅ Correct
-BAR=FOO
-FOO=BAR
-```
-
-You can use blank lines to split lines into groups:
-
-```env
-❌ Wrong
-FOO=BAR
-BAR=FOO
-
-✅ Correct 
-FOO=BAR
-
-BAR=FOO
-```
-
-Control comments also split lines (this is done to make the linter logic more predictable, will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
-
-```env
-❌ Wrong
-FOO=BAR
-BAR=FOO
-
-✅ Correct 
-FOO=BAR
-# dotenv-linter:off LowercaseKey
-bar=FOO
-```
+`dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/ci/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/ci/circleci).
 
 ## 🤝 Contributing
 

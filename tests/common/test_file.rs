@@ -35,6 +35,6 @@ impl TestFile {
 
     /// Get file contents
     pub fn contents(&self) -> String {
-        String::from_utf8_lossy(&fs::read(self.as_str()).expect("read file")).into_owned()
+        fs::read_to_string(self.as_str()).expect("read file")
     }
 }

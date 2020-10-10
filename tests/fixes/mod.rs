@@ -1,4 +1,6 @@
 use crate::common::*;
+use std::ffi::OsStr;
+use std::fs;
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -66,4 +68,39 @@ fn multiple_files() {
     assert_eq!(testfile3.contents().as_str(), "A=b\nAB=DEF\n\n# A=c\n");
 
     testdir.close();
+}
+
+#[test]
+fn fixtures() {
+    // Iterate through *.env files in the fixture directory
+    // and compare them with corresponding *.env.golden files
+    for mut fixture_path in fs::read_dir("tests/fixes/fixtures")
+        .expect("list dir")
+        .filter_map(|res| {
+            let path = res.expect("dir entry").path();
+            if path.extension() == Some(OsStr::new("env")) {
+                Some(path)
+            } else {
+                None
+            }
+        })
+    {
+        let testdir = TestDir::new();
+        let testfile = testdir.create_testfile(
+            ".env",
+            fs::read_to_string(fixture_path.as_path())
+                .expect("fixture file")
+                .as_str(),
+        );
+
+        testdir.test_command_fix_success_without_output();
+
+        fixture_path.set_extension("env.golden");
+        let expected_content = fs::read_to_string(fixture_path.as_path()).expect("golden file");
+
+        assert_eq!(testfile.contents(), expected_content);
+
+        // Check the fixed file again and then clean up
+        testdir.test_command_success();
+    }
 }
