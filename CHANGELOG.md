@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Update CI action [#318](https://github.com/dotenv-linter/dotenv-linter/pull/320)
 
 ## [v2.2.0] - 2020-10-12
 ### 🚀 Added
