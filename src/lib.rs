@@ -66,7 +66,11 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Output>
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        let mode = if is_fix { Mode::Fix } else { Mode::Check };
+        let mode = if is_fix {
+            output::Mode::Fix
+        } else {
+            output::Mode::Check
+        };
         outputs.push(Output::new(fe, backup_file, result, mode));
     }
 

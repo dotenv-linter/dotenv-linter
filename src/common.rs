@@ -1,19 +1,13 @@
 pub(crate) mod comment;
 mod file_entry;
 mod line_entry;
-mod output;
+pub(crate) mod output;
 mod warning;
 
 pub use file_entry::FileEntry;
 pub use line_entry::LineEntry;
 pub use output::Output;
 pub use warning::Warning;
-
-/// Mode in which the program is run.
-pub enum Mode {
-    Fix,
-    Check,
-}
 
 pub const LF: &str = "\n";
 

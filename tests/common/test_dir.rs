@@ -9,6 +9,7 @@ use crate::common::test_file::TestFile;
 use crate::common::test_link::create_test_symlink;
 #[cfg(not(windows))]
 use std::fs::canonicalize;
+use std::str::from_utf8;
 
 /// Use to test commands in temporary directories
 pub struct TestDir {
@@ -181,6 +182,32 @@ impl TestDir {
             .args(args)
             .assert()
             .success();
+    }
+
+    /// Run the default CLI binary, with command line arguments, in this TestDir
+    /// and check it succeeds. Return the output from the command.
+    ///
+    /// This method does NOT remove TestDir when finished
+    pub fn test_command_success_and_get_output<I, S>(&self, args: I) -> String
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<OsStr>,
+    {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        String::from(
+            from_utf8(
+                cmd.current_dir(&canonical_current_dir)
+                    .args(args)
+                    .assert()
+                    .success()
+                    .get_output()
+                    .stdout
+                    .clone()
+                    .as_slice(),
+            )
+            .expect("convert to &str"),
+        )
     }
 
     fn init_cmd() -> Command {

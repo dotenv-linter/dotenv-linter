@@ -2,7 +2,6 @@ use crate::common::*;
 use std::ffi::OsStr;
 use std::fs;
 
-mod correct_output;
 mod duplicated_key;
 mod ending_blank_line;
 mod extra_blank_line;

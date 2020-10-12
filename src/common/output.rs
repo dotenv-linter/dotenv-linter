@@ -1,6 +1,12 @@
-use crate::common::{FileEntry, Mode, Warning};
+use crate::common::{FileEntry, Warning};
 use std::ffi::OsString;
 use std::fmt;
+
+/// Mode in which the program is run.
+pub enum Mode {
+    Fix,
+    Check,
+}
 
 /// Prefix for the backup output.
 const BACKUP_PREFIX: &str = "Original file was backed up to: ";
