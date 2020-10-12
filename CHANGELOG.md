@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Update CI action [#318](https://github.com/dotenv-linter/dotenv-linter/pull/320)
+- Fix docker release [#319](https://github.com/dotenv-linter/dotenv-linter/pull/319) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v2.2.0] - 2020-10-12
 ### 🚀 Added
