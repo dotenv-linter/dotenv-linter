@@ -2,6 +2,7 @@ use crate::common::*;
 use std::ffi::OsStr;
 use std::fs;
 
+mod correct_output;
 mod duplicated_key;
 mod ending_blank_line;
 mod extra_blank_line;
@@ -115,20 +116,6 @@ fn fixtures() {
         assert_eq!(testfile.contents(), expected_content);
 
         // Check the fixed file again and then clean up
-        testdir.test_command_success();
+        testdir.test_command_success(check_output(&[(".env", &[])]));
     }
-}
-
-#[test]
-fn no_warnings() {
-    let testdir = TestDir::new();
-    let testfile = testdir.create_testfile(".env", "A1=1\n");
-
-    let expected_output = fix_output(&[(".env", &[])]);
-
-    testdir.test_command_fix_success(expected_output);
-
-    assert_eq!(testfile.contents().as_str(), "A1=1\n");
-
-    testdir.close();
 }
