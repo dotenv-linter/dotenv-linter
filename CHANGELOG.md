@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+
+### 🔧 Changed
+
+## [v2.2.0] - 2020-10-12
+### 🚀 Added
 - Add integration test for autofix [#309](https://github.com/dotenv-linter/dotenv-linter/pull/309) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add action-misspell [#304](https://github.com/dotenv-linter/dotenv-linter/pull/304) ([@PurpleMyst](https://github.com/PurpleMyst))
 - Add action-shellcheck [#303](https://github.com/dotenv-linter/dotenv-linter/pull/303) ([@amd-9](https://github.com/amd-9))
@@ -159,6 +164,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v2.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.2.0
 [v2.1.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.1.0
 [v2.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.0.0
 [v1.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.2.0
