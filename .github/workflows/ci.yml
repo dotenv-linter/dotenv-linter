@@ -136,7 +136,7 @@ jobs:
       - name: Chown cargo registry because of caching
         run: sudo chown -R runner ~/.cargo/registry
       - name: Set grcov version
-        run: echo "::set-env name=GRCOV_VERSION::$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)"
+        run: echo "GRCOV_VERSION=$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)" >> $GITHUB_ENV
       - name: Cache cargo registry, target, and grcov binary
         id: test-grcov
         uses: actions/cache@v2
