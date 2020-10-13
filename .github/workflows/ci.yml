@@ -126,7 +126,7 @@ jobs:
       - name: Cleanup for caching
         uses: actions-rs/cargo@v1
         with:
-          command: clean  
+          command: clean
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
