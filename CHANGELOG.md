@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Added docker build step to the CI pipeline [#322](https://github.com/dotenv-linter/dotenv-linter/pull/322) ([@JoeAmedeo](https://github.com/JoeAmedeo))
 - Change soon deprecated `set-env` action [#320](https://github.com/dotenv-linter/dotenv-linter/pull/320) ([@marcodenisi](https://github.com/marcodenisi))
 - Fix docker release [#319](https://github.com/dotenv-linter/dotenv-linter/pull/319) ([@mgrachev](https://github.com/mgrachev))
 
