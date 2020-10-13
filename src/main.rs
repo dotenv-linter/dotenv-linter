@@ -1,4 +1,4 @@
-use clap::Arg;
+use clap::Arg
 use std::error::Error;
 use std::ffi::OsStr;
 use std::{env, process};
