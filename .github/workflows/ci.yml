@@ -118,10 +118,17 @@ jobs:
       - name: Cleanup for caching
         uses: actions-rs/cargo@v1
         with:
-          command: clean
+          command: clean  
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
+  docker:
+    name: Build / Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: sudo docker build --target builder .
   test:
     name: Test and coverage / Linux
     runs-on: ubuntu-latest
