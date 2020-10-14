@@ -92,6 +92,14 @@ jobs:
   #       token: ${{ secrets.GITHUB_TOKEN }}
   #       args: --all-features -- -D warnings
 
+  docker:
+    name: Build / Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: docker build --target builder .
+
   build:
     name: Build / Linux
     runs-on: ubuntu-latest
