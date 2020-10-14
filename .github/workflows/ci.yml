@@ -98,7 +98,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build
-        run: sudo docker build --target builder .
+        run: docker build --target builder .
 
   build:
     name: Build / Linux
