@@ -1,0 +1,17 @@
+---
+name: yamllint
+on: [pull_request]
+
+jobs:
+  yamllint:
+    name: check / yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: yamllint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          fail_on_error: true
+          yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
