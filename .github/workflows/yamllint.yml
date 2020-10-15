@@ -1,6 +1,6 @@
 ---
 name: yamllint
-"on": [pull_request]
+on: [pull_request]
 
 jobs:
   yamllint:
@@ -14,3 +14,4 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
           fail_on_error: true
+          yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
