@@ -4,6 +4,8 @@ use std::path::PathBuf;
 
 use crate::common::*;
 
+const EXCLUDED_FILES: &[&str] = &[".envrc"];
+
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct FileEntry {
     pub path: PathBuf,
@@ -51,6 +53,7 @@ impl FileEntry {
     pub fn is_env_file(path: &PathBuf) -> bool {
         let pattern = ".env";
         Self::get_file_name(path)
+            .filter(|file_name| !EXCLUDED_FILES.contains(&file_name.as_str()))
             .filter(|file_name| file_name.starts_with(pattern) || file_name.ends_with(pattern))
             .is_some()
     }
@@ -101,7 +104,7 @@ mod tests {
 
     #[test]
     fn is_env_file_test() {
-        let assertions = vec![
+        let mut assertions = vec![
             (".env", true),
             ("foo.env", true),
             (".env.foo", true),
@@ -113,6 +116,8 @@ mod tests {
             (".my-env-file", false),
             ("dev.env.js", false),
         ];
+
+        assertions.extend(EXCLUDED_FILES.iter().map(|file| (*file, false)));
 
         for (file_name, expected) in assertions {
             assert_eq!(
