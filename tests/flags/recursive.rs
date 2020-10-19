@@ -80,3 +80,23 @@ fn checks_recursive_with_exclude_subdir() {
 
     test_dir.test_command_fail_with_args(args, expected_output);
 }
+
+#[test]
+fn checks_nofollow_subdir_symlinks() {
+    let test_dir = TestDir::new();
+    let test_subdir = test_dir.subdir();
+    let testfile = test_subdir.create_testfile(".incorrect.env", "1BAR=\n");
+    // create a symbolic link to its containing directory
+    test_subdir.create_symlink(&test_subdir, "symlink");
+
+    let args = &["-r"];
+    let expected_output = format!(
+        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
+        Path::new(&test_dir.relative_path(&test_subdir))
+            .join(testfile.shortname_as_str())
+            .to_str()
+            .expect("multi-platform path to test .env file")
+    );
+
+    test_dir.test_command_fail_with_args(args, expected_output);
+}
