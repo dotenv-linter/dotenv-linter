@@ -133,18 +133,38 @@ fn checks_each_file_only_once_when_listing_same_path_twice() {
 
     let subdir = testdir.subdir();
     let testfile_1 = subdir.create_testfile(".env.a", " FOO=\n");
+    let testfile_1_pathbuf =
+        Path::new(&testdir.relative_path(&subdir)).join(testfile_1.shortname_as_str());
+    let testfile_1_path = testfile_1_pathbuf
+        .to_str()
+        .expect("multi-platform path to test .env file");
+
     let testfile_2 = subdir.create_testfile(".env.b", "FOO=BAR\nBAR=foo\n");
+    let testfile_2_pathbuf =
+        Path::new(&testdir.relative_path(&subdir)).join(testfile_2.shortname_as_str());
+    let testfile_2_path = testfile_2_pathbuf
+        .to_str()
+        .expect("multi-platform path to test .env file");
 
     let args = &[subdir.as_str(), subdir.as_str()];
-    let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n\nFound 2 problems\n",
-        Path::new(&testdir.relative_path(&subdir))
-            .join(testfile_1.shortname_as_str())
-            .to_str().expect("multi-platform path to test .env file"),
-        Path::new(&testdir.relative_path(&subdir))
-            .join(testfile_2.shortname_as_str())
-            .to_str().expect("multi-platform path to test .env file")
-    );
+    let expected_output = check_output(&[
+        (
+            testfile_1_path,
+            &[format!(
+                "{}:1 LeadingCharacter: Invalid leading character detected",
+                testfile_1_path
+            )
+            .as_str()],
+        ),
+        (
+            testfile_2_path,
+            &[format!(
+                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
+                testfile_2_path
+            )
+            .as_str()],
+        ),
+    ]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }
@@ -155,18 +175,37 @@ fn checks_each_file_only_once_when_listing_one_path_and_one_file() {
 
     let subdir = testdir.subdir();
     let testfile_1 = subdir.create_testfile(".env.a", " FOO=\n");
+    let testfile_1_pathbuf =
+        Path::new(&testdir.relative_path(&subdir)).join(testfile_1.shortname_as_str());
+    let testfile_1_path = testfile_1_pathbuf
+        .to_str()
+        .expect("multi-platform path to test .env file");
     let testfile_2 = subdir.create_testfile(".env.b", "FOO=val\nBAR=foo\n");
+    let testfile_2_pathbuf =
+        Path::new(&testdir.relative_path(&subdir)).join(testfile_2.shortname_as_str());
+    let testfile_2_path = testfile_2_pathbuf
+        .to_str()
+        .expect("multi-platform path to test .env file");
 
     let args = &[subdir.as_str(), testfile_2.as_str()];
-    let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n\nFound 2 problems\n",
-        Path::new(&testdir.relative_path(&subdir))
-            .join(testfile_1.shortname_as_str())
-            .to_str().expect("multi-platform path to test .env file"),
-        Path::new(&testdir.relative_path(&subdir))
-            .join(testfile_2.shortname_as_str())
-            .to_str().expect("multi-platform path to test .env file")
-    );
+    let expected_output = check_output(&[
+        (
+            testfile_1_path,
+            &[format!(
+                "{}:1 LeadingCharacter: Invalid leading character detected",
+                testfile_1_path
+            )
+            .as_str()],
+        ),
+        (
+            testfile_2_path,
+            &[format!(
+                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
+                testfile_2_path
+            )
+            .as_str()],
+        ),
+    ]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }
@@ -188,18 +227,18 @@ fn checks_one_specific_file_and_one_path() {
     let args = &[testfile_2.as_str(), subdir.as_str()];
     let expected_output = check_output(&[
         (
-            testfile_2.shortname_as_str(),
-            &[format!(
-                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
-                testfile_2.shortname_as_str()
-            )
-            .as_str()],
-        ),
-        (
             testfile_3_path,
             &[format!(
                 "{}:2 DuplicatedKey: The FOO key is duplicated",
                 testfile_3_path
+            )
+            .as_str()],
+        ),
+        (
+            testfile_2.shortname_as_str(),
+            &[format!(
+                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
+                testfile_2.shortname_as_str()
             )
             .as_str()],
         ),

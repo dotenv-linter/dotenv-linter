@@ -15,7 +15,6 @@ fn checks_one_in_subdir() {
 
     let args = &["-r"];
     let expected_output = check_output(&[
-        ("correct.env", &[]),
         (
             testfile_2_path,
             &[format!(
@@ -24,6 +23,7 @@ fn checks_one_in_subdir() {
             )
             .as_str()],
         ),
+        ("correct.env", &[]),
     ]);
 
     test_dir.test_command_fail_with_args(args, expected_output);
@@ -52,15 +52,6 @@ fn checks_files_in_deep_subdirs() {
 
     let args = &["--recursive"];
     let expected_output = check_output(&[
-        ("correct.env", &[]),
-        (
-            testfile_2_path,
-            &[format!(
-                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
-                testfile_2_path
-            )
-            .as_str()],
-        ),
         (
             testfile_3_path,
             &[format!(
@@ -69,6 +60,15 @@ fn checks_files_in_deep_subdirs() {
             )
             .as_str()],
         ),
+        (
+            testfile_2_path,
+            &[format!(
+                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
+                testfile_2_path
+            )
+            .as_str()],
+        ),
+        ("correct.env", &[]),
     ]);
 
     test_dir.test_command_fail_with_args(args, expected_output);
@@ -105,7 +105,6 @@ fn checks_recursive_with_exclude_subdir() {
 
     let args = &["--exclude", testfile_to_exclude.as_str(), "--recursive"];
     let expected_output = check_output(&[
-        ("correct.env", &[]),
         (
             testfile_2_path,
             &[format!(
@@ -114,6 +113,7 @@ fn checks_recursive_with_exclude_subdir() {
             )
             .as_str()],
         ),
+        ("correct.env", &[]),
     ]);
 
     test_dir.test_command_fail_with_args(args, expected_output);
@@ -124,17 +124,23 @@ fn checks_nofollow_subdir_symlinks() {
     let test_dir = TestDir::new();
     let test_subdir = test_dir.subdir();
     let testfile = test_subdir.create_testfile(".incorrect.env", "1BAR=\n");
+    let testfile_pathbuf =
+        Path::new(&test_dir.relative_path(&test_subdir)).join(testfile.shortname_as_str());
+    let testfile_path = testfile_pathbuf
+        .to_str()
+        .expect("multi-platform path to test .env file");
     // create a symbolic link to its containing directory
     test_subdir.create_symlink(&test_subdir, "symlink");
 
     let args = &["-r"];
-    let expected_output = format!(
-        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
-        Path::new(&test_dir.relative_path(&test_subdir))
-            .join(testfile.shortname_as_str())
-            .to_str()
-            .expect("multi-platform path to test .env file")
-    );
+    let expected_output = check_output(&[(
+        testfile_path,
+        &[format!(
+            "{}:1 LeadingCharacter: Invalid leading character detected",
+            testfile_path
+        )
+        .as_str()],
+    )]);
 
     test_dir.test_command_fail_with_args(args, expected_output);
 }
