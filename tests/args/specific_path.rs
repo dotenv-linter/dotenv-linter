@@ -85,11 +85,10 @@ fn checks_two_specific_files() {
 #[test]
 fn checks_each_file_only_once_when_listing_same_path_twice() {
     let testdir = TestDir::new();
-    testdir.create_testfile(".env", "foo=\n");
 
     let subdir = testdir.subdir();
-    let testfile_1 = subdir.create_testfile(".env", " FOO=\n");
-    let testfile_2 = subdir.create_testfile(".env", " FOO=val\nBAR=foo\n");
+    let testfile_1 = subdir.create_testfile(".env.a", " FOO=\n");
+    let testfile_2 = subdir.create_testfile(".env.b", "FOO=BAR\nBAR=foo\n");
 
     let args = &[subdir.as_str(), subdir.as_str()];
     let expected_output = format!(
@@ -108,11 +107,10 @@ fn checks_each_file_only_once_when_listing_same_path_twice() {
 #[test]
 fn checks_each_file_only_once_when_listing_one_path_and_one_file() {
     let testdir = TestDir::new();
-    testdir.create_testfile(".env", "foo=\n");
 
     let subdir = testdir.subdir();
-    let testfile_1 = subdir.create_testfile(".env", " FOO=\n");
-    let testfile_2 = subdir.create_testfile(".env", " FOO=val\nBAR=foo\n");
+    let testfile_1 = subdir.create_testfile(".env.a", " FOO=\n");
+    let testfile_2 = subdir.create_testfile(".env.b", "FOO=val\nBAR=foo\n");
 
     let args = &[subdir.as_str(), testfile_2.as_str()];
     let expected_output = format!(
