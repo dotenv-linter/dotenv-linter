@@ -98,8 +98,8 @@ fn get_file_paths(
         .filter(|entry| !excludes.contains(entry))
         .collect();
 
-    file_paths.sort();
     file_paths.extend(nested_paths);
+    file_paths.sort();
     file_paths.dedup();
     file_paths
 }

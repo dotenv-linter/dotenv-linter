@@ -33,13 +33,13 @@ fn checks_files_in_deep_subdirs() {
 
     let args = &["--recursive"];
     let expected_output = format!(
-        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:1 EndingBlankLine: No blank line at the end of the file\n\nFound 2 problems\n",
-        Path::new(&test_dir.relative_path(&test_subdir_2))
-            .join(testfile_2.shortname_as_str())
-            .to_str()
-            .expect("multi-platform path to test .env file"),
+        "{}:1 EndingBlankLine: No blank line at the end of the file\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n\nFound 2 problems\n",
         Path::new(&test_dir.relative_path(&test_subdir_3))
             .join(testfile_3.shortname_as_str())
+            .to_str()
+            .expect("multi-platform path to test .env file"),
+        Path::new(&test_dir.relative_path(&test_subdir_2))
+            .join(testfile_2.shortname_as_str())
             .to_str()
             .expect("multi-platform path to test .env file")
     );
