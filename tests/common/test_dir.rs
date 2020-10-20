@@ -6,6 +6,7 @@ use tempfile::{tempdir, tempdir_in, TempDir};
 use dunce::canonicalize;
 
 use crate::common::test_file::TestFile;
+use crate::common::test_link::create_test_symlink;
 #[cfg(not(windows))]
 use std::fs::canonicalize;
 
@@ -48,6 +49,12 @@ impl TestDir {
     /// Create a TestFile within the TestDir
     pub fn create_testfile(&self, name: &str, contents: &str) -> TestFile {
         TestFile::new(&self.current_dir, name, contents)
+    }
+
+    /// Create a new TestLink to a TestDir within the TestDir
+    pub fn create_symlink(&self, source_test_dir: &Self, name: &str) {
+        let dest = &self.current_dir.path().join(name);
+        create_test_symlink(&source_test_dir.current_dir, dest);
     }
 
     /// Get full path of TestDir as a &str

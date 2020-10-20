@@ -86,7 +86,10 @@ fn get_file_paths(
             read_dir
                 .filter_map(|e| e.ok())
                 .map(|e| e.path())
-                .filter(|path| FileEntry::is_env_file(path) || (is_recursive && path.is_dir()))
+                .filter(|path| {
+                    FileEntry::is_env_file(path)
+                        || (is_recursive && path.is_dir() && path.read_link().is_err())
+                })
                 .collect()
         })
         .flat_map(|dir_entries| get_file_paths(dir_entries, excludes, is_recursive))
