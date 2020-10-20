@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add action-yamllint [#317](https://github.com/dotenv-linter/dotenv-linter/pull/317) ([@vk26](https://github.com/vk26))
+- Add default exclude list [#324](https://github.com/dotenv-linter/dotenv-linter/pull/324) ([@ametalon](https://github.com/ametalon))
 
 ### 🔧 Changed
 - Fix linter rechecking files if they were listed more than once [#327](https://github.com/dotenv-linter/dotenv-linter/pull/327) ([@Aashu23](https://github.com/Aashu23))
