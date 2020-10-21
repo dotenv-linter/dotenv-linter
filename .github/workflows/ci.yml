@@ -92,6 +92,14 @@ jobs:
   #       token: ${{ secrets.GITHUB_TOKEN }}
   #       args: --all-features -- -D warnings
 
+  docker:
+    name: Build / Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: docker build --target builder .
+
   build:
     name: Build / Linux
     runs-on: ubuntu-latest
@@ -136,7 +144,7 @@ jobs:
       - name: Chown cargo registry because of caching
         run: sudo chown -R runner ~/.cargo/registry
       - name: Set grcov version
-        run: echo "::set-env name=GRCOV_VERSION::$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)"
+        run: echo "GRCOV_VERSION=$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)" >> $GITHUB_ENV
       - name: Cache cargo registry, target, and grcov binary
         id: test-grcov
         uses: actions/cache@v2

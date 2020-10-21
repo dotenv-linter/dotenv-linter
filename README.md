@@ -85,7 +85,7 @@ $ dotenv-linter
 Found 3 problems
 ```
 
-It can also fix found warnings. You should use the argument `--fix` (or its short version `-f`) for this (will be available in [v2.2.0](https://github.com/dotenv-linter/dotenv-linter/issues/238)):
+It can also fix found warnings. You should use the argument `--fix` (or its short version `-f`) for this:
 
 ```shell script
 $ dotenv-linter -f
