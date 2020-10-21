@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
+- Add action-yamllint [#317](https://github.com/dotenv-linter/dotenv-linter/pull/317) ([@vk26](https://github.com/vk26))
+- Add default exclude list [#324](https://github.com/dotenv-linter/dotenv-linter/pull/324) ([@ametalon](https://github.com/ametalon))
+
+### 🔧 Changed
+- Fix bug where symlinks would cycle in recursive mode [#328](https://github.com/dotenv-linter/dotenv-linter/pull/328) ([@sonro](https://github.com/sonro))
+- Fix linter rechecking files if they were listed more than once [#327](https://github.com/dotenv-linter/dotenv-linter/pull/327) ([@Aashu23](https://github.com/Aashu23))
+- Added docker build step to the CI pipeline [#322](https://github.com/dotenv-linter/dotenv-linter/pull/322) ([@JoeAmedeo](https://github.com/JoeAmedeo))
+- Change soon deprecated `set-env` action [#320](https://github.com/dotenv-linter/dotenv-linter/pull/320) ([@marcodenisi](https://github.com/marcodenisi))
+- Fix docker release [#319](https://github.com/dotenv-linter/dotenv-linter/pull/319) ([@mgrachev](https://github.com/mgrachev))
+
+## [v2.2.0] - 2020-10-12
+### 🚀 Added
 - Add integration test for autofix [#309](https://github.com/dotenv-linter/dotenv-linter/pull/309) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add action-misspell [#304](https://github.com/dotenv-linter/dotenv-linter/pull/304) ([@PurpleMyst](https://github.com/PurpleMyst))
 - Add action-shellcheck [#303](https://github.com/dotenv-linter/dotenv-linter/pull/303) ([@amd-9](https://github.com/amd-9))
@@ -160,6 +172,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v2.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.2.0
 [v2.1.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.1.0
 [v2.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.0.0
 [v1.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v1.2.0

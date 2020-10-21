@@ -33,13 +33,13 @@ fn checks_files_in_deep_subdirs() {
 
     let args = &["--recursive"];
     let expected_output = format!(
-        "{}:2 UnorderedKey: The BAR key should go before the FOO key\n{}:1 EndingBlankLine: No blank line at the end of the file\n\nFound 2 problems\n",
-        Path::new(&test_dir.relative_path(&test_subdir_2))
-            .join(testfile_2.shortname_as_str())
-            .to_str()
-            .expect("multi-platform path to test .env file"),
+        "{}:1 EndingBlankLine: No blank line at the end of the file\n{}:2 UnorderedKey: The BAR key should go before the FOO key\n\nFound 2 problems\n",
         Path::new(&test_dir.relative_path(&test_subdir_3))
             .join(testfile_3.shortname_as_str())
+            .to_str()
+            .expect("multi-platform path to test .env file"),
+        Path::new(&test_dir.relative_path(&test_subdir_2))
+            .join(testfile_2.shortname_as_str())
             .to_str()
             .expect("multi-platform path to test .env file")
     );
@@ -76,6 +76,26 @@ fn checks_recursive_with_exclude_subdir() {
             .join(testfile_2.shortname_as_str())
             .to_str()
             .expect("multi-platform path to test .env file"),
+    );
+
+    test_dir.test_command_fail_with_args(args, expected_output);
+}
+
+#[test]
+fn checks_nofollow_subdir_symlinks() {
+    let test_dir = TestDir::new();
+    let test_subdir = test_dir.subdir();
+    let testfile = test_subdir.create_testfile(".incorrect.env", "1BAR=\n");
+    // create a symbolic link to its containing directory
+    test_subdir.create_symlink(&test_subdir, "symlink");
+
+    let args = &["-r"];
+    let expected_output = format!(
+        "{}:1 LeadingCharacter: Invalid leading character detected\n\nFound 1 problem\n",
+        Path::new(&test_dir.relative_path(&test_subdir))
+            .join(testfile.shortname_as_str())
+            .to_str()
+            .expect("multi-platform path to test .env file")
     );
 
     test_dir.test_command_fail_with_args(args, expected_output);
