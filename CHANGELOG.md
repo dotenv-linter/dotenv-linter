@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
+- Add integration test for autofix [#309](https://github.com/dotenv-linter/dotenv-linter/pull/309) ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add action-misspell [#304](https://github.com/dotenv-linter/dotenv-linter/pull/304) ([@PurpleMyst](https://github.com/PurpleMyst))
 - Add action-shellcheck [#303](https://github.com/dotenv-linter/dotenv-linter/pull/303) ([@amd-9](https://github.com/amd-9))
 - Add fixer: UnorderedKeyFixer [#261](https://github.com/dotenv-linter/dotenv-linter/pull/261) ([@evgeniy-r](https://github.com/evgeniy-r))
@@ -14,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add fixer: ExtraBlankLineFixer [#260](https://github.com/dotenv-linter/dotenv-linter/pull/260) ([@diggymo](https://github.com/diggymo))
 - Add fixer: DuplicatedKeyFixer [#270](https://github.com/dotenv-linter/dotenv-linter/pull/270) ([@utter-step](https://github.com/utter-step))
 - Add fixer: LeadingCharacter [#259](https://github.com/dotenv-linter/dotenv-linter/pull/259) ([@baile320](https://github.com/baile320))
-- Add fixer: IncorrectDelimiter [#258]((https://github.com/dotenv-linter/dotenv-linter/pull/258) ([@gillespiecd](https://github.com/gillespiecd))
+- Add fixer: IncorrectDelimiter [#258](https://github.com/dotenv-linter/dotenv-linter/pull/258) ([@gillespiecd](https://github.com/gillespiecd))
 - Add support of comments to disable checks [#239](https://github.com/dotenv-linter/dotenv-linter/pull/239) ([@mgrachev](https://github.com/mgrachev))
 - Add autofix for EndingBlankLine [#263](https://github.com/dotenv-linter/dotenv-linter/pull/263) ([@baile320](https://github.com/baile320))
 - Add test for two keys that only differ in case [#269](https://github.com/dotenv-linter/dotenv-linter/pull/269) ([@yanakad](https://github.com/yanakad))
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add installation CI test for Windows (via `install.sh`) [#235](https://github.com/dotenv-linter/dotenv-linter/pull/235) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Update docs [#315](https://github.com/dotenv-linter/dotenv-linter/pull/315) ([@mgrachev](https://github.com/mgrachev))
 - Remove `CARGO_TERM_COLOR` from the shellcheck workflow [#313](https://github.com/dotenv-linter/dotenv-linter/pull/313) ([@MusiKid](https://github.com/MusiKid))
 - Add `check_output` helper function for integration tests [#305](https://github.com/dotenv-linter/dotenv-linter/pull/305) ([@Anthuang](https://github.com/anthuang))
 - Add an additional test for `LineEntry.get_value` [#306](https://github.com/dotenv-linter/dotenv-linter/pull/306) ([@vvkpd](https://github.com/vvkpd))
