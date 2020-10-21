@@ -48,7 +48,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn print_total(total: usize) {
     #[cfg(windows)]
-    colored::control::set_virtual_terminal(true).ok();
+    set_windows_virtual_terminal();
     let mut problems = String::from("problem");
     if total > 1 {
         problems += "s";
@@ -133,4 +133,9 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Doesn't display additional information"),
         )
         .get_matches()
+}
+
+#[cfg(windows)]
+pub fn set_windows_virtual_terminal() {
+    colored::control::set_virtual_terminal(true).ok();
 }
