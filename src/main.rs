@@ -25,6 +25,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     if no_color {
         colored::control::set_override(false);
     }
+    #[cfg(windows)]
+    set_windows_virtual_terminal();
     let total = warnings.len();
     let is_not_quiet = !args.is_present("quiet");
     if args.is_present("fix") {
@@ -47,8 +49,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn print_total(total: usize) {
-    #[cfg(windows)]
-    set_windows_virtual_terminal();
     let mut problems = String::from("problem");
     if total > 1 {
         problems += "s";
