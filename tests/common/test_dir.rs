@@ -9,6 +9,7 @@ use crate::common::test_file::TestFile;
 use crate::common::test_link::create_test_symlink;
 #[cfg(not(windows))]
 use std::fs::canonicalize;
+use std::str::from_utf8;
 
 /// Use to test commands in temporary directories
 pub struct TestDir {
@@ -68,9 +69,9 @@ impl TestDir {
     /// Run the default CLI binary in this TestDir and check it succeeds.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_success(self) {
+    pub fn test_command_success(self, expected_output: String) {
         let args: &[&str; 0] = &[];
-        self.test_command_success_with_args(args);
+        self.test_command_success_with_args(args, expected_output);
     }
 
     /// Run the default CLI binary in this TestDir and check it fails.
@@ -85,7 +86,7 @@ impl TestDir {
     /// in this TestDir and check it succeeds.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_success_with_args<I, S>(self, args: I)
+    pub fn test_command_success_with_args<I, S>(self, args: I, expected_output: String)
     where
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
@@ -95,7 +96,8 @@ impl TestDir {
         cmd.current_dir(&canonical_current_dir)
             .args(args)
             .assert()
-            .success();
+            .success()
+            .stdout(expected_output);
 
         self.close();
     }
@@ -180,6 +182,32 @@ impl TestDir {
             .args(args)
             .assert()
             .success();
+    }
+
+    /// Run the default CLI binary, with command line arguments, in this TestDir
+    /// and check it succeeds. Return the output from the command.
+    ///
+    /// This method does NOT remove TestDir when finished
+    pub fn test_command_success_and_get_output<I, S>(&self, args: I) -> String
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<OsStr>,
+    {
+        let mut cmd = Self::init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        String::from(
+            from_utf8(
+                cmd.current_dir(&canonical_current_dir)
+                    .args(args)
+                    .assert()
+                    .success()
+                    .get_output()
+                    .stdout
+                    .clone()
+                    .as_slice(),
+            )
+            .expect("convert to &str"),
+        )
     }
 
     fn init_cmd() -> Command {

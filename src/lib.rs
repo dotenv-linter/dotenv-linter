@@ -11,7 +11,7 @@ mod fs_utils;
 pub use checks::available_check_names;
 
 #[allow(clippy::redundant_closure)]
-pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>, Box<dyn Error>> {
+pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Output>, Box<dyn Error>> {
     let mut file_paths: Vec<PathBuf> = Vec::new();
     let mut skip_checks: Vec<&str> = Vec::new();
     let mut excluded_paths: Vec<PathBuf> = Vec::new();
@@ -37,7 +37,12 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
     }
 
     let is_fix = args.is_present("fix");
-    let mut warnings: Vec<Warning> = Vec::new();
+    let mut outputs: Vec<Output> = Vec::new();
+    let mode = if is_fix {
+        output::Mode::Fix
+    } else {
+        output::Mode::Check
+    };
 
     for path in file_paths {
         let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
@@ -51,6 +56,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
         };
 
         let mut lines = get_line_entries(&fe, strs);
+        let mut backup_file = None;
 
         // run fixers & write results to file
         let mut result = checks::run(&lines, &skip_checks);
@@ -58,18 +64,30 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             // create backup copy unless user specifies not to
             let should_backup = !args.is_present("no-backup");
             if should_backup {
-                let backup_file = fs_utils::backup_file(&fe)?;
-                println!("Original file was backed up to: {:?}\n", backup_file);
+                backup_file = Some(fs_utils::backup_file(&fe)?.into_os_string());
             }
 
             // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        warnings.extend(result);
+        outputs.push(Output::new(fe, backup_file, result, mode));
     }
 
-    Ok(warnings)
+    Ok(outputs)
+}
+
+/// Prints outputs with correct newlines.
+///
+/// Prints a newline after an output if it is not the last output or, for the
+/// last output, it has no warnings.
+pub fn print_outputs(outputs: Vec<Output>) {
+    for (i, output) in outputs.iter().enumerate() {
+        print!("{}", output);
+        if i != outputs.len() - 1 || (i == outputs.len() - 1 && output.warnings.is_empty()) {
+            println!();
+        }
+    }
 }
 
 fn get_file_paths(
