@@ -1,0 +1,2 @@
+*.rs diff=rust
+*.md diff=markdown
