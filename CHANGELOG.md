@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
+
+### 🔧 Changed
+
+## [v2.2.1] - 2020-10-24
+### 🚀 Added
+- Add `.gitattributes` to improve `git diff` [#330](https://github.com/dotenv-linter/dotenv-linter/pull/330) ([@DDtKey](https://github.com/DDtKey))
 - Add action-yamllint [#317](https://github.com/dotenv-linter/dotenv-linter/pull/317) ([@vk26](https://github.com/vk26))
 - Add default exclude list [#324](https://github.com/dotenv-linter/dotenv-linter/pull/324) ([@ametalon](https://github.com/ametalon))
 
@@ -172,6 +178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v2.2.1]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.2.1
 [v2.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.2.0
 [v2.1.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.1.0
 [v2.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.0.0

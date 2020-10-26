@@ -1,6 +1,6 @@
 [package]
 name = "dotenv-linter"
-version = "2.2.0"
+version = "2.2.1"
 authors = ["Mikhail Grachev <work@mgrachev.com>"]
 edition = "2018"
 description = "Lightning-fast linter for .env files"
