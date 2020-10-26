@@ -38,6 +38,11 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Output>
 
     let is_fix = args.is_present("fix");
     let mut outputs: Vec<Output> = Vec::new();
+    let mode = if is_fix {
+        output::Mode::Fix
+    } else {
+        output::Mode::Check
+    };
 
     for path in file_paths {
         let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
@@ -66,11 +71,6 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Output>
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        let mode = if is_fix {
-            output::Mode::Fix
-        } else {
-            output::Mode::Check
-        };
         outputs.push(Output::new(fe, backup_file, result, mode));
     }
 
