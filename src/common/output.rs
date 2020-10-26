@@ -3,6 +3,7 @@ use std::ffi::OsString;
 use std::fmt;
 
 /// Mode in which the program is run.
+#[derive(Clone, Copy)]
 pub enum Mode {
     Fix,
     Check,
