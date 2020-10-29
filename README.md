@@ -78,8 +78,11 @@ By default, `dotenv-linter` checks all `.env` files in the current directory:
 
 ```shell script
 $ dotenv-linter
+Checking .env
 .env:2 DuplicatedKey: The FOO key is duplicated
 .env:3 UnorderedKey: The BAR key should go before the FOO key
+
+Checking .env.test
 .env.test:1 LeadingCharacter: Invalid leading character detected
 
 Found 3 problems
@@ -89,6 +92,7 @@ It can also fix found warnings. You should use the argument `--fix` (or its shor
 
 ```shell script
 $ dotenv-linter -f
+Fixing .env
 Original file was backed up to: ".env_1601378896"
 
 .env:2 DuplicatedKey: The BAR key is duplicated
