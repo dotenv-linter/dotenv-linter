@@ -62,21 +62,27 @@ fn print_fix_total(total: usize) {
 }
 
 fn print_check_total(total: usize) {
-    let mut problems = String::from("problem");
-    if total > 1 {
-        problems += "s";
+    if total != 0 {
+        let mut problems = String::from("problem");
+
+        if total != 1 {
+            problems += "s";
+        }
+
+        println!(
+            "\n{}",
+            format!(
+                "{} {} {}",
+                String::from("Found"),
+                total.to_string(),
+                problems
+            )
+            .red()
+            .bold()
+        );
+    } else {
+        println!("\n{}", format!("No problems found").green().bold());
     }
-    println!(
-        "\n{}",
-        format!(
-            "{} {} {}",
-            String::from("Found"),
-            total.to_string(),
-            problems
-        )
-        .red()
-        .bold()
-    );
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
