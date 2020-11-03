@@ -13,7 +13,9 @@ fn correct_files() {
         let testfile = testdir.create_testfile(".env", content);
         let args = &[testfile.as_str()];
 
-        testdir.test_command_success_with_args(args);
+        let expected_output = check_output(&[(".env", &[])]);
+
+        testdir.test_command_success_with_args(args, expected_output);
     }
 }
 
@@ -24,7 +26,10 @@ fn two_blank_lines_at_the_beginning() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
-    let expected_output = check_output(&[".env:2 ExtraBlankLine: Extra blank line detected"]);
+    let expected_output = check_output(&[(
+        ".env",
+        &[".env:2 ExtraBlankLine: Extra blank line detected"],
+    )]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }
@@ -36,7 +41,10 @@ fn two_blank_lines_in_the_middle() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
-    let expected_output = check_output(&[".env:4 ExtraBlankLine: Extra blank line detected"]);
+    let expected_output = check_output(&[(
+        ".env",
+        &[".env:4 ExtraBlankLine: Extra blank line detected"],
+    )]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }
@@ -48,7 +56,10 @@ fn two_blank_lines_at_the_end() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &[testfile.as_str()];
-    let expected_output = check_output(&[".env:5 ExtraBlankLine: Extra blank line detected"]);
+    let expected_output = check_output(&[(
+        ".env",
+        &[".env:5 ExtraBlankLine: Extra blank line detected"],
+    )]);
 
     testdir.test_command_fail_with_args(args, expected_output);
 }

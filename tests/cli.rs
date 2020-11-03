@@ -4,3 +4,4 @@ mod common;
 mod fixes;
 mod flags;
 mod options;
+mod output;

@@ -15,9 +15,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let warnings = dotenv_linter::run(&args, &current_dir)?;
+    let outputs = dotenv_linter::run(&args, &current_dir)?;
 
-    if warnings.is_empty() {
+    if outputs.is_empty() {
         process::exit(0);
     }
 
@@ -27,33 +27,45 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     #[cfg(windows)]
     set_windows_virtual_terminal();
-    let total = warnings.len();
+    let total = outputs.iter().map(|o| o.warnings.len()).sum();
     let is_not_quiet = !args.is_present("quiet");
     if args.is_present("fix") {
         if is_not_quiet {
-            warnings.iter().for_each(|w| println!("{}", w));
-            println!();
+            dotenv_linter::print_outputs(outputs);
+        } else {
+            outputs.iter().for_each(|w| w.print_backup());
         }
-
-        println!("All warnings are fixed. Total: {}", total);
+        print_fix_total(total);
         process::exit(0);
-    } else {
-        warnings.iter().for_each(|w| println!("{}", w));
-
-        if is_not_quiet {
-            print_total(total);
-        }
     }
 
+    if is_not_quiet {
+        dotenv_linter::print_outputs(outputs);
+        print_check_total(total);
+    } else {
+        outputs.iter().for_each(|w| w.print_warnings());
+    }
+
+    // Ensure the exit code is 0 if there were no warnings
+    if total == 0 {
+        process::exit(0);
+    }
     process::exit(1);
 }
 
-fn print_total(total: usize) {
+fn print_fix_total(total: usize) {
+    if total != 0 {
+        println!("\nAll warnings are fixed. Total: {}", total);
+    } else {
+        println!("\nNo warnings found");
+    }
+}
+
+fn print_check_total(total: usize) {
     let mut problems = String::from("problem");
     if total > 1 {
         problems += "s";
     }
-
     println!(
         "\n{}",
         format!(

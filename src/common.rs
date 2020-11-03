@@ -1,11 +1,13 @@
 pub(crate) mod comment;
 mod file_entry;
 mod line_entry;
+pub(crate) mod output;
 mod warning;
 
 use colored::*;
 pub use file_entry::FileEntry;
 pub use line_entry::LineEntry;
+pub use output::Output;
 pub use warning::Warning;
 
 pub const LF: &str = "\n";
