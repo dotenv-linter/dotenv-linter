@@ -81,7 +81,7 @@ fn print_check_total(total: usize) {
             .bold()
         );
     } else {
-        println!("\n{}", format!("No problems found").green().bold());
+        println!("\n{}", "No problems found".to_string().green().bold());
     }
 }
 
