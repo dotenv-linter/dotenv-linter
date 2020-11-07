@@ -1,4 +1,5 @@
 use clap::Arg;
+use colored::*;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::{env, process};
@@ -20,9 +21,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
+    let no_color = args.is_present("no-color");
+    if no_color {
+        colored::control::set_override(false);
+    }
+    #[cfg(windows)]
+    set_windows_virtual_terminal();
     let total = outputs.iter().map(|o| o.warnings.len()).sum();
     let is_not_quiet = !args.is_present("quiet");
-
     if args.is_present("fix") {
         if is_not_quiet {
             dotenv_linter::print_outputs(outputs);
@@ -63,9 +69,19 @@ fn print_check_total(total: usize) {
             problems += "s";
         }
 
-        println!("\nFound {} {}", total, problems);
+        println!(
+            "\n{}",
+            format!(
+                "{} {} {}",
+                String::from("Found"),
+                total.to_string(),
+                problems
+            )
+            .red()
+            .bold()
+        );
     } else {
-        println!("\nNo problems found");
+        println!("\n{}", "No problems found".to_string().green().bold());
     }
 }
 
@@ -113,6 +129,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Recursively search and check .env files"),
         )
         .arg(
+            Arg::with_name("no-color")
+                .long("no-color")
+                .help("Turns off the colored output"),
+        )
+        .arg(
             Arg::with_name("fix")
                 .short("f")
                 .long("fix")
@@ -130,4 +151,9 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Doesn't display additional information"),
         )
         .get_matches()
+}
+
+#[cfg(windows)]
+pub fn set_windows_virtual_terminal() {
+    colored::control::set_virtual_terminal(true).ok();
 }

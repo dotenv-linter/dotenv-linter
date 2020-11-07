@@ -82,7 +82,7 @@ impl fmt::Display for Output {
 mod tests {
     use super::*;
     use crate::common::tests::*;
-
+    use crate::common::*;
     #[test]
     fn output_fmt_test() {
         let line = line_entry(1, 1, "FOO=BAR");
@@ -94,7 +94,11 @@ mod tests {
         let output = Output::new(line.file, None, vec![warning], Mode::Check);
 
         assert_eq!(
-            "Checking .env\n.env:1 DuplicatedKey: The FOO key is duplicated\n",
+            format!(
+                "Checking .env\n{} {}: The FOO key is duplicated\n",
+                format!("{}:{}", ".env", "1").italic(),
+                "DuplicatedKey".red().bold()
+            ),
             format!("{}", output)
         );
     }
@@ -112,7 +116,7 @@ mod tests {
         let output = Output::new(line.file, Some(backup_path), vec![warning], Mode::Fix);
 
         assert_eq!(
-            "Fixing .env\nOriginal file was backed up to: \".env_1234\"\n\n.env:1 DuplicatedKey: The FOO key is duplicated\n",
+            format!("Fixing .env\nOriginal file was backed up to: \".env_1234\"\n\n{} {}: The FOO key is duplicated\n",format!("{}:{}", ".env", "1").italic(), "DuplicatedKey".red().bold()),
             format!("{}", output)
         );
     }
