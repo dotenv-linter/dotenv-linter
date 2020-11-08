@@ -1,4 +1,5 @@
 use crate::common::{FileEntry, Warning};
+use colored::*;
 use std::ffi::OsString;
 
 /// Mode in which the program is run.
@@ -93,9 +94,19 @@ impl Output {
                 problems += "s";
             }
 
-            println!("\nFound {} {}", total, problems);
+            println!(
+                "\n{}",
+                format!(
+                    "{} {} {}",
+                    String::from("Found"),
+                    total.to_string(),
+                    problems
+                )
+                .red()
+                .bold()
+            );
         } else {
-            println!("\nNo problems found");
+            println!("\n{}", "No problems found".to_string().green().bold());
         }
     }
 }

@@ -6,10 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
 
 ### 🔧 Changed
-- feat: make a output on-the-fly [#336](https://github.com/dotenv-linter/dotenv-linter/pull/336) ([@DDtKey](https://github.com/DDtKey))
+- Make an output on-the-fly [#336](https://github.com/dotenv-linter/dotenv-linter/pull/336) ([@DDtKey](https://github.com/DDtKey))
 
 ## [v2.2.1] - 2020-10-24
 ### 🚀 Added
@@ -69,7 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Actions uses cache@v2 [#262](https://github.com/dotenv-linter/dotenv-linter/pull/262) ([@gillespiecd](https://github.com/gillespiecd))
 - Update logic for IncorrectDelimiterCheck [#267](https://github.com/dotenv-linter/dotenv-linter/pull/267) ([@baile320](https://github.com/baile320))
 - Add tests for default implementation of Fix::fix_warnings [#266](https://github.com/dotenv-linter/dotenv-linter/pull/266) ([@kilotaras](https://github.com/kilotaras))
-- Modularize common.rs [#264](https://github.com/dotenv-linter/dotenv-linter/pull/264) ([@gillespeicd](https://github.com/gillespiecd))
+- Modularize common.rs [#264](https://github.com/dotenv-linter/dotenv-linter/pull/264) ([@gillespiecd](https://github.com/gillespiecd))
 
 ## [v2.1.0] - 2020-07-13
 ### 🚀 Added

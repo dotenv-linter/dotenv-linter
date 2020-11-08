@@ -14,6 +14,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
+    let no_color = args.is_present("no-color");
+    if no_color {
+        colored::control::set_override(false);
+    }
+    #[cfg(windows)]
+    set_windows_virtual_terminal();
+
     let warnings = dotenv_linter::run(&args, &current_dir)?;
 
     let total = warnings.len();
@@ -70,6 +77,11 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Recursively search and check .env files"),
         )
         .arg(
+            Arg::with_name("no-color")
+                .long("no-color")
+                .help("Turns off the colored output"),
+        )
+        .arg(
             Arg::with_name("fix")
                 .short("f")
                 .long("fix")
@@ -87,4 +99,9 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                 .help("Doesn't display additional information"),
         )
         .get_matches()
+}
+
+#[cfg(windows)]
+pub fn set_windows_virtual_terminal() {
+    colored::control::set_virtual_terminal(true).ok();
 }
