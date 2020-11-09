@@ -7,7 +7,8 @@ mod warning;
 use colored::*;
 pub use file_entry::FileEntry;
 pub use line_entry::LineEntry;
-pub use output::Output;
+pub use output::check::CheckOutput;
+pub use output::fix::FixOutput;
 pub use warning::Warning;
 
 pub const LF: &str = "\n";

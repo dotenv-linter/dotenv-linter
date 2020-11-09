@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Changed behavior of QuoteCharacterChecker for multiline values support [#341](https://github.com/dotenv-linter/dotenv-linter/pull/341) ([@artem-russkikh](http://github.com/artem-russkikh))
+- Make an output on-the-fly [#336](https://github.com/dotenv-linter/dotenv-linter/pull/336) ([@DDtKey](https://github.com/DDtKey))
 
 ## [v2.2.1] - 2020-10-24
 ### 🚀 Added
