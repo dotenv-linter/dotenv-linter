@@ -29,7 +29,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<
     let is_quiet_mode = args.is_present("quiet");
 
     let fix_output = FixOutput::new(is_quiet_mode);
-    let check_output = CheckOutput::new(is_quiet_mode);
+    let check_output = CheckOutput::new(is_quiet_mode, file_paths.len());
 
     for (i, path) in file_paths.iter().enumerate() {
         let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
@@ -66,8 +66,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<
 
         // This shouldn't be printed to Fix when combined with quiet mode
         if !(is_fix && is_quiet_mode) {
-            let is_last_file = i == file_paths.len() - 1;
-            check_output.print_warnings(&result, is_last_file);
+            check_output.print_warnings(&result, i);
         }
 
         warnings_count += result.len();

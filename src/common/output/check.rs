@@ -4,11 +4,16 @@ use colored::*;
 pub struct CheckOutput {
     // Quiet program output mode
     is_quiet_mode: bool,
+    // Total number of files to check
+    files_count: usize,
 }
 
 impl CheckOutput {
-    pub fn new(is_quiet_mode: bool) -> Self {
-        CheckOutput { is_quiet_mode }
+    pub fn new(is_quiet_mode: bool, files_count: usize) -> Self {
+        CheckOutput {
+            is_quiet_mode,
+            files_count,
+        }
     }
 
     /// Prints information about a file in process
@@ -19,8 +24,9 @@ impl CheckOutput {
     }
 
     /// Prints warnings without any additional information.
-    pub fn print_warnings(&self, warnings: &[Warning], is_last_file: bool) {
+    pub fn print_warnings(&self, warnings: &[Warning], file_index: usize) {
         warnings.iter().for_each(|w| println!("{}", w));
+        let is_last_file = file_index == self.files_count - 1;
         if !warnings.is_empty() && !is_last_file {
             println!();
         }
