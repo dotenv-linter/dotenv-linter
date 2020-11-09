@@ -50,7 +50,7 @@ impl LineEntry {
         self.raw_string.trim()
     }
 
-    pub fn stripped_export_string(&self) -> &str {
+    fn stripped_export_string(&self) -> &str {
         match self.trimmed_string().strip_prefix("export ") {
             Some(stripped_string) => stripped_string.trim(),
             None => self.trimmed_string(),
