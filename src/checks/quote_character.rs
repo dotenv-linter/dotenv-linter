@@ -24,6 +24,10 @@ impl Default for QuoteCharacterChecker<'_> {
 impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
+        if val.contains("\\n") {
+            return None;
+        }
+
         if val.contains('\"') || val.contains('\'') {
             Some(Warning::new(line.clone(), self.name(), self.message()))
         } else {
