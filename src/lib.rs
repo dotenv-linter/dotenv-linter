@@ -27,7 +27,9 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
 
     let is_fix = args.is_present("fix");
     let is_quiet_mode = args.is_present("quiet");
-    let output = Output::new(is_fix, is_quiet_mode);
+
+    let fix_output = FixOutput::new(is_quiet_mode);
+    let check_output = CheckOutput::new(is_quiet_mode);
 
     for (i, path) in file_paths.iter().enumerate() {
         let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
@@ -39,7 +41,12 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             Some(f) => f,
             None => continue,
         };
-        output.print_processing_info(&fe);
+
+        if is_fix {
+            fix_output.print_processing_info(&fe);
+        } else {
+            check_output.print_processing_info(&fe);
+        }
 
         let mut lines = get_line_entries(&fe, strs);
 
@@ -50,20 +57,27 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             // create backup copy unless user specifies not to
             if should_backup {
                 let backup_file = fs_utils::backup_file(&fe)?.into_os_string();
-                output.print_backup(&backup_file);
+                fix_output.print_backup(&backup_file);
             }
 
             // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        let is_last_file = i == file_paths.len() - 1;
-        output.print_warnings(&result, is_last_file);
+        // This shouldn't be printed to Fox when combined with quiet mode
+        if !(is_fix && is_quiet_mode) {
+            let is_last_file = i == file_paths.len() - 1;
+            check_output.print_warnings(&result, is_last_file);
+        }
 
         warnings.extend(result);
     }
 
-    output.print_total(warnings.len());
+    if is_fix {
+        fix_output.print_total(warnings.len());
+    } else {
+        check_output.print_total(warnings.len());
+    }
 
     Ok(warnings)
 }
