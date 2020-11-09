@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
 
 ### 🔧 Changed
+- Make an output on-the-fly [#336](https://github.com/dotenv-linter/dotenv-linter/pull/336) ([@DDtKey](https://github.com/DDtKey))
 
 ## [v2.2.1] - 2020-10-24
 ### 🚀 Added

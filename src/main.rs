@@ -1,5 +1,4 @@
 use clap::Arg;
-use colored::*;
 use std::error::Error;
 use std::ffi::OsStr;
 use std::{env, process};
@@ -15,74 +14,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         process::exit(0);
     }
 
-    let outputs = dotenv_linter::run(&args, &current_dir)?;
-
-    if outputs.is_empty() {
-        process::exit(0);
-    }
-
     let no_color = args.is_present("no-color");
     if no_color {
         colored::control::set_override(false);
     }
     #[cfg(windows)]
     set_windows_virtual_terminal();
-    let total = outputs.iter().map(|o| o.warnings.len()).sum();
-    let is_not_quiet = !args.is_present("quiet");
-    if args.is_present("fix") {
-        if is_not_quiet {
-            dotenv_linter::print_outputs(outputs);
-        } else {
-            outputs.iter().for_each(|w| w.print_backup());
-        }
-        print_fix_total(total);
+
+    let total_warnings = dotenv_linter::run(&args, &current_dir)?;
+
+    // Ensure the exit code is 0 if there are no warnings or have been fixed.
+    if args.is_present("fix") || total_warnings == 0 {
         process::exit(0);
     }
 
-    if is_not_quiet {
-        dotenv_linter::print_outputs(outputs);
-        print_check_total(total);
-    } else {
-        outputs.iter().for_each(|w| w.print_warnings());
-    }
-
-    // Ensure the exit code is 0 if there were no warnings
-    if total == 0 {
-        process::exit(0);
-    }
     process::exit(1);
-}
-
-fn print_fix_total(total: usize) {
-    if total != 0 {
-        println!("\nAll warnings are fixed. Total: {}", total);
-    } else {
-        println!("\nNo warnings found");
-    }
-}
-
-fn print_check_total(total: usize) {
-    if total != 0 {
-        let mut problems = String::from("problem");
-
-        if total != 1 {
-            problems += "s";
-        }
-
-        println!(
-            "\n{}",
-            format!(
-                "{} {} {}",
-                String::from("Found"),
-                total.to_string(),
-                problems
-            )
-            .red()
-            .bold()
-        );
-    } else {
-        println!("\n{}", "No problems found".to_string().green().bold());
-    }
 }
 
 fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
