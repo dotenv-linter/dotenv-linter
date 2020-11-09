@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
 
 ### 🔧 Changed
-- Changed behaviour of QuoteCharacterChecker for multiline values support [#341](https://github.com/dotenv-linter/dotenv-linter/pull/341) ([@artem-russkikh](http://github.com/artem-russkikh))
+- Changed behavior of QuoteCharacterChecker for multiline values support [#341](https://github.com/dotenv-linter/dotenv-linter/pull/341) ([@artem-russkikh](http://github.com/artem-russkikh))
 
 ## [v2.2.1] - 2020-10-24
 ### 🚀 Added
