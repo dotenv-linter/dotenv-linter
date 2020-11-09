@@ -21,12 +21,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     #[cfg(windows)]
     set_windows_virtual_terminal();
 
-    let warnings = dotenv_linter::run(&args, &current_dir)?;
-
-    let total = warnings.len();
+    let total_warnings = dotenv_linter::run(&args, &current_dir)?;
 
     // Ensure the exit code is 0 if there are no warnings or have been fixed.
-    if args.is_present("fix") || total == 0 {
+    if args.is_present("fix") || total_warnings == 0 {
         process::exit(0);
     }
 

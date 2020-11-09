@@ -11,13 +11,13 @@ mod fs_utils;
 pub use checks::available_check_names;
 
 #[allow(clippy::redundant_closure)]
-pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning>, Box<dyn Error>> {
-    let mut warnings: Vec<Warning> = Vec::new();
+pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
+    let mut warnings_count = 0;
     let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
 
     // Nothing to check/fix
     if file_paths.is_empty() {
-        return Ok(warnings);
+        return Ok(warnings_count);
     }
 
     let mut skip_checks: Vec<&str> = Vec::new();
@@ -64,22 +64,22 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Warning
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        // This shouldn't be printed to Fox when combined with quiet mode
+        // This shouldn't be printed to Fix when combined with quiet mode
         if !(is_fix && is_quiet_mode) {
             let is_last_file = i == file_paths.len() - 1;
             check_output.print_warnings(&result, is_last_file);
         }
 
-        warnings.extend(result);
+        warnings_count += result.len();
     }
 
     if is_fix {
-        fix_output.print_total(warnings.len());
+        fix_output.print_total(warnings_count);
     } else {
-        check_output.print_total(warnings.len());
+        check_output.print_total(warnings_count);
     }
 
-    Ok(warnings)
+    Ok(warnings_count)
 }
 
 /// getting a list of all files for checking/fixing without custom exclusion files
