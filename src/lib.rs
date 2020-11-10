@@ -11,16 +11,82 @@ mod fs_utils;
 pub use checks::available_check_names;
 
 #[allow(clippy::redundant_closure)]
-pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Output>, Box<dyn Error>> {
-    let mut file_paths: Vec<PathBuf> = Vec::new();
+pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
+    let mut warnings_count = 0;
+    let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
+
+    // Nothing to check/fix
+    if file_paths.is_empty() {
+        return Ok(warnings_count);
+    }
+
     let mut skip_checks: Vec<&str> = Vec::new();
-    let mut excluded_paths: Vec<PathBuf> = Vec::new();
-
-    let is_recursive = args.is_present("recursive");
-
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
     }
+
+    let is_fix = args.is_present("fix");
+    let is_quiet_mode = args.is_present("quiet");
+
+    let fix_output = FixOutput::new(is_quiet_mode);
+    let check_output = CheckOutput::new(is_quiet_mode, file_paths.len());
+
+    for (i, path) in file_paths.iter().enumerate() {
+        let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
+            Some(p) => p,
+            None => continue,
+        };
+
+        let (fe, strs) = match FileEntry::from(relative_path) {
+            Some(f) => f,
+            None => continue,
+        };
+
+        if is_fix {
+            fix_output.print_processing_info(&fe);
+        } else {
+            check_output.print_processing_info(&fe);
+        }
+
+        let mut lines = get_line_entries(&fe, strs);
+
+        let mut result = checks::run(&lines, &skip_checks);
+        // run fixers & write results to file
+        if is_fix && !result.is_empty() && fixes::run(&mut result, &mut lines, &skip_checks) > 0 {
+            let should_backup = !args.is_present("no-backup");
+            // create backup copy unless user specifies not to
+            if should_backup {
+                let backup_file = fs_utils::backup_file(&fe)?.into_os_string();
+                fix_output.print_backup(&backup_file);
+            }
+
+            // write corrected file
+            fs_utils::write_file(&fe.path, lines)?;
+        }
+
+        // This shouldn't be printed to Fix when combined with quiet mode
+        if !(is_fix && is_quiet_mode) {
+            check_output.print_warnings(&result, i);
+        }
+
+        warnings_count += result.len();
+    }
+
+    if is_fix {
+        fix_output.print_total(warnings_count);
+    } else {
+        check_output.print_total(warnings_count);
+    }
+
+    Ok(warnings_count)
+}
+
+/// getting a list of all files for checking/fixing without custom exclusion files
+fn get_needed_file_paths(args: &clap::ArgMatches) -> Vec<PathBuf> {
+    let mut file_paths: Vec<PathBuf> = Vec::new();
+    let mut excluded_paths: Vec<PathBuf> = Vec::new();
+
+    let is_recursive = args.is_present("recursive");
 
     if let Some(excluded) = args.values_of("exclude") {
         excluded_paths = excluded
@@ -36,58 +102,7 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<Vec<Output>
         file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
     }
 
-    let is_fix = args.is_present("fix");
-    let mut outputs: Vec<Output> = Vec::new();
-    let mode = if is_fix {
-        output::Mode::Fix
-    } else {
-        output::Mode::Check
-    };
-
-    for path in file_paths {
-        let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
-            Some(p) => p,
-            None => continue,
-        };
-
-        let (fe, strs) = match FileEntry::from(relative_path) {
-            Some(f) => f,
-            None => continue,
-        };
-
-        let mut lines = get_line_entries(&fe, strs);
-        let mut backup_file = None;
-
-        // run fixers & write results to file
-        let mut result = checks::run(&lines, &skip_checks);
-        if is_fix && !result.is_empty() && fixes::run(&mut result, &mut lines, &skip_checks) > 0 {
-            // create backup copy unless user specifies not to
-            let should_backup = !args.is_present("no-backup");
-            if should_backup {
-                backup_file = Some(fs_utils::backup_file(&fe)?.into_os_string());
-            }
-
-            // write corrected file
-            fs_utils::write_file(&fe.path, lines)?;
-        }
-
-        outputs.push(Output::new(fe, backup_file, result, mode));
-    }
-
-    Ok(outputs)
-}
-
-/// Prints outputs with correct newlines.
-///
-/// Prints a newline after an output if it is not the last output or, for the
-/// last output, it has no warnings.
-pub fn print_outputs(outputs: Vec<Output>) {
-    for (i, output) in outputs.iter().enumerate() {
-        print!("{}", output);
-        if i != outputs.len() - 1 || (i == outputs.len() - 1 && output.warnings.is_empty()) {
-            println!();
-        }
-    }
+    file_paths
 }
 
 fn get_file_paths(
