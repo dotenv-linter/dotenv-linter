@@ -65,6 +65,13 @@ mod tests {
     }
 
     #[test]
+    fn working_with_export_run() {
+        let mut checker = IncorrectDelimiterChecker::default();
+        let line = line_entry(1, 1, "export FOO=BAR");
+        assert_eq!(None, checker.run(&line));
+    }
+
+    #[test]
     fn incorrect_leading_char() {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = line_entry(1, 1, "*FOO=BAR");

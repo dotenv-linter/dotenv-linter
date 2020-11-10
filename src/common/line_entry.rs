@@ -29,8 +29,8 @@ impl LineEntry {
             return None;
         }
 
-        match self.trimmed_string().find('=') {
-            Some(index) => Some(self.trimmed_string()[..index].to_owned()),
+        match self.stripped_export_string().find('=') {
+            Some(index) => Some(self.stripped_export_string()[..index].to_owned()),
             None => None,
         }
     }
@@ -48,6 +48,13 @@ impl LineEntry {
 
     pub fn trimmed_string(&self) -> &str {
         self.raw_string.trim()
+    }
+
+    fn stripped_export_string(&self) -> &str {
+        match self.trimmed_string().strip_prefix("export ") {
+            Some(stripped_string) => stripped_string.trim(),
+            None => self.trimmed_string(),
+        }
     }
 
     pub fn is_last_line(&self) -> bool {
@@ -110,6 +117,14 @@ mod tests {
         fn empty_line_test() {
             let input = line_entry(1, 1, "");
             let expected = None;
+
+            assert_eq!(expected, input.get_key());
+        }
+
+        #[test]
+        fn stripped_export_prefix_test() {
+            let input = line_entry(1, 1, "export FOO=BAR");
+            let expected = Some(String::from("FOO"));
 
             assert_eq!(expected, input.get_key());
         }

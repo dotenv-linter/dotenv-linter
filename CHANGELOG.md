@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 - Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
+- Add export prefix support [#340](https://github.com/dotenv-linter/dotenv-linter/pull/340)([@skonik](https://github.com/skonik))
 
 ### 🔧 Changed
 - Changed behavior of QuoteCharacterChecker for multiline values support [#341](https://github.com/dotenv-linter/dotenv-linter/pull/341) ([@artem-russkikh](http://github.com/artem-russkikh))

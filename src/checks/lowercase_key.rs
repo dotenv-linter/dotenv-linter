@@ -49,6 +49,13 @@ mod tests {
     }
 
     #[test]
+    fn working_with_export_run() {
+        let mut checker = LowercaseKeyChecker::default();
+        let line = line_entry(1, 1, "export FOO=BAR");
+        assert_eq!(None, checker.run(&line));
+    }
+
+    #[test]
     fn failing_run_with_lowercase_key() {
         let mut checker = LowercaseKeyChecker::default();
         let line = line_entry(1, 1, "foo_bar=FOOBAR");
