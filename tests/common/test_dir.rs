@@ -130,7 +130,7 @@ impl TestDir {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
-            .args(&["-f", "--no-backup"])
+            .args(&["fix", "--no-backup"])
             .assert()
             .success()
             .stdout(expected_output);
@@ -143,7 +143,7 @@ impl TestDir {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
-            .args(&["-f", "--no-backup"])
+            .args(&["fix", "--no-backup"])
             .assert()
             .success();
     }
@@ -160,7 +160,7 @@ impl TestDir {
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
-            .args(&["-f", "--no-backup"])
+            .args(&["fix", "--no-backup"])
             .args(ext_args)
             .assert()
             .success()
