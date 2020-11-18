@@ -11,7 +11,7 @@ keywords = ["environment", "env", "dotenv", "linter", "lint"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-clap = "2.33.0"
+clap = "2.33.3"
 colored = "2.0.0"
 
 [target.'cfg(windows)'.dependencies]

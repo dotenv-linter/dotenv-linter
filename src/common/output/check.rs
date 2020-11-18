@@ -18,14 +18,19 @@ impl CheckOutput {
 
     /// Prints information about a file in process
     pub fn print_processing_info(&self, file: &FileEntry) {
-        if !&self.is_quiet_mode {
+        if !self.is_quiet_mode {
             println!("Checking {}", file);
         }
     }
 
-    /// Prints warnings without any additional information.
+    /// Prints warnings without any additional information
     pub fn print_warnings(&self, warnings: &[Warning], file_index: usize) {
         warnings.iter().for_each(|w| println!("{}", w));
+
+        if self.is_quiet_mode {
+            return;
+        }
+
         let is_last_file = file_index == self.files_count - 1;
         if !warnings.is_empty() && !is_last_file {
             println!();

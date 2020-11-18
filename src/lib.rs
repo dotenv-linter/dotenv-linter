@@ -1,5 +1,5 @@
 use crate::common::*;
-
+use std::collections::BTreeMap;
 use std::error::Error;
 use std::path::PathBuf;
 
@@ -10,13 +10,12 @@ mod fs_utils;
 
 pub use checks::available_check_names;
 
-#[allow(clippy::redundant_closure)]
-pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
+pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
     let mut warnings_count = 0;
-    let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
+    let lines_map = get_lines(args, current_dir)?;
 
-    // Nothing to check/fix
-    if file_paths.is_empty() {
+    // Nothing to check
+    if lines_map.is_empty() {
         return Ok(warnings_count);
     }
 
@@ -25,60 +24,91 @@ pub fn run(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<
         skip_checks = skip.collect();
     }
 
-    let is_fix = args.is_present("fix");
-    let is_quiet_mode = args.is_present("quiet");
+    let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
+    for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
+        output.print_processing_info(&fe);
 
-    let fix_output = FixOutput::new(is_quiet_mode);
-    let check_output = CheckOutput::new(is_quiet_mode, file_paths.len());
+        let lines = get_line_entries(&fe, strings);
+        let result = checks::run(&lines, &skip_checks);
 
-    for (i, path) in file_paths.iter().enumerate() {
-        let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
-            Some(p) => p,
-            None => continue,
-        };
+        output.print_warnings(&result, index);
+        warnings_count += result.len();
+    }
 
-        let (fe, strs) = match FileEntry::from(relative_path) {
-            Some(f) => f,
-            None => continue,
-        };
+    output.print_total(warnings_count);
 
-        if is_fix {
-            fix_output.print_processing_info(&fe);
-        } else {
-            check_output.print_processing_info(&fe);
-        }
+    Ok(warnings_count)
+}
 
-        let mut lines = get_line_entries(&fe, strs);
+pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn Error>> {
+    let mut warnings_count = 0;
+    let lines_map = get_lines(args, current_dir)?;
 
+    // Nothing to fix
+    if lines_map.is_empty() {
+        return Ok(());
+    }
+
+    let mut skip_checks: Vec<&str> = Vec::new();
+    if let Some(skip) = args.values_of("skip") {
+        skip_checks = skip.collect();
+    }
+
+    let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
+    for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
+        output.print_processing_info(&fe);
+
+        let mut lines = get_line_entries(&fe, strings);
         let mut result = checks::run(&lines, &skip_checks);
+
         // run fixers & write results to file
-        if is_fix && !result.is_empty() && fixes::run(&mut result, &mut lines, &skip_checks) > 0 {
+        if !result.is_empty() && fixes::run(&mut result, &mut lines, &skip_checks) > 0 {
             let should_backup = !args.is_present("no-backup");
             // create backup copy unless user specifies not to
             if should_backup {
                 let backup_file = fs_utils::backup_file(&fe)?.into_os_string();
-                fix_output.print_backup(&backup_file);
+                output.print_backup(&backup_file);
             }
 
             // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        // This shouldn't be printed to Fix when combined with quiet mode
-        if !(is_fix && is_quiet_mode) {
-            check_output.print_warnings(&result, i);
-        }
-
+        output.print_warnings(&result, index);
         warnings_count += result.len();
     }
 
-    if is_fix {
-        fix_output.print_total(warnings_count);
-    } else {
-        check_output.print_total(warnings_count);
+    output.print_total(warnings_count);
+
+    Ok(())
+}
+
+fn get_lines(
+    args: &clap::ArgMatches,
+    current_dir: &PathBuf,
+) -> Result<BTreeMap<FileEntry, Vec<String>>, Box<dyn Error>> {
+    let mut lines: BTreeMap<FileEntry, Vec<String>> = BTreeMap::new();
+    let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
+
+    if file_paths.is_empty() {
+        return Ok(lines);
     }
 
-    Ok(warnings_count)
+    for path in file_paths.iter() {
+        let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
+            Some(p) => p,
+            None => continue,
+        };
+
+        let (fe, strings) = match FileEntry::from(relative_path) {
+            Some(f) => f,
+            None => continue,
+        };
+
+        lines.insert(fe, strings);
+    }
+
+    Ok(lines)
 }
 
 /// getting a list of all files for checking/fixing without custom exclusion files

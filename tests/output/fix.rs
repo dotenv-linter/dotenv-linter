@@ -176,7 +176,7 @@ fn backup() {
     let test_dir = TestDir::new();
     let test_file = test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
-    let args = &["-f"];
+    let args = &["fix"];
     let output = test_dir.test_command_success_and_get_output(args);
 
     let backup_file = fs::read_dir(&test_dir.as_str())
@@ -210,7 +210,7 @@ fn quiet_backup() {
     let test_dir = TestDir::new();
     let test_file = test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
-    let args = &["-f", "-q"];
+    let args = &["fix", "-q"];
     let output = test_dir.test_command_success_and_get_output(args);
 
     let backup_file = fs::read_dir(&test_dir.as_str())
