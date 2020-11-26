@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add export prefix support [#340](https://github.com/dotenv-linter/dotenv-linter/pull/340)([@skonik](https://github.com/skonik))
 
 ### 🔧 Changed
+- Add [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) action [#346](https://github.com/dotenv-linter/dotenv-linter/pull/346) ([@mgrachev](https://github.com/mgrachev))
 - Remade flags to subcommands [#342](https://github.com/dotenv-linter/dotenv-linter/pull/342) ([@mgrachev](https://github.com/mgrachev))
 - Changed behavior of QuoteCharacterChecker for multiline values support [#341](https://github.com/dotenv-linter/dotenv-linter/pull/341) ([@artem-russkikh](http://github.com/artem-russkikh))
 - Make an output on-the-fly [#336](https://github.com/dotenv-linter/dotenv-linter/pull/336) ([@DDtKey](https://github.com/DDtKey))
