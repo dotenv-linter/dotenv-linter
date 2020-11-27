@@ -1,0 +1,37 @@
+name: Linters
+on: pull_request
+
+jobs:
+  misspell:
+    name: linters / misspell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: reviewdog/action-misspell@v1
+        with:
+          locale: "US"
+
+  yamllint:
+    name: linters / yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: yamllint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          fail_on_error: true
+          yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
+
+  shellcheck:
+    name: linters / shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: shellcheck
+        uses: reviewdog/action-shellcheck@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          fail_on_error: true
+          exclude: "./.git/*"
