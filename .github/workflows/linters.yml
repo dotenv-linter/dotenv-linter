@@ -35,3 +35,12 @@ jobs:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
           exclude: "./.git/*"
+
+  commitlint:
+    name: linters / commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v2
