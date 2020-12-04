@@ -34,7 +34,7 @@ impl Check for UnorderedKeyChecker<'_> {
         }
 
         let key = line.get_key()?;
-        self.keys.push(key.clone());
+        self.keys.push(key.to_string());
 
         let mut sorted_keys = self.keys.clone();
         sorted_keys.sort();
