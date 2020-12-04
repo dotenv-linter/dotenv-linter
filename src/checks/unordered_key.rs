@@ -43,7 +43,7 @@ impl Check for UnorderedKeyChecker<'_> {
             return None;
         }
 
-        let another_key = sorted_keys.iter().skip_while(|&s| s != &key).nth(1)?;
+        let another_key = sorted_keys.iter().skip_while(|&s| s != key).nth(1)?;
 
         Some(Warning::new(
             line.clone(),
