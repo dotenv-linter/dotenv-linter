@@ -24,14 +24,15 @@ impl LineEntry {
         self.trimmed_string().starts_with('#')
     }
 
-    pub fn get_key(&self) -> Option<String> {
+    pub fn get_key(&self) -> Option<&str> {
         if self.is_empty_or_comment() {
             return None;
         }
 
-        match self.stripped_export_string().find('=') {
-            Some(index) => Some(self.stripped_export_string()[..index].to_owned()),
-            None => None,
+        let stripped = self.stripped_export_string();
+        match stripped.find('=') {
+            Some(index) => Some(&stripped[..index]),
+            None => Some(&self.raw_string),
         }
     }
 
