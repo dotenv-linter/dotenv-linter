@@ -135,8 +135,12 @@ mod tests {
     fn unformatted_run() {
         let mut checker = IncorrectDelimiterChecker::default();
         let line = line_entry(1, 1, "FOO-BAR");
-        // there's no key, so KeyWithoutValueChecker should catch this error
-        assert_eq!(None, checker.run(&line));
+        let expected = Some(Warning::new(
+            line.clone(),
+            "IncorrectDelimiter",
+            String::from("The FOO-BAR key has incorrect delimiter"),
+        ));
+        assert_eq!(expected, checker.run(&line));
     }
 
     #[test]
