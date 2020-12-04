@@ -30,10 +30,7 @@ impl LineEntry {
         }
 
         let stripped = self.stripped_export_string();
-        match stripped.find('=') {
-            Some(index) => Some(&stripped[..index]),
-            None => Some(&self.raw_string),
-        }
+        Some(stripped.split('=').next().unwrap_or(stripped))
     }
 
     pub fn get_value(&self) -> Option<String> {
