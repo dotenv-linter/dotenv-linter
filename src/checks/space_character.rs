@@ -7,8 +7,8 @@ pub(crate) struct SpaceCharacterChecker<'a> {
 }
 
 impl SpaceCharacterChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 

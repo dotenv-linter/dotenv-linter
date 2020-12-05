@@ -1,5 +1,5 @@
 use assert_cmd::Command;
-use std::ffi::OsStr;
+use std::{borrow::Cow, ffi::OsStr};
 use tempfile::{tempdir, tempdir_in, TempDir};
 
 #[cfg(windows)]
@@ -37,14 +37,13 @@ impl TestDir {
     }
 
     /// Get relative path between TestDir and a subdirectory TestDir
-    pub fn relative_path(&self, subdir: &Self) -> String {
+    pub fn relative_path<'a>(&self, subdir: &'a Self) -> Cow<'a, str> {
         subdir
             .current_dir
             .path()
             .strip_prefix(self.current_dir.path())
             .expect("strip dir from subdir path")
             .to_string_lossy()
-            .to_string()
     }
 
     /// Create a TestFile within the TestDir
@@ -203,7 +202,6 @@ impl TestDir {
                     .success()
                     .get_output()
                     .stdout
-                    .clone()
                     .as_slice(),
             )
             .expect("convert to &str"),

@@ -53,16 +53,13 @@ impl FileEntry {
     pub fn is_env_file(path: &PathBuf) -> bool {
         let pattern = ".env";
         Self::get_file_name(path)
-            .filter(|file_name| !EXCLUDED_FILES.contains(&file_name.as_str()))
+            .filter(|file_name| !EXCLUDED_FILES.contains(file_name))
             .filter(|file_name| file_name.starts_with(pattern) || file_name.ends_with(pattern))
             .is_some()
     }
 
-    fn get_file_name(path: &PathBuf) -> Option<String> {
-        path.file_name()
-            .map(|file_name| file_name.to_str())
-            .unwrap_or(None)
-            .map(|s| s.to_string())
+    fn get_file_name<'a>(path: &'a PathBuf) -> Option<&'a str> {
+        path.file_name().and_then(|file_name| file_name.to_str())
     }
 }
 

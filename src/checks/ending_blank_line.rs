@@ -16,8 +16,8 @@ impl Default for EndingBlankLineChecker<'_> {
 }
 
 impl EndingBlankLineChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 

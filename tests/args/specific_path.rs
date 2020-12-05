@@ -9,7 +9,7 @@ fn checks_one_specific_path() {
     let subdir = testdir.subdir();
     let testfile_2 = subdir.create_testfile(".env.test", "1FOO=\n");
     let testfile_2_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_2.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_2.shortname_as_str());
     let testfile_2_path = testfile_2_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
@@ -35,7 +35,7 @@ fn checks_two_specific_paths() {
     let subdir_1 = testdir.subdir();
     let testfile_2 = subdir_1.create_testfile(".env", " FOO=\n");
     let testfile_2_pathbuf =
-        Path::new(&testdir.relative_path(&subdir_1)).join(testfile_2.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir_1).as_ref()).join(testfile_2.shortname_as_str());
     let testfile_2_path = testfile_2_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
@@ -43,7 +43,7 @@ fn checks_two_specific_paths() {
     let subdir_2 = subdir_1.subdir();
     let testfile_3 = subdir_2.create_testfile(".env", " FOO=\n");
     let testfile_3_pathbuf =
-        Path::new(&testdir.relative_path(&subdir_2)).join(testfile_3.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir_2).as_ref()).join(testfile_3.shortname_as_str());
     let testfile_3_path = testfile_3_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
@@ -99,7 +99,7 @@ fn checks_two_specific_files() {
     let subdir = testdir.subdir();
     let testfile_3 = subdir.create_testfile("another_test_file", "FOO=BAR\nFOO=BAR\n");
     let testfile_3_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_3.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_3.shortname_as_str());
     let testfile_3_path = testfile_3_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
@@ -134,14 +134,14 @@ fn checks_each_file_only_once_when_listing_same_path_twice() {
     let subdir = testdir.subdir();
     let testfile_1 = subdir.create_testfile(".env.a", " FOO=\n");
     let testfile_1_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_1.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_1.shortname_as_str());
     let testfile_1_path = testfile_1_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
 
     let testfile_2 = subdir.create_testfile(".env.b", "FOO=BAR\nBAR=foo\n");
     let testfile_2_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_2.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_2.shortname_as_str());
     let testfile_2_path = testfile_2_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
@@ -176,13 +176,13 @@ fn checks_each_file_only_once_when_listing_one_path_and_one_file() {
     let subdir = testdir.subdir();
     let testfile_1 = subdir.create_testfile(".env.a", " FOO=\n");
     let testfile_1_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_1.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_1.shortname_as_str());
     let testfile_1_path = testfile_1_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
     let testfile_2 = subdir.create_testfile(".env.b", "FOO=val\nBAR=foo\n");
     let testfile_2_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_2.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_2.shortname_as_str());
     let testfile_2_path = testfile_2_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");
@@ -219,7 +219,7 @@ fn checks_one_specific_file_and_one_path() {
     let subdir = testdir.subdir();
     let testfile_3 = subdir.create_testfile("test.env", "FOO=BAR\nFOO=BAR\n");
     let testfile_3_pathbuf =
-        Path::new(&testdir.relative_path(&subdir)).join(testfile_3.shortname_as_str());
+        Path::new(&testdir.relative_path(&subdir).as_ref()).join(testfile_3.shortname_as_str());
     let testfile_3_path = testfile_3_pathbuf
         .to_str()
         .expect("multi-platform path to test .env file");

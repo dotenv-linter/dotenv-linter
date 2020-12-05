@@ -16,8 +16,8 @@ impl Default for LeadingCharacterChecker<'_> {
 }
 
 impl LeadingCharacterChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 

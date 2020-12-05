@@ -7,8 +7,8 @@ pub(crate) struct TrailingWhitespaceChecker<'a> {
 }
 
 impl TrailingWhitespaceChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 

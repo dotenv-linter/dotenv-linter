@@ -8,8 +8,8 @@ pub(crate) struct ExtraBlankLineChecker<'a> {
 }
 
 impl ExtraBlankLineChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 

@@ -7,8 +7,8 @@ pub(crate) struct QuoteCharacterChecker<'a> {
 }
 
 impl QuoteCharacterChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 
