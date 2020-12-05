@@ -18,19 +18,16 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
     let comp_target: Vec<_> = target_path.components().collect();
     let comp_base: Vec<_> = base_path.components().collect();
 
-    let mut i = 0;
-    for (b, t) in comp_base.iter().zip(comp_target.iter()) {
-        if b != t {
-            break;
-        }
-        i += 1;
-    }
+    let i = comp_base
+        .iter()
+        .zip(comp_target.iter())
+        .take_while(|(b, t)| b == t)
+        .count();
 
-    let mut relative_path = PathBuf::new();
-
-    for _ in 0..(comp_base.len() - i) {
-        relative_path.push("..");
-    }
+    let mut relative_path = (0..(comp_base.len() - i)).fold(PathBuf::new(), |mut acc, _| {
+        acc.push("..");
+        acc
+    });
     relative_path.extend(comp_target.get(i..)?);
 
     Some(relative_path)

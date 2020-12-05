@@ -11,12 +11,11 @@ mod fs_utils;
 pub use checks::available_check_names;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
-    let mut warnings_count = 0;
     let lines_map = get_lines(args, current_dir)?;
 
     // Nothing to check
     if lines_map.is_empty() {
-        return Ok(warnings_count);
+        return Ok(0);
     }
 
     let mut skip_checks: Vec<&str> = Vec::new();
@@ -25,15 +24,19 @@ pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Bo
     }
 
     let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
-    for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
-        output.print_processing_info(&fe);
+    let warnings_count =
+        lines_map
+            .into_iter()
+            .enumerate()
+            .fold(0, |acc, (index, (fe, strings))| {
+                output.print_processing_info(&fe);
 
-        let lines = get_line_entries(&fe, strings);
-        let result = checks::run(&lines, &skip_checks);
+                let lines = get_line_entries(&fe, strings);
+                let result = checks::run(&lines, &skip_checks);
 
-        output.print_warnings(&result, index);
-        warnings_count += result.len();
-    }
+                output.print_warnings(&result, index);
+                acc + result.len()
+            });
 
     output.print_total(warnings_count);
 
@@ -161,16 +164,14 @@ fn get_file_paths(
 }
 
 fn get_line_entries(fe: &FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
-    let mut entries: Vec<LineEntry> = Vec::with_capacity(fe.total_lines);
-
-    for (index, line) in lines.into_iter().enumerate() {
-        entries.push(LineEntry {
+    lines
+        .into_iter()
+        .enumerate()
+        .map(|(index, line)| LineEntry {
             number: index + 1,
             file: fe.clone(),
             raw_string: line,
             is_deleted: false,
         })
-    }
-
-    entries
+        .collect()
 }

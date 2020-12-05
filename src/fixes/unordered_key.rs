@@ -83,14 +83,15 @@ impl Fix for UnorderedKeyFixer<'_> {
 impl UnorderedKeyFixer<'_> {
     fn sort_part(part: &mut [LineEntry]) {
         // Each slice includes a significant line (with key) and previous comments (if present)
-        let mut slice_start = 0;
         let mut slices = Vec::with_capacity(part.len());
-        for (i, line) in part.iter().enumerate() {
+        part.iter().enumerate().fold(0, |acc, (i, line)| {
             if !line.is_comment() {
-                slices.push(&part[slice_start..=i]);
-                slice_start = i + 1;
+                slices.push(&part[acc..=i]);
+                i + 1
+            } else {
+                acc
             }
-        }
+        });
 
         slices.sort_by_cached_key(|slice| {
             // I think, that we should modify get_key() so it will return Option<&str> instead of
@@ -98,10 +99,7 @@ impl UnorderedKeyFixer<'_> {
             slice.last()?.get_key()
         });
 
-        let mut sorted_lines = Vec::with_capacity(part.len());
-        for slice in slices {
-            sorted_lines.extend_from_slice(slice);
-        }
+        let sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
 
         part.clone_from_slice(sorted_lines.as_slice());
     }
@@ -137,9 +135,10 @@ mod tests {
     }
 
     fn assert_lines(result: &[LineEntry], lines: Vec<&str>) {
-        for (i, &line) in lines.iter().enumerate() {
-            assert_eq!(line, result[i].raw_string.as_str());
-        }
+        result
+            .into_iter()
+            .zip(lines)
+            .for_each(|(result, line)| assert_eq!(line, result.raw_string.as_str()));
     }
 
     #[test]
