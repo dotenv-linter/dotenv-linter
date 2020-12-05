@@ -170,7 +170,7 @@ mod tests {
         );
         let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3, 3)];
         let expected: Vec<Warning> = vec![warning];
-        let skip_checks: Vec<&str> = vec!["KeyWithoutValue"];
+        let skip_checks: Vec<&str> = vec!["KeyWithoutValue", "UnorderedKey"];
 
         assert_eq!(expected, run(&lines, &skip_checks));
     }
@@ -197,7 +197,7 @@ mod tests {
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
         let expected: Vec<Warning> = vec![warning];
-        let skip_checks: Vec<&str> = Vec::new();
+        let skip_checks: Vec<&str> = vec!["UnorderedKey"];
 
         assert_eq!(expected, run(&lines, &skip_checks));
     }
@@ -214,7 +214,7 @@ mod tests {
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
         let expected: Vec<Warning> = vec![warning];
-        let skip_checks: Vec<&str> = vec!["KeyWithoutValue"];
+        let skip_checks: Vec<&str> = vec!["KeyWithoutValue", "UnorderedKey"];
 
         assert_eq!(expected, run(&lines, &skip_checks));
     }

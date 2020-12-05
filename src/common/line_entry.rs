@@ -24,15 +24,13 @@ impl LineEntry {
         self.trimmed_string().starts_with('#')
     }
 
-    pub fn get_key(&self) -> Option<String> {
+    pub fn get_key(&self) -> Option<&str> {
         if self.is_empty_or_comment() {
             return None;
         }
 
-        match self.stripped_export_string().find('=') {
-            Some(index) => Some(self.stripped_export_string()[..index].to_owned()),
-            None => None,
-        }
+        let stripped = self.stripped_export_string();
+        Some(stripped.split('=').next().unwrap_or(stripped))
     }
 
     pub fn get_value(&self) -> Option<String> {
@@ -124,7 +122,7 @@ mod tests {
         #[test]
         fn stripped_export_prefix_test() {
             let input = line_entry(1, 1, "export FOO=BAR");
-            let expected = Some(String::from("FOO"));
+            let expected = Some("FOO");
 
             assert_eq!(expected, input.get_key());
         }
@@ -132,7 +130,7 @@ mod tests {
         #[test]
         fn correct_line_test() {
             let input = line_entry(1, 1, "FOO=BAR");
-            let expected = Some(String::from("FOO"));
+            let expected = Some("FOO");
 
             assert_eq!(expected, input.get_key());
         }
@@ -140,7 +138,7 @@ mod tests {
         #[test]
         fn line_without_value_test() {
             let input = line_entry(1, 1, "FOO=");
-            let expected = Some(String::from("FOO"));
+            let expected = Some("FOO");
 
             assert_eq!(expected, input.get_key());
         }
@@ -148,7 +146,7 @@ mod tests {
         #[test]
         fn missing_value_and_equal_sign_test() {
             let input = line_entry(1, 1, "FOOBAR");
-            let expected = None;
+            let expected = Some("FOOBAR");
 
             assert_eq!(expected, input.get_key());
         }

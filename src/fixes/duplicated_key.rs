@@ -37,7 +37,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
                 continue;
             }
 
-            if let Some(key) = line.get_key() {
+            if let Some(key) = line.get_key().map(str::to_string) {
                 if keys.contains(&key) {
                     self.fix_line(line)?;
                 } else {

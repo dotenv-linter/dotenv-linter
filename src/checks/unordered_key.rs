@@ -34,7 +34,7 @@ impl Check for UnorderedKeyChecker<'_> {
         }
 
         let key = line.get_key()?;
-        self.keys.push(key.clone());
+        self.keys.push(key.to_string());
 
         let mut sorted_keys = self.keys.clone();
         sorted_keys.sort();
@@ -43,7 +43,7 @@ impl Check for UnorderedKeyChecker<'_> {
             return None;
         }
 
-        let another_key = sorted_keys.iter().skip_while(|&s| s != &key).nth(1)?;
+        let another_key = sorted_keys.iter().skip_while(|&s| s != key).nth(1)?;
 
         Some(Warning::new(
             line.clone(),

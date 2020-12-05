@@ -27,7 +27,7 @@ impl Check for KeyWithoutValueChecker<'_> {
             Some(Warning::new(
                 line.clone(),
                 self.name(),
-                self.message(&line.raw_string),
+                self.message(line.get_key().unwrap_or(&line.raw_string)),
             ))
         } else {
             None
