@@ -2,7 +2,7 @@ use crate::common::*;
 
 #[test]
 fn also_detect_lowercase_key() {
-    let contents = vec!["test\n"];
+    let contents = vec!["test\n", "export test\n"];
 
     for contents in contents {
         let testdir = TestDir::new();
