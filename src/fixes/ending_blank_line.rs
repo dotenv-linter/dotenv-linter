@@ -23,13 +23,13 @@ impl Fix for EndingBlankLineFixer<'_> {
         _warnings: Vec<&mut Warning>,
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
-        let file = lines.first()?.file.clone();
         let last_line = lines.last()?;
 
         if last_line.raw_string.ends_with(LF) {
             return Some(0);
         }
 
+        let file = lines.first()?.file.clone();
         lines.push(LineEntry {
             number: lines.len() + 1,
             file,
