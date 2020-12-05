@@ -55,11 +55,7 @@ mod tests {
     fn failing_trailing_run() {
         let mut checker = TrailingWhitespaceChecker::default();
         let line = line_entry(1, 1, "DEBUG_HTTP=true  ");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "TrailingWhitespace",
-            MESSAGE.to_string(),
-        ));
+        let expected = Some(Warning::new(line.clone(), "TrailingWhitespace", MESSAGE));
         assert_eq!(expected, checker.run(&line));
     }
 }

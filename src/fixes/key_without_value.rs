@@ -50,7 +50,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[0].clone(),
             "KeyWithoutValue",
-            String::from("The FOO key should be with a value or have an equal sign"),
+            "The FOO key should be with a value or have an equal sign",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

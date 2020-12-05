@@ -53,7 +53,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[0].clone(),
             "QuoteCharacter",
-            String::from("The value has quote characters (\', \")"),
+            "The value has quote characters (\', \")",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

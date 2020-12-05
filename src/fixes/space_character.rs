@@ -62,12 +62,12 @@ mod tests {
             Warning::new(
                 lines[0].clone(),
                 "SpaceCharacter",
-                String::from("The line has spaces around equal sign"),
+                "The line has spaces around equal sign",
             ),
             Warning::new(
                 lines[1].clone(),
                 "SpaceCharacter",
-                String::from("The line has spaces around equal sign"),
+                "The line has spaces around equal sign",
             ),
         ];
 

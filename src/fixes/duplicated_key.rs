@@ -74,13 +74,9 @@ mod tests {
             Warning::new(
                 lines[2].clone(),
                 "DuplicatedKey",
-                "The FOO key is duplicated".to_owned(),
+                "The FOO key is duplicated",
             ),
-            Warning::new(
-                lines[3].clone(),
-                "DuplicatedKey",
-                "The Z key is duplicated".to_owned(),
-            ),
+            Warning::new(lines[3].clone(), "DuplicatedKey", "The Z key is duplicated"),
         ];
 
         assert_eq!(

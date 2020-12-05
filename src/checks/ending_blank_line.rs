@@ -66,7 +66,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "EndingBlankLine",
-            String::from("No blank line at the end of the file"),
+            "No blank line at the end of the file",
         ));
 
         assert_eq!(expected, checker.run(&line));

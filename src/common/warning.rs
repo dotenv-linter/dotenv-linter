@@ -9,9 +9,10 @@ pub struct Warning {
     message: String,
 }
 
-impl Warning {
-    pub fn new(line: LineEntry, check_name: &str, message: String) -> Self {
-        let check_name = String::from(check_name);
+impl<'a> Warning {
+    pub fn new(line: LineEntry, check_name: impl Into<String>, message: impl Into<String>) -> Self {
+        let check_name = check_name.into();
+        let message = message.into();
         Self {
             line,
             check_name,
@@ -44,11 +45,7 @@ mod tests {
     #[test]
     fn warning_fmt_test() {
         let line = line_entry(1, 1, "FOO=BAR");
-        let warning = Warning::new(
-            line,
-            "DuplicatedKey",
-            String::from("The FOO key is duplicated"),
-        );
+        let warning = Warning::new(line, "DuplicatedKey", "The FOO key is duplicated");
 
         assert_eq!(
             format!(

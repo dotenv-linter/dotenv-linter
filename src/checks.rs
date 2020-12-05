@@ -135,7 +135,7 @@ mod tests {
         let warning = Warning::new(
             line.clone(),
             "KeyWithoutValue",
-            String::from("The FOO key should be with a value or have an equal sign"),
+            "The FOO key should be with a value or have an equal sign",
         );
         let lines: Vec<LineEntry> = vec![line, blank_line_entry(2, 2)];
         let expected: Vec<Warning> = vec![warning];
@@ -150,7 +150,7 @@ mod tests {
         let warning = Warning::new(
             line.clone(),
             "EndingBlankLine",
-            String::from("No blank line at the end of the file"),
+            "No blank line at the end of the file",
         );
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = vec![warning];
@@ -166,7 +166,7 @@ mod tests {
         let warning = Warning::new(
             line2.clone(),
             "LeadingCharacter",
-            String::from("Invalid leading character detected"),
+            "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3, 3)];
         let expected: Vec<Warning> = vec![warning];
@@ -193,7 +193,7 @@ mod tests {
         let warning = Warning::new(
             line3.clone(),
             "LeadingCharacter",
-            String::from("Invalid leading character detected"),
+            "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
         let expected: Vec<Warning> = vec![warning];
@@ -210,7 +210,7 @@ mod tests {
         let warning = Warning::new(
             line3.clone(),
             "LeadingCharacter",
-            String::from("Invalid leading character detected"),
+            "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
         let expected: Vec<Warning> = vec![warning];
@@ -232,7 +232,7 @@ mod tests {
         let warning = Warning::new(
             line4.clone(),
             "LeadingCharacter",
-            String::from("Invalid leading character detected"),
+            "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, line4, blank_line_entry(5, 5)];
         let expected: Vec<Warning> = vec![warning];
@@ -247,7 +247,7 @@ mod tests {
         let warning = Warning::new(
             line.clone(),
             "EndingBlankLine",
-            String::from("No blank line at the end of the file"),
+            "No blank line at the end of the file",
         );
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = vec![warning];

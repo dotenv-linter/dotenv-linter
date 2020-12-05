@@ -50,7 +50,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[0].clone(),
             "TrailingWhitespace",
-            String::from("Trailing whitespace detected"),
+            "Trailing whitespace detected",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

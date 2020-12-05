@@ -87,7 +87,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "IncorrectDelimiter",
-            String::from("The ***F-OOBAR key has incorrect delimiter"),
+            "The ***F-OOBAR key has incorrect delimiter",
         ));
 
         assert_eq!(expected, checker.run(&line));
@@ -101,7 +101,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "IncorrectDelimiter",
-            String::from("The FOO* key has incorrect delimiter"),
+            "The FOO* key has incorrect delimiter",
         ));
 
         assert_eq!(expected, checker.run(&line));
@@ -114,7 +114,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "IncorrectDelimiter",
-            String::from("The FOO-BAR key has incorrect delimiter"),
+            "The FOO-BAR key has incorrect delimiter",
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -126,7 +126,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "IncorrectDelimiter",
-            String::from("The FOO BAR key has incorrect delimiter"),
+            "The FOO BAR key has incorrect delimiter",
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -138,7 +138,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "IncorrectDelimiter",
-            String::from("The FOO-BAR key has incorrect delimiter"),
+            "The FOO-BAR key has incorrect delimiter",
         ));
         assert_eq!(expected, checker.run(&line));
     }

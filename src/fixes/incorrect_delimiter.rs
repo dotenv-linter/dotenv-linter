@@ -81,7 +81,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[0].clone(),
             "IncorrectDelimiter",
-            String::from("The RAILS-ENV key has has an incorrect delimter"),
+            "The RAILS-ENV key has has an incorrect delimter",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

@@ -59,8 +59,7 @@ mod tests {
             let (content, message) = *assert;
             let line = line_entry(i + 1, asserts.len(), content);
 
-            let expected =
-                message.map(|msg| Warning::new(line.clone(), "ExtraBlankLine", String::from(msg)));
+            let expected = message.map(|msg| Warning::new(line.clone(), "ExtraBlankLine", msg));
 
             assert_eq!(checker.run(&line), expected);
         }

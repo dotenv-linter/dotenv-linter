@@ -114,22 +114,22 @@ mod tests {
             Warning::new(
                 lines[0].clone(),
                 "LeadingCharacter",
-                String::from("Invalid leading character detected"),
+                "Invalid leading character detected",
             ),
             Warning::new(
                 lines[1].clone(),
                 "LeadingCharacter",
-                String::from("Invalid leading character detected"),
+                "Invalid leading character detected",
             ),
             Warning::new(
                 lines[2].clone(),
                 "LeadingCharacter",
-                String::from("Invalid leading character detected"),
+                "Invalid leading character detected",
             ),
             Warning::new(
                 lines[3].clone(),
                 "LeadingCharacter",
-                String::from("Invalid leading character detected"),
+                "Invalid leading character detected",
             ),
         ];
 

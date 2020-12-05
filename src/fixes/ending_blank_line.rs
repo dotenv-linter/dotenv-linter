@@ -53,7 +53,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[1].clone(),
             "EndingBlankLine",
-            String::from("No blank line at the end of the file"),
+            "No blank line at the end of the file",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

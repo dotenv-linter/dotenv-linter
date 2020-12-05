@@ -63,7 +63,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 3, "FOO='BAR'"),
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \")"),
+                    "The value has quote characters (\', \")",
                 )),
             ),
             (
@@ -71,7 +71,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(3, 3, "FOO='B\"AR'"),
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \")"),
+                    "The value has quote characters (\', \")",
                 )),
             ),
         ];
@@ -88,7 +88,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 2, "FOO=\"BAR\""),
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \")"),
+                    "The value has quote characters (\', \")",
                 )),
             ),
         ];

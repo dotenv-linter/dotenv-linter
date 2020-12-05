@@ -113,7 +113,7 @@ mod tests {
         let mut warnings = vec![Warning::new(
             lines[1].clone(),
             "LowercaseKey",
-            String::from("The c key should be in uppercase"),
+            "The c key should be in uppercase",
         )];
 
         assert_eq!(1, run(&mut warnings, &mut lines, &[]));
@@ -130,7 +130,7 @@ mod tests {
         let mut warnings = vec![Warning::new(
             lines[1].clone(),
             "Unfixable",
-            String::from("The UNFIXABLE- key is not fixable"),
+            "The UNFIXABLE- key is not fixable",
         )];
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
@@ -147,12 +147,12 @@ mod tests {
             Warning::new(
                 lines[0].clone(),
                 "LowercaseKey",
-                String::from("The a key should be in uppercase"),
+                "The a key should be in uppercase",
             ),
             Warning::new(
                 lines[1].clone(),
                 "LowercaseKey",
-                String::from("The c key should be in uppercase"),
+                "The c key should be in uppercase",
             ),
         ];
 
@@ -172,12 +172,12 @@ mod tests {
             Warning::new(
                 lines[2].clone(),
                 "LowercaseKey",
-                String::from("The a0 key should be in uppercase"),
+                "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
                 "LowercaseKey",
-                String::from("The a2 key should be in uppercase"),
+                "The a2 key should be in uppercase",
             ),
         ];
 
@@ -202,12 +202,12 @@ mod tests {
             Warning::new(
                 lines[2].clone(),
                 "LowercaseKey",
-                String::from("The a0 key should be in uppercase"),
+                "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
                 "LowercaseKey",
-                String::from("The a2 key should be in uppercase"),
+                "The a2 key should be in uppercase",
             ),
         ];
 
@@ -232,12 +232,12 @@ mod tests {
             Warning::new(
                 lines[2].clone(),
                 "LowercaseKey",
-                String::from("The a0 key should be in uppercase"),
+                "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
                 "LowercaseKey",
-                String::from("The a2 key should be in uppercase"),
+                "The a2 key should be in uppercase",
             ),
         ];
 
