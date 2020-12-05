@@ -48,10 +48,11 @@ impl LineEntry {
     }
 
     fn stripped_export_string(&self) -> &str {
-        match self.trimmed_string().strip_prefix("export ") {
-            Some(stripped_string) => stripped_string.trim(),
-            None => self.trimmed_string(),
-        }
+        let trimmed = self.trimmed_string();
+        trimmed
+            .strip_prefix("export ")
+            .map(str::trim)
+            .unwrap_or(trimmed)
     }
 
     pub fn is_last_line(&self) -> bool {

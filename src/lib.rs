@@ -87,28 +87,18 @@ fn get_lines(
     args: &clap::ArgMatches,
     current_dir: &PathBuf,
 ) -> Result<BTreeMap<FileEntry, Vec<String>>, Box<dyn Error>> {
-    let mut lines: BTreeMap<FileEntry, Vec<String>> = BTreeMap::new();
     let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
 
     if file_paths.is_empty() {
-        return Ok(lines);
+        return Ok(BTreeMap::new());
     }
 
-    for path in file_paths.iter() {
-        let relative_path = match fs_utils::get_relative_path(&path, &current_dir) {
-            Some(p) => p,
-            None => continue,
-        };
-
-        let (fe, strings) = match FileEntry::from(relative_path) {
-            Some(f) => f,
-            None => continue,
-        };
-
-        lines.insert(fe, strings);
-    }
-
-    Ok(lines)
+    Ok(file_paths
+        .iter()
+        .map(|path| fs_utils::get_relative_path(&path, &current_dir).and_then(FileEntry::from))
+        .filter(Option::is_some)
+        .map(Option::unwrap)
+        .collect::<BTreeMap<_, _>>())
 }
 
 /// getting a list of all files for checking/fixing without custom exclusion files

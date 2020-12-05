@@ -57,10 +57,10 @@ pub fn backup_file(fe: &FileEntry) -> Result<PathBuf, Box<dyn Error>> {
     let mut new_path = fe.path.to_owned();
     new_path.set_file_name(format!("{}_{}", &fe.file_name, timestamp));
 
-    match copy(&fe.path, &new_path) {
-        Ok(_) => Ok(new_path),
-        Err(e) => Err(Box::new(e)),
-    }
+    copy(&fe.path, &new_path)
+        .map(|_| new_path)
+        .map_err(Box::new)
+        .map_err(Into::into)
 }
 
 #[cfg(test)]
@@ -126,9 +126,9 @@ mod tests {
     fn test_canonicalize() {
         const UNC_PREFIX: &str = "\\\\?\\";
 
-        let file_name = String::from(".env");
+        let file_name = ".env";
         let dir = tempfile::tempdir().expect("create temp dir");
-        let path = dir.path().join(&file_name);
+        let path = dir.path().join(file_name);
         File::create(&path).expect("create testfile");
 
         let dunce_canonical_path = dunce::canonicalize(&path).expect("canonical path by `dunce`");
@@ -148,9 +148,9 @@ mod tests {
 
     #[test]
     fn write_file_test() {
-        let file_name = String::from(".env");
+        let file_name = ".env";
         let dir = tempfile::tempdir().expect("create temp dir");
-        let path = dir.path().join(&file_name);
+        let path = dir.path().join(file_name);
 
         let lines = vec![
             line_entry(1, 3, "A=B"),
