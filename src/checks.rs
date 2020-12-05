@@ -261,7 +261,9 @@ mod tests {
         let available_check_names = available_check_names();
         for check in checklist() {
             let check_name = check.name();
-            assert!(available_check_names.contains(&check_name.to_string()));
+            assert!(available_check_names
+                .iter()
+                .any(|name| name.as_str() == check_name));
         }
     }
 

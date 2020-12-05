@@ -22,10 +22,7 @@ impl fmt::Display for FileEntry {
 impl FileEntry {
     /// Converts `PathBuf` to tuple of `(FileEntry, Vec<String>)`
     pub fn from(path: PathBuf) -> Option<(Self, Vec<String>)> {
-        let file_name = match Self::get_file_name(&path) {
-            Some(s) => s,
-            None => return None,
-        };
+        let file_name = Self::get_file_name(&path)?.to_string();
 
         let content = match fs::read_to_string(&path) {
             Ok(content) => content,
