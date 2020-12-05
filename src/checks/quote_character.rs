@@ -24,7 +24,7 @@ impl Default for QuoteCharacterChecker<'_> {
 impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
-        if val.contains("\\n") {
+        if val.contains("\\n") || val.contains(char::is_whitespace) {
             return None;
         }
 
@@ -57,23 +57,24 @@ mod tests {
     #[test]
     fn with_single_quote_test() {
         let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
+            (line_entry(1, 4, "FOO=BAR"), None),
             (
-                line_entry(2, 3, "FOO='BAR'"),
+                line_entry(2, 4, "FOO='BAR'"),
                 Some(Warning::new(
-                    line_entry(2, 3, "FOO='BAR'"),
+                    line_entry(2, 4, "FOO='BAR'"),
                     "QuoteCharacter",
                     String::from("The value has quote characters (\', \")"),
                 )),
             ),
             (
-                line_entry(3, 3, "FOO='B\"AR'"),
+                line_entry(3, 4, "FOO='B\"AR'"),
                 Some(Warning::new(
-                    line_entry(3, 3, "FOO='B\"AR'"),
+                    line_entry(3, 4, "FOO='B\"AR'"),
                     "QuoteCharacter",
                     String::from("The value has quote characters (\', \")"),
                 )),
             ),
+            (line_entry(4, 4, "FOO=\'BAR BAR\'"), None),
         ];
 
         run_quote_char_tests(asserts);
@@ -82,15 +83,16 @@ mod tests {
     #[test]
     fn with_double_quote_test() {
         let asserts = vec![
-            (line_entry(1, 2, "FOO=BAR"), None),
+            (line_entry(1, 3, "FOO=BAR"), None),
             (
-                line_entry(2, 2, "FOO=\"BAR\""),
+                line_entry(2, 3, "FOO=\"BAR\""),
                 Some(Warning::new(
-                    line_entry(2, 2, "FOO=\"BAR\""),
+                    line_entry(2, 3, "FOO=\"BAR\""),
                     "QuoteCharacter",
                     String::from("The value has quote characters (\', \")"),
                 )),
             ),
+            (line_entry(3, 3, "FOO=\"BAR BAR\""), None),
         ];
 
         run_quote_char_tests(asserts);
