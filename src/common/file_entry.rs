@@ -55,7 +55,7 @@ impl FileEntry {
             .is_some()
     }
 
-    fn get_file_name<'a>(path: &'a PathBuf) -> Option<&'a str> {
+    fn get_file_name(path: &PathBuf) -> Option<&str> {
         path.file_name().and_then(|file_name| file_name.to_str())
     }
 }
