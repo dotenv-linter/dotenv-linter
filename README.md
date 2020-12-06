@@ -107,6 +107,33 @@ Other use cases you can find here: https://dotenv-linter.github.io/#/usage
 
 `dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/ci/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/ci/circleci).
 
+## 🚧 Benchmark
+
+Benchmarking [dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dotenv-linter) and [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) has done using the [hyperfine](https://github.com/sharkdp/hyperfine) utility:
+
+| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| `dotenv-linter/dotenv-linter .env` | 2.9 ± 1.6 | 1.5 | 9.3 | 1.00 |
+| `wemake-services/dotenv-linter .env` | 173.2 ± 9.6 | 164.6 | 197.6 | 59.63 ± 32.77 |
+
+<details>
+<summary>Content of <code>.env</code> file used for benchmarking</summary>
+
+```dotenv
+ SPACED=
+
+KEY = VALUE
+
+SECRET="my value"
+
+SECRET=Already defined
+
+kebab-case-name=1
+snake_case_name=2
+```
+
+</details>
+
 ## 🤝 Contributing
 
 If you've ever wanted to contribute to open source, now you have a great opportunity:
