@@ -16,8 +16,8 @@ impl Default for EndingBlankLineChecker<'_> {
 }
 
 impl EndingBlankLineChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 
@@ -66,7 +66,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "EndingBlankLine",
-            String::from("No blank line at the end of the file"),
+            "No blank line at the end of the file",
         ));
 
         assert_eq!(expected, checker.run(&line));

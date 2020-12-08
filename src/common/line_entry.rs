@@ -33,15 +33,14 @@ impl LineEntry {
         Some(stripped.split('=').next().unwrap_or(stripped))
     }
 
-    pub fn get_value(&self) -> Option<String> {
+    pub fn get_value(&self) -> Option<&str> {
         if self.is_empty_or_comment() {
             return None;
         }
 
-        match self.raw_string.find('=') {
-            Some(index) => Some(self.raw_string[(index + 1)..].to_owned()),
-            None => None,
-        }
+        self.raw_string
+            .find('=')
+            .map(|idx| &self.raw_string[(idx + 1)..])
     }
 
     pub fn trimmed_string(&self) -> &str {
@@ -49,10 +48,11 @@ impl LineEntry {
     }
 
     fn stripped_export_string(&self) -> &str {
-        match self.trimmed_string().strip_prefix("export ") {
-            Some(stripped_string) => stripped_string.trim(),
-            None => self.trimmed_string(),
-        }
+        let trimmed = self.trimmed_string();
+        trimmed
+            .strip_prefix("export ")
+            .map(str::trim)
+            .unwrap_or(trimmed)
     }
 
     pub fn is_last_line(&self) -> bool {
@@ -166,7 +166,7 @@ mod tests {
         #[test]
         fn correct_line_test() {
             let input = line_entry(1, 1, "FOO=BAR");
-            let expected = Some(String::from("BAR"));
+            let expected = Some("BAR");
 
             assert_eq!(expected, input.get_value());
         }
@@ -174,7 +174,7 @@ mod tests {
         #[test]
         fn correct_line_with_single_quote_test() {
             let input = line_entry(1, 1, "FOO='BAR'");
-            let expected = Some(String::from("'BAR'"));
+            let expected = Some("'BAR'");
 
             assert_eq!(expected, input.get_value());
         }
@@ -182,7 +182,7 @@ mod tests {
         #[test]
         fn correct_line_with_double_quote_test() {
             let input = line_entry(1, 1, "FOO=\"BAR\"");
-            let expected = Some(String::from("\"BAR\""));
+            let expected = Some("\"BAR\"");
 
             assert_eq!(expected, input.get_value());
         }
@@ -190,7 +190,7 @@ mod tests {
         #[test]
         fn line_without_key_test() {
             let input = line_entry(1, 1, "=BAR");
-            let expected = Some(String::from("BAR"));
+            let expected = Some("BAR");
 
             assert_eq!(expected, input.get_value());
         }
@@ -198,7 +198,7 @@ mod tests {
         #[test]
         fn line_without_value_test() {
             let input = line_entry(1, 1, "FOO=");
-            let expected = Some(String::from(""));
+            let expected = Some("");
 
             assert_eq!(expected, input.get_value());
         }

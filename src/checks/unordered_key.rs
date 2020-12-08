@@ -98,7 +98,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 2, "BAR=FOO"),
                     "UnorderedKey",
-                    String::from("The BAR key should go before the FOO key"),
+                    "The BAR key should go before the FOO key",
                 )),
             ),
         ];
@@ -115,7 +115,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 3, "BAR=FOO"),
                     "UnorderedKey",
-                    String::from("The BAR key should go before the FOO key"),
+                    "The BAR key should go before the FOO key",
                 )),
             ),
             (
@@ -123,7 +123,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(3, 3, "ABC=BAR"),
                     "UnorderedKey",
-                    String::from("The ABC key should go before the BAR key"),
+                    "The ABC key should go before the BAR key",
                 )),
             ),
         ];
@@ -140,7 +140,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 3, "BAR=FOO"),
                     "UnorderedKey",
-                    String::from("The BAR key should go before the FOO key"),
+                    "The BAR key should go before the FOO key",
                 )),
             ),
             (
@@ -148,7 +148,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(3, 3, "DDD=BAR"),
                     "UnorderedKey",
-                    String::from("The DDD key should go before the FOO key"),
+                    "The DDD key should go before the FOO key",
                 )),
             ),
         ];
@@ -165,7 +165,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 4, "BAR=FOO"),
                     "UnorderedKey",
-                    String::from("The BAR key should go before the FOO key"),
+                    "The BAR key should go before the FOO key",
                 )),
             ),
             (
@@ -173,7 +173,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(3, 4, "DDD=BAR"),
                     "UnorderedKey",
-                    String::from("The DDD key should go before the FOO key"),
+                    "The DDD key should go before the FOO key",
                 )),
             ),
             (line_entry(4, 4, "ZOO=BAR"), None),

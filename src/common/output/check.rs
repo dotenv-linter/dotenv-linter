@@ -51,17 +51,10 @@ impl CheckOutput {
 
             println!(
                 "\n{}",
-                format!(
-                    "{} {} {}",
-                    String::from("Found"),
-                    total.to_string(),
-                    problems
-                )
-                .red()
-                .bold()
+                format!("{} {} {}", "Found", total, problems).red().bold()
             );
         } else {
-            println!("\n{}", "No problems found".to_string().green().bold());
+            println!("\n{}", "No problems found".green().bold());
         }
     }
 }

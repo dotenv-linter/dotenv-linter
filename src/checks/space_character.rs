@@ -7,8 +7,8 @@ pub(crate) struct SpaceCharacterChecker<'a> {
 }
 
 impl SpaceCharacterChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 
@@ -85,11 +85,7 @@ mod tests {
     fn failing_run() {
         let mut checker = SpaceCharacterChecker::default();
         let line = line_entry(1, 1, "DEBUG-HTTP = true");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "SpaceCharacter",
-            MESSAGE.to_string(),
-        ));
+        let expected = Some(Warning::new(line.clone(), "SpaceCharacter", MESSAGE));
         assert_eq!(expected, checker.run(&line));
     }
 
@@ -97,11 +93,7 @@ mod tests {
     fn failing_when_whitespace_before_equal_sign_run() {
         let mut checker = SpaceCharacterChecker::default();
         let line = line_entry(1, 1, "DEBUG-HTTP =true");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "SpaceCharacter",
-            MESSAGE.to_string(),
-        ));
+        let expected = Some(Warning::new(line.clone(), "SpaceCharacter", MESSAGE));
         assert_eq!(expected, checker.run(&line));
     }
 
@@ -109,11 +101,7 @@ mod tests {
     fn failing_when_whitespace_after_equal_sign_run() {
         let mut checker = SpaceCharacterChecker::default();
         let line = line_entry(1, 1, "DEBUG-HTTP= true");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "SpaceCharacter",
-            MESSAGE.to_string(),
-        ));
+        let expected = Some(Warning::new(line.clone(), "SpaceCharacter", MESSAGE));
         assert_eq!(expected, checker.run(&line));
     }
 }

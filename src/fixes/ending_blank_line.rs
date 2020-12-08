@@ -23,13 +23,13 @@ impl Fix for EndingBlankLineFixer<'_> {
         _warnings: Vec<&mut Warning>,
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
-        let file = lines.first()?.file.clone();
         let last_line = lines.last()?;
 
         if last_line.raw_string.ends_with(LF) {
             return Some(0);
         }
 
+        let file = lines.first()?.file.clone();
         lines.push(LineEntry {
             number: lines.len() + 1,
             file,
@@ -53,7 +53,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[1].clone(),
             "EndingBlankLine",
-            String::from("No blank line at the end of the file"),
+            "No blank line at the end of the file",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

@@ -24,15 +24,9 @@ impl Fix for IncorrectDelimiterFixer<'_> {
         let cleaned_key = remove_invalid_leading_chars(&key);
         let start_idx = key.len() - cleaned_key.len();
 
-        let cleaned_key: String = key
-            .chars()
-            .skip(start_idx)
-            .map(|c| if c.is_alphanumeric() { c } else { '_' })
-            .collect();
+        let cleaned_key = key[start_idx..].replace(|c: char| !c.is_alphanumeric(), "_");
 
-        let fixed_key = key[..start_idx].to_string() + &cleaned_key;
-
-        line.raw_string = format!("{}={}", fixed_key, line.get_value()?);
+        line.raw_string = format!("{}{}={}", &key[..start_idx], cleaned_key, line.get_value()?);
 
         Some(())
     }
@@ -81,7 +75,7 @@ mod tests {
         let mut warning = Warning::new(
             lines[0].clone(),
             "IncorrectDelimiter",
-            String::from("The RAILS-ENV key has has an incorrect delimter"),
+            "The RAILS-ENV key has has an incorrect delimter",
         );
 
         assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));

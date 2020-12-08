@@ -62,7 +62,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "LowercaseKey",
-            String::from("The foo_bar key should be in uppercase"),
+            "The foo_bar key should be in uppercase",
         ));
         assert_eq!(expected, checker.run(&line));
     }
@@ -74,7 +74,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "LowercaseKey",
-            String::from("The FOo_BAR key should be in uppercase"),
+            "The FOo_BAR key should be in uppercase",
         ));
         assert_eq!(expected, checker.run(&line));
     }

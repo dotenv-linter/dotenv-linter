@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add export prefix support [#340](https://github.com/dotenv-linter/dotenv-linter/pull/340)([@skonik](https://github.com/skonik))
 
 ### 🔧 Changed
+- Refactoring to get rid of unnecessary heap allocations and some improvements in API ergonomics [#350](https://github.com/dotenv-linter/dotenv-linter/pull/350) ([@vbrandl](https://github.com/vbrandl))
 - Add benchmark to README [#351](https://github.com/dotenv-linter/dotenv-linter/pull/351) ([@mgrachev](https://github.com/mgrachev))
 - Fix QuoteCharacterChecker to not raise warning when quote characters are used for values with whitespaces [#349](https://github.com/dotenv-linter/dotenv-linter/pull/349) ([@sebastiantoh](https://github.com/sebastiantoh))
 - Find all problems on the first run for `KeyWithoutValue` [#348](https://github.com/dotenv-linter/dotenv-linter/pull/348) ([@vbrandl](https://github.com/vbrandl))

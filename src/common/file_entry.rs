@@ -22,15 +22,9 @@ impl fmt::Display for FileEntry {
 impl FileEntry {
     /// Converts `PathBuf` to tuple of `(FileEntry, Vec<String>)`
     pub fn from(path: PathBuf) -> Option<(Self, Vec<String>)> {
-        let file_name = match Self::get_file_name(&path) {
-            Some(s) => s,
-            None => return None,
-        };
+        let file_name = Self::get_file_name(&path)?.to_string();
 
-        let content = match fs::read_to_string(&path) {
-            Ok(content) => content,
-            Err(_) => return None,
-        };
+        let content = fs::read_to_string(&path).ok()?;
 
         let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
 
@@ -53,16 +47,13 @@ impl FileEntry {
     pub fn is_env_file(path: &PathBuf) -> bool {
         let pattern = ".env";
         Self::get_file_name(path)
-            .filter(|file_name| !EXCLUDED_FILES.contains(&file_name.as_str()))
+            .filter(|file_name| !EXCLUDED_FILES.contains(file_name))
             .filter(|file_name| file_name.starts_with(pattern) || file_name.ends_with(pattern))
             .is_some()
     }
 
-    fn get_file_name(path: &PathBuf) -> Option<String> {
-        path.file_name()
-            .map(|file_name| file_name.to_str())
-            .unwrap_or(None)
-            .map(|s| s.to_string())
+    fn get_file_name(path: &PathBuf) -> Option<&str> {
+        path.file_name().and_then(|file_name| file_name.to_str())
     }
 }
 

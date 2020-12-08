@@ -13,11 +13,8 @@ pub use warning::Warning;
 
 pub const LF: &str = "\n";
 
-pub fn remove_invalid_leading_chars(string: &str) -> String {
-    string
-        .chars()
-        .skip_while(|&c| !(c.is_alphabetic() || c == '_'))
-        .collect()
+pub fn remove_invalid_leading_chars(string: &str) -> &str {
+    string.trim_start_matches(|c: char| !(c.is_alphabetic() || c == '_'))
 }
 
 pub(crate) mod tests {
@@ -54,10 +51,10 @@ pub(crate) mod tests {
 
     #[test]
     fn remove_invalid_leading_chars_test() {
-        let string = String::from("-1&*FOO");
-        assert_eq!("FOO", remove_invalid_leading_chars(&string));
+        let string = "-1&*FOO";
+        assert_eq!("FOO", remove_invalid_leading_chars(string));
 
-        let string = String::from("***FOO-BAR");
-        assert_eq!("FOO-BAR", remove_invalid_leading_chars(&string));
+        let string = "***FOO-BAR";
+        assert_eq!("FOO-BAR", remove_invalid_leading_chars(string));
     }
 }

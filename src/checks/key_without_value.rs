@@ -72,7 +72,7 @@ mod tests {
         let expected = Some(Warning::new(
             line.clone(),
             "KeyWithoutValue",
-            String::from("The FOO key should be with a value or have an equal sign"),
+            "The FOO key should be with a value or have an equal sign",
         ));
         assert_eq!(expected, checker.run(&line));
     }

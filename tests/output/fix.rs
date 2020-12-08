@@ -185,10 +185,8 @@ fn backup() {
         .filter(|e| e.path().as_os_str() != test_file.as_str())
         .last()
         .expect("get backup file");
-    let backup_filename = backup_file
-        .file_name()
-        .into_string()
-        .expect("convert to string");
+    let backup_filename = backup_file.file_name();
+    let backup_filename = backup_filename.to_str().expect("convert to string");
     let expected_output = format!(
         r#"Fixing .env
 Original file was backed up to: "{}"
@@ -219,10 +217,8 @@ fn quiet_backup() {
         .filter(|e| e.path().as_os_str() != test_file.as_str())
         .last()
         .expect("get backup file");
-    let backup_filename = backup_file
-        .file_name()
-        .into_string()
-        .expect("convert to string");
+    let backup_filename = backup_file.file_name();
+    let backup_filename = backup_filename.to_str().expect("convert to string");
     let expected_output = format!(
         r#"Original file was backed up to: "{}"
 

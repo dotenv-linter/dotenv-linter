@@ -64,7 +64,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 2, "FOO=BAR"),
                     "DuplicatedKey",
-                    String::from("The FOO key is duplicated"),
+                    "The FOO key is duplicated",
                 )),
             ),
         ];
@@ -100,7 +100,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 4, "FOO=BAR"),
                     "DuplicatedKey",
-                    String::from("The FOO key is duplicated"),
+                    "The FOO key is duplicated",
                 )),
             ),
             (line_entry(3, 4, "BAR=FOO"), None),
@@ -109,7 +109,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(4, 4, "BAR=FOO"),
                     "DuplicatedKey",
-                    String::from("The BAR key is duplicated"),
+                    "The BAR key is duplicated",
                 )),
             ),
         ];
@@ -126,7 +126,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 3, "FOO=BAR"),
                     "DuplicatedKey",
-                    String::from("The FOO key is duplicated"),
+                    "The FOO key is duplicated",
                 )),
             ),
             (line_entry(3, 3, "BAR=FOO"), None),

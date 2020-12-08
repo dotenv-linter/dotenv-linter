@@ -7,8 +7,8 @@ pub(crate) struct QuoteCharacterChecker<'a> {
 }
 
 impl QuoteCharacterChecker<'_> {
-    fn message(&self) -> String {
-        String::from(self.template)
+    fn message(&self) -> &str {
+        self.template
     }
 }
 
@@ -63,7 +63,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 4, "FOO='BAR'"),
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \")"),
+                    "The value has quote characters (\', \")",
                 )),
             ),
             (
@@ -71,7 +71,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(3, 4, "FOO='B\"AR'"),
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \")"),
+                    "The value has quote characters (\', \")",
                 )),
             ),
             (line_entry(4, 4, "FOO=\'BAR BAR\'"), None),
@@ -89,7 +89,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 3, "FOO=\"BAR\""),
                     "QuoteCharacter",
-                    String::from("The value has quote characters (\', \")"),
+                    "The value has quote characters (\', \")",
                 )),
             ),
             (line_entry(3, 3, "FOO=\"BAR BAR\""), None),
