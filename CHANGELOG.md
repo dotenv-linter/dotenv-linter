@@ -6,12 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
-- Refactoring to get rid of unnecessary heap allocations and some improvements in API ergonomics [#350](https://github.com/dotenv-linter/dotenv-linter/pull/350) ([@vbrandl](https://github.com/vbrandl))
 - Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
 - Add export prefix support [#340](https://github.com/dotenv-linter/dotenv-linter/pull/340)([@skonik](https://github.com/skonik))
 
 ### 🔧 Changed
+- Refactoring to get rid of unnecessary heap allocations and some improvements in API ergonomics [#350](https://github.com/dotenv-linter/dotenv-linter/pull/350) ([@vbrandl](https://github.com/vbrandl))
 - Add benchmark to README [#351](https://github.com/dotenv-linter/dotenv-linter/pull/351) ([@mgrachev](https://github.com/mgrachev))
 - Fix QuoteCharacterChecker to not raise warning when quote characters are used for values with whitespaces [#349](https://github.com/dotenv-linter/dotenv-linter/pull/349) ([@sebastiantoh](https://github.com/sebastiantoh))
 - Find all problems on the first run for `KeyWithoutValue` [#348](https://github.com/dotenv-linter/dotenv-linter/pull/348) ([@vbrandl](https://github.com/vbrandl))
