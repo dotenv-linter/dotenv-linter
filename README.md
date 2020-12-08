@@ -113,8 +113,8 @@ Benchmarking [dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dote
 
 | Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
 |:---|---:|---:|---:|---:|
-| `dotenv-linter/dotenv-linter .env` | 2.9 ± 1.6 | 1.5 | 9.3 | 1.00 |
-| `wemake-services/dotenv-linter .env` | 173.2 ± 9.6 | 164.6 | 197.6 | 59.63 ± 32.77 |
+| `dotenv-linter/dotenv-linter .env` | 2.7 ± 0.4 | 2.0 | 4.3 | 1.00 |
+| `wemake-services/dotenv-linter .env` | 162.6 ± 12.1 | 153.0 | 201.3 | 60.83 ± 10.20 |
 
 <details>
 <summary>Content of <code>.env</code> file used for benchmarking</summary>
