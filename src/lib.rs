@@ -92,10 +92,6 @@ fn get_lines(
 ) -> Result<BTreeMap<FileEntry, Vec<String>>, Box<dyn Error>> {
     let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
 
-    if file_paths.is_empty() {
-        return Ok(BTreeMap::new());
-    }
-
     Ok(file_paths
         .iter()
         .map(|path| fs_utils::get_relative_path(&path, &current_dir).and_then(FileEntry::from))
