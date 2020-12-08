@@ -9,7 +9,7 @@ pub struct Warning {
     message: String,
 }
 
-impl<'a> Warning {
+impl Warning {
     pub fn new(line: LineEntry, check_name: impl Into<String>, message: impl Into<String>) -> Self {
         let check_name = check_name.into();
         let message = message.into();
