@@ -144,7 +144,7 @@ pub fn compare(
         return Ok(warnings);
     }
 
-    // // Create CompareFileType structures for each file
+    // Create CompareFileType structures for each file
     for (_, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
         let lines = get_line_entries(&fe, strings);
