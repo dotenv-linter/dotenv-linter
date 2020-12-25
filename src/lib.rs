@@ -1,5 +1,6 @@
 use crate::common::*;
 use std::collections::BTreeMap;
+use std::collections::HashSet;
 use std::error::Error;
 use std::path::PathBuf;
 
@@ -9,6 +10,7 @@ mod fixes;
 mod fs_utils;
 
 pub use checks::available_check_names;
+use common::CompareWarning;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
     let lines_map = get_lines(args, current_dir)?;
@@ -122,6 +124,68 @@ fn get_needed_file_paths(args: &clap::ArgMatches) -> Vec<PathBuf> {
     }
 
     file_paths
+}
+
+// Compares if different environment files contains the same variables and
+// returns warnings if not
+pub fn compare(
+    args: &clap::ArgMatches,
+    current_dir: &PathBuf,
+) -> Result<Vec<CompareWarning>, Box<dyn Error>> {
+    let mut all_keys: HashSet<String> = HashSet::new();
+    let lines_map = get_lines(args, current_dir)?;
+    let output = CompareOutput::new(args.is_present("quiet"));
+
+    let mut warnings: Vec<CompareWarning> = Vec::new();
+    let mut files_to_compare: Vec<CompareFileType> = Vec::new();
+
+    // Nothing to check
+    if lines_map.is_empty() {
+        return Ok(warnings);
+    }
+
+    // Create CompareFileType structures for each file
+    for (_, (fe, strings)) in lines_map.into_iter().enumerate() {
+        output.print_processing_info(&fe);
+        let lines = get_line_entries(&fe, strings);
+        let mut keys: Vec<String> = Vec::new();
+
+        for line in lines {
+            if let Some(key) = line.get_key() {
+                all_keys.insert(key.to_string());
+                keys.push(key.to_string());
+            }
+        }
+
+        let file_to_compare: CompareFileType = CompareFileType {
+            path: fe.path,
+            keys,
+            missing: Vec::new(),
+        };
+
+        files_to_compare.push(file_to_compare);
+    }
+
+    // Create warnings if any file misses any key
+    for file in files_to_compare {
+        let missing_keys: Vec<_> = all_keys
+            .iter()
+            .filter(|key| !file.keys.contains(key))
+            .map(|key| key.to_owned())
+            .collect();
+
+        if !missing_keys.is_empty() {
+            let warning = CompareWarning {
+                path: file.path,
+                missing_keys,
+            };
+
+            warnings.push(warning)
+        }
+    }
+
+    output.print_warnings(&warnings);
+    Ok(warnings)
 }
 
 fn get_file_paths(
