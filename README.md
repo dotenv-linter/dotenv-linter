@@ -40,13 +40,13 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/unordered_key">Unordered Key</a><br />
 </p>
 
-And automatically fixes them all 😱
+And automatically fixes them all 🛠
 
 **The key features**:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️&nbsp;Lightning-fast because it is written in Rust 🦀<br />
 &nbsp;&nbsp;&nbsp;&nbsp;💣&nbsp;Can be used on any project regardless of the programming language 💥<br />
-&nbsp;&nbsp;&nbsp;&nbsp;🚀&nbsp;Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a>) 🔥
+&nbsp;&nbsp;&nbsp;&nbsp;🚀&nbsp;Can be integrated with <a href="https://github.com/reviewdog/reviewdog">reviewdog</a> and other CI services (including <a href="https://github.com/dotenv-linter/action-dotenv-linter">GitHub Actions</a> and <a href="https://github.com/github/super-linter">Super-Linter</a>) 🔥
 </p>
 
 **Articles about dotenv-linter**:
