@@ -50,8 +50,10 @@ And automatically fixes them all 🛠
 </p>
 
 **Articles about dotenv-linter**:
-* [In English](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
-* [In Russian](https://www.mgrachev.com/2020/04/20/dotenv-linter)
+* [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
+* [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
+* [RU] [Dotenv-linter: линтер .env файлов](https://www.mgrachev.com/2020/04/20/dotenv-linter)
+* [RU] [Что нового в dotenv-linter v2.2.1?](https://evrone.ru/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
 
 [Dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
