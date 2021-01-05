@@ -22,10 +22,13 @@ impl fmt::Display for CompareWarning {
             "{}",
             format!(
                 "{} is missing keys: {}",
-                self.path.display(),
-                self.missing_keys.join(", ")
+                self.path.display().to_string().italic(),
+                self.missing_keys
+                    .iter()
+                    .map(|k| k.red().bold().to_string())
+                    .collect::<Vec<String>>()
+                    .join(", ")
             )
-            .italic(),
         )
     }
 }

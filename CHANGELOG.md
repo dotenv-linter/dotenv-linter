@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `compare`-command [#282](https://github.com/dotenv-linter/dotenv-linter/pull/282) ([@mstruebing](https://github.com/mstruebing))
 - Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
-- Add export prefix support [#340](https://github.com/dotenv-linter/dotenv-linter/pull/340)([@skonik](https://github.com/skonik))
+- Add export prefix support [#340](https://github.com/dotenv-linter/dotenv-linter/pull/340) ([@skonik](https://github.com/skonik))
+- Add colored output for compare command [#356](https://github.com/dotenv-linter/dotenv-linter/pull/356) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
 - Refactoring to get rid of unnecessary heap allocations and some improvements in API ergonomics [#350](https://github.com/dotenv-linter/dotenv-linter/pull/350) ([@vbrandl](https://github.com/vbrandl))
