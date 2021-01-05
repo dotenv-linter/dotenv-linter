@@ -25,7 +25,9 @@
   </a>
 </p>
 
-It checks `.env` files for problems that may cause the application to malfunction:
+Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compare)** `.env` files for problems that may cause the application to malfunction.
+
+**Available checks**:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/duplicated_key">Duplicated Key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/ending_blank_line">Ending Blank Line</a><br />
@@ -39,8 +41,6 @@ It checks `.env` files for problems that may cause the application to malfunctio
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/trailing_whitespace">Trailing whitespace</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/unordered_key">Unordered Key</a><br />
 </p>
-
-And automatically fixes them all 🛠
 
 **The key features**:
 <p>
@@ -65,16 +65,21 @@ And automatically fixes them all 🛠
 # Linux / macOS / Windows (MINGW and etc). Installs it into ./bin/ by default
 $ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
+# Or more shorter way
+$ curl -sSfL https://git.io/JLbXn | sh -s
+
 # Specify installation directory and version
-$ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s -- -b usr/local/bin v2.0.0
+$ curl -sSfL https://git.io/JLbXn | sh -s -- -b usr/local/bin v2.0.0
 
 # Alpine Linux (wget)
-$ wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
+$ wget -q -O - https://git.io/JLbXn | sh -s
 ```
 
 You can find other installation methods here: https://dotenv-linter.github.io/#/installation
 
 ## 🚀 Usage
+
+#### ✅ Check
 
 By default, `dotenv-linter` checks all `.env` files in the current directory:
 
@@ -90,10 +95,12 @@ Checking .env.test
 Found 3 problems
 ```
 
-It can also fix found warnings. You should use the argument `--fix` (or its short version `-f`) for this:
+#### 🛠 Fix
 
-```shell script
-$ dotenv-linter -f
+It can also fix the found warnings with the `fix` command:
+
+```shell
+$ dotenv-linter fix
 Fixing .env
 Original file was backed up to: ".env_1601378896"
 
@@ -103,11 +110,26 @@ Original file was backed up to: ".env_1601378896"
 All warnings are fixed. Total: 2
 ```
 
-Other use cases you can find here: https://dotenv-linter.github.io/#/usage
+#### 🤲 Compare
+
+In addition, `dotenv-linter` can compare `.env` files with each other and output the difference between them:
+
+```shell
+$ dotenv-linter compare .env .env.example
+Comparing .env
+Comparing .env.example
+.env is missing keys: BAR
+.env.example is missing keys: FOO
+```
+
+Other use cases you can find on the documentation site (https://dotenv-linter.github.io):
+* [Check](https://dotenv-linter.github.io/#/usage/check)
+* [Fix](https://dotenv-linter.github.io/#/usage/fix)
+* [Compare](https://dotenv-linter.github.io/#/usage/compare)
 
 ## 🚦 Continuous Integration 
 
-`dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/ci/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/ci/circleci).
+`dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/integrations/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/integrations/circleci).
 
 ## 🚧 Benchmark
 
@@ -135,6 +157,14 @@ snake_case_name=2
 ```
 
 </details>
+
+## ✌️ Mentorship
+
+`Dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with the purpose of helping others learn Rust using a simple, but useful tool 😊
+
+In addition to studying Rust, this project has another goal — to **promote love for open-source**, help you with the first steps in it and give an opportunity to contribute to the open-source project written in Rust ❤️
+
+We act [as a mentor](https://rustbeginners.github.io/awesome-rust-mentors) within this project and **help developers** follow the path of a novice contributor from start to the top 🤗
 
 ## 🤝 Contributing
 
