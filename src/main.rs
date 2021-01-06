@@ -3,13 +3,6 @@ use std::error::Error;
 use std::ffi::OsStr;
 use std::{env, process};
 
-fn quiet_flag() -> clap::Arg<'static, 'static> {
-    Arg::with_name("quiet")
-        .short("q")
-        .long("quiet")
-        .help("Doesn't display additional information")
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
     #[cfg(windows)]
     colored::control::set_virtual_terminal(true).ok();
@@ -17,9 +10,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let current_dir = env::current_dir()?;
     let args = get_args(current_dir.as_os_str());
 
-    if args.is_present("no-color") {
-        colored::control::set_override(false);
-    }
+    disable_color_output(&args);
 
     match args.subcommand() {
         ("", None) => {
@@ -40,8 +31,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             process::exit(0);
         }
-        ("compare", Some(files)) => {
-            let warnings = dotenv_linter::compare(&files, &current_dir)?;
+        ("compare", Some(compare_args)) => {
+            disable_color_output(&compare_args);
+
+            let warnings = dotenv_linter::compare(&compare_args, &current_dir)?;
             if warnings.is_empty() {
                 process::exit(0);
             }
@@ -94,12 +87,32 @@ fn get_args(current_dir: &OsStr) -> clap::ArgMatches {
                         .multiple(true)
                         .min_values(2)
                         .required(true),
+                    no_color_flag(),
                     quiet_flag(),
                 ])
                 .about("Compares if files have the same keys")
                 .usage("dotenv-linter compare <files>..."),
         )
         .get_matches()
+}
+
+fn disable_color_output(args: &clap::ArgMatches) {
+    if args.is_present("no-color") {
+        colored::control::set_override(false);
+    }
+}
+
+fn quiet_flag() -> clap::Arg<'static, 'static> {
+    Arg::with_name("quiet")
+        .short("q")
+        .long("quiet")
+        .help("Doesn't display additional information")
+}
+
+fn no_color_flag() -> clap::Arg<'static, 'static> {
+    Arg::with_name("no-color")
+        .long("no-color")
+        .help("Turns off the colored output")
 }
 
 fn common_args(current_dir: &OsStr) -> Vec<Arg> {
@@ -128,9 +141,7 @@ fn common_args(current_dir: &OsStr) -> Vec<Arg> {
             .short("r")
             .long("recursive")
             .help("Recursively searches and checks .env files"),
-        Arg::with_name("no-color")
-            .long("no-color")
-            .help("Turns off the colored output"),
+        no_color_flag(),
         quiet_flag(),
     ]
 }
