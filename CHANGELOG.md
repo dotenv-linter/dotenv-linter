@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+
+### 🔧 Changed
+
+## [v3.0.0] - 2021-01-11
+### 🚀 Added
 - Add `compare`-command [#282](https://github.com/dotenv-linter/dotenv-linter/pull/282) ([@mstruebing](https://github.com/mstruebing))
 - Add colored output feature and `--no-color` flag to disable colors [#307](https://github.com/dotenv-linter/dotenv-linter/pull/307) ([@Nikhil0487](https://github.com/Nikhil0487))
 - Display linted files when run [#311](https://github.com/dotenv-linter/dotenv-linter/pull/311) ([@Anthuang](https://github.com/anthuang))
@@ -191,6 +196,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v3.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.0.0
 [v2.2.1]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.2.1
 [v2.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.2.0
 [v2.1.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v2.1.0
