@@ -42,6 +42,10 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/unordered_key">Unordered Key</a><br />
 </p>
 
+**What's a `.env` file?**
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;🚧&nbsp;A <code>.env</code> file contains all your project's environment variables. It's usually stuff you don't want to share like your API keys or passwords. They're stored in a key, value pair format, like this: <code>username=dotenv-linter</code>.</p>
+
 **The key features**:
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️&nbsp;Lightning-fast because it is written in Rust 🦀<br />

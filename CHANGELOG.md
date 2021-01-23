@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Add `.env` explanation [#363](https://github.com/dotenv-linter/dotenv-linter/pull/363) ([@henryboisdequin](https://github.com/henryboisdequin))
 
 ## [v3.0.0] - 2021-01-11
 ### 🚀 Added
