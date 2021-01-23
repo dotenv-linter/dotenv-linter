@@ -44,7 +44,7 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 
 **What's a `.env` file?**
 
-<p>&nbsp;&nbsp;&nbsp;&nbsp;🚧&nbsp;A <code>.env</code> file contains all your project's enviorment variables. It's usally stuff you don't want to share like your API keys or passwords. They're stored in a key, value pair format, like this: <code>username=dotenv-linter</code>.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;🚧&nbsp;A <code>.env</code> file contains all your project's environment variables. It's usually stuff you don't want to share like your API keys or passwords. They're stored in a key, value pair format, like this: <code>username=dotenv-linter</code>.</p>
 
 **The key features**:
 <p>
