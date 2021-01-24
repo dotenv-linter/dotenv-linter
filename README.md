@@ -42,9 +42,13 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/unordered_key">Unordered Key</a><br />
 </p>
 
-**What's a `.env` file?**
+**What is a `.env` file?**
 
-<p>&nbsp;&nbsp;&nbsp;&nbsp;🚧&nbsp;A <code>.env</code> file contains all your project's environment variables. It's usually stuff you don't want to share like your API keys or passwords. They're stored in a key, value pair format, like this: <code>username=dotenv-linter</code>.</p>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;💡&nbsp;A <code>.env</code> file or <code>dotenv</code> file is a simple text file containing all the environment variables of a project.<br /> &nbsp;&nbsp;&nbsp;&nbsp;Storing <a href="https://12factor.net/config">configuration in the environment variables</a> is one of the tenets of the <a href="https://12factor.net">Manifesto of Twelve-Factor App</a>.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;The <code>.env</code> file has a simple key-value format, for example: <code>FOO=BAR</code>.<br />
+&nbsp;&nbsp;&nbsp;&nbsp;More information you can find in articles in <a href="https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter">English</a> and <a href="https://www.mgrachev.com/2020/04/20/dotenv-linter">Russian</a>.
+</p>
 
 **The key features**:
 <p>
@@ -56,8 +60,10 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 **Articles about dotenv-linter**:
 * [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
 * [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
+* [EN] [What are the key changes in dotenv-linter v3.0.0 release?](https://evrone.com/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
 * [RU] [Dotenv-linter: линтер .env файлов](https://www.mgrachev.com/2020/04/20/dotenv-linter)
 * [RU] [Что нового в dotenv-linter v2.2.1?](https://evrone.ru/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
+* [RU] [Что нового в dotenv-linter v3.0.0?](https://evrone.ru/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
 
 [Dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
