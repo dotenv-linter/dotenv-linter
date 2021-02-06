@@ -196,8 +196,8 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 
 <p>
   <a href="https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter">
-    <img src="https://www.mgrachev.com/assets/static/evrone-sponsored-300.png"
-      alt="Sponsored by Evrone" width="210">
+    <img src="https://www.mgrachev.com/assets/static/sponsored_by_evrone.svg?sanitize=true"
+      alt="Sponsored by Evrone">
   </a>
 </p>
 
