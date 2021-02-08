@@ -52,7 +52,7 @@ pub fn backup_file(fe: &FileEntry) -> Result<PathBuf, Box<dyn Error>> {
         .as_secs();
 
     let mut new_path = fe.path.to_owned();
-    new_path.set_file_name(format!("{}_{}", &fe.file_name, timestamp));
+    new_path.set_file_name(format!("{}_{}.bak", &fe.file_name, timestamp));
 
     copy(&fe.path, &new_path)
         .map(|_| new_path)

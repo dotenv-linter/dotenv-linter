@@ -49,6 +49,7 @@ impl FileEntry {
         Self::get_file_name(path)
             .filter(|file_name| !EXCLUDED_FILES.contains(file_name))
             .filter(|file_name| file_name.starts_with(pattern) || file_name.ends_with(pattern))
+            .filter(|file_name| !file_name.ends_with(".bak"))
             .is_some()
     }
 
@@ -106,6 +107,7 @@ mod tests {
             ("foo-env", false),
             (".my-env-file", false),
             ("dev.env.js", false),
+            (".env.bak", false),
         ];
 
         assertions.extend(EXCLUDED_FILES.iter().map(|file| (*file, false)));
