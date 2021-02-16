@@ -71,7 +71,7 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 
 ### Pre-compiled binary
 
-```shell script
+```shell
 # Linux / macOS / Windows (MINGW and etc). Installs it into ./bin/ by default
 $ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
@@ -93,7 +93,7 @@ You can find other installation methods here: https://dotenv-linter.github.io/#/
 
 By default, `dotenv-linter` checks all `.env` files in the current directory:
 
-```shell script
+```shell
 $ dotenv-linter
 Checking .env
 .env:2 DuplicatedKey: The FOO key is duplicated
@@ -101,6 +101,20 @@ Checking .env
 
 Checking .env.test
 .env.test:1 LeadingCharacter: Invalid leading character detected
+
+Found 3 problems
+```
+
+Using Docker:
+
+```shell
+$ docker run --rm -v $(pwd):/app dotenvlinter/dotenv-linter /app/
+Checking app/.env
+app/.env:2 DuplicatedKey: The FOO key is duplicated
+app/.env:3 UnorderedKey: The BAR key should go before the FOO key
+
+Checking app/.env.test
+app/.env.test:1 LeadingCharacter: Invalid leading character detected
 
 Found 3 problems
 ```
@@ -120,6 +134,18 @@ Original file was backed up to: ".env_1601378896"
 All warnings are fixed. Total: 2
 ```
 
+Using Docker:
+
+```shell
+$ docker run --rm -v $(pwd):/app dotenvlinter/dotenv-linter fix /app/
+Fixing app/.env
+Original file was backed up to: "app/.env_1601378896"
+
+app/.env:2 DuplicatedKey: The BAR key is duplicated
+app/.env:3 LowercaseKey: The foo key should be in uppercase
+
+All warnings are fixed. Total: 2
+```
 #### 🤲 Compare
 
 In addition, `dotenv-linter` can compare `.env` files with each other and output the difference between them:
@@ -130,6 +156,16 @@ Comparing .env
 Comparing .env.example
 .env is missing keys: BAR
 .env.example is missing keys: FOO
+```
+
+Using Docker:
+
+```shell
+$ docker run --rm -v $(pwd):/app dotenvlinter/dotenv-linter compare /app/.env /app/.env.example
+Comparing app/.env
+Comparing app/.env.example
+app/.env is missing keys: BAR
+app/.env.example is missing keys: FOO
 ```
 
 Other use cases you can find on the documentation site (https://dotenv-linter.github.io):
