@@ -28,6 +28,7 @@
 Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compare)** `.env` files for problems that may cause the application to malfunction.
 
 **Available checks**:
+
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/duplicated_key">Duplicated Key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/ending_blank_line">Ending Blank Line</a><br />
@@ -51,6 +52,7 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 </p>
 
 **The key features**:
+
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;⚡️&nbsp;Lightning-fast because it is written in Rust 🦀<br />
 &nbsp;&nbsp;&nbsp;&nbsp;💣&nbsp;Can be used on any project regardless of the programming language 💥<br />
@@ -58,6 +60,7 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 </p>
 
 **Articles about dotenv-linter**:
+
 * [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
 * [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
 * [EN] [What are the key changes in dotenv-linter v3.0.0 release?](https://evrone.com/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
@@ -75,13 +78,13 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 # Linux / macOS / Windows (MINGW and etc). Installs it into ./bin/ by default
 $ curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
 
-# Or more shorter way
+# Or a shorter way
 $ curl -sSfL https://git.io/JLbXn | sh -s
 
 # Specify installation directory and version
 $ curl -sSfL https://git.io/JLbXn | sh -s -- -b usr/local/bin v2.0.0
 
-# Alpine Linux (wget)
+# Alpine Linux (using wget)
 $ wget -q -O - https://git.io/JLbXn | sh -s
 ```
 
@@ -93,7 +96,7 @@ You can find other installation methods here: https://dotenv-linter.github.io/#/
 
 By default, `dotenv-linter` checks all `.env` files in the current directory:
 
-```shell script
+```shell
 $ dotenv-linter
 Checking .env
 .env:2 DuplicatedKey: The FOO key is duplicated
@@ -133,6 +136,7 @@ Comparing .env.example
 ```
 
 Other use cases you can find on the documentation site (https://dotenv-linter.github.io):
+
 * [Check](https://dotenv-linter.github.io/#/usage/check)
 * [Fix](https://dotenv-linter.github.io/#/usage/fix)
 * [Compare](https://dotenv-linter.github.io/#/usage/compare)
@@ -145,10 +149,10 @@ Other use cases you can find on the documentation site (https://dotenv-linter.gi
 
 Benchmarking [dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dotenv-linter) and [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) has done using the [hyperfine](https://github.com/sharkdp/hyperfine) utility:
 
-| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
-|:---|---:|---:|---:|---:|
-| `dotenv-linter/dotenv-linter .env` | 2.7 ± 0.4 | 2.0 | 4.3 | 1.00 |
-| `wemake-services/dotenv-linter .env` | 162.6 ± 12.1 | 153.0 | 201.3 | 60.83 ± 10.20 |
+| Command                              |    Mean [ms] | Min [ms] | Max [ms] |      Relative |
+| :----------------------------------- | -----------: | -------: | -------: | ------------: |
+| `dotenv-linter/dotenv-linter .env`   |    2.7 ± 0.4 |      2.0 |      4.3 |          1.00 |
+| `wemake-services/dotenv-linter .env` | 162.6 ± 12.1 |    153.0 |    201.3 | 60.83 ± 10.20 |
 
 <details>
 <summary>Content of <code>.env</code> file used for benchmarking</summary>
@@ -170,11 +174,11 @@ snake_case_name=2
 
 ## ✌️ Mentorship
 
-`Dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with the purpose of helping others learn Rust using a simple, but useful tool 😊
+`Dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with the purpose of helping others learn Rust using a simple, but useful tool. 😊
 
-In addition to studying Rust, this project has another goal — to **promote love for open-source**, help you with the first steps in it and give an opportunity to contribute to the open-source project written in Rust ❤️
+In addition to studying Rust, this project has another goal — to **promote love for open-source**, help you with the first steps in it and give an opportunity to contribute to the open-source project written in Rust. ❤️
 
-We act [as a mentor](https://rustbeginners.github.io/awesome-rust-mentors) within this project and **help developers** follow the path of a novice contributor from start to the top 🤗
+We act [as a mentor](https://rustbeginners.github.io/awesome-rust-mentors) within this project and **help developers** follow the path of a novice contributor from start to the top. 🤗
 
 ## 🤝 Contributing
 
@@ -189,8 +193,11 @@ If you've ever wanted to contribute to open source, now you have a great opportu
 
 ## ✨ Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/dotenv-linter/dotenv-linter/graphs/contributors"><img src="https://opencollective.com/dotenv-linter/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who contribute. [[Contribute](/CONTRIBUTING.md)].
+
+<a href="https://github.com/dotenv-linter/dotenv-linter/graphs/contributors">
+  <img src="https://opencollective.com/dotenv-linter/contributors.svg?width=890&button=false" />
+</a>
 
 ## ♥️ Sponsors
 
