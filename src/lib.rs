@@ -13,7 +13,7 @@ pub use checks::available_check_names;
 use common::CompareWarning;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
-    let lines_map = get_lines(args, current_dir)?;
+    let lines_map = get_lines(args, current_dir);
 
     // Nothing to check
     if lines_map.is_empty() {
@@ -47,7 +47,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Bo
 
 pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn Error>> {
     let mut warnings_count = 0;
-    let lines_map = get_lines(args, current_dir)?;
+    let lines_map = get_lines(args, current_dir);
 
     // Nothing to fix
     if lines_map.is_empty() {
@@ -88,18 +88,15 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn
     Ok(())
 }
 
-fn get_lines(
-    args: &clap::ArgMatches,
-    current_dir: &PathBuf,
-) -> Result<BTreeMap<FileEntry, Vec<String>>, Box<dyn Error>> {
+fn get_lines(args: &clap::ArgMatches, current_dir: &PathBuf) -> BTreeMap<FileEntry, Vec<String>> {
     let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
 
-    Ok(file_paths
+    file_paths
         .iter()
         .map(|path| fs_utils::get_relative_path(&path, &current_dir).and_then(FileEntry::from))
         .filter(Option::is_some)
         .map(Option::unwrap)
-        .collect::<BTreeMap<_, _>>())
+        .collect::<BTreeMap<_, _>>()
 }
 
 /// getting a list of all files for checking/fixing without custom exclusion files
@@ -133,7 +130,7 @@ pub fn compare(
     current_dir: &PathBuf,
 ) -> Result<Vec<CompareWarning>, Box<dyn Error>> {
     let mut all_keys: HashSet<String> = HashSet::new();
-    let lines_map = get_lines(args, current_dir)?;
+    let lines_map = get_lines(args, current_dir);
     let output = CompareOutput::new(args.is_present("quiet"));
 
     let mut warnings: Vec<CompareWarning> = Vec::new();
