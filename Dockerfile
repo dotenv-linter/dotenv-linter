@@ -5,8 +5,6 @@ RUN rustup target add x86_64-unknown-linux-musl
 RUN USER=root cargo new dotenv-linter
 WORKDIR /usr/src/dotenv-linter
 COPY Cargo.toml ./
-COPY src ./src
-COPY benches ./benches
 RUN cargo build --release
 
 COPY src ./src
