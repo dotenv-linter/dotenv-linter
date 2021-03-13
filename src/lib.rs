@@ -5,6 +5,7 @@ use std::error::Error;
 use std::path::PathBuf;
 
 mod checks;
+pub mod cli;
 mod common;
 mod fixes;
 mod fs_utils;
@@ -88,43 +89,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn
     Ok(())
 }
 
-fn get_lines(args: &clap::ArgMatches, current_dir: &PathBuf) -> BTreeMap<FileEntry, Vec<String>> {
-    let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
-
-    file_paths
-        .iter()
-        .map(|path| fs_utils::get_relative_path(&path, &current_dir).and_then(FileEntry::from))
-        .filter(Option::is_some)
-        .map(Option::unwrap)
-        .collect::<BTreeMap<_, _>>()
-}
-
-/// getting a list of all files for checking/fixing without custom exclusion files
-fn get_needed_file_paths(args: &clap::ArgMatches) -> Vec<PathBuf> {
-    let mut file_paths: Vec<PathBuf> = Vec::new();
-    let mut excluded_paths: Vec<PathBuf> = Vec::new();
-
-    let is_recursive = args.is_present("recursive");
-
-    if let Some(excluded) = args.values_of("exclude") {
-        excluded_paths = excluded
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect();
-    }
-
-    if let Some(inputs) = args.values_of("input") {
-        let input_paths = inputs
-            .filter_map(|s| fs_utils::canonicalize(s).ok())
-            .collect();
-
-        file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
-    }
-
-    file_paths
-}
-
-// Compares if different environment files contains the same variables and
-// returns warnings if not
+// Compares if different environment files contains the same variables and returns warnings if not
 pub fn compare(
     args: &clap::ArgMatches,
     current_dir: &PathBuf,
@@ -183,6 +148,41 @@ pub fn compare(
 
     output.print_warnings(&warnings);
     Ok(warnings)
+}
+
+fn get_lines(args: &clap::ArgMatches, current_dir: &PathBuf) -> BTreeMap<FileEntry, Vec<String>> {
+    let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
+
+    file_paths
+        .iter()
+        .map(|path| fs_utils::get_relative_path(&path, &current_dir).and_then(FileEntry::from))
+        .filter(Option::is_some)
+        .map(Option::unwrap)
+        .collect::<BTreeMap<_, _>>()
+}
+
+/// Getting a list of all files for checking/fixing without custom exclusion files
+fn get_needed_file_paths(args: &clap::ArgMatches) -> Vec<PathBuf> {
+    let mut file_paths: Vec<PathBuf> = Vec::new();
+    let mut excluded_paths: Vec<PathBuf> = Vec::new();
+
+    let is_recursive = args.is_present("recursive");
+
+    if let Some(excluded) = args.values_of("exclude") {
+        excluded_paths = excluded
+            .filter_map(|f| fs_utils::canonicalize(f).ok())
+            .collect();
+    }
+
+    if let Some(inputs) = args.values_of("input") {
+        let input_paths = inputs
+            .filter_map(|s| fs_utils::canonicalize(s).ok())
+            .collect();
+
+        file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
+    }
+
+    file_paths
 }
 
 fn get_file_paths(
