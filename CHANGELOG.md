@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
 - Use GitHub action [actions-rs/clippy-check](https://github.com/actions-rs/clippy-check) to run clippy [#375](https://github.com/dotenv-linter/dotenv-linter/pull/375) ([@mgrachev](https://github.com/mgrachev))

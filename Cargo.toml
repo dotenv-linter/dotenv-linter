@@ -19,10 +19,26 @@ dunce = "1.0.1"
 
 [dev-dependencies]
 assert_cmd = "0.12.0"
+criterion = "0.3"
 tempfile = "3.1.0"
+
+[target.'cfg(not(windows))'.dev-dependencies]
+gag = "0.1.10"
 
 [profile.release]
 opt-level = 'z'  # Optimize for size
 lto = true
 codegen-units = 1
 panic = 'abort'
+
+[[bench]]
+name = "check"
+harness = false
+
+[lib]
+bench = false
+
+[[bin]]
+name = "dotenv-linter"
+path = "src/main.rs"
+bench = false

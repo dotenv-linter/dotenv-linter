@@ -23,7 +23,6 @@ impl FileEntry {
     /// Converts `PathBuf` to tuple of `(FileEntry, Vec<String>)`
     pub fn from(path: PathBuf) -> Option<(Self, Vec<String>)> {
         let file_name = Self::get_file_name(&path)?.to_string();
-
         let content = fs::read_to_string(&path).ok()?;
 
         let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();

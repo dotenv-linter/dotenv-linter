@@ -69,7 +69,7 @@ mod tests {
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
         for (target, base, relative) in assertions {
             assert_eq!(
-                get_relative_path(&PathBuf::from(target), &PathBuf::from(base),),
+                get_relative_path(&PathBuf::from(target), &PathBuf::from(base)),
                 Some(PathBuf::from(relative))
             );
         }
