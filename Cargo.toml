@@ -26,3 +26,11 @@ opt-level = 'z'  # Optimize for size
 lto = true
 codegen-units = 1
 panic = 'abort'
+
+[lib]
+bench = false
+
+[[bin]]
+name = "dotenv-linter"
+path = "src/main.rs"
+bench = false
