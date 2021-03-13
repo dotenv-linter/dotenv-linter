@@ -1,5 +1,4 @@
 # Github workflow files do not support YAML anchors.
-
 name: CI
 on:
   push:
@@ -11,6 +10,9 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  ##################
+  ### Linux jobs ###
+  ##################
   check:
     name: Check / Linux
     runs-on: ubuntu-latest
@@ -76,29 +78,16 @@ jobs:
             ~/.cargo/registry
             target
           key: clippy-linux-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Check with Clippy
-        uses: actions-rs/cargo@v1
+      - uses: actions-rs/clippy-check@v1
         with:
-          command: clippy
-          args: -- -D warnings
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-features -- -D warnings
       - name: Cleanup for caching
         uses: actions-rs/cargo@v1
         with:
           command: clean
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
-  #   - uses: actions-rs/clippy-check@v1
-  #     with:
-  #       token: ${{ secrets.GITHUB_TOKEN }}
-  #       args: --all-features -- -D warnings
-
-  docker:
-    name: Build / Docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Build
-        run: docker build --target builder .
 
   build:
     name: Build / Linux
@@ -182,7 +171,7 @@ jobs:
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
 
-  linux_install:
+  install:
     name: Install / Linux
     runs-on: ubuntu-latest
     steps:
@@ -194,6 +183,9 @@ jobs:
       - name: Verify successful installation
         run: $HOME/bin/dotenv-linter -v
 
+  ####################
+  ### Windows jobs ###
+  ####################
   windows_build:
     name: Build / Windows
     runs-on: windows-latest
@@ -221,7 +213,7 @@ jobs:
           command: clean
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
-
+  
   windows_test:
     name: Test / Windows
     runs-on: windows-latest
@@ -268,6 +260,9 @@ jobs:
         shell: bash
         run: $HOME/bin/dotenv-linter.exe -v
 
+  ##################
+  ### macOS jobs ###
+  ##################
   macos_install:
     name: Install / MacOS
     runs-on: macos-latest
@@ -279,3 +274,14 @@ jobs:
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
         run: $HOME/bin/dotenv-linter -v
+
+  ###################
+  ### Docker jobs ###
+  ###################
+  docker_build:
+    name: Build / Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: docker build --target builder .
