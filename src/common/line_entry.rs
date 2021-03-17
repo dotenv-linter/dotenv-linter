@@ -72,6 +72,59 @@ impl LineEntry {
         }
         comment::parse(self.raw_string.as_str())
     }
+
+    pub fn get_substitution_key(&self) -> Result<Vec<&str>, &'static str> {
+        let mut keys = Vec::new();
+
+        let mut value = match self.get_value() {
+            Some(value) => value.trim(),
+            None => return Ok(keys),
+        };
+
+        if value.starts_with('\'') {
+            return if value.ends_with('\'') {
+                Ok(keys)
+            } else {
+                Err("Should ends with single quote")
+            };
+        }
+
+        fn escaped(prefix: &str) -> bool {
+            prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
+        }
+
+        if value.starts_with('\"') {
+            if value.ends_with('\"') && !escaped(&value[..value.len() - 1]) {
+                value = &value[1..value.len() - 1]
+            } else {
+                return Err("Should ends with double quote");
+            }
+        }
+
+        while let Some(index) = value.find('$') {
+            let prefix = &value[..index];
+            let raw_key = &value[index + 1..];
+
+            if escaped(prefix) {
+                value = &raw_key;
+            } else {
+                let (key, next_rest) = match raw_key.chars().next() {
+                    Some('{') => match raw_key.find('}') {
+                        Some(index) => (&raw_key[1..index], &raw_key[index + 1..]),
+                        None => return Err("Should ends with close curly brace"),
+                    },
+                    Some(_) => match raw_key.find(|c: char| c.is_ascii_whitespace() || c == '$') {
+                        Some(index) => raw_key.split_at(index),
+                        None => (raw_key, ""),
+                    },
+                    None => return Err("Empty key"),
+                };
+                keys.push(key);
+                value = next_rest;
+            }
+        }
+        Ok(keys)
+    }
 }
 
 #[cfg(test)]
@@ -256,6 +309,100 @@ mod tests {
             let entry = line_entry(1, 1, "A=B");
             let comment = entry.get_control_comment();
             assert!(comment.is_none());
+        }
+    }
+
+    mod get_substitution_key {
+        use super::*;
+
+        #[test]
+        fn run_with_empty() {
+            let input = line_entry(1, 1, "");
+            assert_eq!(input.get_substitution_key(), Ok(vec![]));
+        }
+
+        #[test]
+        fn run_with_simple() {
+            let input = line_entry(1, 1, "FOO=$BAR");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+        }
+
+        #[test]
+        fn run_with_simple_comment() {
+            let input = line_entry(1, 1, "FOO=$BAR # comment");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+        }
+
+        #[test]
+        fn run_with_curly_braces() {
+            let input = line_entry(1, 1, "FOO=${BAR}");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+
+            let input = line_entry(1, 1, "FOO=$BAR}");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR}"]));
+
+            let input = line_entry(1, 1, "FOO=${BAR");
+            assert!(input.get_substitution_key().is_err());
+        }
+
+        #[test]
+        fn run_with_double_quotes() {
+            let input = line_entry(1, 1, r#"FOO="$BAR""#);
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+
+            let input = line_entry(1, 1, r#"FOO=$BAR""#);
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR\""]));
+
+            let input = line_entry(1, 1, r#"FOO="$BAR"#);
+            assert!(input.get_substitution_key().is_err());
+
+            let input = line_entry(1, 1, r#"FOO="$BAR\""#);
+            assert!(input.get_substitution_key().is_err());
+
+            let input = line_entry(1, 1, r#"FOO="\""#);
+            assert!(input.get_substitution_key().is_err());
+
+            let input = line_entry(1, 1, r#"FOO="${BAR}\\""#);
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+        }
+
+        #[test]
+        fn run_with_single_quotes() {
+            let input = line_entry(1, 1, "FOO='$BAR'");
+            assert_eq!(input.get_substitution_key(), Ok(vec![]));
+
+            let input = line_entry(1, 1, r"FOO=TEST_${BAR}_\'");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+        }
+
+        #[test]
+        fn run_with_escaped_dollar() {
+            let input = line_entry(1, 1, r"FOO=\$BAR");
+            assert_eq!(input.get_substitution_key(), Ok(vec![]));
+
+            let input = line_entry(1, 1, r"FOO=\\$BAR");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR"]));
+
+            let input = line_entry(1, 1, r"FOO=\\\$BAR");
+            assert_eq!(input.get_substitution_key(), Ok(vec![]));
+        }
+
+        #[test]
+        fn run_with_complicated() {
+            let input = line_entry(1, 1, "DATABASE=postgres://${USER}@localhost/database");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["USER"]));
+        }
+
+        #[test]
+        fn run_with_reused() {
+            let input = line_entry(1, 1, "FOO=$BAR$BAR");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR", "BAR"]));
+
+            let input = line_entry(1, 1, "FOO=${BAR}${BAR}");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR", "BAR"]));
+
+            let input = line_entry(1, 1, "FOO=${BAR}${BAZ}");
+            assert_eq!(input.get_substitution_key(), Ok(vec!["BAR", "BAZ"]));
         }
     }
 }
