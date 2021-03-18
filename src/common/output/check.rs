@@ -16,6 +16,17 @@ impl CheckOutput {
         }
     }
 
+    /// Prints information when there is nothing to check and returns a boolean
+    pub fn is_something_to_check(&self) -> bool {
+        if self.files_count == 0 {
+            if !self.is_quiet_mode {
+                println!("Nothing to check");
+            }
+            return false;
+        }
+        true
+    }
+
     /// Prints information about a file in process
     pub fn print_processing_info(&self, file: &FileEntry) {
         if !self.is_quiet_mode {
