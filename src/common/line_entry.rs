@@ -73,6 +73,7 @@ impl LineEntry {
         comment::parse(self.raw_string.as_str())
     }
 
+    #[allow(dead_code)]
     pub fn get_substitution_key(&self) -> Result<Vec<&str>, &'static str> {
         let mut keys = Vec::new();
 
