@@ -16,7 +16,12 @@ pub struct LineEntry {
 
 impl LineEntry {
     pub fn new(number: usize, file: Rc<FileEntry>, raw_string: String, is_deleted: bool) -> Self {
-        LineEntry { number, file, raw_string, is_deleted }
+        LineEntry {
+            number,
+            file,
+            raw_string,
+            is_deleted,
+        }
     }
 
     pub fn is_empty_or_comment(&self) -> bool {
