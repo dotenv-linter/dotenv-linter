@@ -30,12 +30,12 @@ impl Fix for EndingBlankLineFixer<'_> {
         }
 
         let file = lines.first()?.file.clone();
-        lines.push(LineEntry {
-            number: lines.len() + 1,
+        lines.push(LineEntry::new(
+            lines.len() + 1,
             file,
-            raw_string: LF.to_string(),
-            is_deleted: false,
-        });
+            LF.to_string(),
+            false,
+        ));
 
         Some(1)
     }

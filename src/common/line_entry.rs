@@ -1,10 +1,13 @@
-use crate::common::*;
+use std::rc::Rc;
+
 use comment::Comment;
+
+use crate::common::*;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
     pub number: usize,
-    pub file: FileEntry,
+    pub file: Rc<FileEntry>,
     pub raw_string: String,
 
     /// Used in ExtraBlankLineFixer
@@ -12,6 +15,10 @@ pub struct LineEntry {
 }
 
 impl LineEntry {
+    pub fn new(number: usize, file: Rc<FileEntry>, raw_string: String, is_deleted: bool) -> Self {
+        LineEntry { number, file, raw_string, is_deleted }
+    }
+
     pub fn is_empty_or_comment(&self) -> bool {
         self.is_empty() || self.is_comment()
     }
@@ -111,6 +118,7 @@ mod tests {
 
     mod get_key {
         use super::*;
+
         #[test]
         fn empty_line_test() {
             let input = line_entry(1, 1, "");
