@@ -74,7 +74,7 @@ impl LineEntry {
     }
 
     #[allow(dead_code)]
-    pub fn get_substitution_key(&self) -> Vec<&str> {
+    pub fn get_substitution_keys(&self) -> Vec<&str> {
         let mut keys = Vec::new();
 
         let mut value = match self.get_value() {
@@ -309,97 +309,97 @@ mod tests {
         }
     }
 
-    mod get_substitution_key {
+    mod get_substitution_keys {
         use super::*;
 
         #[test]
         fn run_with_empty() {
             let input = line_entry(1, 1, "");
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
         }
 
         #[test]
         fn run_with_simple() {
             let input = line_entry(1, 1, "FOO=$BAR");
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
         }
 
         #[test]
         fn run_with_simple_comment() {
             let input = line_entry(1, 1, "FOO=$BAR # comment");
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
         }
 
         #[test]
         fn run_with_curly_braces() {
             let input = line_entry(1, 1, "FOO=${BAR}");
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, "FOO=$BAR}");
-            assert_eq!(input.get_substitution_key(), vec!["BAR}"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR}"]);
 
             let input = line_entry(1, 1, "FOO=${BAR");
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
         }
 
         #[test]
         fn run_with_double_quotes() {
             let input = line_entry(1, 1, r#"FOO="$BAR""#);
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, r#"FOO=$BAR""#);
-            assert_eq!(input.get_substitution_key(), vec!["BAR\""]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR\""]);
 
             let input = line_entry(1, 1, r#"FOO="$BAR"#);
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
 
             let input = line_entry(1, 1, r#"FOO="$BAR\""#);
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
 
             let input = line_entry(1, 1, r#"FOO="\""#);
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
 
             let input = line_entry(1, 1, r#"FOO="${BAR}\\""#);
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
         }
 
         #[test]
         fn run_with_single_quotes() {
             let input = line_entry(1, 1, "FOO='$BAR'");
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
 
             let input = line_entry(1, 1, r"FOO=TEST_${BAR}_\'");
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
         }
 
         #[test]
         fn run_with_escaped_dollar() {
             let input = line_entry(1, 1, r"FOO=\$BAR");
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
 
             let input = line_entry(1, 1, r"FOO=\\$BAR");
-            assert_eq!(input.get_substitution_key(), vec!["BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, r"FOO=\\\$BAR");
-            assert!(input.get_substitution_key().is_empty());
+            assert!(input.get_substitution_keys().is_empty());
         }
 
         #[test]
         fn run_with_complicated() {
             let input = line_entry(1, 1, "DATABASE=postgres://${USER}@localhost/database");
-            assert_eq!(input.get_substitution_key(), vec!["USER"]);
+            assert_eq!(input.get_substitution_keys(), vec!["USER"]);
         }
 
         #[test]
         fn run_with_reused() {
             let input = line_entry(1, 1, "FOO=$BAR$BAR");
-            assert_eq!(input.get_substitution_key(), vec!["BAR", "BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR", "BAR"]);
 
             let input = line_entry(1, 1, "FOO=${BAR}${BAR}");
-            assert_eq!(input.get_substitution_key(), vec!["BAR", "BAR"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR", "BAR"]);
 
             let input = line_entry(1, 1, "FOO=${BAR}${BAZ}");
-            assert_eq!(input.get_substitution_key(), vec!["BAR", "BAZ"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR", "BAZ"]);
         }
     }
 }
