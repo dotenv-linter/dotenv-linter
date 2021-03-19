@@ -77,18 +77,13 @@ impl LineEntry {
     pub fn get_substitution_keys(&self) -> Vec<&str> {
         let mut keys = Vec::new();
 
-        let mut value = match self.get_value() {
-            Some(value) => value.trim(),
-            None => return keys,
+        let mut value = match self.get_value().map(str::trim) {
+            Some(value) if !value.starts_with('\'') => value,
+            _ => return keys,
         };
 
-        if value.starts_with('\'') {
-            return keys;
-        }
-
-        fn escaped(prefix: &str) -> bool {
-            prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
-        }
+        let escaped =
+            |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
 
         if value.starts_with('\"') {
             if value.ends_with('\"') && !escaped(&value[..value.len() - 1]) {
@@ -110,7 +105,8 @@ impl LineEntry {
                         Some(index) => (&raw_key[1..index], &raw_key[index + 1..]),
                         None => return keys,
                     },
-                    Some(_) => match raw_key.find(|c: char| c.is_ascii_whitespace() || c == '$') {
+                    Some(_) => match raw_key.find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
+                    {
                         Some(index) => raw_key.split_at(index),
                         None => (raw_key, ""),
                     },
@@ -336,7 +332,7 @@ mod tests {
             assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, "FOO=$BAR}");
-            assert_eq!(input.get_substitution_keys(), vec!["BAR}"]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, "FOO=${BAR");
             assert!(input.get_substitution_keys().is_empty());
@@ -348,7 +344,7 @@ mod tests {
             assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, r#"FOO=$BAR""#);
-            assert_eq!(input.get_substitution_keys(), vec!["BAR\""]);
+            assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, r#"FOO="$BAR"#);
             assert!(input.get_substitution_keys().is_empty());
