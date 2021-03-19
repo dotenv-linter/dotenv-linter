@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 - Add benchmark for the compare function
   [#395](https://github.com/dotenv-linter/dotenv-linter/pull/395) ([@FrancisMurillo](https://github.com/FrancisMurillo))
+- Print a message when there are no input files for fix subcommand [#394](https://github.com/dotenv-linter/dotenv-linter/pull/394) ([@mdycz](https://github.com/mdycz))
 - Print a message when there are no input files [#392](https://github.com/dotenv-linter/dotenv-linter/pull/392) ([@jodli](https://github.com/jodli))
 - Add a GitHub Action to compare benchmarks [#378](https://github.com/dotenv-linter/dotenv-linter/pull/378) ([@mgrachev](https://github.com/mgrachev))
 - Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
