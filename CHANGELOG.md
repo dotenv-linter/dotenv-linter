@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Replace String on Into<String> for all TestDir methods [#387](https://github.com/dotenv-linter/dotenv-linter/pull/387) ([@ebobrow](https://github.com/ebobrow))
 - Use [actions-rs/clippy-check](https://github.com/actions-rs/clippy-check) to run clippy [#375](https://github.com/dotenv-linter/dotenv-linter/pull/375) ([@mgrachev](https://github.com/mgrachev))
 - Remove `Result` from the return type [#374](https://github.com/dotenv-linter/dotenv-linter/pull/374) ([@DDtKey](https://github.com/DDtKey))
 - Add `.bak` extension to backup files and don't lint backup files [#367](https://github.com/dotenv-linter/dotenv-linter/pull/367) ([@mstruebing](https://github.com/mstruebing))
