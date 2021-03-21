@@ -5,7 +5,7 @@ use tempfile::tempdir;
 #[cfg(not(windows))]
 use gag::Gag;
 
-pub fn compare_benchmark(c: &mut Criterion){
+pub fn compare_benchmark(c: &mut Criterion) {
     let temp = tempdir().expect("create tempdir");
     let path = temp.into_path();
 
@@ -14,10 +14,26 @@ pub fn compare_benchmark(c: &mut Criterion){
 
     let current_dir = env::current_dir().expect("get current dir");
     let app = dotenv_linter::cli::new(current_dir.as_os_str());
-    let matches = app.get_matches_from(vec!["dotenv-linter", simple_compare_base_path.to_str().expect("path conversion failed"), simple_compare_other_path.to_str().expect("path conversion failed")]);
+    let matches = app.get_matches_from(vec![
+        "dotenv-linter",
+        simple_compare_base_path
+            .to_str()
+            .expect("path conversion failed"),
+        simple_compare_other_path
+            .to_str()
+            .expect("path conversion failed"),
+    ]);
 
-    fs::copy("benches/fixtures/simple_compare_base.env", simple_compare_base_path).expect("copy .env file");
-    fs::copy("benches/fixtures/simple_compare_other.env", simple_compare_other_path).expect("copy .env file");
+    fs::copy(
+        "benches/fixtures/simple_compare_base.env",
+        simple_compare_base_path,
+    )
+    .expect("copy .env file");
+    fs::copy(
+        "benches/fixtures/simple_compare_other.env",
+        simple_compare_other_path,
+    )
+    .expect("copy .env file");
 
     c.bench_function("dotenv_linter compare", |b| {
         // Disable output to STDOUT
