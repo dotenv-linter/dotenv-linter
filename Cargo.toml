@@ -35,6 +35,10 @@ panic = 'abort'
 name = "check"
 harness = false
 
+[[bench]]
+name = "fix"
+harness = false
+
 [lib]
 bench = false
 

@@ -12,3 +12,4 @@
 *.env
 *.env_*
 !/tests/fixes/fixtures/*.env
+!/benches/fixtures/*.env
