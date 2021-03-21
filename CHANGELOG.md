@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
-- Print a message "Nothing to compare" [#386](https://github.com/dotenv-linter/dotenv-linter/pull/386) ([@jakecorrenti](https://github.com/jakecorrenti))
+- Print a message "Nothing to compare" [#398](https://github.com/dotenv-linter/dotenv-linter/pull/398) ([@jakecorrenti](https://github.com/jakecorrenti))
 - Add a GitHub Action to compare benchmarks [#378](https://github.com/dotenv-linter/dotenv-linter/pull/378) ([@mgrachev](https://github.com/mgrachev))
 - Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
 
