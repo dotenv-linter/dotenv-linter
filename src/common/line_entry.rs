@@ -100,19 +100,21 @@ impl LineEntry {
             if escaped(prefix) {
                 value = &raw_key;
             } else {
-                let (key, rest) = match raw_key.chars().next() {
-                    Some('{') => match raw_key.find('}') {
-                        Some(index) => (&raw_key[1..index], &raw_key[index + 1..]),
-                        None => return keys,
-                    },
-                    Some(_) => match raw_key.find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
-                    {
-                        Some(index) => raw_key.split_at(index),
-                        None => (raw_key, ""),
-                    },
-                    None => return keys,
-                };
-                keys.push(key);
+                let (key, rest) = raw_key
+                    .strip_prefix('{')
+                    .and_then(|raw_key| raw_key.find('}').map(|i| raw_key.split_at(i)))
+                    .or_else(|| {
+                        raw_key
+                            .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
+                            .map(|i| raw_key.split_at(i))
+                    })
+                    .unwrap_or((raw_key, ""));
+                if !key.is_empty() {
+                    keys.push(key);
+                } else {
+                    return keys;
+                }
+
                 value = rest;
             }
         }
@@ -396,6 +398,12 @@ mod tests {
 
             let input = line_entry(1, 1, "FOO=${BAR}${BAZ}");
             assert_eq!(input.get_substitution_keys(), vec!["BAR", "BAZ"]);
+        }
+
+        #[test]
+        fn run_with_break() {
+            let input = line_entry(1, 1, "FOO=${BAR $BAZ");
+            assert!(input.get_substitution_keys().is_empty());
         }
     }
 }
