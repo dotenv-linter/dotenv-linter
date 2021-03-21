@@ -82,11 +82,11 @@ impl LineEntry {
             _ => return keys,
         };
 
-        let escaped =
+        let is_escaped =
             |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
 
         if value.starts_with('\"') {
-            if value.ends_with('\"') && !escaped(&value[..value.len() - 1]) {
+            if value.ends_with('\"') && !is_escaped(&value[..value.len() - 1]) {
                 value = &value[1..value.len() - 1]
             } else {
                 return keys;
@@ -97,7 +97,7 @@ impl LineEntry {
             let prefix = &value[..index];
             let raw_key = &value[index + 1..];
 
-            if escaped(prefix) {
+            if is_escaped(prefix) {
                 value = &raw_key;
             } else {
                 let (key, rest) = raw_key
