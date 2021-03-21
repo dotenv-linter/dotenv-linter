@@ -18,7 +18,8 @@ pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Bo
     let lines_map = get_lines(args, current_dir);
     let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
 
-    if !output.is_something_to_check() {
+    if lines_map.is_empty() {
+        output.print_nothing_to_check();
         return Ok(0);
     }
 
