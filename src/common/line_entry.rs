@@ -15,12 +15,12 @@ pub struct LineEntry {
 }
 
 impl LineEntry {
-    pub fn new(number: usize, file: Rc<FileEntry>, raw_string: String, is_deleted: bool) -> Self {
+    pub fn new(number: usize, file: Rc<FileEntry>, raw_string: String) -> Self {
         LineEntry {
             number,
             file,
             raw_string,
-            is_deleted,
+            is_deleted: false,
         }
     }
 

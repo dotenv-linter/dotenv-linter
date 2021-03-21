@@ -36,7 +36,6 @@ pub(crate) mod tests {
                 total_lines,
             }),
             String::from("\n"),
-            false,
         )
     }
 
@@ -50,7 +49,6 @@ pub(crate) mod tests {
                 total_lines,
             }),
             String::from(raw_string),
-            false,
         )
     }
 

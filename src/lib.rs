@@ -226,6 +226,6 @@ fn get_line_entries(fe: &FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
     lines
         .into_iter()
         .enumerate()
-        .map(|(index, line)| LineEntry::new(index + 1, fe.clone(), line, false))
+        .map(|(index, line)| LineEntry::new(index + 1, fe.clone(), line))
         .collect()
 }
