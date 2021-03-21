@@ -24,33 +24,32 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
 pub(crate) mod tests {
     use super::*;
     use std::path::PathBuf;
+    use std::rc::Rc;
 
     #[allow(dead_code)]
     pub fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
-        LineEntry {
+        LineEntry::new(
             number,
-            file: FileEntry {
+            Rc::new(FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
                 total_lines,
-            },
-            raw_string: String::from("\n"),
-            is_deleted: false,
-        }
+            }),
+            String::from("\n"),
+        )
     }
 
     #[allow(dead_code)]
     pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
-        LineEntry {
+        LineEntry::new(
             number,
-            file: FileEntry {
+            Rc::new(FileEntry {
                 path: PathBuf::from(".env"),
                 file_name: ".env".to_string(),
                 total_lines,
-            },
-            raw_string: String::from(raw_string),
-            is_deleted: false,
-        }
+            }),
+            String::from(raw_string),
+        )
     }
 
     #[test]

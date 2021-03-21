@@ -12,6 +12,7 @@ mod fs_utils;
 
 pub use checks::available_check_names;
 use common::CompareWarning;
+use std::rc::Rc;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
     let lines_map = get_lines(args, current_dir);
@@ -222,14 +223,10 @@ fn get_file_paths(
 }
 
 fn get_line_entries(fe: &FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
+    let fe = Rc::new(fe.clone());
     lines
         .into_iter()
         .enumerate()
-        .map(|(index, line)| LineEntry {
-            number: index + 1,
-            file: fe.clone(),
-            raw_string: line,
-            is_deleted: false,
-        })
+        .map(|(index, line)| LineEntry::new(index + 1, fe.clone(), line))
         .collect()
 }

@@ -68,7 +68,11 @@ impl TestDir {
     /// Run the default CLI binary in this TestDir and check it succeeds.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_success(self, expected_output: String) {
+    pub fn test_command_success<T>(self, expected_output: T)
+    where
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
         let args: &[&str; 0] = &[];
         self.test_command_success_with_args(args, expected_output);
     }
@@ -76,7 +80,11 @@ impl TestDir {
     /// Run the default CLI binary in this TestDir and check it fails.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_fail(self, expected_output: String) {
+    pub fn test_command_fail<T>(self, expected_output: T)
+    where
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
         let args: &[&str; 0] = &[];
         self.test_command_fail_with_args(args, expected_output);
     }
@@ -85,11 +93,13 @@ impl TestDir {
     /// in this TestDir and check it succeeds.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_success_with_args<I, S>(self, args: I, expected_output: String)
+    pub fn test_command_success_with_args<I, S, T>(self, args: I, expected_output: T)
     where
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
+        T: Into<String>,
     {
+        let expected_output = expected_output.into();
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
@@ -105,11 +115,13 @@ impl TestDir {
     /// in this TestDir and check it fails.
     ///
     /// This method removes the TestDir when command has finished.
-    pub fn test_command_fail_with_args<I, S>(self, args: I, expected_output: String)
+    pub fn test_command_fail_with_args<I, S, T>(self, args: I, expected_output: T)
     where
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
+        T: Into<String>,
     {
+        let expected_output = expected_output.into();
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
@@ -125,7 +137,11 @@ impl TestDir {
     /// Run the default CLI binary, with "-f", in this TestDir and check it succeeds.
     ///
     /// This method does NOT remove TestDir when finished
-    pub fn test_command_fix_success(&self, expected_output: String) {
+    pub fn test_command_fix_success<T>(&self, expected_output: T)
+    where
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
@@ -151,11 +167,13 @@ impl TestDir {
     /// in this TestDir and check it succeeds.
     ///
     /// This method does NOT remove TestDir when finished
-    pub fn test_command_fix_success_with_args<I, S>(&self, expected_output: String, ext_args: I)
+    pub fn test_command_fix_success_with_args<I, S, T>(&self, expected_output: T, ext_args: I)
     where
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
+        T: Into<String>,
     {
+        let expected_output = expected_output.into();
         let mut cmd = Self::init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
