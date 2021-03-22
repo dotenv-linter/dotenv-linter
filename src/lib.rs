@@ -16,9 +16,10 @@ use std::rc::Rc;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
     let lines_map = get_lines(args, current_dir);
+    let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
 
-    // Nothing to check
     if lines_map.is_empty() {
+        output.print_nothing_to_check();
         return Ok(0);
     }
 
@@ -27,7 +28,6 @@ pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Bo
         skip_checks = skip.collect();
     }
 
-    let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
     let warnings_count =
         lines_map
             .into_iter()
