@@ -121,11 +121,11 @@ impl LineEntry {
                             .map(|i| raw_key.split_at(i))
                     })
                     .unwrap_or((raw_key, ""));
-                if !key.is_empty() {
-                    keys.push(key);
-                } else {
+                if key.is_empty() {
                     return keys;
                 }
+
+                keys.push(key);
 
                 value = rest;
             }
