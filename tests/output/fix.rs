@@ -9,13 +9,11 @@ fn warnings() {
     test_dir.create_testfile(".env", "abc=DEF\n");
 
     let args: &[&str] = &[];
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 .env:1 LowercaseKey: The abc key should be in uppercase
 
 All warnings are fixed. Total: 1
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close();
@@ -29,8 +27,7 @@ fn warnings_multiple_files() {
     test_dir.create_testfile(".env_2", "ABC=DEF\nABC=DEF\n");
 
     let args: &[&str] = &[];
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 .env:1 LowercaseKey: The abc key should be in uppercase
 
 Fixing .env_1
@@ -40,8 +37,7 @@ Fixing .env_2
 .env_2:2 DuplicatedKey: The ABC key is duplicated
 
 All warnings are fixed. Total: 3
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close();
@@ -53,12 +49,10 @@ fn no_warnings() {
     test_dir.create_testfile(".env", "ABC=DEF\nB=bbb\nF=BAR\n");
 
     let args: &[&str] = &[];
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 
 No warnings found
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close();
@@ -72,14 +66,12 @@ fn no_warnings_multiple_files() {
     test_dir.create_testfile(".env_2", "ABC=DEF\nB=bbb\nF=BAR\n");
 
     let args: &[&str] = &[];
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 Fixing .env_1
 Fixing .env_2
 
 No warnings found
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close();
@@ -93,8 +85,7 @@ fn mixed_warnings_multiple_files() {
     test_dir.create_testfile(".env_2", "ABC=DEF\nABC=DEF\n");
 
     let args: &[&str] = &[];
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 .env:1 LowercaseKey: The abc key should be in uppercase
 
 Fixing .env_1
@@ -102,28 +93,24 @@ Fixing .env_2
 .env_2:2 DuplicatedKey: The ABC key is duplicated
 
 All warnings are fixed. Total: 2
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
 
     test_dir.create_testfile(".env_3", "ABC=DEF\n\n");
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 Fixing .env_1
 Fixing .env_2
 Fixing .env_3
 .env_3:3 ExtraBlankLine: Extra blank line detected
 
 All warnings are fixed. Total: 1
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
 
     test_dir.create_testfile(".env", "ABC=DEF\n\n");
-    let expected_output = String::from(
-        r#"Fixing .env
+    let expected_output = r#"Fixing .env
 .env:3 ExtraBlankLine: Extra blank line detected
 
 Fixing .env_1
@@ -131,8 +118,7 @@ Fixing .env_2
 Fixing .env_3
 
 All warnings are fixed. Total: 1
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
 
@@ -145,11 +131,9 @@ fn quiet() {
     test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
     let args = &["--quiet"];
-    let expected_output = String::from(
-        r#"
+    let expected_output = r#"
 All warnings are fixed. Total: 2
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close();
@@ -161,11 +145,9 @@ fn quiet_no_warnings() {
     test_dir.create_testfile(".env", "ABC=DEF\nB=bbb\nF=BAR\n");
 
     let args = &["--quiet"];
-    let expected_output = String::from(
-        r#"
+    let expected_output = r#"
 No warnings found
-"#,
-    );
+"#;
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close();

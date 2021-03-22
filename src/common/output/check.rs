@@ -16,6 +16,13 @@ impl CheckOutput {
         }
     }
 
+    /// Prints a message that there is nothing to check
+    pub fn print_nothing_to_check(&self) {
+        if !self.is_quiet_mode {
+            println!("Nothing to check");
+        }
+    }
+
     /// Prints information about a file in process
     pub fn print_processing_info(&self, file: &FileEntry) {
         if !self.is_quiet_mode {
