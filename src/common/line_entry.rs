@@ -126,7 +126,6 @@ impl LineEntry {
                 }
 
                 keys.push(key);
-
                 value = rest;
             }
         }
