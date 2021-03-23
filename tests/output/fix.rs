@@ -218,8 +218,7 @@ fn no_files() {
     let test_dir = TestDir::new();
 
     let expected_output = String::from(
-        r#"
-Nothing to fix
+        r#"Nothing to fix
 "#,
     );
 

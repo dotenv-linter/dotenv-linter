@@ -54,7 +54,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn
 
     // Nothing to fix
     if lines_map.is_empty() {
-        output.print_no_files_message();
+        output.print_nothing_to_fix();
         return Ok(());
     }
 
