@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add action-hadolint [#380](https://github.com/dotenv-linter/dotenv-linter/issues/380) ([@iovanom](https://github.com/iovanom))
 - Add benchmark for the compare function
   [#395](https://github.com/dotenv-linter/dotenv-linter/pull/395) ([@FrancisMurillo](https://github.com/FrancisMurillo))
 - Print a message when there are no input files [#392](https://github.com/dotenv-linter/dotenv-linter/pull/392) ([@jodli](https://github.com/jodli))
