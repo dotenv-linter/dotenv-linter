@@ -27,14 +27,13 @@ impl Default for UnorderedKeyChecker<'_> {
 
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        let sub_keys = line.get_substitution_keys();
-        let substitution_check = !sub_keys.is_empty()
-            && sub_keys
-                .iter()
-                .all(|&sub_key| self.keys.contains(&sub_key.to_string()));
+        let has_substitution_in_group = line
+            .get_substitution_keys()
+            .iter()
+            .any(|k| self.keys.iter().any(|key| key == k));
 
         // Support of grouping variables through blank lines and control comments
-        if line.is_empty() || line.get_control_comment().is_some() || substitution_check {
+        if line.is_empty() || line.get_control_comment().is_some() || has_substitution_in_group {
             self.keys.clear();
             return None;
         }
