@@ -54,4 +54,13 @@ impl FixOutput {
             println!();
         }
     }
+
+    /// Prints no files found message
+    pub fn print_nothing_to_fix(&self) {
+        if self.is_quiet_mode || self.files_count > 0 {
+            return;
+        }
+
+        println!("Nothing to fix");
+    }
 }
