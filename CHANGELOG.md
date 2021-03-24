@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Allow unordered keys for substitution variables [#401](https://github.com/dotenv-linter/dotenv-linter/pull/401) ([@Ru5ty0ne](https://github.com/Ru5ty0ne))
 - Replace String on Into<String> for all TestDir methods [#397](https://github.com/dotenv-linter/dotenv-linter/pull/397) ([@ebobrow](https://github.com/ebobrow))
 - Use Rc<FileEntry> internally to reduce memory consumption [#393](https://github.com/dotenv-linter/dotenv-linter/issues/393) ([@Tom01098](https://github.com/Tom01098))
 - Use [actions-rs/clippy-check](https://github.com/actions-rs/clippy-check) to run clippy [#375](https://github.com/dotenv-linter/dotenv-linter/pull/375) ([@mgrachev](https://github.com/mgrachev))

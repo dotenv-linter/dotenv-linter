@@ -27,8 +27,14 @@ impl Default for UnorderedKeyChecker<'_> {
 
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+        let sub_keys = line.get_substitution_keys();
+        let substitution_check = !sub_keys.is_empty()
+            && sub_keys
+                .iter()
+                .all(|&sub_key| self.keys.contains(&sub_key.to_string()));
+
         // Support of grouping variables through blank lines and control comments
-        if line.is_empty() || line.get_control_comment().is_some() {
+        if line.is_empty() || line.get_control_comment().is_some() || substitution_check {
             self.keys.clear();
             return None;
         }
@@ -199,6 +205,20 @@ mod tests {
             (line_entry(1, 3, "FOO=BAR"), None),
             (line_entry(2, 3, "# dotenv-linter:off LowercaseKey"), None),
             (line_entry(3, 3, "Bar=FOO"), None),
+        ];
+
+        run_unordered_tests(asserts);
+    }
+
+    #[test]
+    fn two_ordered_groups_with_two_substitution_keys_test() {
+        let asserts = vec![
+            (line_entry(1, 3, "ABC=XYZ"), None),
+            (line_entry(2, 3, "KEY=VALUE"), None),
+            (line_entry(3, 3, "FOO=$KEY # Unordered, FOO uses KEY"), None),
+            (line_entry(4, 3, "BAR=FOO"), None),
+            (line_entry(5, 3, "BOO=$FOO"), None),
+            (line_entry(6, 3, "XYZ=ABC"), None),
         ];
 
         run_unordered_tests(asserts);
