@@ -35,7 +35,7 @@ pub(crate) mod tests {
                 file_name: ".env".to_string(),
                 total_lines,
             }),
-            String::from("\n"),
+            "\n",
         )
     }
 
@@ -48,7 +48,7 @@ pub(crate) mod tests {
                 file_name: ".env".to_string(),
                 total_lines,
             }),
-            String::from(raw_string),
+            raw_string,
         )
     }
 

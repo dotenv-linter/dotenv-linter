@@ -15,11 +15,14 @@ pub struct LineEntry {
 }
 
 impl LineEntry {
-    pub fn new(number: usize, file: Rc<FileEntry>, raw_string: String) -> Self {
+    pub fn new<T>(number: usize, file: Rc<FileEntry>, raw_string: T) -> Self
+    where
+        T: Into<String>,
+    {
         LineEntry {
             number,
             file,
-            raw_string,
+            raw_string: raw_string.into(),
             is_deleted: false,
         }
     }
