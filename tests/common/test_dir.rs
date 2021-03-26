@@ -72,7 +72,6 @@ impl TestDir {
     where
         T: Into<String>,
     {
-        let expected_output = expected_output.into();
         let args: &[&str; 0] = &[];
         self.test_command_success_with_args(args, expected_output);
     }
@@ -84,7 +83,6 @@ impl TestDir {
     where
         T: Into<String>,
     {
-        let expected_output = expected_output.into();
         let args: &[&str; 0] = &[];
         self.test_command_fail_with_args(args, expected_output);
     }
