@@ -36,6 +36,10 @@ name = "check"
 harness = false
 
 [[bench]]
+name = "fix"
+harness = false
+
+[[bench]]
 name = "compare"
 harness = false
 

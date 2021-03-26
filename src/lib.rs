@@ -50,9 +50,11 @@ pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Bo
 pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn Error>> {
     let mut warnings_count = 0;
     let lines_map = get_lines(args, current_dir);
+    let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
 
     // Nothing to fix
     if lines_map.is_empty() {
+        output.print_nothing_to_fix();
         return Ok(());
     }
 
@@ -61,7 +63,6 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn
         skip_checks = skip.collect();
     }
 
-    let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
