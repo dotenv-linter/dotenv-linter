@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add action-hadolint [#400](https://github.com/dotenv-linter/dotenv-linter/pull/400) ([@iovanom](https://github.com/iovanom))
 - Add method to get substitution keys to LineEntry [#391](https://github.com/dotenv-linter/dotenv-linter/pull/391) ([@zotho](https://github.com/zotho))
 - Added a Fix Benchmark [#399](https://github.com/dotenv-linter/dotenv-linter/pull/399) ([@a4blue](https://github.com/a4blue))
 - Add benchmark for the compare function
@@ -17,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Replace String on Into<String> for all TestDir methods [#397](https://github.com/dotenv-linter/dotenv-linter/pull/397) ([@ebobrow](https://github.com/ebobrow))
-- Use Rc<FileEntry> internally to reduce memory consumption [#393](https://github.com/dotenv-linter/dotenv-linter/issues/393) ([@Tom01098](https://github.com/Tom01098))
+- Use Rc<FileEntry> internally to reduce memory consumption [#393](https://github.com/dotenv-linter/dotenv-linter/pull/393) ([@Tom01098](https://github.com/Tom01098))
 - Use [actions-rs/clippy-check](https://github.com/actions-rs/clippy-check) to run clippy [#375](https://github.com/dotenv-linter/dotenv-linter/pull/375) ([@mgrachev](https://github.com/mgrachev))
 - Remove `Result` from the return type [#374](https://github.com/dotenv-linter/dotenv-linter/pull/374) ([@DDtKey](https://github.com/DDtKey))
 - Add `.bak` extension to backup files and don't lint backup files [#367](https://github.com/dotenv-linter/dotenv-linter/pull/367) ([@mstruebing](https://github.com/mstruebing))
