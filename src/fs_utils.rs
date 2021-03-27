@@ -2,7 +2,7 @@ use crate::common::{FileEntry, LineEntry};
 use std::error::Error;
 use std::fs::{copy, File};
 use std::io::{self, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::SystemTime;
 
 /// For the Windows platform, we need to remove the UNC prefix.
@@ -14,7 +14,7 @@ pub use dunce::canonicalize;
 pub use std::fs::canonicalize;
 
 /// Returns the relative path for `target_path` relative to `base_path`
-pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<PathBuf> {
+pub fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf> {
     let comp_target: Vec<_> = target_path.components().collect();
     let comp_base: Vec<_> = base_path.components().collect();
 
@@ -34,7 +34,7 @@ pub fn get_relative_path(target_path: &PathBuf, base_path: &PathBuf) -> Option<P
 }
 
 /// In the future versions we should create a backup copy, or at least notify the user about it
-pub fn write_file(path: &PathBuf, lines: Vec<LineEntry>) -> io::Result<()> {
+pub fn write_file(path: &Path, lines: Vec<LineEntry>) -> io::Result<()> {
     let mut file = File::create(path)?;
 
     // We don't write the last line, because it contains only LF (common::FileEntry::from)

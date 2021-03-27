@@ -111,10 +111,8 @@ No problems found
 fn no_files() {
     let test_dir = TestDir::new();
 
-    let expected_output = String::from(
-        r#"Nothing to check
-"#,
-    );
+    let expected_output = r#"Nothing to check
+"#;
 
     test_dir.test_command_success(expected_output);
 }
@@ -148,7 +146,7 @@ fn quiet_no_files() {
     let test_dir = TestDir::new();
 
     let args = &["--quiet"];
-    let expected_output = String::from("");
+    let expected_output = "";
 
     test_dir.test_command_success_with_args(args, expected_output);
 }
