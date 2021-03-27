@@ -217,10 +217,8 @@ All warnings are fixed. Total: 2
 fn no_files() {
     let test_dir = TestDir::new();
 
-    let expected_output = String::from(
-        r#"Nothing to fix
-"#,
-    );
+    let expected_output = r#"Nothing to fix
+"#;
 
     test_dir.test_command_fix_success(expected_output);
     test_dir.close()
@@ -231,7 +229,7 @@ fn quiet_no_files() {
     let test_dir = TestDir::new();
 
     let args = &["--quiet"];
-    let expected_output = String::from("");
+    let expected_output = "";
 
     test_dir.test_command_fix_success_with_args(expected_output, args);
     test_dir.close()

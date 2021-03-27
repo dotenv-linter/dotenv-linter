@@ -35,7 +35,7 @@ fn build_output(blocks: &[(&str, &[&str])], mode: Mode) -> String {
                 output.push_str(&format!("{}\n", w));
             }
             if i != blocks.len() - 1 {
-                output.push_str("\n");
+                output.push('\n');
             }
         }
     }
