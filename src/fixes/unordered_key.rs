@@ -47,6 +47,7 @@ impl Fix for UnorderedKeyFixer<'_> {
             let line = &lines[i];
 
             let mut is_control_comment = false;
+            let mut has_substitution_variable = false;
             let mut controls_this_check = false;
             let mut is_off = false;
 
@@ -61,7 +62,24 @@ impl Fix for UnorderedKeyFixer<'_> {
                     end.replace(i + 1);
                 }
 
-                if line.is_empty() || line.is_last_line() || is_control_comment {
+                let subst_keys = line.get_substitution_keys();
+                for j in start_index..i {
+                    let key = match lines[j].get_key() {
+                        Some(k) => k,
+                        None => continue,
+                    };
+
+                    if subst_keys.iter().any(|k| k == &key) {
+                        has_substitution_variable = true;
+                        end.replace(i);
+                    }
+                }
+
+                if line.is_empty()
+                    || line.is_last_line()
+                    || is_control_comment
+                    || has_substitution_variable
+                {
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
                         end = None;
