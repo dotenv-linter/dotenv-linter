@@ -280,6 +280,40 @@ mod tests {
     }
 
     #[test]
+    fn key_order_substitution_variable_test() {
+        let mut lines = get_lines(vec![
+            "KEY=VALUE",
+            "ABC=XYZ",
+            "FOO=$KEY",
+            "BOO=$FOO",
+            "XYZ=ABC",
+            "BAR=FOO",
+        ]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The ABC key should go before KEY key"),
+                (5, "The BAR key should go before BOO key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "ABC=XYZ",
+                "KEY=VALUE",
+                "FOO=$KEY # Unordered, FOO uses KEY",
+                "BAR=FOO",
+                "BOO=$FOO",
+                "XYZ=ABC",
+            ],
+        );
+    }
+
+    #[test]
     fn all_file_control_comments_test() {
         let mut lines = get_lines(vec![
             "# dotenv-linter:off UnorderedKey",
