@@ -63,6 +63,7 @@ impl Fix for UnorderedKeyFixer<'_> {
                 }
 
                 let subst_keys = line.get_substitution_keys();
+                let mut replaced_line = None;
                 for j in start_index..i {
                     let key = match lines[j].get_key() {
                         Some(k) => k,
@@ -70,6 +71,12 @@ impl Fix for UnorderedKeyFixer<'_> {
                     };
 
                     if subst_keys.iter().any(|k| k == &key) {
+                        replaced_line = Some(format!(
+                            "{} # Unordered, {} uses {}",
+                            &line.raw_string,
+                            &lines[i].get_key().unwrap(),
+                            &key
+                        ));
                         has_substitution_variable = true;
                         end.replace(i);
                     }
@@ -83,6 +90,9 @@ impl Fix for UnorderedKeyFixer<'_> {
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
                         end = None;
+                    }
+                    if let Some(l) = replaced_line {
+                        lines[i].raw_string = l;
                     }
                     start_index = i + 1;
                 }
