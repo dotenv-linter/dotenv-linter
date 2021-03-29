@@ -1,6 +1,6 @@
 use std::fmt;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crate::common::*;
 
@@ -43,7 +43,7 @@ impl FileEntry {
     }
 
     /// Checks a file name with the `.env` pattern
-    pub fn is_env_file(path: &PathBuf) -> bool {
+    pub fn is_env_file(path: &Path) -> bool {
         let pattern = ".env";
         Self::get_file_name(path)
             .filter(|file_name| !EXCLUDED_FILES.contains(file_name))
@@ -52,7 +52,7 @@ impl FileEntry {
             .is_some()
     }
 
-    fn get_file_name(path: &PathBuf) -> Option<&str> {
+    fn get_file_name(path: &Path) -> Option<&str> {
         path.file_name().and_then(|file_name| file_name.to_str())
     }
 }

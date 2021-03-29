@@ -2,7 +2,7 @@ use crate::common::*;
 use std::collections::BTreeMap;
 use std::collections::HashSet;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 mod checks;
 pub mod cli;
@@ -14,7 +14,7 @@ pub use checks::available_check_names;
 use common::CompareWarning;
 use std::rc::Rc;
 
-pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Box<dyn Error>> {
+pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<dyn Error>> {
     let lines_map = get_lines(args, current_dir);
     let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
 
@@ -47,7 +47,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<usize, Bo
     Ok(warnings_count)
 }
 
-pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn Error>> {
+pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Error>> {
     let mut warnings_count = 0;
     let lines_map = get_lines(args, current_dir);
     let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
@@ -94,7 +94,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &PathBuf) -> Result<(), Box<dyn
 // Compares if different environment files contains the same variables and returns warnings if not
 pub fn compare(
     args: &clap::ArgMatches,
-    current_dir: &PathBuf,
+    current_dir: &Path,
 ) -> Result<Vec<CompareWarning>, Box<dyn Error>> {
     let mut all_keys: HashSet<String> = HashSet::new();
     let lines_map = get_lines(args, current_dir);
@@ -152,7 +152,7 @@ pub fn compare(
     Ok(warnings)
 }
 
-fn get_lines(args: &clap::ArgMatches, current_dir: &PathBuf) -> BTreeMap<FileEntry, Vec<String>> {
+fn get_lines(args: &clap::ArgMatches, current_dir: &Path) -> BTreeMap<FileEntry, Vec<String>> {
     let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
 
     file_paths
