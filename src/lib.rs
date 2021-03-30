@@ -105,6 +105,7 @@ pub fn compare(
 
     // Nothing to check
     if lines_map.is_empty() {
+        output.print_nothing_to_compare();
         return Ok(warnings);
     }
 
