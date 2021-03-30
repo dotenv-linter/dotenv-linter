@@ -342,6 +342,177 @@ mod tests {
     }
 
     #[test]
+    fn key_order_substitution_variable_multiple_groups_test() {
+        let mut lines = get_lines(vec![
+            "KEY=VALUE",
+            "ABC=XYZ",
+            "FOO=$KEY",
+            "BOO=$FOO",
+            "XYZ=ABC",
+            "BAR=FOO",
+            "",
+            "M=1",
+            "N=2",
+            "A=$M",
+            "B=3",
+        ]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The ABC key should go before KEY key"),
+                (5, "The BAR key should go before BOO key"),
+                (9, "The A key should go before N key"),
+            ],
+        );
+
+        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "ABC=XYZ",
+                "KEY=VALUE",
+                "FOO=$KEY # Unordered, FOO uses KEY",
+                "BAR=FOO",
+                "BOO=$FOO",
+                "XYZ=ABC",
+                "",
+                "M=1",
+                "N=2",
+                "A=$M # Unordered, A uses M",
+                "B=3",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_multiple_substitution_variable_together_test() {
+        let mut lines = get_lines(vec!["FOO=1", "BAR=2", "A=$FOO$BAR", "B=3", "AA=4"]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The BAR key should go before FOO key"),
+                (4, "The AA key should go before B key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "BAR=2",
+                "FOO=1",
+                //TODO should next line say FOO instead of BAR?
+                "A=$FOO$BAR # Unordered, A uses BAR",
+                "AA=4",
+                "B=3",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_substitution_variable_in_different_group_test() {
+        let mut lines = get_lines(vec!["FOO=1", "BAR=2", "", "B=3", "A=$FOO"]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The BAR key should go before FOO key"),
+                (4, "The A key should go before B key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(&lines, vec!["BAR=2", "FOO=1", "", "A=$FOO", "B=3"]);
+    }
+
+    #[test]
+    fn key_order_many_substitution_variable_test() {
+        let mut lines = get_lines(vec!["Z=1", "Y=2", "X=$Y", "W=$Y", "V=4", "U=5", "T=$V"]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The Y key should go before Z key"),
+                (4, "The V key should go before W key"),
+                (5, "The U key should go before W key"),
+            ],
+        );
+
+        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "Y=2",
+                "Z=1",
+                "X=$Y # Unordered, X uses Y",
+                "U=5",
+                "V=4",
+                "W=$Y",
+                "T=$V # Unordered, T uses V",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_substitution_variable_big_test() {
+        let mut lines = get_lines(vec![
+            "FOO=1",
+            "BAZ=2",
+            "BAR=$BAZ",
+            "AAA=$FOO",
+            "AAC=3",
+            "AAB=$$AAC",
+            "",
+            "B=$AAA$BAZ",
+            "C=12",
+            "A=$B",
+            "AA=$AAA$B",
+            "",
+            "CCC=$B",
+            "CAB=$FOO",
+            "CAA=$CCC",
+        ]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The BAZ key should go before FOO key"),
+                (5, "The AAB key should go before AAC key"),
+                (12, "The CAB key should go before CCC key"),
+            ],
+        );
+
+        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "BAZ=2",
+                "FOO=1",
+                "BAR=$BAZ # Unordered, BAR uses BAZ",
+                "AAA=$FOO",
+                "AAB=$$AAC",
+                "AAC=3",
+                "",
+                "B=$AAA$BAZ",
+                "C=12",
+                "A=$B # Unordered, A uses B",
+                "AA=$AAA$B",
+                "",
+                "CAB=$FOO",
+                "CCC=$B",
+                "CAA=$CCC # Unordered, CAA uses CCC",
+            ],
+        );
+    }
+
+    #[test]
     fn all_file_control_comments_test() {
         let mut lines = get_lines(vec![
             "# dotenv-linter:off UnorderedKey",
