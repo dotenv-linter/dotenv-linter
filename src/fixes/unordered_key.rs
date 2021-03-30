@@ -136,7 +136,7 @@ mod tests {
 
     fn assert_lines(result: &[LineEntry], lines: Vec<&str>) {
         result
-            .into_iter()
+            .iter()
             .zip(lines)
             .for_each(|(result, line)| assert_eq!(line, result.raw_string.as_str()));
     }

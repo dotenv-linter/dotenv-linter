@@ -108,6 +108,16 @@ No problems found
 }
 
 #[test]
+fn no_files() {
+    let test_dir = TestDir::new();
+
+    let expected_output = r#"Nothing to check
+"#;
+
+    test_dir.test_command_success(expected_output);
+}
+
+#[test]
 fn quiet() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
@@ -124,6 +134,16 @@ fn quiet() {
 fn quiet_no_problems() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "ABC=DEF\nB=bbb\nF=BAR\n");
+
+    let args = &["--quiet"];
+    let expected_output = "";
+
+    test_dir.test_command_success_with_args(args, expected_output);
+}
+
+#[test]
+fn quiet_no_files() {
+    let test_dir = TestDir::new();
 
     let args = &["--quiet"];
     let expected_output = "";

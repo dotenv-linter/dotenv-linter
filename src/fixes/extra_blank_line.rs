@@ -56,7 +56,7 @@ mod tests {
         let mut warning =
             Warning::new(line3.clone(), "ExtraBlankLine", "Extra blank line detected");
         let warnings = vec![&mut warning];
-        let mut lines = vec![line1.clone(), line2.clone(), line3.clone(), line4.clone()];
+        let mut lines = vec![line1, line2, line3, line4];
         assert_eq!(Some(1), fixer.fix_warnings(warnings, &mut lines));
     }
 
@@ -74,13 +74,7 @@ mod tests {
         let mut warning2 =
             Warning::new(line4.clone(), "ExtraBlankLine", "Extra blank line detected");
         let warnings = vec![&mut warning1, &mut warning2];
-        let mut lines = vec![
-            line1.clone(),
-            line2.clone(),
-            line3.clone(),
-            line4.clone(),
-            line5.clone(),
-        ];
+        let mut lines = vec![line1, line2, line3, line4, line5];
         assert_eq!(Some(2), fixer.fix_warnings(warnings, &mut lines));
     }
 }
