@@ -81,12 +81,6 @@ impl Fix for UnorderedKeyFixer<'_> {
                     || has_substitution_variables
                 {
                     if has_substitution_variables {
-                        // lines[i].raw_string = format!(
-                        //     "{} # Unordered because {} uses {}",
-                        //     &line.raw_string,
-                        //     line.get_key()?,
-                        //     substitutions_in_group[0],
-                        // );
                         lines[i].raw_string =
                             Self::with_unordered_comment(&line, substitutions_in_group)?;
                     }
