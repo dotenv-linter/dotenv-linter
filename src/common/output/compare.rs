@@ -21,4 +21,11 @@ impl CompareOutput {
     pub fn print_warnings(&self, warnings: &[CompareWarning]) {
         warnings.iter().for_each(|w| println!("{}", w))
     }
+
+    /// Prints 'Nothing to compare' in the absence of '.env' files for compare
+    pub fn print_nothing_to_compare(&self) {
+        if !self.is_quiet_mode {
+            println!("Nothing to compare");
+        }
+    }
 }

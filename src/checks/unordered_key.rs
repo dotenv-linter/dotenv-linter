@@ -27,8 +27,13 @@ impl Default for UnorderedKeyChecker<'_> {
 
 impl Check for UnorderedKeyChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+        let has_substitution_in_group = line
+            .get_substitution_keys()
+            .iter()
+            .any(|k| self.keys.iter().any(|key| key == k));
+
         // Support of grouping variables through blank lines and control comments
-        if line.is_empty() || line.get_control_comment().is_some() {
+        if line.is_empty() || line.get_control_comment().is_some() || has_substitution_in_group {
             self.keys.clear();
             return None;
         }
@@ -199,6 +204,86 @@ mod tests {
             (line_entry(1, 3, "FOO=BAR"), None),
             (line_entry(2, 3, "# dotenv-linter:off LowercaseKey"), None),
             (line_entry(3, 3, "Bar=FOO"), None),
+        ];
+
+        run_unordered_tests(asserts);
+    }
+
+    #[test]
+    fn two_ordered_groups_with_two_substitution_keys_test() {
+        let asserts = vec![
+            (line_entry(1, 3, "ABC=XYZ"), None),
+            (line_entry(2, 3, "KEY=VALUE"), None),
+            (line_entry(3, 3, "FOO=$KEY # Unordered, FOO uses KEY"), None),
+            (line_entry(4, 3, "BAR=FOO"), None),
+            (line_entry(5, 3, "BOO=$FOO"), None),
+            (line_entry(6, 3, "XYZ=ABC"), None),
+        ];
+
+        run_unordered_tests(asserts);
+    }
+
+    #[test]
+    fn three_ordered_groups_with_two_unordered_substitution_keys_that_have_multiple_values_test() {
+        let asserts = vec![
+            (line_entry(1, 3, "BBB=XYZ"), None),
+            (line_entry(2, 3, "HHH=VAL"), None),
+            (line_entry(3, 3, "ZZZ=VALUE"), None),
+            (
+                line_entry(4, 3, "CCC=$NNN$HHH # Unordered, CCC uses HHH"),
+                None,
+            ),
+            (line_entry(5, 3, "BAR=FOOD"), None),
+            (line_entry(6, 3, "BIG=FOOT"), None),
+            (line_entry(7, 3, "WWW=$XYZ$TTT"), None),
+            (line_entry(8, 3, "YYY=FOO"), None),
+            (
+                line_entry(9, 3, "BOO=$BAR$BBB$ZZZ # Unordered, BOO uses BAR"),
+                None,
+            ),
+            (line_entry(10, 3, "TTT=BIG"), None),
+            (line_entry(11, 3, "XYZ=G"), None),
+        ];
+
+        run_unordered_tests(asserts);
+    }
+
+    #[test]
+    fn two_unordered_groups_before_and_after_unordered_substitution_keys_test() {
+        let asserts = vec![
+            (line_entry(1, 3, "HHH=VAL"), None),
+            (line_entry(2, 3, "ZZZ=VALUE"), None),
+            (
+                line_entry(3, 3, "BBB=$XYZ"),
+                Some(Warning::new(
+                    line_entry(3, 3, "BBB=$XYZ"),
+                    "UnorderedKey",
+                    "The BBB key should go before the HHH key",
+                )),
+            ),
+            (line_entry(4, 3, "CCC=$HHH # Unordered, CCC uses HHH"), None),
+            (line_entry(5, 3, "TTT=BIG"), None),
+            (line_entry(6, 3, "XYZ=G"), None),
+            (
+                line_entry(7, 3, "GGG=JJJ"),
+                Some(Warning::new(
+                    line_entry(7, 3, "GGG=JJJ"),
+                    "UnorderedKey",
+                    "The GGG key should go before the TTT key",
+                )),
+            ),
+            (
+                line_entry(8, 3, "AAA=$ZZZ"),
+                Some(Warning::new(
+                    line_entry(8, 3, "AAA=$ZZZ"),
+                    "UnorderedKey",
+                    "The AAA key should go before the GGG key",
+                )),
+            ),
+            (
+                line_entry(9, 3, "MMM=$GGG$ZZZ # Unordered, MMM uses GGG"),
+                None,
+            ),
         ];
 
         run_unordered_tests(asserts);
