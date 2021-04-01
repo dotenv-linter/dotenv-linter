@@ -47,7 +47,6 @@ impl Fix for UnorderedKeyFixer<'_> {
             let line = &lines[i];
 
             let mut is_control_comment = false;
-            let mut has_substitution_variable = false;
             let mut controls_this_check = false;
             let mut is_off = false;
 
@@ -58,41 +57,40 @@ impl Fix for UnorderedKeyFixer<'_> {
             }
 
             if !is_disabled {
-                if !line.is_empty_or_comment() {
+                // the substitution variables used by the current line present earlier in the
+                // current sort group
+                let substitutions_in_group: Vec<_> = line
+                    .get_substitution_keys()
+                    .into_iter()
+                    .filter(|key| {
+                        lines[start_index..i]
+                            .iter()
+                            .flat_map(|line| line.get_key())
+                            .any(|k| &k == key)
+                    })
+                    .collect();
+                let has_substitution_variables = !substitutions_in_group.is_empty();
+
+                if !line.is_empty_or_comment() && !has_substitution_variables {
                     end.replace(i + 1);
-                }
-
-                let subst_keys = line.get_substitution_keys();
-                let mut replaced_line = None;
-                for j in start_index..i {
-                    let key = match lines[j].get_key() {
-                        Some(k) => k,
-                        None => continue,
-                    };
-
-                    if subst_keys.iter().any(|k| k == &key) {
-                        replaced_line = Some(format!(
-                            "{} # Unordered, {} uses {}",
-                            &line.raw_string,
-                            &lines[i].get_key()?,
-                            &key
-                        ));
-                        has_substitution_variable = true;
-                        end.replace(i);
-                    }
                 }
 
                 if line.is_empty()
                     || line.is_last_line()
                     || is_control_comment
-                    || has_substitution_variable
+                    || has_substitution_variables
                 {
+                    if has_substitution_variables {
+                        lines[i].raw_string = format!(
+                            "{} # Unordered, {} uses {}",
+                            &line.raw_string,
+                            line.get_key()?,
+                            substitutions_in_group[0],
+                        );
+                    }
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
                         end = None;
-                    }
-                    if let Some(l) = replaced_line {
-                        lines[i].raw_string = l;
                     }
                     start_index = i + 1;
                 }
@@ -406,7 +404,7 @@ mod tests {
                 "BAR=2",
                 "FOO=1",
                 //TODO should next line say FOO instead of BAR?
-                "A=$FOO$BAR # Unordered, A uses BAR",
+                "A=$FOO$BAR # Unordered, A uses FOO",
                 "AA=4",
                 "B=3",
             ],
