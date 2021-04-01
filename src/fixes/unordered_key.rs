@@ -74,7 +74,7 @@ impl Fix for UnorderedKeyFixer<'_> {
                         replaced_line = Some(format!(
                             "{} # Unordered, {} uses {}",
                             &line.raw_string,
-                            &lines[i].get_key().unwrap(),
+                            &lines[i].get_key()?,
                             &key
                         ));
                         has_substitution_variable = true;
