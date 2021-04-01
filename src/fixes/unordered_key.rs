@@ -445,7 +445,7 @@ mod tests {
             "CCC=1",
             "DDD=1",
             "EEE=1",
-            "AAA=$EEE$CCC$BBB$DDD",
+            "AAA=$EEE$CCC$BBB$DDD$FFF",
         ]);
 
         let mut warnings = get_warnings(&lines, vec![]);
@@ -459,7 +459,7 @@ mod tests {
                 "CCC=1",
                 "DDD=1",
                 "EEE=1",
-                "AAA=$EEE$CCC$BBB$DDD # Unordered because AAA uses EEE, CCC, BBB, and DDD",
+                "AAA=$EEE$CCC$BBB$DDD$FFF # Unordered because AAA uses EEE, CCC, BBB, and DDD",
             ],
         );
     }
