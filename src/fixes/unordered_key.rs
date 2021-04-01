@@ -81,12 +81,14 @@ impl Fix for UnorderedKeyFixer<'_> {
                     || has_substitution_variables
                 {
                     if has_substitution_variables {
-                        lines[i].raw_string = format!(
-                            "{} # Unordered, {} uses {}",
-                            &line.raw_string,
-                            line.get_key()?,
-                            substitutions_in_group[0],
-                        );
+                        // lines[i].raw_string = format!(
+                        //     "{} # Unordered because {} uses {}",
+                        //     &line.raw_string,
+                        //     line.get_key()?,
+                        //     substitutions_in_group[0],
+                        // );
+                        lines[i].raw_string =
+                            Self::with_unordered_comment(&line, substitutions_in_group)?;
                     }
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
@@ -128,6 +130,32 @@ impl UnorderedKeyFixer<'_> {
         let sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
 
         part.clone_from_slice(sorted_lines.as_slice());
+    }
+
+    fn with_unordered_comment(line: &LineEntry, used_keys: Vec<&str>) -> Option<String> {
+        Some(match used_keys.len() {
+            0 => line.raw_string.clone(),
+            1 => format!(
+                "{} # Unordered because {} uses {}",
+                line.raw_string,
+                line.get_key()?,
+                used_keys[0],
+            ),
+            2 => format!(
+                "{} # Unordered because {} uses {} and {}",
+                line.raw_string,
+                line.get_key()?,
+                used_keys[0],
+                used_keys[1],
+            ),
+            _ => format!(
+                "{} # Unordered because {} uses {}, and {}",
+                line.raw_string,
+                line.get_key()?,
+                used_keys[0..used_keys.len() - 1].join(", "),
+                used_keys[used_keys.len() - 1],
+            ),
+        })
     }
 }
 
@@ -331,7 +359,7 @@ mod tests {
             vec![
                 "ABC=XYZ",
                 "KEY=VALUE",
-                "FOO=$KEY # Unordered, FOO uses KEY",
+                "FOO=$KEY # Unordered because FOO uses KEY",
                 "BAR=FOO",
                 "BOO=$FOO",
                 "XYZ=ABC",
@@ -371,14 +399,14 @@ mod tests {
             vec![
                 "ABC=XYZ",
                 "KEY=VALUE",
-                "FOO=$KEY # Unordered, FOO uses KEY",
+                "FOO=$KEY # Unordered because FOO uses KEY",
                 "BAR=FOO",
                 "BOO=$FOO",
                 "XYZ=ABC",
                 "",
                 "M=1",
                 "N=2",
-                "A=$M # Unordered, A uses M",
+                "A=$M # Unordered because A uses M",
                 "B=3",
             ],
         );
@@ -403,10 +431,35 @@ mod tests {
             vec![
                 "BAR=2",
                 "FOO=1",
-                //TODO should next line say FOO instead of BAR?
-                "A=$FOO$BAR # Unordered, A uses FOO",
+                "A=$FOO$BAR # Unordered because A uses FOO and BAR",
                 "AA=4",
                 "B=3",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_four_substitution_variable_together_test() {
+        let mut lines = get_lines(vec![
+            "BBB=1",
+            "CCC=1",
+            "DDD=1",
+            "EEE=1",
+            "AAA=$EEE$CCC$BBB$DDD",
+        ]);
+
+        let mut warnings = get_warnings(&lines, vec![]);
+
+        assert_eq!(Some(0), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "BBB=1",
+                "CCC=1",
+                "DDD=1",
+                "EEE=1",
+                "AAA=$EEE$CCC$BBB$DDD # Unordered because AAA uses EEE, CCC, BBB, and DDD",
             ],
         );
     }
@@ -448,11 +501,11 @@ mod tests {
             vec![
                 "Y=2",
                 "Z=1",
-                "X=$Y # Unordered, X uses Y",
+                "X=$Y # Unordered because X uses Y",
                 "U=5",
                 "V=4",
                 "W=$Y",
-                "T=$V # Unordered, T uses V",
+                "T=$V # Unordered because T uses V",
             ],
         );
     }
@@ -493,19 +546,19 @@ mod tests {
             vec![
                 "BAZ=2",
                 "FOO=1",
-                "BAR=$BAZ # Unordered, BAR uses BAZ",
+                "BAR=$BAZ # Unordered because BAR uses BAZ",
                 "AAA=$FOO",
                 "AAB=\\$AAC",
                 "AAC=3",
                 "",
                 "B=$AAA$BAZ",
                 "C=12",
-                "A=$B # Unordered, A uses B",
+                "A=$B # Unordered because A uses B",
                 "AA=$AAA$B",
                 "",
                 "CAB=$FOO",
                 "CCC=$B",
-                "CAA=$CCC # Unordered, CAA uses CCC",
+                "CAA=$CCC # Unordered because CAA uses CCC",
             ],
         );
     }
