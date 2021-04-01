@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Don't fix key order for substitution variables [#406](https://github.com/dotenv-linter/dotenv-linter/pull/406) ([@stygian-coffee](https://github.com/stygian-coffee))
 - Replace `String` with `Into<String>` in `LineEntry::new`  [#404](https://github.com/dotenv-linter/dotenv-linter/pull/404) ([@miDeb](https://github.com/miDeb))
 - Replace String on Into<String> for all TestDir methods [#397](https://github.com/dotenv-linter/dotenv-linter/pull/397) ([@ebobrow](https://github.com/ebobrow))
 - Use Rc<FileEntry> internally to reduce memory consumption [#393](https://github.com/dotenv-linter/dotenv-linter/pull/393) ([@Tom01098](https://github.com/Tom01098))
