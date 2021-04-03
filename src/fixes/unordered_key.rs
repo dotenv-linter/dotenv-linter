@@ -81,8 +81,12 @@ impl Fix for UnorderedKeyFixer<'_> {
                     || has_substitution_variables
                 {
                     if has_substitution_variables {
-                        lines[i].raw_string =
-                            Self::with_unordered_comment(&line, substitutions_in_group)?;
+                        lines[i].raw_string = format!(
+                            "{} # Unordered because {} uses {}",
+                            line.raw_string,
+                            line.get_key()?,
+                            substitutions_in_group.join(", "),
+                        );
                     }
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
@@ -124,32 +128,6 @@ impl UnorderedKeyFixer<'_> {
         let sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
 
         part.clone_from_slice(sorted_lines.as_slice());
-    }
-
-    fn with_unordered_comment(line: &LineEntry, used_keys: Vec<&str>) -> Option<String> {
-        Some(match used_keys.len() {
-            0 => line.raw_string.clone(),
-            1 => format!(
-                "{} # Unordered because {} uses {}",
-                line.raw_string,
-                line.get_key()?,
-                used_keys[0],
-            ),
-            2 => format!(
-                "{} # Unordered because {} uses {} and {}",
-                line.raw_string,
-                line.get_key()?,
-                used_keys[0],
-                used_keys[1],
-            ),
-            _ => format!(
-                "{} # Unordered because {} uses {}, and {}",
-                line.raw_string,
-                line.get_key()?,
-                used_keys[0..used_keys.len() - 1].join(", "),
-                used_keys[used_keys.len() - 1],
-            ),
-        })
     }
 }
 
@@ -424,7 +402,7 @@ mod tests {
             vec![
                 "BAR=2",
                 "FOO=1",
-                "A=$FOO$BAR # Unordered because A uses FOO and BAR",
+                "A=$FOO$BAR # Unordered because A uses FOO, BAR",
                 "AA=4",
                 "B=3",
             ],
@@ -452,7 +430,7 @@ mod tests {
                 "CCC=1",
                 "DDD=1",
                 "EEE=1",
-                "AAA=$EEE$CCC$BBB$DDD$FFF # Unordered because AAA uses EEE, CCC, BBB, and DDD",
+                "AAA=$EEE$CCC$BBB$DDD$FFF # Unordered because AAA uses EEE, CCC, BBB, DDD",
             ],
         );
     }
