@@ -382,11 +382,10 @@ mod tests {
             vec![
                 (1, "The ABC key should go before KEY key"),
                 (5, "The BAR key should go before BOO key"),
-                (9, "The A key should go before N key"),
             ],
         );
 
-        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
 
         assert_lines(
             &lines,
