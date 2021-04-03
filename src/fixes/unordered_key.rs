@@ -57,11 +57,37 @@ impl Fix for UnorderedKeyFixer<'_> {
             }
 
             if !is_disabled {
-                if !line.is_empty_or_comment() {
+                // the substitution variables used by the current line present earlier in the
+                // current sort group
+                let substitutions_in_group: Vec<_> = line
+                    .get_substitution_keys()
+                    .into_iter()
+                    .filter(|key| {
+                        lines[start_index..i]
+                            .iter()
+                            .flat_map(|line| line.get_key())
+                            .any(|k| &k == key)
+                    })
+                    .collect();
+                let has_substitution_variables = !substitutions_in_group.is_empty();
+
+                if !line.is_empty_or_comment() && !has_substitution_variables {
                     end.replace(i + 1);
                 }
 
-                if line.is_empty() || line.is_last_line() || is_control_comment {
+                if line.is_empty()
+                    || line.is_last_line()
+                    || is_control_comment
+                    || has_substitution_variables
+                {
+                    if has_substitution_variables {
+                        lines[i].raw_string = format!(
+                            "{} # Unordered because {} uses {}",
+                            line.raw_string,
+                            line.get_key()?,
+                            substitutions_in_group.join(", "),
+                        );
+                    }
                     if let Some(end_index) = end {
                         Self::sort_part(&mut lines[start_index..end_index]);
                         end = None;
@@ -277,6 +303,235 @@ mod tests {
         assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
 
         assert_lines(&lines, vec!["A=B", "B=C", "D=E"]);
+    }
+
+    #[test]
+    fn key_order_substitution_variable_test() {
+        let mut lines = get_lines(vec![
+            "KEY=VALUE",
+            "ABC=XYZ",
+            "FOO=$KEY",
+            "BOO=$FOO",
+            "XYZ=ABC",
+            "BAR=FOO",
+        ]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The ABC key should go before KEY key"),
+                (5, "The BAR key should go before BOO key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "ABC=XYZ",
+                "KEY=VALUE",
+                "FOO=$KEY # Unordered because FOO uses KEY",
+                "BAR=FOO",
+                "BOO=$FOO",
+                "XYZ=ABC",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_substitution_variable_multiple_groups_test() {
+        let mut lines = get_lines(vec![
+            "KEY=VALUE",
+            "ABC=XYZ",
+            "FOO=$KEY",
+            "BOO=$FOO",
+            "XYZ=ABC",
+            "BAR=FOO",
+            "",
+            "M=1",
+            "N=2",
+            "A=$M",
+            "B=3",
+        ]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The ABC key should go before KEY key"),
+                (5, "The BAR key should go before BOO key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "ABC=XYZ",
+                "KEY=VALUE",
+                "FOO=$KEY # Unordered because FOO uses KEY",
+                "BAR=FOO",
+                "BOO=$FOO",
+                "XYZ=ABC",
+                "",
+                "M=1",
+                "N=2",
+                "A=$M # Unordered because A uses M",
+                "B=3",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_multiple_substitution_variable_together_test() {
+        let mut lines = get_lines(vec!["FOO=1", "BAR=2", "A=$FOO$BAR", "B=3", "AA=4"]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The BAR key should go before FOO key"),
+                (4, "The AA key should go before B key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "BAR=2",
+                "FOO=1",
+                "A=$FOO$BAR # Unordered because A uses FOO, BAR",
+                "AA=4",
+                "B=3",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_four_substitution_variable_together_test() {
+        let mut lines = get_lines(vec![
+            "BBB=1",
+            "CCC=1",
+            "DDD=1",
+            "EEE=1",
+            "AAA=$EEE$CCC$BBB$DDD$FFF",
+        ]);
+
+        let mut warnings = get_warnings(&lines, vec![]);
+
+        assert_eq!(Some(0), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "BBB=1",
+                "CCC=1",
+                "DDD=1",
+                "EEE=1",
+                "AAA=$EEE$CCC$BBB$DDD$FFF # Unordered because AAA uses EEE, CCC, BBB, DDD",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_substitution_variable_in_different_group_test() {
+        let mut lines = get_lines(vec!["FOO=1", "BAR=2", "", "B=3", "A=$FOO"]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The BAR key should go before FOO key"),
+                (4, "The A key should go before B key"),
+            ],
+        );
+
+        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(&lines, vec!["BAR=2", "FOO=1", "", "A=$FOO", "B=3"]);
+    }
+
+    #[test]
+    fn key_order_many_substitution_variable_test() {
+        let mut lines = get_lines(vec!["Z=1", "Y=2", "X=$Y", "W=$Y", "V=4", "U=5", "T=$V"]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The Y key should go before Z key"),
+                (4, "The V key should go before W key"),
+                (5, "The U key should go before W key"),
+            ],
+        );
+
+        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "Y=2",
+                "Z=1",
+                "X=$Y # Unordered because X uses Y",
+                "U=5",
+                "V=4",
+                "W=$Y",
+                "T=$V # Unordered because T uses V",
+            ],
+        );
+    }
+
+    #[test]
+    fn key_order_substitution_variable_big_test() {
+        let mut lines = get_lines(vec![
+            "FOO=1",
+            "BAZ=2",
+            "BAR=$BAZ",
+            "AAA=$FOO",
+            "AAC=3",
+            "AAB=\\$AAC",
+            "",
+            "B=$AAA$BAZ",
+            "C=12",
+            "A=$B",
+            "AA=$AAA$B",
+            "",
+            "CCC=$B",
+            "CAB=$FOO",
+            "CAA=$CCC",
+        ]);
+
+        let mut warnings = get_warnings(
+            &lines,
+            vec![
+                (1, "The BAZ key should go before FOO key"),
+                (5, "The AAB key should go before AAC key"),
+                (12, "The CAB key should go before CCC key"),
+            ],
+        );
+
+        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "BAZ=2",
+                "FOO=1",
+                "BAR=$BAZ # Unordered because BAR uses BAZ",
+                "AAA=$FOO",
+                "AAB=\\$AAC",
+                "AAC=3",
+                "",
+                "B=$AAA$BAZ",
+                "C=12",
+                "A=$B # Unordered because A uses B",
+                "AA=$AAA$B",
+                "",
+                "CAB=$FOO",
+                "CCC=$B",
+                "CAA=$CCC # Unordered because CAA uses CCC",
+            ],
+        );
     }
 
     #[test]
