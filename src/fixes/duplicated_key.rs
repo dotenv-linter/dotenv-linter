@@ -54,6 +54,10 @@ impl Fix for DuplicatedKeyFixer<'_> {
 
         Some(())
     }
+
+    fn is_mandatory(&self) -> bool {
+        true
+    }
 }
 
 #[cfg(test)]

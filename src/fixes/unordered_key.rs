@@ -104,6 +104,10 @@ impl Fix for UnorderedKeyFixer<'_> {
 
         Some(warnings.len())
     }
+
+    fn is_mandatory(&self) -> bool {
+        true
+    }
 }
 
 impl UnorderedKeyFixer<'_> {

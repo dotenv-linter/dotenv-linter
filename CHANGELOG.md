@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add benchmark for the check function [#376](https://github.com/dotenv-linter/dotenv-linter/pull/376) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Refactor hard-coded mandatory fixer [#413](https://github.com/dotenv-linter/dotenv-linter/pull/413) ([@akhtariev](https://github.com/akhtariev))
 - Don't fix key order for substitution variables [#406](https://github.com/dotenv-linter/dotenv-linter/pull/406) ([@stygian-coffee](https://github.com/stygian-coffee))
 - Allow unordered keys for substitution variables [#401](https://github.com/dotenv-linter/dotenv-linter/pull/401) ([@Ru5ty0ne](https://github.com/Ru5ty0ne))
 - Replace `String` with `Into<String>` in `LineEntry::new`  [#404](https://github.com/dotenv-linter/dotenv-linter/pull/404) ([@miDeb](https://github.com/miDeb))

@@ -34,6 +34,10 @@ trait Fix {
     fn fix_line(&mut self, _line: &mut LineEntry) -> Option<()> {
         None
     }
+
+    fn is_mandatory(&self) -> bool {
+        false
+    }
 }
 
 // Fix order matters
@@ -74,7 +78,7 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[
             .collect();
 
         // Some fixers are mandatory because previous fixers can spawn warnings for them
-        if ["DuplicatedKey", "UnorderedKey"].contains(&fixer.name()) || !fixer_warnings.is_empty() {
+        if fixer.is_mandatory() || !fixer_warnings.is_empty() {
             match fixer.fix_warnings(fixer_warnings, lines) {
                 Some(fixer_count) => count += fixer_count,
                 None => {
