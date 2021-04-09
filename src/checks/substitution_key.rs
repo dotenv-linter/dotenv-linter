@@ -22,11 +22,15 @@ impl Check for SubstitutionKeyChecker<'_> {
             _ => return None,
         };
 
+        let is_escaped =
+            |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
+
         // Checks if keys used in value have both '{' '}' or neither
         while let Some(index) = value.find('$') {
+            let prefix = &value[..index];
             let raw_key = &value[index + 1..];
 
-            if raw_key.contains('{') ^ raw_key.contains('}') {
+            if !is_escaped(prefix) && raw_key.contains('{') ^ raw_key.contains('}') {
                 return Some(Warning::new(
                     line.clone(),
                     self.name,
@@ -34,7 +38,7 @@ impl Check for SubstitutionKeyChecker<'_> {
                 ));
             }
 
-            value = raw_key;
+            value = &raw_key;
         }
         None
     }
@@ -69,7 +73,7 @@ mod tests {
         let asserts = vec![
             (line_entry(1, 3, "ABC=$BAR"), None),
             (line_entry(2, 3, "FOO=${BAR}"), None),
-            (line_entry(3, 3, "FOO=$BAR"), None),
+            (line_entry(3, 3, "FOO=\"$BAR\""), None),
         ];
 
         run_substitution_tests(asserts);
@@ -94,6 +98,18 @@ mod tests {
                     "The FOO key isn't properly assigned",
                 )),
             ),
+        ];
+
+        run_substitution_tests(asserts);
+    }
+
+    #[test]
+    fn escaped_incorrect_substitution_key_test() {
+        let asserts = vec![
+            (line_entry(1, 4, "ABC=\\${BAR"), None),
+            (line_entry(2, 4, "FOO=\\$BAR}"), None),
+            (line_entry(3, 4, "FOO=\"\\${BAR\""), None),
+            (line_entry(4, 4, "FOO=\"\\$BAR}"), None),
         ];
 
         run_substitution_tests(asserts);
