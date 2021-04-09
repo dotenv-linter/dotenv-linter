@@ -71,7 +71,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
         let expected_fixes = result.len();
         let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks);
         if fixes_done < expected_fixes {
-            print!("Could not fix all warnings!");
+            output.print_not_all_warnings_fixes();
         }
         // run fixers & write results to file
         if !result.is_empty() && fixes_done > 0 {

@@ -63,4 +63,13 @@ impl FixOutput {
 
         println!("Nothing to fix");
     }
+
+    /// Prints not all warnings fixed message
+    pub fn print_not_all_warnings_fixes(&self) {
+        if self.is_quiet_mode {
+            return;
+        }
+
+        println!("Could not fix all warnings!");
+    }
 }
