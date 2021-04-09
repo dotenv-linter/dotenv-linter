@@ -70,10 +70,11 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
         let mut result = checks::run(&lines, &skip_checks);
         let expected_fixes = result.len();
         let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks);
+        // Compare amount of fixes done to amount of expected fixes. Print warning if they differ.
         if fixes_done < expected_fixes {
             output.print_not_all_warnings_fixes();
         }
-        // run fixers & write results to file
+        // write results to file
         if !result.is_empty() && fixes_done > 0 {
             let should_backup = !args.is_present("no-backup");
             // create backup copy unless user specifies not to
