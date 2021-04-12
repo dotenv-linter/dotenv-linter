@@ -34,9 +34,9 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(quote_character::QuoteCharacterChecker::default()),
         Box::new(space_character::SpaceCharacterChecker::default()),
+        Box::new(substitution_key::SubstitutionKeyChecker::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceChecker::default()),
         Box::new(unordered_key::UnorderedKeyChecker::default()),
-        Box::new(substitution_key::SubstitutionKeyChecker::default()),
     ]
 }
 

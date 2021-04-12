@@ -10,7 +10,7 @@ impl Default for SubstitutionKeyChecker<'_> {
     fn default() -> Self {
         Self {
             name: "SubstitutionKey",
-            template: "The {} key isn't properly assigned",
+            template: "The {} key is not assigned properly",
         }
     }
 }
@@ -87,7 +87,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(1, 2, "ABC=${BAR"),
                     "SubstitutionKey",
-                    "The ABC key isn't properly assigned",
+                    "The ABC key is not assigned properly",
                 )),
             ),
             (
@@ -95,7 +95,7 @@ mod tests {
                 Some(Warning::new(
                     line_entry(2, 2, "FOO=$BAR}"),
                     "SubstitutionKey",
-                    "The FOO key isn't properly assigned",
+                    "The FOO key is not assigned properly",
                 )),
             ),
         ];
