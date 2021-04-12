@@ -26,6 +26,34 @@ pub(crate) mod tests {
     use std::path::PathBuf;
     use std::rc::Rc;
 
+    #[macro_export]
+    macro_rules! check_tester {
+        (@token $t:tt $sub:expr) => {$sub};
+        (@count $($t:tt)*) => {<[()]>::len(&[$(check_tester!(@token $t ())),*])};
+        ($checker:ident;
+            $(
+                $test:ident => {$(
+                    $input:expr => $expected:expr,
+                )*}
+            ),* $(,)?) => {
+            $(
+                #[test]
+                fn $test() {
+                    let mut checker = $checker::default();
+                    let total = check_tester!(@count $($expected)*);
+                    let mut _line_number = 1;
+                    $(
+                        let line = line_entry(_line_number, total, $input);
+                        _line_number += 1;
+                        let result = checker.run(&line);
+                        let expected = ($expected).map(|e: &str| Warning::new(line, checker.name(), e));
+                        assert_eq!(expected, result);
+                    )*
+                }
+            )*
+        };
+    }
+
     #[allow(dead_code)]
     pub fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
         LineEntry::new(

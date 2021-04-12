@@ -42,38 +42,22 @@ impl Check for KeyWithoutValueChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::{check_tester, common::tests::*};
 
-    #[test]
-    fn working_run_with_value() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "FOO=BAR");
-        assert_eq!(None, checker.run(&line));
+    check_tester!{
+        KeyWithoutValueChecker;
+        working_run_with_value => {
+            "FOO=BAR" => None,
+        },
+        working_run_with_blank_line => {
+            "" => None,
+        },
+        working_run_without_value => {
+            "FOO=" => None,
+        },
+        failing_run => {
+            "FOO" => Some("The FOO key should be with a value or have an equal sign"),
+        }
     }
 
-    #[test]
-    fn working_run_with_blank_line() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "");
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn working_run_without_value() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "FOO=");
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn failing_run() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "FOO");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "KeyWithoutValue",
-            "The FOO key should be with a value or have an equal sign",
-        ));
-        assert_eq!(expected, checker.run(&line));
-    }
 }

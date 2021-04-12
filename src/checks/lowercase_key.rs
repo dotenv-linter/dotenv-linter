@@ -39,43 +39,21 @@ impl LowercaseKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::{check_tester, common::tests::*};
 
-    #[test]
-    fn working_run() {
-        let mut checker = LowercaseKeyChecker::default();
-        let line = line_entry(1, 1, "FOO=BAR");
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn working_with_export_run() {
-        let mut checker = LowercaseKeyChecker::default();
-        let line = line_entry(1, 1, "export FOO=BAR");
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn failing_run_with_lowercase_key() {
-        let mut checker = LowercaseKeyChecker::default();
-        let line = line_entry(1, 1, "foo_bar=FOOBAR");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "LowercaseKey",
-            "The foo_bar key should be in uppercase",
-        ));
-        assert_eq!(expected, checker.run(&line));
-    }
-
-    #[test]
-    fn failing_run_with_lowercase_letter() {
-        let mut checker = LowercaseKeyChecker::default();
-        let line = line_entry(1, 1, "FOo_BAR=FOOBAR");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "LowercaseKey",
-            "The FOo_BAR key should be in uppercase",
-        ));
-        assert_eq!(expected, checker.run(&line));
+    check_tester!{
+        LowercaseKeyChecker;
+        working_run => {
+            "FOO=BAR" => None,
+        },
+        working_with_export_run => {
+            "export FOO=BAR" => None,
+        },
+        failing_run_with_lowercase_key => {
+            "foo_bar=FOOBAR" => Some("The foo_bar key should be in uppercase"),
+        },
+        failing_run_with_lowercase_letter => {
+            "FOo_BAR=FOOBAR" => Some("The FOo_BAR key should be in uppercase"),
+        }
     }
 }

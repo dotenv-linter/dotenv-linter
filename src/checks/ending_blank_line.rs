@@ -42,33 +42,18 @@ impl Check for EndingBlankLineChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::{check_tester, common::tests::*};
 
-    #[test]
-    fn blank_line() {
-        let mut checker = EndingBlankLineChecker::default();
-        let line = line_entry(1, 1, "\n");
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn blank_line_rn() {
-        let mut checker = EndingBlankLineChecker::default();
-        let line = line_entry(1, 1, "\r\n");
-
-        assert_eq!(None, checker.run(&line));
-    }
-
-    #[test]
-    fn no_blank_line() {
-        let mut checker = EndingBlankLineChecker::default();
-        let line = line_entry(1, 1, "a");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "EndingBlankLine",
-            "No blank line at the end of the file",
-        ));
-
-        assert_eq!(expected, checker.run(&line));
+    check_tester!{
+        EndingBlankLineChecker;
+        blank_line => {
+            "\n" => None,
+        },
+        blank_line_rn => {
+            "\r\n" => None,
+        },
+        no_blank_line => {
+            "a" => Some("No blank line at the end of the file"),
+        }
     }
 }
