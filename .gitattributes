@@ -1,2 +1,4 @@
 *.rs diff=rust
 *.md diff=markdown
+*.env text eol=lf
+*.env.golden text eol=lf
