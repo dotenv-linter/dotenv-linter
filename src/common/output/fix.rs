@@ -66,7 +66,7 @@ impl FixOutput {
     }
 
     /// Prints not all warnings fixed message
-    pub fn print_not_all_warnings_fixes(&self) {
+    pub fn print_not_all_warnings_fixed(&self) {
         if self.is_quiet_mode {
             return;
         }
