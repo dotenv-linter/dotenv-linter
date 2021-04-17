@@ -21,10 +21,7 @@ fn correct_files() {
 
 #[test]
 fn incorrect_files() {
-    let contents = vec![
-        "A=B\nF=BAR\nFOO=BAR\nFOO=BAZ\n",
-        "A=BAR\nA=Foo\n",
-    ];
+    let contents = vec!["A=B\nF=BAR\nFOO=BAR\nFOO=BAZ\n", "A=BAR\nA=Foo\n"];
     let duplicated_variables_name = vec!["FOO", "A"];
     let duplicated_variables_line = vec![4, 2];
 
@@ -36,10 +33,9 @@ fn incorrect_files() {
             ".env",
             &[format!(
                 ".env:{} DuplicatedKey: The {} key is duplicated",
-                duplicated_variables_line[i],
-                duplicated_variables_name[i],
+                duplicated_variables_line[i], duplicated_variables_name[i],
             )
-                .as_str()],
+            .as_str()],
         )]);
 
         testdir.test_command_fail_with_args(args, expected_output);
