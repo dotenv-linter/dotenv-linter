@@ -104,6 +104,41 @@ mod tests {
     }
 
     #[test]
+    fn multiple_substitution_key_test() {
+        let asserts = vec![
+            (line_entry(1, 3, "ABC=${BAR}$XYZ"), None),
+            (line_entry(2, 3, "FOO=$ABC${BAR}"), None),
+            (line_entry(3, 3, "BIZ=$FOO-$ABC"), None),
+        ];
+
+        run_substitution_tests(asserts);
+    }
+
+    #[test]
+    fn incorrect_multiple_substitution_key_test() {
+        let asserts = vec![
+            (
+                line_entry(1, 2, "ABC=${BAR$XYZ}"),
+                Some(Warning::new(
+                    line_entry(1, 2, "ABC=${BAR$XYZ}"),
+                    "SubstitutionKey",
+                    "The ABC key is not assigned properly",
+                )),
+            ),
+            (
+                line_entry(2, 2, "FOO=${ABC-$BAR}"),
+                Some(Warning::new(
+                    line_entry(2, 2, "FOO=${ABC-$BAR}"),
+                    "SubstitutionKey",
+                    "The FOO key is not assigned properly",
+                )),
+            ),
+        ];
+
+        run_substitution_tests(asserts);
+    }
+
+    #[test]
     fn escaped_incorrect_substitution_key_test() {
         let asserts = vec![
             (line_entry(1, 4, "ABC=\\${BAR"), None),
