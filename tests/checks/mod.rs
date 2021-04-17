@@ -7,3 +7,4 @@ mod leading_character;
 mod lowercase_key;
 mod quote_character;
 mod space_character;
+mod trailing_whitespace;
