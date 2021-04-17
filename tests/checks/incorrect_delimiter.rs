@@ -22,8 +22,7 @@ fn correct_files() {
 #[test]
 fn incorrect_files() {
     let contents = vec!["FOO=TEST\nFOO-BAR=BAZ\n", "A=B\nFOO-*-BAR=BAZ\n"];
-    let expected_line_numbers = vec![2, 2];
-    let expected_variable_names = vec!["FOO-BAR", "FOO-*-BAR"];
+    let expected = vec![(2, "FOO-BAR"), (2, "FOO-*-BAR")];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();
@@ -33,7 +32,7 @@ fn incorrect_files() {
             ".env",
             &[format!(
                 ".env:{} IncorrectDelimiter: The {} key has incorrect delimiter",
-                expected_line_numbers[i], expected_variable_names[i],
+                expected[i].0, expected[i].1,
             )
             .as_str()],
         )]);

@@ -22,8 +22,7 @@ fn correct_files() {
 #[test]
 fn incorrect_files() {
     let contents = vec!["FOO=TEST\nbar=hello\n", "BAR_FoO=hello\nFOO=TEST\n"];
-    let expected_line_numbers = vec![2, 1];
-    let expected_variable_names = vec!["bar", "BAR_FoO"];
+    let expected = vec![(2, "bar"), (1, "BAR_FoO")];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();
@@ -33,7 +32,7 @@ fn incorrect_files() {
             ".env",
             &[format!(
                 ".env:{} LowercaseKey: The {} key should be in uppercase",
-                expected_line_numbers[i], expected_variable_names[i],
+                expected[i].0, expected[i].1,
             )
             .as_str()],
         )]);
