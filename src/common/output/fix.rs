@@ -1,4 +1,5 @@
 use crate::common::{FileEntry, Warning};
+use colored::*;
 use std::ffi::OsString;
 
 /// Prefix for the backup output
@@ -62,5 +63,14 @@ impl FixOutput {
         }
 
         println!("Nothing to fix");
+    }
+
+    /// Prints not all warnings fixed message
+    pub fn print_not_all_warnings_fixed(&self) {
+        if self.is_quiet_mode {
+            return;
+        }
+
+        println!("{}", "Could not fix all warnings".red().bold());
     }
 }
