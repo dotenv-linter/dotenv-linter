@@ -22,8 +22,8 @@ fn correct_files() {
 #[test]
 fn incorrect_files() {
     let contents = vec!["A=B\nF=BAR\nFOO=BAR\nFOO=BAZ\n", "A=BAR\nA=Foo\n"];
-    let duplicated_variables_name = vec!["FOO", "A"];
-    let duplicated_variables_line = vec![4, 2];
+    let expected_line_numbers = vec![4, 2];
+    let expected_variable_names = vec!["FOO", "A"];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();
@@ -33,7 +33,7 @@ fn incorrect_files() {
             ".env",
             &[format!(
                 ".env:{} DuplicatedKey: The {} key is duplicated",
-                duplicated_variables_line[i], duplicated_variables_name[i],
+                expected_line_numbers[i], expected_variable_names[i],
             )
             .as_str()],
         )]);
