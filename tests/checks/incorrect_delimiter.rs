@@ -41,3 +41,21 @@ fn incorrect_files() {
         testdir.test_command_fail_with_args(args, expected_output);
     }
 }
+
+#[test]
+fn many_incorrect_variables() {
+    let content = "A=B\nBAZ*-KEY=test\nFOO-BAR=BAZ\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &[testfile.as_str()];
+    let expected_output = check_output(&[(
+        ".env",
+        &[
+            ".env:2 IncorrectDelimiter: The BAZ*-KEY key has incorrect delimiter",
+            ".env:3 IncorrectDelimiter: The FOO-BAR key has incorrect delimiter",
+        ],
+    )]);
+
+    testdir.test_command_fail_with_args(args, expected_output);
+}

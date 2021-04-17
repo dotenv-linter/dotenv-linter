@@ -45,3 +45,21 @@ fn incorrect_files() {
         testdir.test_command_fail_with_args(args, expected_output);
     }
 }
+
+#[test]
+fn many_incorrect_variables() {
+    let content = ".BAR=TEST\n\tA=B\nFOO=BAZ\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &[testfile.as_str()];
+    let expected_output = check_output(&[(
+        ".env",
+        &[
+            ".env:1 LeadingCharacter: Invalid leading character detected",
+            ".env:2 LeadingCharacter: Invalid leading character detected",
+        ],
+    )]);
+
+    testdir.test_command_fail_with_args(args, expected_output);
+}

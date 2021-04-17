@@ -41,3 +41,21 @@ fn incorrect_files() {
         testdir.test_command_fail_with_args(args, expected_output);
     }
 }
+
+#[test]
+fn many_incorrect_variables() {
+    let content = "FOO=TEST\nFoo_BAZ=BAR\nbar=TEST\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &[testfile.as_str()];
+    let expected_output = check_output(&[(
+        ".env",
+        &[
+            ".env:2 LowercaseKey: The Foo_BAZ key should be in uppercase",
+            ".env:3 LowercaseKey: The bar key should be in uppercase",
+        ],
+    )]);
+
+    testdir.test_command_fail_with_args(args, expected_output);
+}
