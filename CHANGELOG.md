@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `Result` from the return type [#374](https://github.com/dotenv-linter/dotenv-linter/pull/374) ([@DDtKey](https://github.com/DDtKey))
 - Add `.bak` extension to backup files and don't lint backup files [#367](https://github.com/dotenv-linter/dotenv-linter/pull/367) ([@mstruebing](https://github.com/mstruebing))
 - Add `.env` explanation [#363](https://github.com/dotenv-linter/dotenv-linter/pull/363) ([@henryboisdequin](https://github.com/henryboisdequin))
-- Contempate variables containing $ character [#418](https://github.com/dotenv-linter/dotenv-linter/pull/418) ([@JuanMarchetto](https://github.com/JuanMarchetto))
+- Contemplate variables containing $ character [#418](https://github.com/dotenv-linter/dotenv-linter/pull/418) ([@JuanMarchetto](https://github.com/JuanMarchetto))
 
 
 ## [v3.0.0] - 2021-01-11
