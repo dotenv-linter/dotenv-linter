@@ -98,19 +98,27 @@ mod tests {
     fn incorrect_substitution_key_test() {
         let asserts = vec![
             (
-                line_entry(1, 2, "ABC=${BAR"),
+                line_entry(1, 3, "ABC=${BAR"),
                 Some(Warning::new(
-                    line_entry(1, 2, "ABC=${BAR"),
+                    line_entry(1, 3, "ABC=${BAR"),
                     "SubstitutionKey",
                     "The ABC key is not assigned properly",
                 )),
             ),
             (
-                line_entry(2, 2, "FOO=${BAR!}"),
+                line_entry(2, 3, "FOO=${BAR!}"),
                 Some(Warning::new(
-                    line_entry(2, 2, "FOO=${BAR!}"),
+                    line_entry(2, 3, "FOO=${BAR!}"),
                     "SubstitutionKey",
                     "The FOO key is not assigned properly",
+                )),
+            ),
+            (
+                line_entry(3, 3, "XYZ=$BAR}"),
+                Some(Warning::new(
+                    line_entry(3, 3, "XYZ=$BAR}"),
+                    "SubstitutionKey",
+                    "The XYZ key is not assigned properly",
                 )),
             ),
         ];
