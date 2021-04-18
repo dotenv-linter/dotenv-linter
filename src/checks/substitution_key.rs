@@ -32,7 +32,7 @@ impl Check for SubstitutionKeyChecker<'_> {
 
             // Separate initial key from the rest
             let (initial_key, rest) = raw_key
-                .find(|c: char| c == '$')
+                .find('$')
                 .map(|i| raw_key.split_at(i))
                 .unwrap_or_else(|| (raw_key, ""));
 
