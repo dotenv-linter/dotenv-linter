@@ -33,28 +33,21 @@ impl Check for SubstitutionKeyChecker<'_> {
             // Separate initial key from the rest
             let (initial_key, rest) = raw_key
                 .find(|c: char| c == '$')
-                .map(|i| (&raw_key[..i], &raw_key[i..]))
+                .map(|i| raw_key.split_at(i))
                 .unwrap_or_else(|| (raw_key, ""));
 
             // Ensure if key starts with a '{' that it ends with a '}', else set
             // bad_substitution to true. Also set key to the proper substitution key.
-            let (key, bad_substitution) = match initial_key.find(|c: char| c == '{') {
-                Some(0) => initial_key
-                    .find(|c: char| c == '}')
-                    .map(|i| (&initial_key[1..i], false))
-                    .unwrap_or_else(|| (&initial_key, true)),
-                _ => initial_key
-                    .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
-                    .map(|i| (&initial_key[..i], false))
-                    .unwrap_or_else(|| (initial_key, false)),
-            };
+            let end_brace_index = initial_key.find('}');
+            let has_start_brace = initial_key.starts_with('{');
+            let has_end_brace = end_brace_index.is_some();
+            let is_incorrect_substitution = has_start_brace ^ has_end_brace
+                || end_brace_index
+                    .map(|i| &initial_key[1..i])
+                    .filter(|key| key.contains(|c: char| !c.is_ascii_alphanumeric() && c != '_'))
+                    .is_some();
 
-            if (bad_substitution
-                || key
-                    .chars()
-                    .any(|c: char| !c.is_ascii_alphanumeric() && c != '_'))
-                && !is_escaped(prefix)
-            {
+            if is_incorrect_substitution && !is_escaped(prefix) {
                 return Some(Warning::new(
                     line.clone(),
                     self.name,
