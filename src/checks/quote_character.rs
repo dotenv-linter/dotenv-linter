@@ -99,7 +99,7 @@ mod tests {
     }
 
     #[test]
-    fn with_dollar_sign_test() {
+    fn with_substitution_keys_test() {
         let asserts = vec![
             (line_entry(1, 3, "FOO=BAR"), None),
             (line_entry(3, 3, "FOO=$BAR BAR"), None),
