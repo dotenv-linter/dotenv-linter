@@ -101,8 +101,8 @@ mod tests {
     #[test]
     fn with_substitution_keys_test() {
         let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
-            (line_entry(3, 3, "FOO=$BAR BAR"), None),
+            (line_entry(1, 2, "BAR=\"$ABC\""), None),
+            (line_entry(2, 2, "FOO='${BAR}BAR'"), None),
         ];
 
         run_quote_char_tests(asserts);
