@@ -30,7 +30,31 @@ impl Check for SubstitutionKeyChecker<'_> {
             let prefix = &value[..index];
             let raw_key = &value[index + 1..];
 
-            if !is_escaped(prefix) && raw_key.contains('{') ^ raw_key.contains('}') {
+            // Separate initial key from the rest
+            let (initial_key, rest) = raw_key
+                .find(|c: char| c == '$')
+                .map(|i| (&raw_key[..i], &raw_key[i..]))
+                .unwrap_or_else(|| (raw_key, ""));
+
+            // Ensure if key starts with a '{' that it ends with a '}', else set
+            // bad_substitution to true. Also set key to the proper substitution key.
+            let (key, bad_substitution) = match initial_key.find(|c: char| c == '{') {
+                Some(0) => initial_key
+                    .find(|c: char| c == '}')
+                    .map(|i| (&initial_key[1..i], false))
+                    .unwrap_or_else(|| (&initial_key, true)),
+                _ => initial_key
+                    .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
+                    .map(|i| (&initial_key[..i], false))
+                    .unwrap_or_else(|| (initial_key, false)),
+            };
+
+            if (bad_substitution
+                || key
+                    .chars()
+                    .any(|c: char| !c.is_ascii_alphanumeric() && c != '_'))
+                && !is_escaped(prefix)
+            {
                 return Some(Warning::new(
                     line.clone(),
                     self.name,
@@ -38,7 +62,7 @@ impl Check for SubstitutionKeyChecker<'_> {
                 ));
             }
 
-            value = &raw_key;
+            value = &rest;
         }
         None
     }
@@ -91,9 +115,9 @@ mod tests {
                 )),
             ),
             (
-                line_entry(2, 2, "FOO=$BAR}"),
+                line_entry(2, 2, "FOO=${BAR!}"),
                 Some(Warning::new(
-                    line_entry(2, 2, "FOO=$BAR}"),
+                    line_entry(2, 2, "FOO=${BAR!}"),
                     "SubstitutionKey",
                     "The FOO key is not assigned properly",
                 )),
@@ -107,7 +131,7 @@ mod tests {
     fn multiple_substitution_key_test() {
         let asserts = vec![
             (line_entry(1, 3, "ABC=${BAR}$XYZ"), None),
-            (line_entry(2, 3, "FOO=$ABC${BAR}"), None),
+            (line_entry(2, 3, "FOO=$ABC{${BAR}"), None),
             (line_entry(3, 3, "BIZ=$FOO-$ABC"), None),
         ];
 
@@ -118,19 +142,27 @@ mod tests {
     fn incorrect_multiple_substitution_key_test() {
         let asserts = vec![
             (
-                line_entry(1, 2, "ABC=${BAR$XYZ}"),
+                line_entry(1, 3, "ABC=${BAR$XYZ}"),
                 Some(Warning::new(
-                    line_entry(1, 2, "ABC=${BAR$XYZ}"),
+                    line_entry(1, 3, "ABC=${BAR$XYZ}"),
                     "SubstitutionKey",
                     "The ABC key is not assigned properly",
                 )),
             ),
             (
-                line_entry(2, 2, "FOO=${ABC-$BAR}"),
+                line_entry(2, 3, "FOO=${ABC-$BAR}"),
                 Some(Warning::new(
-                    line_entry(2, 2, "FOO=${ABC-$BAR}"),
+                    line_entry(2, 3, "FOO=${ABC-$BAR}"),
                     "SubstitutionKey",
                     "The FOO key is not assigned properly",
+                )),
+            ),
+            (
+                line_entry(3, 3, "XYZ=${FOO${BAR}"),
+                Some(Warning::new(
+                    line_entry(3, 3, "XYZ=${FOO${BAR}"),
+                    "SubstitutionKey",
+                    "The XYZ key is not assigned properly",
                 )),
             ),
         ];
