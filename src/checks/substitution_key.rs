@@ -36,8 +36,6 @@ impl Check for SubstitutionKeyChecker<'_> {
                 .map(|i| raw_key.split_at(i))
                 .unwrap_or_else(|| (raw_key, ""));
 
-            // Ensure if key starts with a '{' that it ends with a '}', else set
-            // bad_substitution to true. Also set key to the proper substitution key.
             let end_brace_index = initial_key.find('}');
             let has_start_brace = initial_key.starts_with('{');
             let has_end_brace = end_brace_index.is_some();
