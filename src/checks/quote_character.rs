@@ -24,7 +24,7 @@ impl Default for QuoteCharacterChecker<'_> {
 impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
-        if val.contains("\\n") || val.contains(char::is_whitespace) {
+        if val.contains("\\n") || val.contains(char::is_whitespace) || val.contains('$') {
             return None;
         }
 
@@ -93,6 +93,16 @@ mod tests {
                 )),
             ),
             (line_entry(3, 3, "FOO=\"BAR BAR\""), None),
+        ];
+
+        run_quote_char_tests(asserts);
+    }
+
+    #[test]
+    fn with_substitution_keys_test() {
+        let asserts = vec![
+            (line_entry(1, 2, "BAR=\"$ABC\""), None),
+            (line_entry(2, 2, "FOO='${BAR}BAR'"), None),
         ];
 
         run_quote_char_tests(asserts);
