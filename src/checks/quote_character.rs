@@ -108,7 +108,6 @@ mod tests {
         run_quote_char_tests(asserts);
     }
 
-
     #[test]
     fn with_no_quotes_test() {
         let asserts = vec![(line_entry(1, 1, "FOO=BAR"), None)];
