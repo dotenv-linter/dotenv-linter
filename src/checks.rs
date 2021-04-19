@@ -9,6 +9,7 @@ mod leading_character;
 mod lowercase_key;
 mod quote_character;
 mod space_character;
+mod substitution_key;
 mod trailing_whitespace;
 mod unordered_key;
 
@@ -33,6 +34,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(lowercase_key::LowercaseKeyChecker::default()),
         Box::new(quote_character::QuoteCharacterChecker::default()),
         Box::new(space_character::SpaceCharacterChecker::default()),
+        Box::new(substitution_key::SubstitutionKeyChecker::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceChecker::default()),
         Box::new(unordered_key::UnorderedKeyChecker::default()),
     ]

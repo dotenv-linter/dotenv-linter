@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add checker: Substitution Key [#414](https://github.com/dotenv-linter/dotenv-linter/pull/414) ([@de-sh](https://github.com/de-sh))
 - Print a message if the amount of checks doesn't match the amount of fixes [#415](https://github.com/dotenv-linter/dotenv-linter/pull/415) ([@marcel-baur](https://github.com/marcel-baur)))
 - Print a message "Nothing to compare" [#398](https://github.com/dotenv-linter/dotenv-linter/pull/398) ([@jakecorrenti](https://github.com/jakecorrenti))
 - Add action-hadolint [#400](https://github.com/dotenv-linter/dotenv-linter/pull/400) ([@iovanom](https://github.com/iovanom))
