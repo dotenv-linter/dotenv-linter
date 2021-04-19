@@ -71,8 +71,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-
-    check_tester!{
+    check_tester! {
         UnorderedKeyChecker;
         one_key_test => {
             "" => None,
@@ -130,7 +129,7 @@ mod tests {
             "YYY=FOO" => None,
             "BOO=$BAR$BBB$ZZZ # Unordered, BOO uses BAR" => None,
             "TTT=BIG" => None,
-            "XYZ=G" => None, 
+            "XYZ=G" => None,
         },
         two_unordered_groups_before_and_after_unordered_substitution_keys_test => {
             "HHH=VAL" => None,

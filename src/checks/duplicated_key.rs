@@ -46,7 +46,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-    check_tester!{
+    check_tester! {
         DuplicatedKeyChecker;
         with_one_duplicated_key_test => {
             "FOO=BAR" => None,

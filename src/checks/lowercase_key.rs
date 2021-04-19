@@ -41,7 +41,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-    check_tester!{
+    check_tester! {
         LowercaseKeyChecker;
         working_run => {
             "FOO=BAR" => None,

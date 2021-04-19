@@ -44,7 +44,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-    check_tester!{
+    check_tester! {
         EndingBlankLineChecker;
         blank_line => {
             "\n" => None,

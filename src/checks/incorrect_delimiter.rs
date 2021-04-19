@@ -50,7 +50,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-    check_tester!{
+    check_tester! {
         IncorrectDelimiterChecker;
         working_run => {
             "FOO_BAR=FOOBAR" => None,
@@ -91,5 +91,4 @@ mod tests {
             "F=BAR" => None,
         }
     }
-
 }

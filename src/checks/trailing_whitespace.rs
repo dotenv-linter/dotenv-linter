@@ -44,7 +44,7 @@ mod tests {
 
     const MESSAGE: &str = "Trailing whitespace detected";
 
-    check_tester!{
+    check_tester! {
         TrailingWhitespaceChecker;
         working_run => {
             "DEBUG_HTTP=true" => None,

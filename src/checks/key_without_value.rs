@@ -44,7 +44,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-    check_tester!{
+    check_tester! {
         KeyWithoutValueChecker;
         working_run_with_value => {
             "FOO=BAR" => None,
@@ -59,5 +59,4 @@ mod tests {
             "FOO" => Some("The FOO key should be with a value or have an equal sign"),
         }
     }
-
 }

@@ -47,7 +47,7 @@ mod tests {
 
     const WARNING: &str = "The value has quote characters (\', \")";
 
-    check_tester!{
+    check_tester! {
         QuoteCharacterChecker;
         with_single_quote_test => {
             "FOO=BAR" => None,

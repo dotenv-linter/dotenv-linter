@@ -52,7 +52,7 @@ mod tests {
     use super::*;
     use crate::{check_tester, common::tests::*};
 
-    check_tester!{
+    check_tester! {
         ExtraBlankLineChecker;
         no_blank_lines => {
             "A=B" => None,

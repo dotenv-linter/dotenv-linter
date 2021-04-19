@@ -46,7 +46,7 @@ mod tests {
 
     const MESSAGE: &str = "Invalid leading character detected";
 
-    check_tester!{
+    check_tester! {
         LeadingCharacterChecker;
         no_leading_chars_test => {
             "FOO=BAR" => None,

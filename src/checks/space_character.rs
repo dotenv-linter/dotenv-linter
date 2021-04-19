@@ -46,7 +46,7 @@ mod tests {
 
     const MESSAGE: &str = "The line has spaces around equal sign";
 
-    check_tester!{
+    check_tester! {
         SpaceCharacterChecker;
         working_run => {
             "DEBUG_HTTP=true" => None,
