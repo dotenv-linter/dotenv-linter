@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### 🚀 Added
 - Add missing integration tests [#420](https://github.com/dotenv-linter/dotenv-linter/pull/420) ([@gosolivs](https://github.com/gosolivs))
+- Add checker: Substitution Key [#414](https://github.com/dotenv-linter/dotenv-linter/pull/414) ([@de-sh](https://github.com/de-sh))
 - Print a message if the amount of checks doesn't match the amount of fixes [#415](https://github.com/dotenv-linter/dotenv-linter/pull/415) ([@marcel-baur](https://github.com/marcel-baur)))
 - Print a message "Nothing to compare" [#398](https://github.com/dotenv-linter/dotenv-linter/pull/398) ([@jakecorrenti](https://github.com/jakecorrenti))
 - Add action-hadolint [#400](https://github.com/dotenv-linter/dotenv-linter/pull/400) ([@iovanom](https://github.com/iovanom))
@@ -30,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove `Result` from the return type [#374](https://github.com/dotenv-linter/dotenv-linter/pull/374) ([@DDtKey](https://github.com/DDtKey))
 - Add `.bak` extension to backup files and don't lint backup files [#367](https://github.com/dotenv-linter/dotenv-linter/pull/367) ([@mstruebing](https://github.com/mstruebing))
 - Add `.env` explanation [#363](https://github.com/dotenv-linter/dotenv-linter/pull/363) ([@henryboisdequin](https://github.com/henryboisdequin))
+- Contemplate variables containing $ character [#418](https://github.com/dotenv-linter/dotenv-linter/pull/418) ([@JuanMarchetto](https://github.com/JuanMarchetto))
+
 
 ## [v3.0.0] - 2021-01-11
 ### 🚀 Added
