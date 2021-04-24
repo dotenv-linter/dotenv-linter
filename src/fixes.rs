@@ -95,6 +95,36 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[
 }
 
 #[cfg(test)]
+fn run_fix_warnings<F: Fix>(
+    fixer: &mut F,
+    lines: &[&str],
+    line_warnings: &[(usize, &str)],
+) -> (Option<usize>, Vec<String>) {
+    use crate::common::tests::line_entry;
+
+    let total_lines = lines.len();
+    let mut line_entries: Vec<LineEntry> = lines
+        .iter()
+        .enumerate()
+        .map(|(i, line)| line_entry(i + 1, total_lines, line))
+        .collect();
+
+    let mut warnings: Vec<Warning> = line_warnings
+        .iter()
+        .map(|(lno, msg)| Warning::new(line_entries[*lno].clone(), fixer.name(), *msg))
+        .collect();
+    let warning_ref = warnings.iter_mut().collect();
+
+    let fix_count = fixer.fix_warnings(warning_ref, &mut line_entries);
+    let fixed_lines: Vec<String> = line_entries
+        .iter()
+        .map(|le| le.raw_string.clone())
+        .collect();
+
+    (fix_count, fixed_lines)
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use crate::common::tests::*;
