@@ -109,4 +109,27 @@ pub(crate) mod tests {
         let string = "***FOO-BAR";
         assert_eq!("FOO-BAR", remove_invalid_leading_chars(string));
     }
+
+    #[cfg(test)]
+    #[macro_export]
+    macro_rules! lines_and_warnings {
+        (
+            $(
+                // each repeat must contain `expr => expr`
+                $line:expr => $opt_msg:expr
+            ),* $(,)*
+            // ...zero or more, separated by commas
+        ) => {
+            // replace with multi-line statment block
+            {
+                let lines = vec![ $( $line ),* ];
+                let warnings = vec![ $( $opt_msg ),* ];
+                let line_warnings: Vec<(usize, &str)> = warnings
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, opt_msg)| opt_msg.and_then(|msg| Some((i, msg)) )).collect();
+                (lines, line_warnings)
+            }
+        };
+    }
 }
