@@ -40,27 +40,34 @@ impl Fix for EndingBlankLineFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
+    use crate::fixes::run_fix_warnings;
+    use crate::lines_and_warnings;
 
     #[test]
     fn fix_warnings_test() {
         let mut fixer = EndingBlankLineFixer::default();
-        let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, "Z=Y")];
-        let mut warning = Warning::new(
-            lines[1].clone(),
-            "EndingBlankLine",
-            "No blank line at the end of the file",
-        );
 
-        assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
-        assert_eq!("\n", lines[2].raw_string);
+        let (lines, warnings) = lines_and_warnings![
+            "FOO=BAR" => None,
+            "Z=Y" => Some(("EndingBlankLine","No blank line at the end of the file")),
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(1), fix_count);
+        assert_eq!(vec!["FOO=BAR", "Z=Y", "\n"], fixed_lines);
     }
 
     #[test]
     fn ending_blank_line_exist_test() {
         let mut fixer = EndingBlankLineFixer::default();
-        let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, LF)];
 
-        assert_eq!(Some(0), fixer.fix_warnings(vec![], &mut lines));
-        assert_eq!(lines.len(), 2);
+        let (lines, warnings) = lines_and_warnings![
+            "FOO=BAR" => None,
+            "\n" => None,
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(0), fix_count);
+        assert_eq!(vec!["FOO=BAR", "\n"], fixed_lines);
     }
 }

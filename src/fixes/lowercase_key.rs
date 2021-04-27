@@ -31,6 +31,8 @@ impl Fix for LowercaseKeyFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
+    use crate::fixes::run_fix_warnings;
+    use crate::lines_and_warnings;
 
     #[test]
     fn fix_line_test() {
@@ -44,18 +46,15 @@ mod tests {
     #[test]
     fn fix_warnings_test() {
         let mut fixer = LowercaseKeyFixer::default();
-        let mut lines = vec![
-            line_entry(1, 3, "foO=BAR"),
-            line_entry(2, 3, "Z=Y"),
-            blank_line_entry(3, 3),
-        ];
-        let mut warning = Warning::new(
-            lines[0].clone(),
-            "LowercaseKey",
-            String::from("The FOO key should be in uppercase"),
-        );
 
-        assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
-        assert_eq!("FOO=BAR", lines[0].raw_string);
+        let (lines, warnings) = lines_and_warnings![
+            "foO=BAR" => Some(("LowercaseKey","The FOO key should be in uppercase")),
+            "Z=Y" => None,
+            "" => None,
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(1), fix_count);
+        assert_eq!(vec!["FOO=BAR", "Z=Y", ""], fixed_lines);
     }
 }

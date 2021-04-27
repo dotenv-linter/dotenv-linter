@@ -64,128 +64,119 @@ impl Fix for DuplicatedKeyFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
+    use crate::fixes::run_fix_warnings;
+    use crate::lines_and_warnings;
 
     #[test]
     fn fix_warnings() {
         let mut fixer = DuplicatedKeyFixer::default();
-        let mut lines = vec![
-            line_entry(1, 4, "FOO=BAR"),
-            line_entry(2, 4, "Z=Y"),
-            line_entry(3, 4, "FOO=BAZ"),
-            line_entry(4, 4, "Z=X"),
-        ];
-        let mut warnings = vec![
-            Warning::new(
-                lines[2].clone(),
-                "DuplicatedKey",
-                "The FOO key is duplicated",
-            ),
-            Warning::new(lines[3].clone(), "DuplicatedKey", "The Z key is duplicated"),
-        ];
 
-        assert_eq!(
-            Some(2),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
-        );
-        // what needed to be changed is changed
-        assert_eq!(lines[2], line_entry(3, 4, "# FOO=BAZ"));
-        assert_eq!(lines[3], line_entry(4, 4, "# Z=X"));
-        // anything else left untouched
-        assert_eq!(
-            &lines[..2],
-            &[line_entry(1, 4, "FOO=BAR"), line_entry(2, 4, "Z=Y")]
-        );
+        let (lines, warnings) = lines_and_warnings![
+            "FOO=BAR" => None,
+            "Z=Y" => None,
+            "FOO=BAZ" => Some(("Duplicatedkey", "The Foo key is duplicated")),
+            "Z=X" => Some(("Duplicatedkey", "The Z key is duplicated")),
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(2), fix_count);
+        assert_eq!(vec!["FOO=BAR", "Z=Y", "# FOO=BAZ", "# Z=X"], fixed_lines);
     }
 
     #[test]
     fn fix_lines_without_warnings() {
         let mut fixer = DuplicatedKeyFixer::default();
-        let mut lines = vec![
-            line_entry(1, 4, "FOO=BAR"),
-            line_entry(2, 4, "FOO=BAZ"),
-            line_entry(3, 4, "Z=Y"),
-            line_entry(4, 4, "Z=X"),
-        ];
-        let mut warnings = vec![];
 
-        assert_eq!(
-            Some(0),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
-        );
-        assert_eq!("FOO=BAR", lines[0].raw_string);
-        assert_eq!("# FOO=BAZ", lines[1].raw_string);
-        assert_eq!("Z=Y", lines[2].raw_string);
-        assert_eq!("# Z=X", lines[3].raw_string);
+        let (lines, warnings) = lines_and_warnings![
+            "FOO=BAR" => None,
+            "FOO=BAZ" => None,
+            "Z=Y" => None,
+            "Z=X" => None,
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(0), fix_count);
+        assert_eq!(vec!["FOO=BAR", "# FOO=BAZ", "Z=Y", "# Z=X"], fixed_lines);
     }
 
     #[test]
     fn control_comment_at_first_line() {
         let mut fixer = DuplicatedKeyFixer::default();
-        let mut lines = vec![
-            line_entry(1, 5, "# dotenv-linter:off DuplicatedKey"),
-            line_entry(2, 5, "FOO=BAR"),
-            line_entry(3, 5, "FOO=BAZ"),
-            line_entry(4, 5, "Z=Y"),
-            line_entry(5, 5, "Z=X"),
-        ];
-        let mut warnings = vec![];
 
+        let (lines, warnings) = lines_and_warnings![
+            "# dotenv-linter:off DuplicatedKey" => None,
+            "FOO=BAR" => None,
+            "FOO=BAZ" => None,
+            "Z=Y" => None,
+            "Z=X" => None,
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(0), fix_count);
         assert_eq!(
-            Some(0),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
+            vec![
+                "# dotenv-linter:off DuplicatedKey",
+                "FOO=BAR",
+                "FOO=BAZ",
+                "Z=Y",
+                "Z=X"
+            ],
+            fixed_lines
         );
-        assert_eq!("# dotenv-linter:off DuplicatedKey", lines[0].raw_string);
-        assert_eq!("FOO=BAR", lines[1].raw_string);
-        assert_eq!("FOO=BAZ", lines[2].raw_string);
-        assert_eq!("Z=Y", lines[3].raw_string);
-        assert_eq!("Z=X", lines[4].raw_string);
     }
 
     #[test]
     fn control_comment_in_the_middle() {
         let mut fixer = DuplicatedKeyFixer::default();
-        let mut lines = vec![
-            line_entry(1, 6, "FOO=BAR"),
-            line_entry(2, 6, "# dotenv-linter:off DuplicatedKey"),
-            line_entry(3, 6, "FOO=BAZ"),
-            line_entry(4, 6, "Z=Y"),
-            line_entry(5, 6, "# dotenv-linter:on DuplicatedKey"),
-            line_entry(6, 6, "Z=X"),
-        ];
-        let mut warnings = vec![];
 
+        let (lines, warnings) = lines_and_warnings![
+            "FOO=BAR" => None,
+            "# dotenv-linter:off DuplicatedKey" => None,
+            "FOO=BAZ" => None,
+            "Z=Y" => None,
+            "# dotenv-linter:on DuplicatedKey" => None,
+            "Z=X" => None,
+        ];
+
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(0), fix_count);
         assert_eq!(
-            Some(0),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
+            vec![
+                "FOO=BAR",
+                "# dotenv-linter:off DuplicatedKey",
+                "FOO=BAZ",
+                "Z=Y",
+                "# dotenv-linter:on DuplicatedKey",
+                "Z=X"
+            ],
+            fixed_lines
         );
-        assert_eq!("FOO=BAR", lines[0].raw_string);
-        assert_eq!("# dotenv-linter:off DuplicatedKey", lines[1].raw_string);
-        assert_eq!("FOO=BAZ", lines[2].raw_string);
-        assert_eq!("Z=Y", lines[3].raw_string);
-        assert_eq!("# dotenv-linter:on DuplicatedKey", lines[4].raw_string);
-        assert_eq!("Z=X", lines[5].raw_string);
     }
 
     #[test]
     fn unrelated_control_comment() {
         let mut fixer = DuplicatedKeyFixer::default();
-        let mut lines = vec![
-            line_entry(1, 5, "# dotenv-linter:off LowercaseKey"),
-            line_entry(2, 5, "FOO=BAR"),
-            line_entry(3, 5, "FOO=BAZ"),
-            line_entry(4, 5, "Z=Y"),
-            line_entry(5, 5, "Z=X"),
-        ];
-        let mut warnings = vec![];
 
+        let (lines, warnings) = lines_and_warnings![
+            "# dotenv-linter:off LowercaseKey" => None,
+            "FOO=BAR" => None,
+            "FOO=BAZ" => None,
+            "Z=Y" => None,
+            "Z=X" => None,
+        ];
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(0), fix_count);
         assert_eq!(
-            Some(0),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
+            vec![
+                "# dotenv-linter:off LowercaseKey",
+                "FOO=BAR",
+                "# FOO=BAZ",
+                "Z=Y",
+                "# Z=X"
+            ],
+            fixed_lines
         );
-        assert_eq!("# dotenv-linter:off LowercaseKey", lines[0].raw_string);
-        assert_eq!("FOO=BAR", lines[1].raw_string);
-        assert_eq!("# FOO=BAZ", lines[2].raw_string);
-        assert_eq!("Z=Y", lines[3].raw_string);
-        assert_eq!("# Z=X", lines[4].raw_string);
     }
 }

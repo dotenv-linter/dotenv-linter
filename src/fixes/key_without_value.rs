@@ -29,6 +29,8 @@ impl Fix for KeyWithoutValueFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
+    use crate::fixes::run_fix_warnings;
+    use crate::lines_and_warnings;
 
     #[test]
     fn fix_line_test() {
@@ -42,18 +44,16 @@ mod tests {
     #[test]
     fn fix_warnings_test() {
         let mut fixer = KeyWithoutValueFixer::default();
-        let mut lines = vec![
-            line_entry(1, 3, "FOO"),
-            line_entry(2, 3, "Z=Y"),
-            blank_line_entry(3, 3),
-        ];
-        let mut warning = Warning::new(
-            lines[0].clone(),
-            "KeyWithoutValue",
-            "The FOO key should be with a value or have an equal sign",
-        );
 
-        assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
-        assert_eq!("FOO=", lines[0].raw_string);
+        let (lines, warnings) = lines_and_warnings![
+            "FOO" => Some(("KeyWithoutValue","The FOO key should be with a value or have an equal sign")),
+            "Z=Y" => None,
+            "\n" => None,
+        ];
+
+        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+
+        assert_eq!(Some(1), fix_count);
+        assert_eq!(vec!["FOO=", "Z=Y", "\n"], fixed_lines);
     }
 }
