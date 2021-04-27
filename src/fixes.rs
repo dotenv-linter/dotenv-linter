@@ -97,30 +97,16 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[
 #[cfg(test)]
 fn run_fix_warnings<F: Fix>(
     fixer: &mut F,
-    lines: &[&str],
-    line_warnings: &[(usize, &str)],
+    mut lines: Vec<LineEntry>,
+    mut warnings: Vec<Warning>,
 ) -> (Option<usize>, Vec<String>) {
-    use crate::common::tests::line_entry;
+    let warnings_mut = warnings.iter_mut().collect();
+    let fix_count = fixer.fix_warnings(warnings_mut, &mut lines);
 
-    let total_lines = lines.len();
-    let mut line_entries: Vec<LineEntry> = lines
-        .iter()
-        .enumerate()
-        .map(|(i, line)| line_entry(i + 1, total_lines, line))
-        .collect();
+    // Remove lines marked as deleted
+    lines.retain(|l| !l.is_deleted);
 
-    let mut warnings: Vec<Warning> = line_warnings
-        .iter()
-        .map(|(lno, msg)| Warning::new(line_entries[*lno].clone(), fixer.name(), *msg))
-        .collect();
-    let warning_ref = warnings.iter_mut().collect();
-
-    let fix_count = fixer.fix_warnings(warning_ref, &mut line_entries);
-    let fixed_lines: Vec<String> = line_entries
-        .iter()
-        .map(|le| le.raw_string.clone())
-        .collect();
-
+    let fixed_lines: Vec<String> = lines.iter().map(|le| le.raw_string.clone()).collect();
     (fix_count, fixed_lines)
 }
 
@@ -128,27 +114,25 @@ fn run_fix_warnings<F: Fix>(
 mod tests {
     use super::*;
     use crate::common::tests::*;
+    use crate::lines_and_warnings;
 
     #[test]
     fn run_with_empty_warnings_test() {
-        let mut lines = vec![line_entry(1, 2, "A=B"), blank_line_entry(2, 2)];
-        let mut warnings: Vec<Warning> = Vec::new();
+        let (mut lines, mut warnings) = lines_and_warnings![
+            "A=B" => None,
+            "\n" => None,
+        ];
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
     }
 
     #[test]
     fn run_with_fixable_warning_test() {
-        let mut lines = vec![
-            line_entry(1, 3, "A=B"),
-            line_entry(2, 3, "c=d"),
-            blank_line_entry(3, 3),
+        let (mut lines, mut warnings) = lines_and_warnings![
+            "A=B" => None,
+            "c=d" => Some(("LowercaseKey", "The c key should be in uppercase")),
+            "\n" => None,
         ];
-        let mut warnings = vec![Warning::new(
-            lines[1].clone(),
-            "LowercaseKey",
-            "The c key should be in uppercase",
-        )];
 
         assert_eq!(1, run(&mut warnings, &mut lines, &[]));
         assert_eq!("C=d", lines[1].raw_string);
@@ -156,16 +140,11 @@ mod tests {
 
     #[test]
     fn run_with_unfixable_warning_test() {
-        let mut lines = vec![
-            line_entry(1, 3, "A=B"),
-            line_entry(2, 3, "UNFIXABLE-"),
-            blank_line_entry(3, 3),
+        let (mut lines, mut warnings) = lines_and_warnings![
+            "A=B" => None,
+            "UNFIXABLE-" => Some(("Unfixable", "The UNFIXABLE- key is not fixable")),
+            "\n" => None,
         ];
-        let mut warnings = vec![Warning::new(
-            lines[1].clone(),
-            "Unfixable",
-            "The UNFIXABLE- key is not fixable",
-        )];
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
     }
@@ -195,27 +174,16 @@ mod tests {
 
     #[test]
     fn new_warnings_after_fix_test() {
-        let mut lines = vec![
-            line_entry(1, 5, "A1=1"),
-            line_entry(2, 5, "A2=2"),
-            line_entry(3, 5, "a0=0"),
-            line_entry(4, 5, "a2=2"),
-            blank_line_entry(5, 5),
-        ];
-        let mut warnings = vec![
-            Warning::new(
-                lines[2].clone(),
-                "LowercaseKey",
-                "The a0 key should be in uppercase",
-            ),
-            Warning::new(
-                lines[3].clone(),
-                "LowercaseKey",
-                "The a2 key should be in uppercase",
-            ),
+        let (mut lines, mut warnings) = lines_and_warnings![
+            "A1=1" => None,
+            "A2=2" => None,
+            "a0=0" => Some(("LowercaseKey", "The a0 key should be in uppercase")),
+            "a2=2" => Some(("LowercaseKey", "The a2 key should be in uppercase")),
+            "\n" => None,
         ];
 
         assert_eq!(2, run(&mut warnings, &mut lines, &[]));
+
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -225,24 +193,12 @@ mod tests {
 
     #[test]
     fn skip_duplicated_key() {
-        let mut lines = vec![
-            line_entry(1, 5, "A1=1"),
-            line_entry(2, 5, "A2=2"),
-            line_entry(3, 5, "a0=0"),
-            line_entry(4, 5, "a2=2"),
-            blank_line_entry(5, 5),
-        ];
-        let mut warnings = vec![
-            Warning::new(
-                lines[2].clone(),
-                "LowercaseKey",
-                "The a0 key should be in uppercase",
-            ),
-            Warning::new(
-                lines[3].clone(),
-                "LowercaseKey",
-                "The a2 key should be in uppercase",
-            ),
+        let (mut lines, mut warnings) = lines_and_warnings![
+            "A1=1" => None,
+            "A2=2" => None,
+            "a0=0" => Some(("LowercaseKey", "The a0 key should be in uppercase")),
+            "a2=2" => Some(("LowercaseKey", "The a2 key should be in uppercase")),
+            "\n" => None,
         ];
 
         assert_eq!(2, run(&mut warnings, &mut lines, &["DuplicatedKey"]));
@@ -255,24 +211,12 @@ mod tests {
 
     #[test]
     fn skip_unordered_key() {
-        let mut lines = vec![
-            line_entry(1, 5, "A1=1"),
-            line_entry(2, 5, "A2=2"),
-            line_entry(3, 5, "a0=0"),
-            line_entry(4, 5, "a2=2"),
-            blank_line_entry(5, 5),
-        ];
-        let mut warnings = vec![
-            Warning::new(
-                lines[2].clone(),
-                "LowercaseKey",
-                "The a0 key should be in uppercase",
-            ),
-            Warning::new(
-                lines[3].clone(),
-                "LowercaseKey",
-                "The a2 key should be in uppercase",
-            ),
+        let (mut lines, mut warnings) = lines_and_warnings![
+            "A1=1" => None,
+            "A2=2" => None,
+            "a0=0" => Some(("LowercaseKey", "The a0 key should be in uppercase")),
+            "a2=2" => Some(("LowercaseKey", "The a2 key should be in uppercase")),
+            "\n" => None,
         ];
 
         assert_eq!(2, run(&mut warnings, &mut lines, &["UnorderedKey"]));

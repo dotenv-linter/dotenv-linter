@@ -116,19 +116,32 @@ pub(crate) mod tests {
         (
             $(
                 // each repeat must contain `expr => expr`
-                $line:expr => $opt_msg:expr
+                $line:expr => $opt_warning:expr
             ),* $(,)*
             // ...zero or more, separated by commas
         ) => {
             // replace with multi-line statment block
             {
-                let lines = vec![ $( $line ),* ];
-                let warnings = vec![ $( $opt_msg ),* ];
-                let line_warnings: Vec<(usize, &str)> = warnings
+                let lines_input = vec![ $( $line ),* ];
+                let warnings_input = vec![ $( $opt_warning ),* ];
+                let total_lines = lines_input.len();
+
+                let line_entries: Vec<LineEntry> = lines_input
                     .iter()
                     .enumerate()
-                    .filter_map(|(i, opt_msg)| opt_msg.and_then(|msg| Some((i, msg)) )).collect();
-                (lines, line_warnings)
+                    .map(|(i, content)| line_entry(i + 1, total_lines, content))
+                    .collect();
+
+                let warnings: Vec<Warning> = warnings_input
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, opt_warn)| {
+                        opt_warn.and_then(|(kind, msg): (&str, &str)| {
+                            Some(Warning::new(line_entries[i].clone(), kind, msg))
+                        })
+                    })
+                    .collect();
+                (line_entries, warnings)
             }
         };
     }
