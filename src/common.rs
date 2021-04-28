@@ -110,6 +110,40 @@ pub(crate) mod tests {
         assert_eq!("FOO-BAR", remove_invalid_leading_chars(string));
     }
 
+    /**
+    The purpose of this macro is to avoid boilerplate code while defining
+    input for tests in `Fix` trait implementations.
+    Since fixers work on a sequence of input lines and a set of warnings,
+    these tests often have to prepare a `Vec<LineEntry>` and a `Vec<Warning>`
+    to pass it to `Fix` methods.
+
+    Using this macro, input lines and warnings can be encoded in a vector
+    format, where each entry is a pair of a line and an optional warning
+    content. The macro takes care of determining the line numbers, thus
+    avoiding hard-coded integers.
+
+    Macro expands to a block whose value is of type
+    `(Vec<LineEntry>, Vec<Warning>)`.
+
+    # Examples:
+    ```
+    // input with 3 lines, 1 warning
+    let (lines, warnings) = lines_and_warnings![
+        "foO=BAR" => Some(("LowercaseKey","The FOO key should be in uppercase")),
+        "Z=Y" => None,
+        "" => None,
+    ];
+    ```
+
+    ```
+    // input with 3 lines, 0 warning
+    let (lines, warnings) = lines_and_warnings![
+        "FOO=BAR" => None,
+        "Z=Y" => None,
+        "" => None,
+    ];
+    ```
+    */
     #[cfg(test)]
     #[macro_export]
     macro_rules! lines_and_warnings {
