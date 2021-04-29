@@ -29,10 +29,10 @@ pub(crate) mod tests {
     use std::rc::Rc;
 
     /**
-        Helper function for testing `Check` implementations. 
+        Helper function for testing `Check` implementations.
 
         A `Check` implementation can be used against a number of &str inputs
-        and optional `Warning` messages respectively. 
+        and optional `Warning` messages respectively.
 
         This function construct `LineEntry`s and optional `Warning`s,
         if required, in order to assert that the `Check` implementation is creating
@@ -55,7 +55,7 @@ pub(crate) mod tests {
         any warnings, hence the `None`.
 
         The second line however, should expect a `Warning` with a message of
-        "The FOO key is duplicated". 
+        "The FOO key is duplicated".
     */
     pub fn check_test<'test, T, U>(checker: &mut T, asserts: U)
     where
