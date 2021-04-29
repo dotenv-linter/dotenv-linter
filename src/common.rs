@@ -21,109 +21,62 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
     string.trim_start_matches(|c: char| !(c.is_alphabetic() || c == '_'))
 }
 
+#[cfg(test)]
 pub(crate) mod tests {
     use super::*;
+    use crate::checks::Check;
     use std::path::PathBuf;
     use std::rc::Rc;
 
     /**
-       Creates test cases for Check trait implementations.
+        Helper function for testing `Check` implementations. 
 
-       check_tester takes the name of the Check implementation which is
-       followed by the test cases.
+        A `Check` implementation can be used against a number of &str inputs
+        and optional `Warning` messages respectively. 
 
-       Each test case is the same as a test function so multiple inputs
-       will occur on the same instance of the Check implementation, allowing
-       the implementation to use internal state (if required).
+        This function construct `LineEntry`s and optional `Warning`s,
+        if required, in order to assert that the `Check` implementation is creating
+        the correct `Warning` and not just the correct message.
 
-       # Examples
+        # Example
 
-       The following example shows a single test case for the
-       DuplicatedKeyChecker:
-
-       ```
-       check_tester!{
-           DuplicatedKeyChecker;
-           duplicated_key_test => {
-               // First time seeing key "FOO" so is None
-               "FOO=BAR" => None,
-               // Second time seeing key "FOO" so is duplicate.
-               "FOO=BAR" => Some("The FOO key is duplicated"),
-           }
-       }
-       ```
-
-       The above example could be expanded as such:
-       ```
+        ```no_run
         #[test]
-        fn duplicated_key_test() {
-            let mut checker = DuplicatedKeyChecker::default();
-
-            assert_eq!(None, checker.run(&line_entry(1, 2, "FOO=BAR")));
-            assert_eq!(Some(
-                Warning::new(
-                    line_entry(2, 2, "FOO=BAR")),
-                    "DuplicatedKey",
-                    "The FOO key is duplicated"
-                ),
-                checker.run(&line_entry(2, 2, "FOO=BAR"))
+        fn with_one_duplicated_test_key() {
+            check_test(&mut DuplicatedKeyChecker::default(),
+                [
+                    ("FOO=BAR", None),
+                    ("FOO=BAR", Some("The FOO key is duplicated")),
+                ],
             );
         }
-       ```
-       As shown in the expanded example this macro will create the correct
-       Line_Entry for the checker and will also create the expected Warning
-       using the input and expected warning message.
+        ```
+        The above will assert that on the first line "FOO=BAR" does not cause
+        any warnings, hence the `None`.
 
-       ## Constant Warning Message
-
-       Note that the expected warning message does not need to be a string
-       literal; in the case where the warning message is always the same
-       a constant &str can be used:
-
-       ```
-        const WARNING: &str = "Invalid leading character detected";
-
-        check_tester!{
-            LeadingCharacterChecker;
-            leading_dot_is_not_valid => {
-                ".FOO=BAR" => Some(WARNING),
-            },
-            leading_number_is_not_valid => {
-                "1FOO=BAR" => Some(WARNING),
-            }
-        }
-       ```
+        The second line however, should expect a `Warning` with a message of
+        "The FOO key is duplicated". 
     */
-    #[cfg(test)]
-    #[macro_export]
-    macro_rules! check_tester {
-        (@token $t:tt $sub:expr) => {$sub};
-        (@count $($t:tt)*) => {<[()]>::len(&[$(check_tester!(@token $t ())),*])};
-        ($checker:ident;
-            $(
-                $test:ident => {$(
-                    $input:expr => $expected:expr,
-                )*}
-            ),* $(,)?) => {
-            $(
-                #[test]
-                fn $test() {
-                    let mut checker = $checker::default();
-                    let total = check_tester!(@count $($expected)*);
-                    let mut _line_number = 1;
-                    $(
-                        let line = line_entry(_line_number, total, $input);
-                        _line_number += 1;
-                        let result = checker.run(&line);
-                        let expected = ($expected).map(|e: &str| Warning::new(line, checker.name(), e));
-                        assert_eq!(expected, result);
-                    )*
-                }
-            )*
-        };
+    pub fn check_test<'test, T, U>(checker: &mut T, asserts: U)
+    where
+        T: Check,
+        U: AsRef<[(&'test str, Option<&'test str>)]>,
+    {
+        let asserts = asserts.as_ref();
+        let mut line_number = 1;
+        let total = asserts.len();
+
+        for (input, expected) in asserts {
+            let line = line_entry(line_number, total, input);
+            line_number += 1;
+
+            let result = checker.run(&line);
+            let expected = expected.map(|e| Warning::new(line, checker.name(), e));
+
+            assert_eq!(result, expected);
+        }
     }
 
-    #[allow(dead_code)]
     pub fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
         LineEntry::new(
             number,
@@ -136,7 +89,6 @@ pub(crate) mod tests {
         )
     }
 
-    #[allow(dead_code)]
     pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
         LineEntry::new(
             number,

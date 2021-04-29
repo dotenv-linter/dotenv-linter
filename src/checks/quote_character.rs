@@ -43,29 +43,45 @@ impl Check for QuoteCharacterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
     const WARNING: &str = "The value has quote characters (\', \")";
 
-    check_tester! {
-        QuoteCharacterChecker;
-        with_single_quote_test => {
-            "FOO=BAR" => None,
-            "FOO='BAR'" => Some(WARNING),
-            "FOO='B\"AR'" => Some(WARNING),
-            "FOO=\'BAR BAR\'" => None,
-        },
-        with_double_quote_test => {
-            "FOO=BAR" => None,
-            "FOO=\"BAR\"" => Some(WARNING),
-            "FOO=\"BAR BAR\"" => None,
-        },
-        with_substitution_keys_test => {
-            "BAR=\"$ABC\"" => None,
-            "FOO='${BAR}BAR'" => None,
-        },
-        with_no_quotes_test => {
-            "FOO=BAR" => None,
-        }
+    #[test]
+    fn with_single_quote_test() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO='BAR'", Some(WARNING)),
+                ("FOO='B\"AR'", Some(WARNING)),
+                ("FOO=\'BAR BAR\'", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn with_double_quote_test() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO=\"Bar\"", Some(WARNING)),
+                ("FOO=\"BAR BAR\"", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn with_substitution_keys_test() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [("BAR=\"$ABC\"", None), ("FOO='${BAR}BAR'", None)],
+        );
+    }
+
+    #[test]
+    fn with_no_quotes_test() {
+        check_test(&mut QuoteCharacterChecker::default(), [("FOO=BAR", None)]);
     }
 }

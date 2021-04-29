@@ -44,32 +44,57 @@ impl Check for DuplicatedKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
-    check_tester! {
-        DuplicatedKeyChecker;
-        with_one_duplicated_key_test => {
-            "FOO=BAR" => None,
-            "FOO=BAR" => Some("The FOO key is duplicated"),
-        },
-        with_two_unique_keys_test => {
-            "FOO=BAR" => None,
-            "BAR=FOO" => None,
-        },
-        with_two_unique_keys_case_sensitive_test => {
-            "FOO=BAR" => None,
-            "Foo=FOO" => None,
-        },
-        with_two_duplicated_keys_test => {
-            "FOO=BAR" => None,
-            "FOO=BAR" => Some("The FOO key is duplicated"),
-            "BAR=FOO" => None,
-            "BAR=FOO" => Some("The BAR key is duplicated"),
-        },
-        one_duplicated_and_one_unique_key_test => {
-            "FOO=BAR" => None,
-            "FOO=BAR" => Some("The FOO key is duplicated"),
-            "BAR=FOO" => None,
-        }
+    #[test]
+    fn with_one_duplicated_key_test() {
+        check_test(
+            &mut DuplicatedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO=BAR", Some("The FOO key is duplicated")),
+            ],
+        );
+    }
+
+    #[test]
+    fn with_two_unique_keys_test() {
+        check_test(
+            &mut DuplicatedKeyChecker::default(),
+            [("FOO=BAR", None), ("BAR=FOO", None)],
+        );
+    }
+
+    #[test]
+    fn with_two_unique_keys_case_sensitive_test() {
+        check_test(
+            &mut DuplicatedKeyChecker::default(),
+            [("FOO=BAR", None), ("Foo=FOO", None)],
+        );
+    }
+
+    #[test]
+    fn with_two_duplicated_keys_test() {
+        check_test(
+            &mut DuplicatedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO=BAR", Some("The FOO key is duplicated")),
+                ("BAR=FOO", None),
+                ("BAR=FOO", Some("The BAR key is duplicated")),
+            ],
+        );
+    }
+
+    #[test]
+    fn one_duplicated_and_one_unique_key_test() {
+        check_test(
+            &mut DuplicatedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO=BAR", Some("The FOO key is duplicated")),
+                ("BAR=FOO", None),
+            ],
+        );
     }
 }

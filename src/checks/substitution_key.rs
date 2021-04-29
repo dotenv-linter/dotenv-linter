@@ -72,35 +72,75 @@ impl SubstitutionKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
-    check_tester! {
-        SubstitutionKeyChecker;
-        correct_substitution_key_test => {
-            "ABC=$BAR" => None,
-            "FOO=${BAR}" => None,
-            "FOO=\"$BAR\"" => None,
-        },
-        incorrect_substitution_key_test => {
-            "ABC=${BAR" => Some("The ABC key is not assigned properly"),
-            "FOO=${BAR!}" => Some("The FOO key is not assigned properly"),
-            "XYZ=$BAR}" => Some("The XYZ key is not assigned properly"),
-        },
-        multiple_substitution_key_test => {
-            "ABC=${BAR}$XYZ" => None,
-            "FOO=$ABC{${BAR}" => None,
-            "BIZ=$FOO-$ABC" => None,
-        },
-        incorrect_multiple_substitution_key_test => {
-            "ABC=${BAR$XYZ}" => Some("The ABC key is not assigned properly"),
-            "FOO=${ABC-$BAR}" => Some("The FOO key is not assigned properly"),
-            "XYZ=${FOO${BAR}" => Some("The XYZ key is not assigned properly"),
-        },
-        escaped_incorrect_substitution_key_test => {
-            "ABC=\\${BAR" => None,
-            "FOO=\\$BAR}" => None,
-            "FOO=\"\\${BAR\"" => None,
-            "FOO=\"\\$BAR}" => None,
-        }
+    #[test]
+    fn correct_substitution_key_test() {
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=$BAR", None),
+                ("FOO=${BAR}", None),
+                ("FOO=\"$BAR\"", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn incorrect_substitution_key_test() {
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=${BAR", Some("The ABC key is not assigned properly")),
+                ("FOO=${BAR!}", Some("The FOO key is not assigned properly")),
+                ("XYZ=$BAR}", Some("The XYZ key is not assigned properly")),
+            ],
+        );
+    }
+
+    #[test]
+    fn multiple_substitution_key_test() {
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=${BAR}$XYZ", None),
+                ("FOO=$ABC{${BAR}", None),
+                ("BIZ=$FOO-$ABC", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn incorrect_multiple_substitution_key_test() {
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                (
+                    "ABC=${BAR$XYZ}",
+                    Some("The ABC key is not assigned properly"),
+                ),
+                (
+                    "FOO=${ABC-$BAR}",
+                    Some("The FOO key is not assigned properly"),
+                ),
+                (
+                    "XYZ=${FOO${BAR}",
+                    Some("The XYZ key is not assigned properly"),
+                ),
+            ],
+        );
+    }
+
+    #[test]
+    fn escaped_incorrect_substitution_key_test() {
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=\\${BAR", None),
+                ("FOO=\\$BAR}", None),
+                ("FOO=\"\\${BAR\"", None),
+                ("FOO=\"\\$BAR}", None),
+            ],
+        );
     }
 }

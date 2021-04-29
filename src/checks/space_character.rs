@@ -42,35 +42,68 @@ impl Check for SpaceCharacterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
     const MESSAGE: &str = "The line has spaces around equal sign";
 
-    check_tester! {
-        SpaceCharacterChecker;
-        working_run => {
-            "DEBUG_HTTP=true" => None,
-        },
-        working_leading_run => {
-            " DEBUG_HTTP=true" => None,
-        },
-        working_trailing_run => {
-            "DEBUG_HTTP=true " => None,
-        },
-        working_empty_run => {
-            "" => None,
-        },
-        working_no_equal_sign_run => {
-            "DEBUG_HTTP true" => None,
-        },
-        failing_run => {
-            "DEBUG-HTTP = true" => Some(MESSAGE),
-        },
-        failing_when_whitespace_before_equal_sign_run => {
-            "DEBUG-HTTP =true" => Some(MESSAGE),
-        },
-        failing_when_whitespace_after_equal_sign_run => {
-            "DEBUG-HTTP= true" => Some(MESSAGE),
-        }
+    #[test]
+    fn working_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP=true", None)],
+        );
+    }
+
+    #[test]
+    fn working_leading_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [(" DEBUG_HTTP=true", None)],
+        );
+    }
+
+    #[test]
+    fn working_trailing_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP=true ", None)],
+        );
+    }
+
+    #[test]
+    fn working_empty_run() {
+        check_test(&mut SpaceCharacterChecker::default(), [("", None)]);
+    }
+
+    #[test]
+    fn working_no_equal_sign_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP true", None)],
+        );
+    }
+
+    #[test]
+    fn failing_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP = true", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn failing_when_whitespace_before_equal_sign_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP =true", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn failing_when_whitespace_after_equal_sign_run() {
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP= true", Some(MESSAGE))],
+        );
     }
 }

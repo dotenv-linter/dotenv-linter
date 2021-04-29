@@ -42,21 +42,31 @@ impl Check for KeyWithoutValueChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
-    check_tester! {
-        KeyWithoutValueChecker;
-        working_run_with_value => {
-            "FOO=BAR" => None,
-        },
-        working_run_with_blank_line => {
-            "" => None,
-        },
-        working_run_without_value => {
-            "FOO=" => None,
-        },
-        failing_run => {
-            "FOO" => Some("The FOO key should be with a value or have an equal sign"),
-        }
+    #[test]
+    fn working_run_with_value() {
+        check_test(&mut KeyWithoutValueChecker::default(), [("FOO=BAR", None)]);
+    }
+
+    #[test]
+    fn working_run_with_blank_line() {
+        check_test(&mut KeyWithoutValueChecker::default(), [("", None)]);
+    }
+
+    #[test]
+    fn working_run_without_value() {
+        check_test(&mut KeyWithoutValueChecker::default(), [("FOO=", None)]);
+    }
+
+    #[test]
+    fn failing_run() {
+        check_test(
+            &mut KeyWithoutValueChecker::default(),
+            [(
+                "FOO",
+                Some("The FOO key should be with a value or have an equal sign"),
+            )],
+        );
     }
 }

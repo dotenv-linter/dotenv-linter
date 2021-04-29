@@ -39,21 +39,40 @@ impl LowercaseKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
-    check_tester! {
-        LowercaseKeyChecker;
-        working_run => {
-            "FOO=BAR" => None,
-        },
-        working_with_export_run => {
-            "export FOO=BAR" => None,
-        },
-        failing_run_with_lowercase_key => {
-            "foo_bar=FOOBAR" => Some("The foo_bar key should be in uppercase"),
-        },
-        failing_run_with_lowercase_letter => {
-            "FOo_BAR=FOOBAR" => Some("The FOo_BAR key should be in uppercase"),
-        }
+    #[test]
+    fn working_run() {
+        check_test(&mut LowercaseKeyChecker::default(), [("FOO=BAR", None)]);
+    }
+
+    #[test]
+    fn working_with_export_run() {
+        check_test(
+            &mut LowercaseKeyChecker::default(),
+            [("export FOO=BAR", None)],
+        );
+    }
+
+    #[test]
+    fn failing_run_with_lowercase_key() {
+        check_test(
+            &mut LowercaseKeyChecker::default(),
+            [(
+                "foo_bar=FOOBAR",
+                Some("The foo_bar key should be in uppercase"),
+            )],
+        );
+    }
+
+    #[test]
+    fn failing_run_with_lowercase_letter() {
+        check_test(
+            &mut LowercaseKeyChecker::default(),
+            [(
+                "FOo_BAR=FOOBAR",
+                Some("The FOo_BAR key should be in uppercase"),
+            )],
+        );
     }
 }

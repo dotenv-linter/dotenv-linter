@@ -42,38 +42,73 @@ impl Check for LeadingCharacterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
     const MESSAGE: &str = "Invalid leading character detected";
 
-    check_tester! {
-        LeadingCharacterChecker;
-        no_leading_chars_test => {
-            "FOO=BAR" => None,
-        },
-        blank_line => {
-            "" => None,
-        },
-        leading_underscore => {
-            "_FOO=BAR" => None,
-        },
-        leading_dot => {
-            ".FOO=BAR" => Some(MESSAGE),
-        },
-        leading_asterisk => {
-            "*FOO=BAR" => Some(MESSAGE),
-        },
-        leading_number => {
-            "1FOO=BAR" => Some(MESSAGE),
-        },
-        leading_space => {
-            " FOO=BAR" => Some(MESSAGE),
-        },
-        two_leading_spaces => {
-            "  FOO=BAR" => Some(MESSAGE),
-        },
-        leading_tab => {
-            "\tFOO=BAR" => Some(MESSAGE),
-        }
+    #[test]
+    fn no_leading_chars_test() {
+        check_test(&mut LeadingCharacterChecker::default(), [("FOO=BAR", None)]);
+    }
+
+    #[test]
+    fn blank_line() {
+        check_test(&mut LeadingCharacterChecker::default(), [("", None)]);
+    }
+
+    #[test]
+    fn leading_underscore() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [("_FOO=BAR", None)],
+        );
+    }
+
+    #[test]
+    fn leading_dot() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [(".FOO=BAR", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn leading_asterisk() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [("*FOO=BAR", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn leading_number() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [("1FOO=BAR", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn leading_space() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [(" FOO=BAR", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn two_leading_spaces() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [("  FOO=BAR", Some(MESSAGE))],
+        );
+    }
+
+    #[test]
+    fn leading_tab() {
+        check_test(
+            &mut LeadingCharacterChecker::default(),
+            [("\tFOO=BAR", Some(MESSAGE))],
+        );
     }
 }

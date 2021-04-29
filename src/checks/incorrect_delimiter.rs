@@ -48,47 +48,104 @@ impl Check for IncorrectDelimiterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
-    check_tester! {
-        IncorrectDelimiterChecker;
-        working_run => {
-            "FOO_BAR=FOOBAR" => None,
-        },
-        working_with_digits_run => {
-            "F100=BAR" => None,
-        },
-        working_with_export_run => {
-            "export FOO=BAR" => None,
-        },
-        incorrect_leading_char => {
-            // expect None because this warning should be found by LeadingCharacterChecker
-            "*FOO=BAR" => None,
-        },
-        incorrect_leading_chars_and_invalid_delimiter => {
-            "***F-OOBAR=BAZ" => Some("The ***F-OOBAR key has incorrect delimiter"),
-        },
-        incorrect_ending_delimiter => {
-            "FOO*=BAR" => Some("The FOO* key has incorrect delimiter"),
-        },
-        failing_run => {
-            "FOO-BAR=FOOBAR" => Some("The FOO-BAR key has incorrect delimiter"),
-        },
-        failing_with_whitespace_run => {
-            "FOO BAR=FOOBAR" => Some("The FOO BAR key has incorrect delimiter"),
-        },
-        unformatted_run => {
-            "FOO-BAR" => Some("The FOO-BAR key has incorrect delimiter"),
-        },
-        trailing_space_run => {
-            // has a trailing space, so SpaceCharacterChecker should catch this error
-            "FOO_BAR =FOOBAR" => None,
-        },
-        empty_run => {
-            "" => None,
-        },
-        short_run => {
-            "F=BAR" => None,
-        }
+    #[test]
+    fn working_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO_BAR=FOOBAR", None)],
+        );
+    }
+
+    #[test]
+    fn working_with_digits_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("F100=BAR", None)],
+        );
+    }
+
+    #[test]
+    fn working_with_export_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("export FOO=BAR", None)],
+        );
+    }
+
+    #[test]
+    fn incorrect_leading_char() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("*FOO=BAR", None)],
+        );
+    }
+
+    #[test]
+    fn incorrect_leading_chars_and_invalid_delimiter() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "***F-OOBAR=BAZ",
+                Some("The ***F-OOBAR key has incorrect delimiter"),
+            )],
+        );
+    }
+
+    #[test]
+    fn incorrect_ending_delimiter() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO*=BAR", Some("The FOO* key has incorrect delimiter"))],
+        );
+    }
+
+    #[test]
+    fn failing_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "FOO-BAR=FOOBAR",
+                Some("The FOO-BAR key has incorrect delimiter"),
+            )],
+        );
+    }
+
+    #[test]
+    fn failing_with_whitespace_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "FOO BAR=FOOBAR",
+                Some("The FOO BAR key has incorrect delimiter"),
+            )],
+        );
+    }
+
+    #[test]
+    fn unformatted_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO-BAR", Some("The FOO-BAR key has incorrect delimiter"))],
+        );
+    }
+
+    #[test]
+    fn trailing_space_run() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO_BAR =FOOBAR", None)],
+        );
+    }
+
+    #[test]
+    fn empty_run() {
+        check_test(&mut IncorrectDelimiterChecker::default(), [("", None)]);
+    }
+
+    #[test]
+    fn short_run() {
+        check_test(&mut IncorrectDelimiterChecker::default(), [("F=BAR", None)]);
     }
 }

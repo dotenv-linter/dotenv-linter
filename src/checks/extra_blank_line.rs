@@ -50,31 +50,48 @@ impl Check for ExtraBlankLineChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{check_tester, common::tests::*};
+    use crate::common::tests::*;
 
-    check_tester! {
-        ExtraBlankLineChecker;
-        no_blank_lines => {
-            "A=B" => None,
-            "C=D" => None,
-        },
-        single_blank_line => {
-            "A=B"   => None,
-            ""      => None,
-            "C=D"   => None,
-        },
-        two_blank_lines => {
-            "A=B"   => None,
-            ""      => None,
-            ""      => Some("Extra blank line detected"),
-            "C=D"   => None,
-        },
-        three_blank_lines => {
-            "A=B"   => None,
-            ""      => None,
-            ""      => Some("Extra blank line detected"),
-            ""      => Some("Extra blank line detected"),
-            "C=D"   => None,
-        }
+    #[test]
+    fn no_blank_lines() {
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [("A=B", None), ("C=D", None)],
+        );
+    }
+
+    #[test]
+    fn single_blank_line() {
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [("A=B", None), ("", None), ("C=D", None)],
+        );
+    }
+
+    #[test]
+    fn two_blank_lines() {
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [
+                ("A=B", None),
+                ("", None),
+                ("", Some("Extra blank line detected")),
+                ("C=D", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn three_blank_lines() {
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [
+                ("A=B", None),
+                ("", None),
+                ("", Some("Extra blank line detected")),
+                ("", Some("Extra blank line detected")),
+                ("C=D", None),
+            ],
+        );
     }
 }
