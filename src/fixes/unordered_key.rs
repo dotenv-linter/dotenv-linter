@@ -35,7 +35,7 @@ impl Fix for UnorderedKeyFixer<'_> {
 
     fn fix_warnings(
         &mut self,
-        warnings: Vec<&mut Warning>,
+        warning_lines: &[usize],
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         // We find all sorting groups and sort them
@@ -102,7 +102,7 @@ impl Fix for UnorderedKeyFixer<'_> {
             }
         }
 
-        Some(warnings.len())
+        Some(warning_lines.len())
     }
 
     fn is_mandatory(&self) -> bool {

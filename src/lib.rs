@@ -1,5 +1,6 @@
 use crate::common::*;
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::error::Error;
 use std::path::{Path, PathBuf};
@@ -67,10 +68,18 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
         output.print_processing_info(&fe);
 
         let mut lines = get_line_entries(&fe, strings);
-        let mut result = checks::run(&lines, &skip_checks);
+        let result = checks::run(&lines, &skip_checks);
+
+        // populate a map of warning name to line numbers where the warning is reported.
+        let mut warning_to_lines: HashMap<String, Vec<usize>> = HashMap::new();
+        for warning in &result {
+            let w_name = warning.check_name.clone();
+            let lines = warning_to_lines.entry(w_name).or_insert_with(Vec::new);
+            lines.push(warning.line_number());
+        }
 
         // run fixers & write results to file
-        if !result.is_empty() && fixes::run(&mut result, &mut lines, &skip_checks) > 0 {
+        if !result.is_empty() && fixes::run(warning_to_lines, &mut lines, &skip_checks) > 0 {
             let should_backup = !args.is_present("no-backup");
             // create backup copy unless user specifies not to
             if should_backup {

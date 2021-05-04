@@ -1,4 +1,5 @@
 use crate::common::*;
+use std::collections::HashMap;
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -17,12 +18,12 @@ trait Fix {
 
     fn fix_warnings(
         &mut self,
-        warnings: Vec<&mut Warning>,
+        warning_lines: &[usize],
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         let mut count: usize = 0;
-        for warning in warnings {
-            let line = lines.get_mut(warning.line_number() - 1)?;
+        for line_no in warning_lines {
+            let line = lines.get_mut(line_no - 1)?;
             if self.fix_line(line).is_some() {
                 count += 1;
             }
@@ -60,8 +61,12 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     ]
 }
 
-pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[&str]) -> usize {
-    if warnings.is_empty() {
+pub fn run(
+    warning_to_lines: HashMap<String, Vec<usize>>,
+    lines: &mut Vec<LineEntry>,
+    skip_checks: &[&str],
+) -> usize {
+    if warning_to_lines.is_empty() {
         return 0;
     }
     let mut fixes = fixlist();
@@ -70,12 +75,12 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[
     fixes.retain(|f| !skip_checks.contains(&f.name()));
 
     let mut count = 0;
+    let empty_warnings = vec![];
     for mut fixer in fixes {
-        // We can optimize it: create check_name:warnings map in advance
-        let fixer_warnings: Vec<&mut Warning> = warnings
-            .iter_mut()
-            .filter(|w| w.check_name == fixer.name())
-            .collect();
+        let fixer_warnings = match warning_to_lines.get(fixer.name()) {
+            Some(line_nos) => line_nos,
+            None => &empty_warnings,
+        };
 
         // Some fixers are mandatory because previous fixers can spawn warnings for them
         if fixer.is_mandatory() || !fixer_warnings.is_empty() {

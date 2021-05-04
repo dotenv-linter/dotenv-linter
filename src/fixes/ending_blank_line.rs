@@ -20,7 +20,7 @@ impl Fix for EndingBlankLineFixer<'_> {
 
     fn fix_warnings(
         &mut self,
-        _warnings: Vec<&mut Warning>,
+        _warning_lines: &[usize],
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         let last_line = lines.last()?;

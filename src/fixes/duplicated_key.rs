@@ -21,7 +21,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
 
     fn fix_warnings(
         &mut self,
-        warnings: Vec<&mut Warning>,
+        warning_lines: &[usize],
         lines: &mut Vec<LineEntry>,
     ) -> Option<usize> {
         let mut keys = HashSet::with_capacity(lines.len());
@@ -46,7 +46,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
             }
         }
 
-        Some(warnings.len())
+        Some(warning_lines.len())
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
