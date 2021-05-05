@@ -26,7 +26,7 @@ impl Default for UnorderedKeyChecker<'_> {
 }
 
 impl Check for UnorderedKeyChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let has_substitution_in_group = line
             .get_substitution_keys()
             .iter()
@@ -51,7 +51,7 @@ impl Check for UnorderedKeyChecker<'_> {
         let another_key = sorted_keys.iter().skip_while(|&s| s != key).nth(1)?;
 
         Some(Warning::new(
-            line.clone(),
+            line,
             self.name(),
             self.message(&key, &another_key),
         ))

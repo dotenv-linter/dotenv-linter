@@ -22,12 +22,12 @@ impl Default for SpaceCharacterChecker<'_> {
 }
 
 impl Check for SpaceCharacterChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let line_splitted = line.raw_string.split('=').collect::<Vec<&str>>();
 
         if let [key, value] = &line_splitted[..] {
             if key.ends_with(' ') || value.starts_with(' ') {
-                return Some(Warning::new(line.clone(), self.name(), self.message()));
+                return Some(Warning::new(line, self.name(), self.message()));
             }
         }
 

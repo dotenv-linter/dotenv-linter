@@ -22,14 +22,14 @@ impl Default for QuoteCharacterChecker<'_> {
 }
 
 impl Check for QuoteCharacterChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let val = line.get_value()?;
         if val.contains("\\n") || val.contains(char::is_whitespace) {
             return None;
         }
 
         if val.contains('\"') || val.contains('\'') {
-            Some(Warning::new(line.clone(), self.name(), self.message()))
+            Some(Warning::new(line, self.name(), self.message()))
         } else {
             None
         }

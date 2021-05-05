@@ -70,6 +70,9 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
         let mut lines = get_line_entries(&fe, strings);
         let result = checks::run(&lines, &skip_checks);
 
+        output.print_warnings(&result, index);
+        warnings_count += result.len();
+
         // populate a map of warning name to line numbers where the warning is reported.
         let mut warning_to_lines: HashMap<String, Vec<usize>> = HashMap::new();
         for warning in &result {
@@ -90,9 +93,6 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
             // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
         }
-
-        output.print_warnings(&result, index);
-        warnings_count += result.len();
     }
 
     output.print_total(warnings_count);

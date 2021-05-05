@@ -16,12 +16,12 @@ impl Default for LowercaseKeyChecker<'_> {
 }
 
 impl Check for LowercaseKeyChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let key = line.get_key()?;
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line.clone(), self.name(), self.message(&key)))
+            Some(Warning::new(line, self.name(), self.message(&key)))
         }
     }
 

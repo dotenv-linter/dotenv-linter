@@ -14,7 +14,7 @@ mod unordered_key;
 
 // This trait is used for checks which needs to know of only a single line
 trait Check {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning>;
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>>;
     fn name(&self) -> &str;
     fn skip_comments(&self) -> bool {
         true
@@ -45,7 +45,7 @@ pub fn available_check_names() -> Vec<String> {
         .collect()
 }
 
-pub fn run(lines: &[LineEntry], skip_checks: &[&str]) -> Vec<Warning> {
+pub fn run<'l>(lines: &'l [LineEntry], skip_checks: &[&str]) -> Vec<Warning<'l>> {
     let mut checks = checklist();
 
     // Skip checks with the --skip argument (globally)

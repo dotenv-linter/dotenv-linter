@@ -22,11 +22,11 @@ impl Default for TrailingWhitespaceChecker<'_> {
 }
 
 impl Check for TrailingWhitespaceChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let raw_string = &line.raw_string;
 
         if raw_string.ends_with(' ') {
-            return Some(Warning::new(line.clone(), self.name, self.message()));
+            return Some(Warning::new(line, self.name, self.message()));
         }
 
         None

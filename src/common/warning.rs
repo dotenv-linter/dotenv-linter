@@ -3,14 +3,18 @@ use std::fmt;
 use crate::common::*;
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct Warning {
+pub struct Warning<'l> {
     pub check_name: String,
-    line: LineEntry,
+    line: &'l LineEntry,
     message: String,
 }
 
-impl Warning {
-    pub fn new(line: LineEntry, check_name: impl Into<String>, message: impl Into<String>) -> Self {
+impl<'l> Warning<'l> {
+    pub fn new(
+        line: &'l LineEntry,
+        check_name: impl Into<String>,
+        message: impl Into<String>,
+    ) -> Self {
         let check_name = check_name.into();
         let message = message.into();
         Self {
@@ -25,7 +29,7 @@ impl Warning {
     }
 }
 
-impl fmt::Display for Warning {
+impl<'l> fmt::Display for Warning<'l> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,

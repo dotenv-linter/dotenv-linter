@@ -25,11 +25,11 @@ impl Default for DuplicatedKeyChecker<'_> {
 }
 
 impl Check for DuplicatedKeyChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let key = line.get_key()?;
 
         if self.keys.contains(key) {
-            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
+            return Some(Warning::new(line, self.name(), self.message(&key)));
         }
 
         self.keys.insert(key.to_string());

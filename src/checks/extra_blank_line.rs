@@ -24,7 +24,7 @@ impl Default for ExtraBlankLineChecker<'_> {
 }
 
 impl Check for ExtraBlankLineChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         if !line.is_empty() {
             return None;
         }
@@ -36,7 +36,7 @@ impl Check for ExtraBlankLineChecker<'_> {
         self.last_blank_number = Some(line.number);
 
         if is_extra {
-            return Some(Warning::new(line.clone(), self.name(), self.message()));
+            return Some(Warning::new(line, self.name(), self.message()));
         }
 
         None

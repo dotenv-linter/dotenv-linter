@@ -22,10 +22,10 @@ impl KeyWithoutValueChecker<'_> {
 }
 
 impl Check for KeyWithoutValueChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         if !(line.is_empty() || line.raw_string.contains('=')) {
             Some(Warning::new(
-                line.clone(),
+                line,
                 self.name(),
                 self.message(line.get_key().unwrap_or(&line.raw_string)),
             ))

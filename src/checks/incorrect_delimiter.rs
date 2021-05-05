@@ -22,7 +22,7 @@ impl Default for IncorrectDelimiterChecker<'_> {
 }
 
 impl Check for IncorrectDelimiterChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         let key = line.get_key()?;
 
         // delimiters occur /between/ characters, not as the initial character, so we should
@@ -34,7 +34,7 @@ impl Check for IncorrectDelimiterChecker<'_> {
             .chars()
             .any(|c| !c.is_alphanumeric() && c != '_')
         {
-            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
+            return Some(Warning::new(line, self.name(), self.message(&key)));
         }
 
         None

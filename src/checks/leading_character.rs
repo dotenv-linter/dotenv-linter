@@ -22,7 +22,7 @@ impl LeadingCharacterChecker<'_> {
 }
 
 impl Check for LeadingCharacterChecker<'_> {
-    fn run(&mut self, line: &LineEntry) -> Option<Warning> {
+    fn run<'l>(&mut self, line: &'l LineEntry) -> Option<Warning<'l>> {
         if line.is_empty()
             || line
                 .raw_string
@@ -30,7 +30,7 @@ impl Check for LeadingCharacterChecker<'_> {
         {
             None
         } else {
-            Some(Warning::new(line.clone(), self.name(), self.message()))
+            Some(Warning::new(line, self.name(), self.message()))
         }
     }
 
