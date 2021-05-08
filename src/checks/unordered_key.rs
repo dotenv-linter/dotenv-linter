@@ -71,221 +71,137 @@ mod tests {
     use super::*;
     use crate::common::tests::*;
 
-    fn run_unordered_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
-        let mut checker = UnorderedKeyChecker::default();
-
-        for assert in asserts {
-            let (input, output) = assert;
-            assert_eq!(checker.run(&input), output);
-        }
-    }
-
     #[test]
     fn one_key_test() {
-        let asserts = vec![(line_entry(1, 1, ""), None)];
-
-        run_unordered_tests(asserts);
+        check_test(&mut UnorderedKeyChecker::default(), [("", None)]);
     }
 
     #[test]
-    fn two_ordered_keys_test() {
-        let asserts = vec![(line_entry(1, 2, ""), None), (line_entry(2, 2, ""), None)];
-
-        run_unordered_tests(asserts);
+    fn two_ordered_key_test() {
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [("", None), ("", None)],
+        );
     }
 
     #[test]
     fn one_unordered_key_test() {
-        let asserts = vec![
-            (line_entry(1, 2, "FOO=BAR"), None),
-            (
-                line_entry(2, 2, "BAR=FOO"),
-                Some(Warning::new(
-                    line_entry(2, 2, "BAR=FOO"),
-                    "UnorderedKey",
-                    "The BAR key should go before the FOO key",
-                )),
-            ),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("BAR=FOO", Some("The BAR key should go before the FOO key")),
+            ],
+        );
     }
 
     #[test]
     fn two_unordered_keys_before_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
-            (
-                line_entry(2, 3, "BAR=FOO"),
-                Some(Warning::new(
-                    line_entry(2, 3, "BAR=FOO"),
-                    "UnorderedKey",
-                    "The BAR key should go before the FOO key",
-                )),
-            ),
-            (
-                line_entry(3, 3, "ABC=BAR"),
-                Some(Warning::new(
-                    line_entry(3, 3, "ABC=BAR"),
-                    "UnorderedKey",
-                    "The ABC key should go before the BAR key",
-                )),
-            ),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("BAR=FOO", Some("The BAR key should go before the FOO key")),
+                ("ABC=BAR", Some("The ABC key should go before the BAR key")),
+            ],
+        );
     }
 
     #[test]
     fn two_unordered_keys_before_and_after_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
-            (
-                line_entry(2, 3, "BAR=FOO"),
-                Some(Warning::new(
-                    line_entry(2, 3, "BAR=FOO"),
-                    "UnorderedKey",
-                    "The BAR key should go before the FOO key",
-                )),
-            ),
-            (
-                line_entry(3, 3, "DDD=BAR"),
-                Some(Warning::new(
-                    line_entry(3, 3, "DDD=BAR"),
-                    "UnorderedKey",
-                    "The DDD key should go before the FOO key",
-                )),
-            ),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("BAR=FOO", Some("The BAR key should go before the FOO key")),
+                ("DDD=BAR", Some("The DDD key should go before the FOO key")),
+            ],
+        );
     }
 
     #[test]
     fn two_ordered_and_two_unordered_keys_test() {
-        let asserts = vec![
-            (line_entry(1, 4, "FOO=BAR"), None),
-            (
-                line_entry(2, 4, "BAR=FOO"),
-                Some(Warning::new(
-                    line_entry(2, 4, "BAR=FOO"),
-                    "UnorderedKey",
-                    "The BAR key should go before the FOO key",
-                )),
-            ),
-            (
-                line_entry(3, 4, "DDD=BAR"),
-                Some(Warning::new(
-                    line_entry(3, 4, "DDD=BAR"),
-                    "UnorderedKey",
-                    "The DDD key should go before the FOO key",
-                )),
-            ),
-            (line_entry(4, 4, "ZOO=BAR"), None),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("BAR=FOO", Some("The BAR key should go before the FOO key")),
+                ("DDD=BAR", Some("The DDD key should go before the FOO key")),
+                ("ZOO=BAR", None),
+            ],
+        );
     }
 
     #[test]
     fn one_unordered_key_with_blank_line_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
-            (line_entry(2, 3, ""), None),
-            (line_entry(3, 3, "BAR=FOO"), None),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [("FOO=BAR", None), ("", None), ("BAR=FOO", None)],
+        );
     }
 
     #[test]
     fn one_unordered_key_with_control_comment_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
-            (line_entry(2, 3, "# dotenv-linter:off LowercaseKey"), None),
-            (line_entry(3, 3, "Bar=FOO"), None),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("# dotenv-linter:off LowercaseKey", None),
+                ("Bar=FOO", None),
+            ],
+        );
     }
 
     #[test]
     fn two_ordered_groups_with_two_substitution_keys_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "ABC=XYZ"), None),
-            (line_entry(2, 3, "KEY=VALUE"), None),
-            (line_entry(3, 3, "FOO=$KEY # Unordered, FOO uses KEY"), None),
-            (line_entry(4, 3, "BAR=FOO"), None),
-            (line_entry(5, 3, "BOO=$FOO"), None),
-            (line_entry(6, 3, "XYZ=ABC"), None),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("ABC=XYZ", None),
+                ("KEY=VALUE", None),
+                ("FOO=$KEY # Unordered, FOO uses KEY", None),
+                ("BAR=FOO", None),
+                ("BOO=$FOO", None),
+                ("XYZ=ABC", None),
+            ],
+        );
     }
 
     #[test]
     fn three_ordered_groups_with_two_unordered_substitution_keys_that_have_multiple_values_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "BBB=XYZ"), None),
-            (line_entry(2, 3, "HHH=VAL"), None),
-            (line_entry(3, 3, "ZZZ=VALUE"), None),
-            (
-                line_entry(4, 3, "CCC=$NNN$HHH # Unordered, CCC uses HHH"),
-                None,
-            ),
-            (line_entry(5, 3, "BAR=FOOD"), None),
-            (line_entry(6, 3, "BIG=FOOT"), None),
-            (line_entry(7, 3, "WWW=$XYZ$TTT"), None),
-            (line_entry(8, 3, "YYY=FOO"), None),
-            (
-                line_entry(9, 3, "BOO=$BAR$BBB$ZZZ # Unordered, BOO uses BAR"),
-                None,
-            ),
-            (line_entry(10, 3, "TTT=BIG"), None),
-            (line_entry(11, 3, "XYZ=G"), None),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("BBB=XYZ", None),
+                ("HHH=VAL", None),
+                ("ZZZ=VALUE", None),
+                ("CCC=$NNN$HHH # Unordered, CCC uses HHH", None),
+                ("BAR=FOOD", None),
+                ("BIG=FOOT", None),
+                ("WWW=$XYZ$TTT", None),
+                ("YYY=FOO", None),
+                ("BOO=$BAR$BBB$ZZZ # Unordered, BOO uses BAR", None),
+                ("TTT=BIG", None),
+                ("XYZ=G", None),
+            ],
+        );
     }
 
     #[test]
     fn two_unordered_groups_before_and_after_unordered_substitution_keys_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "HHH=VAL"), None),
-            (line_entry(2, 3, "ZZZ=VALUE"), None),
-            (
-                line_entry(3, 3, "BBB=$XYZ"),
-                Some(Warning::new(
-                    line_entry(3, 3, "BBB=$XYZ"),
-                    "UnorderedKey",
-                    "The BBB key should go before the HHH key",
-                )),
-            ),
-            (line_entry(4, 3, "CCC=$HHH # Unordered, CCC uses HHH"), None),
-            (line_entry(5, 3, "TTT=BIG"), None),
-            (line_entry(6, 3, "XYZ=G"), None),
-            (
-                line_entry(7, 3, "GGG=JJJ"),
-                Some(Warning::new(
-                    line_entry(7, 3, "GGG=JJJ"),
-                    "UnorderedKey",
-                    "The GGG key should go before the TTT key",
-                )),
-            ),
-            (
-                line_entry(8, 3, "AAA=$ZZZ"),
-                Some(Warning::new(
-                    line_entry(8, 3, "AAA=$ZZZ"),
-                    "UnorderedKey",
-                    "The AAA key should go before the GGG key",
-                )),
-            ),
-            (
-                line_entry(9, 3, "MMM=$GGG$ZZZ # Unordered, MMM uses GGG"),
-                None,
-            ),
-        ];
-
-        run_unordered_tests(asserts);
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [
+                ("HHH=VAL", None),
+                ("ZZZ=VALUE", None),
+                ("BBB=$XYZ", Some("The BBB key should go before the HHH key")),
+                ("CCC=$HHH # Unordered, CCC uses HHH", None),
+                ("TTT=BIG", None),
+                ("XYZ=G", None),
+                ("GGG=JJJ", Some("The GGG key should go before the TTT key")),
+                ("AAA=$ZZZ", Some("The AAA key should go before the GGG key")),
+                ("MMM=$GGG$ZZZ # Unordered, MMM uses GGG", None),
+            ],
+        );
     }
 }

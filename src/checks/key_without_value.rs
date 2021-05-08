@@ -46,34 +46,27 @@ mod tests {
 
     #[test]
     fn working_run_with_value() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "FOO=BAR");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut KeyWithoutValueChecker::default(), [("FOO=BAR", None)]);
     }
 
     #[test]
     fn working_run_with_blank_line() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut KeyWithoutValueChecker::default(), [("", None)]);
     }
 
     #[test]
     fn working_run_without_value() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "FOO=");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut KeyWithoutValueChecker::default(), [("FOO=", None)]);
     }
 
     #[test]
     fn failing_run() {
-        let mut checker = KeyWithoutValueChecker::default();
-        let line = line_entry(1, 1, "FOO");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "KeyWithoutValue",
-            "The FOO key should be with a value or have an equal sign",
-        ));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut KeyWithoutValueChecker::default(),
+            [(
+                "FOO",
+                Some("The FOO key should be with a value or have an equal sign"),
+            )],
+        );
     }
 }

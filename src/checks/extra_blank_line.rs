@@ -52,55 +52,46 @@ mod tests {
     use super::*;
     use crate::common::tests::*;
 
-    fn run_asserts(asserts: Vec<(&str, Option<&str>)>) {
-        let mut checker = ExtraBlankLineChecker::default();
-
-        for (i, assert) in asserts.iter().enumerate() {
-            let (content, message) = *assert;
-            let line = line_entry(i + 1, asserts.len(), content);
-
-            let expected = message.map(|msg| Warning::new(line.clone(), "ExtraBlankLine", msg));
-
-            assert_eq!(checker.run(&line), expected);
-        }
-    }
-
     #[test]
     fn no_blank_lines() {
-        let asserts = vec![("A=B", None), ("C=D", None)];
-
-        run_asserts(asserts);
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [("A=B", None), ("C=D", None)],
+        );
     }
 
     #[test]
     fn single_blank_line() {
-        let asserts = vec![("A=B", None), ("", None), ("C=D", None)];
-
-        run_asserts(asserts);
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [("A=B", None), ("", None), ("C=D", None)],
+        );
     }
 
     #[test]
     fn two_blank_lines() {
-        let asserts = vec![
-            ("A=B", None),
-            ("", None),
-            ("", Some("Extra blank line detected")),
-            ("C=D", None),
-        ];
-
-        run_asserts(asserts);
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [
+                ("A=B", None),
+                ("", None),
+                ("", Some("Extra blank line detected")),
+                ("C=D", None),
+            ],
+        );
     }
 
     #[test]
     fn three_blank_lines() {
-        let asserts = vec![
-            ("A=B", None),
-            ("", None),
-            ("", Some("Extra blank line detected")),
-            ("", Some("Extra blank line detected")),
-            ("C=D", None),
-        ];
-
-        run_asserts(asserts);
+        check_test(
+            &mut ExtraBlankLineChecker::default(),
+            [
+                ("A=B", None),
+                ("", None),
+                ("", Some("Extra blank line detected")),
+                ("", Some("Extra blank line detected")),
+                ("C=D", None),
+            ],
+        );
     }
 }

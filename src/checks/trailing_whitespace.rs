@@ -46,16 +46,17 @@ mod tests {
 
     #[test]
     fn working_run() {
-        let mut checker = TrailingWhitespaceChecker::default();
-        let line = line_entry(1, 1, "DEBUG_HTTP=true");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut TrailingWhitespaceChecker::default(),
+            [("DEBUG_HTTP=true", None)],
+        );
     }
 
     #[test]
     fn failing_trailing_run() {
-        let mut checker = TrailingWhitespaceChecker::default();
-        let line = line_entry(1, 1, "DEBUG_HTTP=true  ");
-        let expected = Some(Warning::new(line.clone(), "TrailingWhitespace", MESSAGE));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut TrailingWhitespaceChecker::default(),
+            [("DEBUG_HTTP=true  ", Some(MESSAGE))],
+        );
     }
 }

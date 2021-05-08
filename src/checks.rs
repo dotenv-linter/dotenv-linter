@@ -14,7 +14,7 @@ mod trailing_whitespace;
 mod unordered_key;
 
 // This trait is used for checks which needs to know of only a single line
-trait Check {
+pub trait Check {
     fn run(&mut self, line: &LineEntry) -> Option<Warning>;
     fn name(&self) -> &str;
     fn skip_comments(&self) -> bool {

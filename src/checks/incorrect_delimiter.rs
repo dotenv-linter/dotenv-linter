@@ -52,116 +52,100 @@ mod tests {
 
     #[test]
     fn working_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "FOO_BAR=FOOBAR");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO_BAR=FOOBAR", None)],
+        );
     }
 
     #[test]
     fn working_with_digits_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "F1OO=BAR");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("F100=BAR", None)],
+        );
     }
 
     #[test]
     fn working_with_export_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "export FOO=BAR");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("export FOO=BAR", None)],
+        );
     }
 
     #[test]
     fn incorrect_leading_char() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "*FOO=BAR");
-        // expect None because this warning should be found by LeadingCharacterChecker
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("*FOO=BAR", None)],
+        );
     }
 
     #[test]
     fn incorrect_leading_chars_and_invalid_delimiter() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "***F-OOBAR=BAZ");
-
-        let expected = Some(Warning::new(
-            line.clone(),
-            "IncorrectDelimiter",
-            "The ***F-OOBAR key has incorrect delimiter",
-        ));
-
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "***F-OOBAR=BAZ",
+                Some("The ***F-OOBAR key has incorrect delimiter"),
+            )],
+        );
     }
 
     #[test]
     fn incorrect_ending_delimiter() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "FOO*=BAR");
-
-        let expected = Some(Warning::new(
-            line.clone(),
-            "IncorrectDelimiter",
-            "The FOO* key has incorrect delimiter",
-        ));
-
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO*=BAR", Some("The FOO* key has incorrect delimiter"))],
+        );
     }
 
     #[test]
     fn failing_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "FOO-BAR=FOOBAR");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "IncorrectDelimiter",
-            "The FOO-BAR key has incorrect delimiter",
-        ));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "FOO-BAR=FOOBAR",
+                Some("The FOO-BAR key has incorrect delimiter"),
+            )],
+        );
     }
 
     #[test]
     fn failing_with_whitespace_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "FOO BAR=FOOBAR");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "IncorrectDelimiter",
-            "The FOO BAR key has incorrect delimiter",
-        ));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "FOO BAR=FOOBAR",
+                Some("The FOO BAR key has incorrect delimiter"),
+            )],
+        );
     }
 
     #[test]
     fn unformatted_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "FOO-BAR");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "IncorrectDelimiter",
-            "The FOO-BAR key has incorrect delimiter",
-        ));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO-BAR", Some("The FOO-BAR key has incorrect delimiter"))],
+        );
     }
 
     #[test]
     fn trailing_space_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "FOO_BAR =FOOBAR");
-        // has a trailing space, so SpaceCharacterChecker should catch this error
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [("FOO_BAR =FOOBAR", None)],
+        );
     }
 
     #[test]
     fn empty_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut IncorrectDelimiterChecker::default(), [("", None)]);
     }
 
     #[test]
     fn short_run() {
-        let mut checker = IncorrectDelimiterChecker::default();
-        let line = line_entry(1, 1, "F=BAR");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut IncorrectDelimiterChecker::default(), [("F=BAR", None)]);
     }
 }

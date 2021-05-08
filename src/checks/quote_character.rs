@@ -45,73 +45,43 @@ mod tests {
     use super::*;
     use crate::common::tests::*;
 
-    fn run_quote_char_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
-        let mut checker = QuoteCharacterChecker::default();
-
-        for assert in asserts {
-            let (input, output) = assert;
-            assert_eq!(checker.run(&input), output);
-        }
-    }
+    const WARNING: &str = "The value has quote characters (\', \")";
 
     #[test]
     fn with_single_quote_test() {
-        let asserts = vec![
-            (line_entry(1, 4, "FOO=BAR"), None),
-            (
-                line_entry(2, 4, "FOO='BAR'"),
-                Some(Warning::new(
-                    line_entry(2, 4, "FOO='BAR'"),
-                    "QuoteCharacter",
-                    "The value has quote characters (\', \")",
-                )),
-            ),
-            (
-                line_entry(3, 4, "FOO='B\"AR'"),
-                Some(Warning::new(
-                    line_entry(3, 4, "FOO='B\"AR'"),
-                    "QuoteCharacter",
-                    "The value has quote characters (\', \")",
-                )),
-            ),
-            (line_entry(4, 4, "FOO=\'BAR BAR\'"), None),
-        ];
-
-        run_quote_char_tests(asserts);
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO='BAR'", Some(WARNING)),
+                ("FOO='B\"AR'", Some(WARNING)),
+                ("FOO=\'BAR BAR\'", None),
+            ],
+        );
     }
 
     #[test]
     fn with_double_quote_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "FOO=BAR"), None),
-            (
-                line_entry(2, 3, "FOO=\"BAR\""),
-                Some(Warning::new(
-                    line_entry(2, 3, "FOO=\"BAR\""),
-                    "QuoteCharacter",
-                    "The value has quote characters (\', \")",
-                )),
-            ),
-            (line_entry(3, 3, "FOO=\"BAR BAR\""), None),
-        ];
-
-        run_quote_char_tests(asserts);
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=BAR", None),
+                ("FOO=\"Bar\"", Some(WARNING)),
+                ("FOO=\"BAR BAR\"", None),
+            ],
+        );
     }
 
     #[test]
     fn with_substitution_keys_test() {
-        let asserts = vec![
-            (line_entry(1, 2, "BAR=\"$ABC\""), None),
-            (line_entry(2, 2, "FOO='${BAR}BAR'"), None),
-        ];
-
-        run_quote_char_tests(asserts);
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [("BAR=\"$ABC\"", None), ("FOO='${BAR}BAR'", None)],
+        );
     }
 
     #[test]
     fn with_no_quotes_test() {
-        let asserts = vec![(line_entry(1, 1, "FOO=BAR"), None)];
-
-        run_quote_char_tests(asserts);
+        check_test(&mut QuoteCharacterChecker::default(), [("FOO=BAR", None)]);
     }
 }

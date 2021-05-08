@@ -46,29 +46,19 @@ mod tests {
 
     #[test]
     fn blank_line() {
-        let mut checker = EndingBlankLineChecker::default();
-        let line = line_entry(1, 1, "\n");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut EndingBlankLineChecker::default(), [("\n", None)]);
     }
 
     #[test]
     fn blank_line_rn() {
-        let mut checker = EndingBlankLineChecker::default();
-        let line = line_entry(1, 1, "\r\n");
-
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut EndingBlankLineChecker::default(), [("\r\n", None)]);
     }
 
     #[test]
     fn no_blank_line() {
-        let mut checker = EndingBlankLineChecker::default();
-        let line = line_entry(1, 1, "a");
-        let expected = Some(Warning::new(
-            line.clone(),
-            "EndingBlankLine",
-            "No blank line at the end of the file",
-        ));
-
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut EndingBlankLineChecker::default(),
+            [("a", Some("No blank line at the end of the file"))],
+        );
     }
 }

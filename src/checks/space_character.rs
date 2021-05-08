@@ -48,60 +48,62 @@ mod tests {
 
     #[test]
     fn working_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "DEBUG_HTTP=true");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP=true", None)],
+        );
     }
 
     #[test]
     fn working_leading_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, " DEBUG_HTTP=true");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [(" DEBUG_HTTP=true", None)],
+        );
     }
 
     #[test]
     fn working_trailing_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "DEBUG_HTTP=true ");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP=true ", None)],
+        );
     }
 
     #[test]
     fn working_empty_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "");
-        assert_eq!(None, checker.run(&line));
+        check_test(&mut SpaceCharacterChecker::default(), [("", None)]);
     }
 
     #[test]
     fn working_no_equal_sign_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "DEBUG_HTTP true");
-        assert_eq!(None, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP true", None)],
+        );
     }
 
     #[test]
     fn failing_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "DEBUG-HTTP = true");
-        let expected = Some(Warning::new(line.clone(), "SpaceCharacter", MESSAGE));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP = true", Some(MESSAGE))],
+        );
     }
 
     #[test]
     fn failing_when_whitespace_before_equal_sign_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "DEBUG-HTTP =true");
-        let expected = Some(Warning::new(line.clone(), "SpaceCharacter", MESSAGE));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP =true", Some(MESSAGE))],
+        );
     }
 
     #[test]
     fn failing_when_whitespace_after_equal_sign_run() {
-        let mut checker = SpaceCharacterChecker::default();
-        let line = line_entry(1, 1, "DEBUG-HTTP= true");
-        let expected = Some(Warning::new(line.clone(), "SpaceCharacter", MESSAGE));
-        assert_eq!(expected, checker.run(&line));
+        check_test(
+            &mut SpaceCharacterChecker::default(),
+            [("DEBUG_HTTP= true", Some(MESSAGE))],
+        );
     }
 }

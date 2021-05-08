@@ -74,110 +74,73 @@ mod tests {
     use super::*;
     use crate::common::tests::*;
 
-    fn run_substitution_tests(asserts: Vec<(LineEntry, Option<Warning>)>) {
-        let mut checker = SubstitutionKeyChecker::default();
-
-        for assert in asserts {
-            let (input, output) = assert;
-            assert_eq!(checker.run(&input), output);
-        }
-    }
-
     #[test]
     fn correct_substitution_key_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "ABC=$BAR"), None),
-            (line_entry(2, 3, "FOO=${BAR}"), None),
-            (line_entry(3, 3, "FOO=\"$BAR\""), None),
-        ];
-
-        run_substitution_tests(asserts);
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=$BAR", None),
+                ("FOO=${BAR}", None),
+                ("FOO=\"$BAR\"", None),
+            ],
+        );
     }
 
     #[test]
     fn incorrect_substitution_key_test() {
-        let asserts = vec![
-            (
-                line_entry(1, 3, "ABC=${BAR"),
-                Some(Warning::new(
-                    line_entry(1, 3, "ABC=${BAR"),
-                    "SubstitutionKey",
-                    "The ABC key is not assigned properly",
-                )),
-            ),
-            (
-                line_entry(2, 3, "FOO=${BAR!}"),
-                Some(Warning::new(
-                    line_entry(2, 3, "FOO=${BAR!}"),
-                    "SubstitutionKey",
-                    "The FOO key is not assigned properly",
-                )),
-            ),
-            (
-                line_entry(3, 3, "XYZ=$BAR}"),
-                Some(Warning::new(
-                    line_entry(3, 3, "XYZ=$BAR}"),
-                    "SubstitutionKey",
-                    "The XYZ key is not assigned properly",
-                )),
-            ),
-        ];
-
-        run_substitution_tests(asserts);
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=${BAR", Some("The ABC key is not assigned properly")),
+                ("FOO=${BAR!}", Some("The FOO key is not assigned properly")),
+                ("XYZ=$BAR}", Some("The XYZ key is not assigned properly")),
+            ],
+        );
     }
 
     #[test]
     fn multiple_substitution_key_test() {
-        let asserts = vec![
-            (line_entry(1, 3, "ABC=${BAR}$XYZ"), None),
-            (line_entry(2, 3, "FOO=$ABC{${BAR}"), None),
-            (line_entry(3, 3, "BIZ=$FOO-$ABC"), None),
-        ];
-
-        run_substitution_tests(asserts);
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=${BAR}$XYZ", None),
+                ("FOO=$ABC{${BAR}", None),
+                ("BIZ=$FOO-$ABC", None),
+            ],
+        );
     }
 
     #[test]
     fn incorrect_multiple_substitution_key_test() {
-        let asserts = vec![
-            (
-                line_entry(1, 3, "ABC=${BAR$XYZ}"),
-                Some(Warning::new(
-                    line_entry(1, 3, "ABC=${BAR$XYZ}"),
-                    "SubstitutionKey",
-                    "The ABC key is not assigned properly",
-                )),
-            ),
-            (
-                line_entry(2, 3, "FOO=${ABC-$BAR}"),
-                Some(Warning::new(
-                    line_entry(2, 3, "FOO=${ABC-$BAR}"),
-                    "SubstitutionKey",
-                    "The FOO key is not assigned properly",
-                )),
-            ),
-            (
-                line_entry(3, 3, "XYZ=${FOO${BAR}"),
-                Some(Warning::new(
-                    line_entry(3, 3, "XYZ=${FOO${BAR}"),
-                    "SubstitutionKey",
-                    "The XYZ key is not assigned properly",
-                )),
-            ),
-        ];
-
-        run_substitution_tests(asserts);
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                (
+                    "ABC=${BAR$XYZ}",
+                    Some("The ABC key is not assigned properly"),
+                ),
+                (
+                    "FOO=${ABC-$BAR}",
+                    Some("The FOO key is not assigned properly"),
+                ),
+                (
+                    "XYZ=${FOO${BAR}",
+                    Some("The XYZ key is not assigned properly"),
+                ),
+            ],
+        );
     }
 
     #[test]
     fn escaped_incorrect_substitution_key_test() {
-        let asserts = vec![
-            (line_entry(1, 4, "ABC=\\${BAR"), None),
-            (line_entry(2, 4, "FOO=\\$BAR}"), None),
-            (line_entry(3, 4, "FOO=\"\\${BAR\""), None),
-            (line_entry(4, 4, "FOO=\"\\$BAR}"), None),
-        ];
-
-        run_substitution_tests(asserts);
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("ABC=\\${BAR", None),
+                ("FOO=\\$BAR}", None),
+                ("FOO=\"\\${BAR\"", None),
+                ("FOO=\"\\$BAR}", None),
+            ],
+        );
     }
 }
