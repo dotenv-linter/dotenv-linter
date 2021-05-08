@@ -14,8 +14,8 @@ impl Warning {
         let check_name = check_name.into();
         let message = message.into();
         Self {
-            line,
             check_name,
+            line,
             message,
         }
     }

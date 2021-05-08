@@ -23,8 +23,6 @@ jobs:
           path: /usr/share/rust/.cargo
           key: bench-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Criterion Compare PRs
-        # https://github.com/boa-dev/criterion-compare-action/issues/18
-        # uses: boa-dev/criterion-compare-action@v2.0.0
-        uses: FrancisMurillo/criterion-compare-action@fix/trim-results
+        uses: boa-dev/criterion-compare-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
