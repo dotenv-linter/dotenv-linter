@@ -36,8 +36,6 @@ impl Fix for IncorrectDelimiterFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
-    use crate::fixes::run_fix_warnings;
-    use crate::lines_and_warnings;
 
     #[test]
     fn fix_line_test() {
@@ -68,14 +66,18 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = IncorrectDelimiterFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "RAILS-ENV=development" => Some(("IncorrectDelimiter", "The RAILS-ENV key has has an incorrect delimter")),
-            "RAILS_ENV=true" => None,
-            "\n" => None,
-        ];
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut IncorrectDelimiterFixer::default(),
+            vec![
+                TestLine::new("RAILS-ENV=development").warning(
+                    "IncorrectDelimiter",
+                    "The RAILS-ENV key has has an incorrect delimter",
+                ),
+                TestLine::new("RAILS_ENV=true"),
+                TestLine::new("\n"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(1), fix_count);
         assert_eq!(

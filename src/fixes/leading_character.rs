@@ -33,8 +33,6 @@ impl Fix for LeadingCharacterFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
-    use crate::fixes::run_fix_warnings;
-    use crate::lines_and_warnings;
 
     #[test]
     fn fix_leading_dot() {
@@ -101,22 +99,22 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = LeadingCharacterFixer::default();
-
         let warning_name = "LeadingCharacter";
         let message = "Invalid leading character detected";
 
-        let (lines, warnings) = lines_and_warnings![
-            ".FOO=BAR" => Some((warning_name, message)),
-            " Z=Y" => Some((warning_name, message)),
-            "*BAR=BAZ" => Some((warning_name, message)),
-            "1QUX=QUUX" => Some((warning_name, message)),
-            "_QUUX=FOOBAR" => None,
-            "KEY=VALUE" => None,
-            "\n" => None,
-        ];
-
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut LeadingCharacterFixer::default(),
+            vec![
+                TestLine::new(".FOO=BAR").warning(warning_name, message),
+                TestLine::new(" Z=Y").warning(warning_name, message),
+                TestLine::new("*BAR=BAZ").warning(warning_name, message),
+                TestLine::new("1QUX=QUUX").warning(warning_name, message),
+                TestLine::new("_QUUX=FOOBAR"),
+                TestLine::new("KEY=VALUE"),
+                TestLine::new("\n"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(4), fix_count);
         assert_eq!(

@@ -25,6 +25,7 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
 pub(crate) mod tests {
     use super::*;
     use crate::checks::Check;
+    use crate::fixes::Fix;
     use std::path::PathBuf;
     use std::rc::Rc;
 
@@ -111,72 +112,146 @@ pub(crate) mod tests {
     }
 
     /**
-    The purpose of this macro is to avoid boilerplate code while defining
-    input for tests in `Fix` trait implementations.
-    Since fixers work on a sequence of input lines and a set of warnings,
-    these tests often have to prepare a `Vec<LineEntry>` and a `Vec<Warning>`
-    to pass it to `Fix` methods.
+    `TestLine` is a helper type to prepare a line input for `Fix`
+    implementation tests. Since fixers work on a sequence of input
+    lines and a set of warnings, these tests require preparing line
+    entries and warnings mapping to those entries. `TestLine` make it
+    easier to define a test line entry with zero or more warnings
+    corresponding to the entry, in a manner independent of `LineEntry`
+    and `Warning` definitions.
 
-    Using this macro, input lines and warnings can be encoded in a vector
-    format, where each entry is a pair of a line and an optional warning
-    content. The macro takes care of determining the line numbers, thus
-    avoiding hard-coded integers.
-
-    Macro expands to a block whose value is of type
-    `(Vec<LineEntry>, Vec<Warning>)`.
-
-    # Examples:
+    Example of usage:
     ```
-    // input with 3 lines, 1 warning
-    let (lines, warnings) = lines_and_warnings![
-        "foO=BAR" => Some(("LowercaseKey","The FOO key should be in uppercase")),
-        "Z=Y" => None,
-        "" => None,
-    ];
-    ```
+    let lines = vec![
+       // line with no warning
+       TestLine::new("A=Foo"),
 
-    ```
-    // input with 3 lines, 0 warning
-    let (lines, warnings) = lines_and_warnings![
-        "FOO=BAR" => None,
-        "Z=Y" => None,
-        "" => None,
+       // line with one warning
+       TestLine::new("a=Foo").warning("LowercaseKey", "The a key should be in uppercase"),
+
+       // line with two warnings
+       TestLine::new("a")
+            .warning("LowercaseKey", "The a key should be in uppercase")
+            .warning(
+                "KeyWithoutValue",
+                "The a key should be with a value or have an equal sign",
+            ),
     ];
     ```
     */
-    #[cfg(test)]
-    #[macro_export]
-    macro_rules! lines_and_warnings {
-        (
-            $(
-                // each repeat must contain `expr => expr`
-                $line:expr => $opt_warning:expr
-            ),* $(,)*
-            // ...zero or more, separated by commas
-        ) => {
-            // replace with multi-line statment block
-            {
-                let lines_input = vec![ $( $line ),* ];
-                let warnings_input = vec![ $( $opt_warning ),* ];
-                let total_lines = lines_input.len();
+    pub struct TestLine<'l, 'w> {
+        line: &'l str,
+        warnings: Vec<(&'w str, &'w str)>,
+    }
 
-                let line_entries: Vec<LineEntry> = lines_input
-                    .iter()
-                    .enumerate()
-                    .map(|(i, content)| line_entry(i + 1, total_lines, content))
-                    .collect();
-
-                let warnings: Vec<Warning> = warnings_input
-                    .iter()
-                    .enumerate()
-                    .filter_map(|(i, opt_warn)| {
-                        opt_warn.and_then(|(kind, msg): (&str, &str)| {
-                            Some(Warning::new(line_entries[i].clone(), kind, msg))
-                        })
-                    })
-                    .collect();
-                (line_entries, warnings)
+    impl<'l, 'w> TestLine<'l, 'w> {
+        pub fn new(line: &'l str) -> Self {
+            TestLine {
+                line,
+                warnings: Vec::new(),
             }
-        };
+        }
+
+        pub fn warning(mut self, name: &'w str, msg: &'w str) -> Self {
+            self.warnings.push((name, msg));
+            self
+        }
+    }
+
+    // Helper type to define a sequence of TestLines. It provides a
+    // method to prepare `Vec<LineEntry>` and `Vec<Warning>` output out of
+    // test lines input.
+    pub struct TestLineEntries<'l, 'w> {
+        test_lines: Vec<TestLine<'l, 'w>>,
+    }
+
+    impl<'l, 'w> TestLineEntries<'l, 'w> {
+        pub fn new(test_lines: Vec<TestLine<'l, 'w>>) -> Self {
+            TestLineEntries { test_lines }
+        }
+
+        pub fn lines_and_warnings(&self) -> (Vec<LineEntry>, Vec<Warning>) {
+            let mut line_no = 1;
+            let total_lines = self.test_lines.len();
+
+            let mut lines: Vec<LineEntry> = Vec::new();
+            let mut warnings: Vec<Warning> = Vec::new();
+
+            for test_line in &self.test_lines {
+                let new_entry = line_entry(line_no, total_lines, test_line.line);
+                for (w_name, w_msg) in &test_line.warnings {
+                    warnings.push(Warning::new(new_entry.clone(), *w_name, *w_msg));
+                }
+                lines.push(new_entry);
+                line_no += 1;
+            }
+            (lines, warnings)
+        }
+    }
+
+    impl<'l, 'w> From<Vec<TestLine<'l, 'w>>> for TestLineEntries<'l, 'w> {
+        fn from(test_lines: Vec<TestLine<'l, 'w>>) -> Self {
+            TestLineEntries::new(test_lines)
+        }
+    }
+
+    pub fn run_fix_warnings<F: Fix>(
+        fixer: &mut F,
+        test_lines: TestLineEntries,
+    ) -> (Option<usize>, Vec<String>) {
+        let (mut lines, mut warnings) = test_lines.lines_and_warnings();
+
+        let warnings_mut = warnings.iter_mut().collect();
+        let fix_count = fixer.fix_warnings(warnings_mut, &mut lines);
+
+        // Remove lines marked as deleted
+        lines.retain(|l| !l.is_deleted);
+
+        let fixed_lines: Vec<String> = lines.iter().map(|le| le.raw_string.clone()).collect();
+        (fix_count, fixed_lines)
+    }
+
+    #[test]
+    fn test_line_without_warning() {
+        let test_line = TestLine::new("A=Foo");
+        assert_eq!("A=Foo", test_line.line);
+        assert_eq!(0, test_line.warnings.len());
+    }
+
+    #[test]
+    fn test_line_with_single_warning() {
+        let test_line =
+            TestLine::new("a=Foo").warning("LowercaseKey", "The a key should be in uppercase");
+
+        assert_eq!("a=Foo", test_line.line);
+        assert_eq!(1, test_line.warnings.len());
+        assert_eq!(
+            ("LowercaseKey", "The a key should be in uppercase"),
+            test_line.warnings[0]
+        );
+    }
+
+    #[test]
+    fn test_line_with_multi_warnings() {
+        let test_line = TestLine::new("a")
+            .warning("LowercaseKey", "The a key should be in uppercase")
+            .warning(
+                "KeyWithoutValue",
+                "The a key should be with a value or have an equal sign",
+            );
+
+        assert_eq!("a", test_line.line);
+        assert_eq!(2, test_line.warnings.len());
+        assert_eq!(
+            ("LowercaseKey", "The a key should be in uppercase"),
+            test_line.warnings[0]
+        );
+        assert_eq!(
+            (
+                "KeyWithoutValue",
+                "The a key should be with a value or have an equal sign"
+            ),
+            test_line.warnings[1]
+        );
     }
 }

@@ -12,7 +12,7 @@ mod space_character;
 mod trailing_whitespace;
 mod unordered_key;
 
-trait Fix {
+pub trait Fix {
     fn name(&self) -> &str;
 
     fn fix_warnings(
@@ -95,56 +95,58 @@ pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[
 }
 
 #[cfg(test)]
-fn run_fix_warnings<F: Fix>(
-    fixer: &mut F,
-    mut lines: Vec<LineEntry>,
-    mut warnings: Vec<Warning>,
-) -> (Option<usize>, Vec<String>) {
-    let warnings_mut = warnings.iter_mut().collect();
-    let fix_count = fixer.fix_warnings(warnings_mut, &mut lines);
-
-    // Remove lines marked as deleted
-    lines.retain(|l| !l.is_deleted);
-
-    let fixed_lines: Vec<String> = lines.iter().map(|le| le.raw_string.clone()).collect();
-    (fix_count, fixed_lines)
-}
-
-#[cfg(test)]
 mod tests {
     use super::*;
     use crate::common::tests::*;
-    use crate::lines_and_warnings;
 
     #[test]
     fn run_with_empty_warnings_test() {
-        let (mut lines, mut warnings) = lines_and_warnings![
-            "A=B" => None,
-            "\n" => None,
-        ];
+        let (mut lines, mut warnings) =
+            TestLineEntries::new(vec![TestLine::new("A=B"), TestLine::new("\n")])
+                .lines_and_warnings();
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
     }
 
     #[test]
     fn run_with_fixable_warning_test() {
-        let (mut lines, mut warnings) = lines_and_warnings![
-            "A=B" => None,
-            "c=d" => Some(("LowercaseKey", "The c key should be in uppercase")),
-            "\n" => None,
-        ];
+        let (mut lines, mut warnings) = TestLineEntries::new(vec![
+            TestLine::new("A=B"),
+            TestLine::new("c=d").warning("LowercaseKey", "The c key should be in uppercase"),
+            TestLine::new("\n"),
+        ])
+        .lines_and_warnings();
 
         assert_eq!(1, run(&mut warnings, &mut lines, &[]));
         assert_eq!("C=d", lines[1].raw_string);
     }
 
     #[test]
+    fn run_with_multiple_warning_test() {
+        let (mut lines, mut warnings) = TestLineEntries::new(vec![
+            TestLine::new("A=B"),
+            TestLine::new("c")
+                .warning("LowercaseKey", "The c key should be in uppercase")
+                .warning(
+                    "KeyWithoutValue",
+                    "The c key should be with a value or have an equal sign",
+                ),
+            TestLine::new("\n"),
+        ])
+        .lines_and_warnings();
+
+        assert_eq!(2, run(&mut warnings, &mut lines, &[]));
+        assert_eq!("C=", lines[1].raw_string);
+    }
+
+    #[test]
     fn run_with_unfixable_warning_test() {
-        let (mut lines, mut warnings) = lines_and_warnings![
-            "A=B" => None,
-            "UNFIXABLE-" => Some(("Unfixable", "The UNFIXABLE- key is not fixable")),
-            "\n" => None,
-        ];
+        let (mut lines, mut warnings) = TestLineEntries::new(vec![
+            TestLine::new("A=B"),
+            TestLine::new("UNFIXABLE-").warning("Unfixable", "The UNFIXABLE- key is not fixable"),
+            TestLine::new("\n"),
+        ])
+        .lines_and_warnings();
 
         assert_eq!(0, run(&mut warnings, &mut lines, &[]));
     }
@@ -174,13 +176,14 @@ mod tests {
 
     #[test]
     fn new_warnings_after_fix_test() {
-        let (mut lines, mut warnings) = lines_and_warnings![
-            "A1=1" => None,
-            "A2=2" => None,
-            "a0=0" => Some(("LowercaseKey", "The a0 key should be in uppercase")),
-            "a2=2" => Some(("LowercaseKey", "The a2 key should be in uppercase")),
-            "\n" => None,
-        ];
+        let (mut lines, mut warnings) = TestLineEntries::new(vec![
+            TestLine::new("A1=1"),
+            TestLine::new("A2=2"),
+            TestLine::new("a0=0").warning("LowercaseKey", "The a0 key should be in uppercase"),
+            TestLine::new("a2=2").warning("LowercaseKey", "The a2 key should be in uppercase"),
+            TestLine::new("\n"),
+        ])
+        .lines_and_warnings();
 
         assert_eq!(2, run(&mut warnings, &mut lines, &[]));
 
@@ -193,13 +196,14 @@ mod tests {
 
     #[test]
     fn skip_duplicated_key() {
-        let (mut lines, mut warnings) = lines_and_warnings![
-            "A1=1" => None,
-            "A2=2" => None,
-            "a0=0" => Some(("LowercaseKey", "The a0 key should be in uppercase")),
-            "a2=2" => Some(("LowercaseKey", "The a2 key should be in uppercase")),
-            "\n" => None,
-        ];
+        let (mut lines, mut warnings) = TestLineEntries::new(vec![
+            TestLine::new("A1=1"),
+            TestLine::new("A2=2"),
+            TestLine::new("a0=0").warning("LowercaseKey", "The a0 key should be in uppercase"),
+            TestLine::new("a2=2").warning("LowercaseKey", "The a2 key should be in uppercase"),
+            TestLine::new("\n"),
+        ])
+        .lines_and_warnings();
 
         assert_eq!(2, run(&mut warnings, &mut lines, &["DuplicatedKey"]));
         assert_eq!("A0=0", lines[0].raw_string);
@@ -211,13 +215,14 @@ mod tests {
 
     #[test]
     fn skip_unordered_key() {
-        let (mut lines, mut warnings) = lines_and_warnings![
-            "A1=1" => None,
-            "A2=2" => None,
-            "a0=0" => Some(("LowercaseKey", "The a0 key should be in uppercase")),
-            "a2=2" => Some(("LowercaseKey", "The a2 key should be in uppercase")),
-            "\n" => None,
-        ];
+        let (mut lines, mut warnings) = TestLineEntries::new(vec![
+            TestLine::new("A1=1"),
+            TestLine::new("A2=2"),
+            TestLine::new("a0=0").warning("LowercaseKey", "The a0 key should be in uppercase"),
+            TestLine::new("a2=2").warning("LowercaseKey", "The a2 key should be in uppercase"),
+            TestLine::new("\n"),
+        ])
+        .lines_and_warnings();
 
         assert_eq!(2, run(&mut warnings, &mut lines, &["UnorderedKey"]));
         assert_eq!("A1=1", lines[0].raw_string);

@@ -32,8 +32,6 @@ impl Fix for QuoteCharacterFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
-    use crate::fixes::run_fix_warnings;
-    use crate::lines_and_warnings;
 
     #[test]
     fn fix_line_test() {
@@ -46,14 +44,16 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = QuoteCharacterFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "FOO=\"bar\'\"" => Some(("QuoteCharacter", "The value has quote characters (\', \")")),
-            "Z=Y" => None,
-            "" => None,
-        ];
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut QuoteCharacterFixer::default(),
+            vec![
+                TestLine::new("FOO=\"bar\'\"")
+                    .warning("QuoteCharacter", "The value has quote characters (\', \")"),
+                TestLine::new("Z=Y"),
+                TestLine::new(""),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(1), fix_count);
         assert_eq!(vec!["FOO=bar", "Z=Y", ""], fixed_lines);

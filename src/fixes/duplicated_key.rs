@@ -64,20 +64,19 @@ impl Fix for DuplicatedKeyFixer<'_> {
 mod tests {
     use super::*;
     use crate::common::tests::*;
-    use crate::fixes::run_fix_warnings;
-    use crate::lines_and_warnings;
 
     #[test]
     fn fix_warnings() {
-        let mut fixer = DuplicatedKeyFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "FOO=BAR" => None,
-            "Z=Y" => None,
-            "FOO=BAZ" => Some(("Duplicatedkey", "The Foo key is duplicated")),
-            "Z=X" => Some(("Duplicatedkey", "The Z key is duplicated")),
-        ];
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut DuplicatedKeyFixer::default(),
+            vec![
+                TestLine::new("FOO=BAR"),
+                TestLine::new("Z=Y"),
+                TestLine::new("FOO=BAZ").warning("Duplicatedkey", "The Foo key is duplicated"),
+                TestLine::new("Z=X").warning("Duplicatedkey", "The Z key is duplicated"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(2), fix_count);
         assert_eq!(vec!["FOO=BAR", "Z=Y", "# FOO=BAZ", "# Z=X"], fixed_lines);
@@ -85,15 +84,16 @@ mod tests {
 
     #[test]
     fn fix_lines_without_warnings() {
-        let mut fixer = DuplicatedKeyFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "FOO=BAR" => None,
-            "FOO=BAZ" => None,
-            "Z=Y" => None,
-            "Z=X" => None,
-        ];
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut DuplicatedKeyFixer::default(),
+            vec![
+                TestLine::new("FOO=BAR"),
+                TestLine::new("FOO=BAZ"),
+                TestLine::new("Z=Y"),
+                TestLine::new("Z=X"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(0), fix_count);
         assert_eq!(vec!["FOO=BAR", "# FOO=BAZ", "Z=Y", "# Z=X"], fixed_lines);
@@ -101,16 +101,17 @@ mod tests {
 
     #[test]
     fn control_comment_at_first_line() {
-        let mut fixer = DuplicatedKeyFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "# dotenv-linter:off DuplicatedKey" => None,
-            "FOO=BAR" => None,
-            "FOO=BAZ" => None,
-            "Z=Y" => None,
-            "Z=X" => None,
-        ];
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut DuplicatedKeyFixer::default(),
+            vec![
+                TestLine::new("# dotenv-linter:off DuplicatedKey"),
+                TestLine::new("FOO=BAR"),
+                TestLine::new("FOO=BAZ"),
+                TestLine::new("Z=Y"),
+                TestLine::new("Z=X"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(0), fix_count);
         assert_eq!(
@@ -127,18 +128,18 @@ mod tests {
 
     #[test]
     fn control_comment_in_the_middle() {
-        let mut fixer = DuplicatedKeyFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "FOO=BAR" => None,
-            "# dotenv-linter:off DuplicatedKey" => None,
-            "FOO=BAZ" => None,
-            "Z=Y" => None,
-            "# dotenv-linter:on DuplicatedKey" => None,
-            "Z=X" => None,
-        ];
-
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut DuplicatedKeyFixer::default(),
+            vec![
+                TestLine::new("FOO=BAR"),
+                TestLine::new("# dotenv-linter:off DuplicatedKey"),
+                TestLine::new("FOO=BAZ"),
+                TestLine::new("Z=Y"),
+                TestLine::new("# dotenv-linter:on DuplicatedKey"),
+                TestLine::new("Z=X"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(0), fix_count);
         assert_eq!(
@@ -156,16 +157,17 @@ mod tests {
 
     #[test]
     fn unrelated_control_comment() {
-        let mut fixer = DuplicatedKeyFixer::default();
-
-        let (lines, warnings) = lines_and_warnings![
-            "# dotenv-linter:off LowercaseKey" => None,
-            "FOO=BAR" => None,
-            "FOO=BAZ" => None,
-            "Z=Y" => None,
-            "Z=X" => None,
-        ];
-        let (fix_count, fixed_lines) = run_fix_warnings(&mut fixer, lines, warnings);
+        let (fix_count, fixed_lines) = run_fix_warnings(
+            &mut DuplicatedKeyFixer::default(),
+            vec![
+                TestLine::new("# dotenv-linter:off LowercaseKey"),
+                TestLine::new("FOO=BAR"),
+                TestLine::new("FOO=BAZ"),
+                TestLine::new("Z=Y"),
+                TestLine::new("Z=X"),
+            ]
+            .into(),
+        );
 
         assert_eq!(Some(0), fix_count);
         assert_eq!(
