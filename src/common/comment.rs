@@ -1,3 +1,5 @@
+use crate::checks::check_variants::Lint;
+
 const PREFIX: &str = "dotenv-linter";
 const ON: &str = "on";
 const OFF: &str = "off";
