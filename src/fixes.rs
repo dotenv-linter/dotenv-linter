@@ -1,4 +1,4 @@
-use crate::common::*;
+use crate::{checks::check_variants::Lint, common::*};
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -14,7 +14,7 @@ mod trailing_whitespace;
 mod unordered_key;
 
 trait Fix {
-    fn name(&self) -> &str;
+    fn name(&self) -> Lint;
 
     fn fix_warnings(
         &mut self,

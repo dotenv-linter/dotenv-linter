@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{checks::check_variants::Lint, common::*};
 
 pub(crate) struct UnorderedKeyFixer {}
 
@@ -25,8 +25,8 @@ impl Default for UnorderedKeyFixer {
 // We check the order separately in each group of entries (groups are separated by blank lines or
 // control comments).
 impl Fix for UnorderedKeyFixer {
-    fn name(&self) -> &str {
-        "UnorderedKey"
+    fn name(&self) -> Lint {
+        Lint::UnorderedKey
     }
 
     fn fix_warnings(
@@ -48,7 +48,7 @@ impl Fix for UnorderedKeyFixer {
 
             if let Some(comment) = line.get_control_comment() {
                 is_control_comment = true;
-                controls_this_check = comment.checks.contains(&self.name());
+                controls_this_check = comment.checks.variants.contains(&self.name());
                 is_off = comment.is_disabled();
             }
 

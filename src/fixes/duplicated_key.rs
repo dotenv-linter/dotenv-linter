@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{checks::check_variants::Lint, common::*};
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyFixer {}
@@ -11,8 +11,8 @@ impl Default for DuplicatedKeyFixer {
 }
 
 impl Fix for DuplicatedKeyFixer {
-    fn name(&self) -> &str {
-        "DuplicatedKey"
+    fn name(&self) -> Lint {
+        Lint::DuplicatedKey
     }
 
     fn fix_warnings(
@@ -25,7 +25,7 @@ impl Fix for DuplicatedKeyFixer {
 
         for line in lines {
             if let Some(comment) = line.get_control_comment() {
-                if comment.checks.contains(&self.name()) {
+                if comment.checks.variants.contains(&self.name()) {
                     is_disabled = comment.is_disabled();
                 }
             }
