@@ -16,6 +16,11 @@ mod unordered_key;
 pub mod check_variants {
 
     #[derive(Debug, PartialEq, Eq)]
+    pub struct CheckVariants {
+        pub variants: Vec<Lint>,
+    }
+
+    #[derive(Debug, PartialEq, Eq)]
     pub enum Lint {
         DuplicatedKey,
         EndingBlankLine,
@@ -29,6 +34,40 @@ pub mod check_variants {
         SubstitutionKey,
         TrailingWhitespace,
         UnorderedKey,
+    }
+
+    impl CheckVariants {
+        pub fn new() -> Self {
+            Self { variants: vec![] }
+        }
+    }
+
+    impl From<Vec<&str>> for CheckVariants {
+        fn from(lint_vec: Vec<&str>) -> Self {
+            let mut check_variants = CheckVariants {
+                variants: Vec::new(),
+            };
+
+            for lint in lint_vec {
+                match lint {
+                    "DuplicatedKey" => check_variants.variants.push(Lint::DuplicatedKey),
+                    "EndingBlankLine" => check_variants.variants.push(Lint::EndingBlankLine),
+                    "ExtraBlankLine" => check_variants.variants.push(Lint::DuplicatedKey),
+                    "IncorrectDelimiter" => check_variants.variants.push(Lint::IncorrectDelimiter),
+                    "KeyWithoutValue" => check_variants.variants.push(Lint::KeyWithoutValue),
+                    "LeadingCharacter" => check_variants.variants.push(Lint::LeadingCharacter),
+                    "LowercaseKey" => check_variants.variants.push(Lint::LowercaseKey),
+                    "ExtraBlankLine" => check_variants.variants.push(Lint::QuoteCharacter),
+                    "SpaceCharacter" => check_variants.variants.push(Lint::SpaceCharacter),
+                    "SubstitutionKey" => check_variants.variants.push(Lint::SubstitutionKey),
+                    "TrailingWhitespace" => check_variants.variants.push(Lint::TrailingWhitespace),
+                    "UnorderedKey" => check_variants.variants.push(Lint::UnorderedKey),
+                    _ => (),
+                }
+            }
+
+            check_variants
+        }
     }
 }
 
@@ -80,10 +119,7 @@ pub fn run(lines: &[LineEntry], skip_checks: &[Lint]) -> Vec<Warning> {
         if let Some(comment) = line.get_control_comment() {
             if comment.is_disabled() {
                 // Disable checks from a comment using the dotenv-linter:off flag
-                disabled_checks.extend(comment.checks);
-            } else {
-                // Enable checks if the comment has the dotenv-linter:on flag
-                disabled_checks.retain(|&s| !comment.checks.contains(&s));
+                disabled_checks.extend(comment.checks.variants);
             }
         }
 
