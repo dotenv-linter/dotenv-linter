@@ -1,13 +1,13 @@
-use crate::checks::check_variants::Lint;
+use crate::checks::check_variants::CheckVariants;
 
 const PREFIX: &str = "dotenv-linter";
 const ON: &str = "on";
 const OFF: &str = "off";
 
 #[derive(Debug, PartialEq)]
-pub struct Comment<'a> {
+pub struct Comment {
     disable: bool,
-    pub checks: Vec<&'a str>,
+    pub checks: CheckVariants,
 }
 
 pub fn parse(s: &str) -> Option<Comment> {
@@ -41,10 +41,13 @@ pub fn parse(s: &str) -> Option<Comment> {
 
     let disable = flag == OFF;
 
+    // Cheap convertion from Vec<&str> to Vec<check_variants::Lint>
+    let checks: CheckVariants = CheckVariants::from(checks);
+
     Some(Comment { disable, checks })
 }
 
-impl Comment<'_> {
+impl Comment {
     pub fn is_disabled(&self) -> bool {
         self.disable
     }
@@ -87,7 +90,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec![],
+                checks: CheckVariants::new(),
             }),
             parse("# dotenv-linter:on")
         );
@@ -95,7 +98,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec![],
+                checks: CheckVariants::new(),
             }),
             parse("# dotenv-linter:off")
         )
@@ -106,7 +109,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec![],
+                checks: CheckVariants::new(),
             }),
             parse("#dotenv-linter:on")
         );
@@ -114,7 +117,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec![],
+                checks: CheckVariants::new(),
             }),
             parse("#dotenv-linter:off")
         )
@@ -125,7 +128,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey")
         );
@@ -133,7 +136,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec!["UnorderedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey"]),
             }),
             parse("# dotenv-linter:on UnorderedKey")
         );
@@ -144,7 +147,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey"]),
             }),
             parse(" # dotenv-linter:off UnorderedKey")
         );
@@ -152,7 +155,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec!["UnorderedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey"]),
             }),
             parse("  #dotenv-linter:on UnorderedKey")
         );
@@ -163,7 +166,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey", "DuplicatedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey,DuplicatedKey")
         );
@@ -171,7 +174,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec!["UnorderedKey", "DuplicatedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:on UnorderedKey, DuplicatedKey")
         );
@@ -179,7 +182,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey", "DuplicatedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey ,DuplicatedKey")
         );
@@ -187,7 +190,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec!["UnorderedKey", "DuplicatedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:on UnorderedKey , DuplicatedKey")
         );
@@ -195,7 +198,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey", "DuplicatedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey,DuplicatedKey,")
         );
@@ -203,7 +206,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec!["UnorderedKey", "DuplicatedKey"],
+                checks: CheckVariants::from(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:on ,UnorderedKey,DuplicatedKey,")
         );
@@ -214,7 +217,11 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"],
+                checks: CheckVariants::from(vec![
+                    "UnorderedKey",
+                    "DuplicatedKey",
+                    "EndingBlankLine"
+                ]),
             }),
             parse("# dotenv-linter:off UnorderedKey,DuplicatedKey, EndingBlankLine")
         );
@@ -222,7 +229,11 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"],
+                checks: CheckVariants::from(vec![
+                    "UnorderedKey",
+                    "DuplicatedKey",
+                    "EndingBlankLine"
+                ]),
             }),
             parse("# dotenv-linter:on UnorderedKey,DuplicatedKey,   EndingBlankLine")
         );
@@ -230,7 +241,11 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"],
+                checks: CheckVariants::from(vec![
+                    "UnorderedKey",
+                    "DuplicatedKey",
+                    "EndingBlankLine"
+                ]),
             }),
             parse("# dotenv-linter:off  ,  UnorderedKey,DuplicatedKey,  EndingBlankLine,   ")
         );
