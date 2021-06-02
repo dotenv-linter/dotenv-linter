@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{checks::check_variants::Lint, common::*};
 
 pub(crate) struct IncorrectDelimiterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for IncorrectDelimiterFixer {
 }
 
 impl Fix for IncorrectDelimiterFixer {
-    fn name(&self) -> &str {
-        "IncorrectDelimiter"
+    fn name(&self) -> Lint {
+        Lint::IncorrectDelimiter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

@@ -62,7 +62,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     ]
 }
 
-pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[&str]) -> usize {
+pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[Lint]) -> usize {
     if warnings.is_empty() {
         return 0;
     }

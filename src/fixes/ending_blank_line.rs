@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{checks::check_variants::Lint, common::*};
 
 pub(crate) struct EndingBlankLineFixer {}
 
@@ -10,8 +10,8 @@ impl Default for EndingBlankLineFixer {
 }
 
 impl Fix for EndingBlankLineFixer {
-    fn name(&self) -> &str {
-        "EndingBlankLine"
+    fn name(&self) -> Lint {
+        Lint::EndingBlankLine
     }
 
     fn fix_warnings(
