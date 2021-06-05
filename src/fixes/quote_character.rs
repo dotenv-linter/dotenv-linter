@@ -48,7 +48,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "QuoteCharacter",
+            LintKind::QuoteCharacter,
             "The value has quote characters (\', \")",
         );
 

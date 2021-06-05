@@ -45,7 +45,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "TrailingWhitespace",
+            LintKind::TrailingWhitespace,
             "Trailing whitespace detected",
         );
 

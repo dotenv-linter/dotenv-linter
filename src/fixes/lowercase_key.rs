@@ -47,7 +47,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "LowercaseKey",
+            LintKind::LowercaseKey,
             String::from("The FOO key should be in uppercase"),
         );
 

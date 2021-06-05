@@ -122,7 +122,7 @@ mod tests {
         ];
         let mut warnings = vec![Warning::new(
             lines[1].clone(),
-            "LowercaseKey",
+            LintKind::LowercaseKey,
             "The c key should be in uppercase",
         )];
 
@@ -139,7 +139,7 @@ mod tests {
         ];
         let mut warnings = vec![Warning::new(
             lines[1].clone(),
-            "Unfixable",
+            LintKind::Unfixable,
             "The UNFIXABLE- key is not fixable",
         )];
 
@@ -156,12 +156,12 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[0].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a key should be in uppercase",
             ),
             Warning::new(
                 lines[1].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The c key should be in uppercase",
             ),
         ];
@@ -181,12 +181,12 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
@@ -211,17 +211,20 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &["DuplicatedKey"]));
+        assert_eq!(
+            2,
+            run(&mut warnings, &mut lines, &[LintKind::DuplicatedKey])
+        );
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -241,17 +244,17 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &["UnorderedKey"]));
+        assert_eq!(2, run(&mut warnings, &mut lines, &[LintKind::UnorderedKey]));
         assert_eq!("A1=1", lines[0].raw_string);
         assert_eq!("A2=2", lines[1].raw_string);
         assert_eq!("A0=0", lines[2].raw_string);

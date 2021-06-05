@@ -13,6 +13,7 @@ mod lints;
 
 pub use checks::available_check_names;
 use common::CompareWarning;
+use lints::Lint;
 use std::rc::Rc;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<dyn Error>> {
@@ -29,6 +30,8 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<d
         skip_checks = skip.collect();
     }
 
+    let skip_checks = Lint::from(skip_checks);
+
     let warnings_count =
         lines_map
             .into_iter()
@@ -37,7 +40,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<d
                 output.print_processing_info(&fe);
 
                 let lines = get_line_entries(&fe, strings);
-                let result = checks::run(&lines, &skip_checks);
+                let result = checks::run(&lines, &skip_checks.variants);
 
                 output.print_warnings(&result, index);
                 acc + result.len()
@@ -63,16 +66,17 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
     }
+    let skip_checks = Lint::from(skip_checks);
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
         let mut lines = get_line_entries(&fe, strings);
-        let mut result = checks::run(&lines, &skip_checks);
+        let mut result = checks::run(&lines, &skip_checks.variants);
         if result.is_empty() {
             continue;
         }
-        let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks);
+        let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks.variants);
         if fixes_done != result.len() {
             output.print_not_all_warnings_fixed();
         }

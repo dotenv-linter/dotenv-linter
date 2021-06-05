@@ -1,11 +1,11 @@
 use std::{fmt, str::FromStr};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Lint {
     pub variants: Vec<LintKind>,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LintKind {
     DuplicatedKey,
     EndingBlankLine,
@@ -19,6 +19,7 @@ pub enum LintKind {
     SubstitutionKey,
     TrailingWhitespace,
     UnorderedKey,
+    Unfixable,
 }
 
 impl Lint {
@@ -36,12 +37,12 @@ impl FromStr for LintKind {
         match s {
             "DuplicatedKey" => Ok(LintKind::DuplicatedKey),
             "EndingBlankLine" => Ok(LintKind::EndingBlankLine),
-            "ExtraBlankLine" => Ok(LintKind::DuplicatedKey),
+            "ExtraBlankLine" => Ok(LintKind::ExtraBlankLine),
             "IncorrectDelimiter" => Ok(LintKind::IncorrectDelimiter),
             "KeyWithoutValue" => Ok(LintKind::KeyWithoutValue),
             "LeadingCharacter" => Ok(LintKind::LeadingCharacter),
             "LowercaseKey" => Ok(LintKind::LowercaseKey),
-            "ExtraBlankLine" => Ok(LintKind::QuoteCharacter),
+            "QuoteCharacter" => Ok(LintKind::QuoteCharacter),
             "SpaceCharacter" => Ok(LintKind::SpaceCharacter),
             "SubstitutionKey" => Ok(LintKind::SubstitutionKey),
             "TrailingWhitespace" => Ok(LintKind::TrailingWhitespace),

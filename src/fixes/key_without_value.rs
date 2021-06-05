@@ -45,7 +45,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "KeyWithoutValue",
+            LintKind::KeyWithoutValue,
             "The FOO key should be with a value or have an equal sign",
         );
 

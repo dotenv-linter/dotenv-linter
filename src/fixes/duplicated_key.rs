@@ -73,10 +73,14 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "DuplicatedKey",
+                LintKind::DuplicatedKey,
                 "The FOO key is duplicated",
             ),
-            Warning::new(lines[3].clone(), "DuplicatedKey", "The Z key is duplicated"),
+            Warning::new(
+                lines[3].clone(),
+                LintKind::DuplicatedKey,
+                "The Z key is duplicated",
+            ),
         ];
 
         assert_eq!(

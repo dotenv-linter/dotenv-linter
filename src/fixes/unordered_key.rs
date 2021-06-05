@@ -149,7 +149,7 @@ mod tests {
     fn get_warnings(lines: &[LineEntry], warnings: Vec<(usize, &str)>) -> Vec<Warning> {
         warnings
             .into_iter()
-            .map(|(i, line)| Warning::new(lines[i].clone(), "UnorderedKey", line))
+            .map(|(i, line)| Warning::new(lines[i].clone(), LintKind::UnorderedKey, line))
             .collect()
     }
 
