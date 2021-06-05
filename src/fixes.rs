@@ -1,4 +1,4 @@
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -14,7 +14,7 @@ mod trailing_whitespace;
 mod unordered_key;
 
 trait Fix {
-    fn name(&self) -> Lint;
+    fn name(&self) -> LintKind;
 
     fn fix_warnings(
         &mut self,
@@ -62,7 +62,11 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     ]
 }
 
-pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[Lint]) -> usize {
+pub fn run(
+    warnings: &mut [Warning],
+    lines: &mut Vec<LineEntry>,
+    skip_checks: &[LintKind],
+) -> usize {
     if warnings.is_empty() {
         return 0;
     }

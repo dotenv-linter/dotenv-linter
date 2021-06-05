@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct TrailingWhitespaceFixer {}
 
@@ -10,8 +10,8 @@ impl Default for TrailingWhitespaceFixer {
 }
 
 impl Fix for TrailingWhitespaceFixer {
-    fn name(&self) -> Lint {
-        Lint::TrailingWhitespace
+    fn name(&self) -> LintKind {
+        LintKind::TrailingWhitespace
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

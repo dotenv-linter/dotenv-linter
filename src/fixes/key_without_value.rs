@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct KeyWithoutValueFixer {}
 
@@ -10,8 +10,8 @@ impl Default for KeyWithoutValueFixer {
 }
 
 impl Fix for KeyWithoutValueFixer {
-    fn name(&self) -> Lint {
-        Lint::KeyWithoutValue
+    fn name(&self) -> LintKind {
+        LintKind::KeyWithoutValue
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct UnorderedKeyFixer {}
 
@@ -25,8 +25,8 @@ impl Default for UnorderedKeyFixer {
 // We check the order separately in each group of entries (groups are separated by blank lines or
 // control comments).
 impl Fix for UnorderedKeyFixer {
-    fn name(&self) -> Lint {
-        Lint::UnorderedKey
+    fn name(&self) -> LintKind {
+        LintKind::UnorderedKey
     }
 
     fn fix_warnings(

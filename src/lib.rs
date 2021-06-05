@@ -9,6 +9,7 @@ pub mod cli;
 mod common;
 mod fixes;
 mod fs_utils;
+mod lints;
 
 pub use checks::available_check_names;
 use common::CompareWarning;

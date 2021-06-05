@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct QuoteCharacterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for QuoteCharacterFixer {
 }
 
 impl Fix for QuoteCharacterFixer {
-    fn name(&self) -> Lint {
-        Lint::QuoteCharacter
+    fn name(&self) -> LintKind {
+        LintKind::QuoteCharacter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

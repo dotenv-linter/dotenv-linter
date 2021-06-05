@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyFixer {}
@@ -11,8 +11,8 @@ impl Default for DuplicatedKeyFixer {
 }
 
 impl Fix for DuplicatedKeyFixer {
-    fn name(&self) -> Lint {
-        Lint::DuplicatedKey
+    fn name(&self) -> LintKind {
+        LintKind::DuplicatedKey
     }
 
     fn fix_warnings(

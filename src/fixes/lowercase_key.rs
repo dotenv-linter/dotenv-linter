@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct LowercaseKeyFixer {}
 
@@ -10,8 +10,8 @@ impl Default for LowercaseKeyFixer {
 }
 
 impl Fix for LowercaseKeyFixer {
-    fn name(&self) -> Lint {
-        Lint::LowercaseKey
+    fn name(&self) -> LintKind {
+        LintKind::LowercaseKey
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

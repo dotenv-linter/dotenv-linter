@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct SpaceCharacterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for SpaceCharacterFixer {
 }
 
 impl Fix for SpaceCharacterFixer {
-    fn name(&self) -> Lint {
-        Lint::SpaceCharacter
+    fn name(&self) -> LintKind {
+        LintKind::SpaceCharacter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

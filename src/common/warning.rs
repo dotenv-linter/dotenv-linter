@@ -1,12 +1,12 @@
 use std::fmt;
 
-use crate::common::*;
+use crate::{common::*, lints::*};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
     pub check_name: String,
     line: LineEntry,
-    message: String,
+    message: LintKind,
 }
 
 impl Warning {
@@ -32,7 +32,7 @@ impl fmt::Display for Warning {
             "{} {}: {}",
             format!("{}:{}", self.line.file, self.line.number).italic(),
             self.check_name.red().bold(),
-            self.message
+            self.message.into()
         )
     }
 }

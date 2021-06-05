@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct LeadingCharacterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for LeadingCharacterFixer {
 }
 
 impl Fix for LeadingCharacterFixer {
-    fn name(&self) -> Lint {
-        Lint::LeadingCharacter
+    fn name(&self) -> LintKind {
+        LintKind::LeadingCharacter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{checks::check_variants::Lint, common::*};
+use crate::{common::*, lints::*};
 
 pub(crate) struct ExtraBlankLineFixer {}
 
@@ -10,8 +10,8 @@ impl Default for ExtraBlankLineFixer {
 }
 
 impl Fix for ExtraBlankLineFixer {
-    fn name(&self) -> Lint {
-        Lint::ExtraBlankLine
+    fn name(&self) -> LintKind {
+        LintKind::ExtraBlankLine
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
