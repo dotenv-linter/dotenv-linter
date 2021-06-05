@@ -69,3 +69,49 @@ impl From<Vec<&str>> for Lint {
         lint
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_str_to_lint_variant_conversion() {
+        let lint_as_str = "DuplicatedKey";
+        let expected = LintKind::from_str(lint_as_str).unwrap();
+
+        assert_eq!(expected, LintKind::DuplicatedKey);
+    }
+
+    #[test]
+    fn test_vec_str_to_lint_struct_conversion() {
+        let mut expected = Lint::new();
+        expected.variants = vec![
+            LintKind::DuplicatedKey,
+            LintKind::ExtraBlankLine,
+            LintKind::EndingBlankLine,
+        ];
+        let vec_of_lints = vec!["DuplicatedKey", "ExtraBlankLine", "EndingBlankLine"];
+
+        assert_eq!(expected, Lint::from(vec_of_lints));
+    }
+
+    #[test]
+    fn test_invalid_lint_str_variant() {
+        let invalid_lint_str = "FooBarLint";
+        let expected = Err(());
+
+        assert_eq!(expected, LintKind::from_str(invalid_lint_str));
+    }
+
+    #[test]
+    fn test_lint_variant_display_output() {
+        let one = LintKind::EndingBlankLine;
+        let two = LintKind::DuplicatedKey;
+        let three = LintKind::SubstitutionKey;
+
+        assert_eq!(
+            "EndingBlankLine DuplicatedKey SubstitutionKey",
+            format!("{} {} {}", one, two, three)
+        );
+    }
+}
