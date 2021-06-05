@@ -14,9 +14,10 @@ mod trailing_whitespace;
 mod unordered_key;
 
 pub mod check_variants {
+    use std::str::FromStr;
 
     #[derive(Debug, PartialEq, Eq)]
-    pub struct CheckVariants {
+    pub struct Checks {
         pub variants: Vec<Lint>,
     }
 
@@ -36,37 +37,45 @@ pub mod check_variants {
         UnorderedKey,
     }
 
-    impl CheckVariants {
+    impl Checks {
         pub fn new() -> Self {
-            Self { variants: vec![] }
+            Self {
+                variants: Vec::new(),
+            }
         }
     }
 
-    impl From<Vec<&str>> for CheckVariants {
+    impl std::str::FromStr for Lint {
+        type Err = ();
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            match s {
+                "DuplicatedKey" => Ok(Lint::DuplicatedKey),
+                "EndingBlankLine" => Ok(Lint::EndingBlankLine),
+                "ExtraBlankLine" => Ok(Lint::DuplicatedKey),
+                "IncorrectDelimiter" => Ok(Lint::IncorrectDelimiter),
+                "KeyWithoutValue" => Ok(Lint::KeyWithoutValue),
+                "LeadingCharacter" => Ok(Lint::LeadingCharacter),
+                "LowercaseKey" => Ok(Lint::LowercaseKey),
+                "ExtraBlankLine" => Ok(Lint::QuoteCharacter),
+                "SpaceCharacter" => Ok(Lint::SpaceCharacter),
+                "SubstitutionKey" => Ok(Lint::SubstitutionKey),
+                "TrailingWhitespace" => Ok(Lint::TrailingWhitespace),
+                "UnorderedKey" => Ok(Lint::UnorderedKey),
+                _ => Err(()),
+            }
+        }
+    }
+
+    impl From<Vec<&str>> for Checks {
         fn from(lint_vec: Vec<&str>) -> Self {
-            let mut check_variants = CheckVariants {
-                variants: Vec::new(),
-            };
+            let mut checks = Checks::new();
 
             for lint in lint_vec {
-                match lint {
-                    "DuplicatedKey" => check_variants.variants.push(Lint::DuplicatedKey),
-                    "EndingBlankLine" => check_variants.variants.push(Lint::EndingBlankLine),
-                    "ExtraBlankLine" => check_variants.variants.push(Lint::DuplicatedKey),
-                    "IncorrectDelimiter" => check_variants.variants.push(Lint::IncorrectDelimiter),
-                    "KeyWithoutValue" => check_variants.variants.push(Lint::KeyWithoutValue),
-                    "LeadingCharacter" => check_variants.variants.push(Lint::LeadingCharacter),
-                    "LowercaseKey" => check_variants.variants.push(Lint::LowercaseKey),
-                    "ExtraBlankLine" => check_variants.variants.push(Lint::QuoteCharacter),
-                    "SpaceCharacter" => check_variants.variants.push(Lint::SpaceCharacter),
-                    "SubstitutionKey" => check_variants.variants.push(Lint::SubstitutionKey),
-                    "TrailingWhitespace" => check_variants.variants.push(Lint::TrailingWhitespace),
-                    "UnorderedKey" => check_variants.variants.push(Lint::UnorderedKey),
-                    _ => (),
-                }
+                checks.variants.push(Lint::from_str(lint).unwrap());
             }
 
-            check_variants
+            checks
         }
     }
 }
