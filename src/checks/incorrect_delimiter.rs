@@ -1,5 +1,6 @@
 use crate::checks::Check;
 use crate::common::*;
+use crate::lints::LintKind;
 
 pub(crate) struct IncorrectDelimiterChecker<'a> {
     template: &'a str,
@@ -38,8 +39,8 @@ impl Check for IncorrectDelimiterChecker<'_> {
         None
     }
 
-    fn name(&self) -> &str {
-        "IncorrectDelimiter"
+    fn name(&self) -> LintKind {
+        LintKind::IncorrectDelimiter
     }
 }
 

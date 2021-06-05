@@ -1,5 +1,6 @@
 use crate::checks::Check;
 use crate::common::*;
+use crate::lints::LintKind;
 
 pub(crate) struct ExtraBlankLineChecker<'a> {
     template: &'a str,
@@ -40,8 +41,8 @@ impl Check for ExtraBlankLineChecker<'_> {
         None
     }
 
-    fn name(&self) -> &str {
-        "ExtraBlankLine"
+    fn name(&self) -> LintKind {
+        LintKind::ExtraBlankLine
     }
 }
 

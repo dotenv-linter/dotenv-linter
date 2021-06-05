@@ -1,5 +1,6 @@
 use crate::checks::Check;
 use crate::common::*;
+use crate::lints::LintKind;
 
 pub(crate) struct LowercaseKeyChecker<'a> {
     template: &'a str,
@@ -23,8 +24,8 @@ impl Check for LowercaseKeyChecker<'_> {
         }
     }
 
-    fn name(&self) -> &str {
-        "LowercaseKey"
+    fn name(&self) -> LintKind {
+        LintKind::LowercaseKey
     }
 }
 

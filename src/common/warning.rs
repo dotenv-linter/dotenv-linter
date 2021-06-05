@@ -4,14 +4,13 @@ use crate::{common::*, lints::*};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
-    pub check_name: String,
+    pub check_name: LintKind,
     line: LineEntry,
-    message: LintKind,
+    message: String,
 }
 
 impl Warning {
-    pub fn new(line: LineEntry, check_name: impl Into<String>, message: impl Into<String>) -> Self {
-        let check_name = check_name.into();
+    pub fn new(line: LineEntry, check_name: LintKind, message: impl Into<String>) -> Self {
         let message = message.into();
         Self {
             check_name,
@@ -31,8 +30,8 @@ impl fmt::Display for Warning {
             f,
             "{} {}: {}",
             format!("{}:{}", self.line.file, self.line.number).italic(),
-            self.check_name.red().bold(),
-            self.message.into()
+            self.check_name.to_string().red().bold(),
+            self.message
         )
     }
 }
@@ -45,13 +44,13 @@ mod tests {
     #[test]
     fn warning_fmt_test() {
         let line = line_entry(1, 1, "FOO=BAR");
-        let warning = Warning::new(line, "DuplicatedKey", "The FOO key is duplicated");
+        let warning = Warning::new(line, LintKind::DuplicatedKey, "The FOO key is duplicated");
 
         assert_eq!(
             format!(
                 "{} {}: {}",
                 format!("{}:{}", ".env", "1").italic(),
-                "DuplicatedKey".red().bold(),
+                LintKind::DuplicatedKey.to_string().red().bold(),
                 "The FOO key is duplicated"
             ),
             format!("{}", warning)

@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{fmt, str::FromStr};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Lint {
@@ -29,7 +29,7 @@ impl Lint {
     }
 }
 
-impl std::str::FromStr for LintKind {
+impl FromStr for LintKind {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -48,6 +48,12 @@ impl std::str::FromStr for LintKind {
             "UnorderedKey" => Ok(LintKind::UnorderedKey),
             _ => Err(()),
         }
+    }
+}
+
+impl fmt::Display for LintKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", format!("{:?}", self).replace("LintKind", ""))
     }
 }
 

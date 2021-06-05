@@ -1,5 +1,6 @@
 use crate::checks::Check;
 use crate::common::*;
+use crate::lints::LintKind;
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyChecker<'a> {
@@ -34,8 +35,8 @@ impl Check for DuplicatedKeyChecker<'_> {
         None
     }
 
-    fn name(&self) -> &str {
-        "DuplicatedKey"
+    fn name(&self) -> LintKind {
+        LintKind::DuplicatedKey
     }
 }
 

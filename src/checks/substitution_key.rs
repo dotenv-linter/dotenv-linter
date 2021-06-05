@@ -1,5 +1,6 @@
 use crate::checks::Check;
 use crate::common::*;
+use crate::lints::LintKind;
 
 pub(crate) struct SubstitutionKeyChecker<'a> {
     template: &'a str,
@@ -56,8 +57,8 @@ impl Check for SubstitutionKeyChecker<'_> {
         None
     }
 
-    fn name(&self) -> &str {
-        "SubstitutionKey"
+    fn name(&self) -> LintKind {
+        LintKind::SubstitutionKey
     }
 }
 
