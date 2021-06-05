@@ -262,12 +262,12 @@ mod tests {
         assert_eq!("\n", lines[4].raw_string);
     }
 
-    struct TestFixer<'a> {
-        name: &'a str,
+    struct TestFixer {
+        name: LintKind,
     }
 
-    impl Fix for TestFixer<'_> {
-        fn name(&self) -> &str {
+    impl Fix for TestFixer {
+        fn name(&self) -> LintKind {
             self.name
         }
 

@@ -60,6 +60,9 @@ pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
             if comment.is_disabled() {
                 // Disable checks from a comment using the dotenv-linter:off flag
                 disabled_checks.extend(comment.checks.variants);
+            } else {
+                // Enable checks if the comment has the dotenv-linter:on flag
+                disabled_checks.retain(|&s| !comment.checks.variants.contains(&s));
             }
         }
 
@@ -130,7 +133,7 @@ mod tests {
         let line = line_entry(1, 2, "FOO");
         let warning = Warning::new(
             line.clone(),
-            "KeyWithoutValue",
+            LintKind::KeyWithoutValue,
             "The FOO key should be with a value or have an equal sign",
         );
         let lines: Vec<LineEntry> = vec![line, blank_line_entry(2, 2)];
@@ -145,7 +148,7 @@ mod tests {
         let line = line_entry(1, 1, "FOO=BAR");
         let warning = Warning::new(
             line.clone(),
-            "EndingBlankLine",
+            LintKind::EndingBlankLine,
             "No blank line at the end of the file",
         );
         let lines: Vec<LineEntry> = vec![line];
@@ -161,7 +164,7 @@ mod tests {
         let line2 = line_entry(2, 3, "1FOO\n");
         let warning = Warning::new(
             line2.clone(),
-            "LeadingCharacter",
+            LintKind::LeadingCharacter,
             "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3, 3)];
@@ -188,7 +191,7 @@ mod tests {
         let line3 = line_entry(3, 4, "1FOO\n");
         let warning = Warning::new(
             line3.clone(),
-            "LeadingCharacter",
+            LintKind::LeadingCharacter,
             "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
@@ -205,7 +208,7 @@ mod tests {
         let line3 = line_entry(3, 4, "1FOO\n");
         let warning = Warning::new(
             line3.clone(),
-            "LeadingCharacter",
+            LintKind::LeadingCharacter,
             "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
@@ -227,7 +230,7 @@ mod tests {
         let line4 = line_entry(4, 5, "1FOO\n");
         let warning = Warning::new(
             line4.clone(),
-            "LeadingCharacter",
+            LintKind::LeadingCharacter,
             "Invalid leading character detected",
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, line4, blank_line_entry(5, 5)];
@@ -242,7 +245,7 @@ mod tests {
         let line = line_entry(1, 1, "# Simple comment");
         let warning = Warning::new(
             line.clone(),
-            "EndingBlankLine",
+            LintKind::EndingBlankLine,
             "No blank line at the end of the file",
         );
         let lines: Vec<LineEntry> = vec![line];

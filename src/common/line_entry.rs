@@ -301,6 +301,8 @@ mod tests {
     }
 
     mod get_control_comment {
+        use crate::lints::Lint;
+
         use super::*;
 
         #[test]
@@ -311,7 +313,7 @@ mod tests {
 
             let comment = entry.get_control_comment().expect("comment");
             assert_eq!(comment.is_disabled(), true);
-            assert_eq!(comment.checks, vec!["LowercaseKey"]);
+            assert_eq!(comment.checks, Lint::from(vec!["LowercaseKey"]));
         }
 
         #[test]
