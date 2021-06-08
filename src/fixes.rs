@@ -9,6 +9,7 @@ mod leading_character;
 mod lowercase_key;
 mod quote_character;
 mod space_character;
+mod substitution_key;
 mod trailing_whitespace;
 mod unordered_key;
 
@@ -53,6 +54,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(quote_character::QuoteCharacterFixer::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
         Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
+        Box::new(substitution_key::SubstitutionKeyFixer::default()),
         // Then we should run the fixers that handle the line entry collection at whole
         Box::new(unordered_key::UnorderedKeyFixer::default()),
         Box::new(duplicated_key::DuplicatedKeyFixer::default()),
