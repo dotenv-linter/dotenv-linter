@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add fixer: Substitution Key [#428](https://github.com/dotenv-linter/dotenv-linter/pull/428) ([@DDtKey](https://github.com/DDtKey))
 - Refactor check unit tests [#421](https://github.com/dotenv-linter/dotenv-linter/pull/421) [@mc1098](https://github.com/mc1098)
 - Add missing integration tests [#420](https://github.com/dotenv-linter/dotenv-linter/pull/420) ([@gosolivs](https://github.com/gosolivs))
 - Add checker: Substitution Key [#414](https://github.com/dotenv-linter/dotenv-linter/pull/414) ([@de-sh](https://github.com/de-sh))
