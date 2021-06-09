@@ -39,6 +39,7 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/lowercase_key">Lowercase key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/quote_character">Quote character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/space_character">Space character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/substitution_key">Substitution Key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/trailing_whitespace">Trailing whitespace</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/unordered_key">Unordered Key</a><br />
 </p>
