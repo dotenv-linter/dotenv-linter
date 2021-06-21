@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct KeyWithoutValueFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct KeyWithoutValueFixer {}
 
-impl Default for KeyWithoutValueFixer<'_> {
+impl Default for KeyWithoutValueFixer {
     fn default() -> Self {
-        Self {
-            name: "KeyWithoutValue",
-        }
+        Self {}
     }
 }
 
-impl Fix for KeyWithoutValueFixer<'_> {
+impl Fix for KeyWithoutValueFixer {
     fn name(&self) -> &str {
-        self.name
+        "KeyWithoutValue"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

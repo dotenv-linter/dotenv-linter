@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct TrailingWhitespaceFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct TrailingWhitespaceFixer {}
 
-impl Default for TrailingWhitespaceFixer<'_> {
+impl Default for TrailingWhitespaceFixer {
     fn default() -> Self {
-        Self {
-            name: "TrailingWhitespace",
-        }
+        Self {}
     }
 }
 
-impl Fix for TrailingWhitespaceFixer<'_> {
+impl Fix for TrailingWhitespaceFixer {
     fn name(&self) -> &str {
-        self.name
+        "TrailingWhitespace"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

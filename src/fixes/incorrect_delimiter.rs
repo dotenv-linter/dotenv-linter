@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct IncorrectDelimiterFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct IncorrectDelimiterFixer {}
 
-impl Default for IncorrectDelimiterFixer<'_> {
+impl Default for IncorrectDelimiterFixer {
     fn default() -> Self {
-        Self {
-            name: "IncorrectDelimiter",
-        }
+        Self {}
     }
 }
 
-impl Fix for IncorrectDelimiterFixer<'_> {
+impl Fix for IncorrectDelimiterFixer {
     fn name(&self) -> &str {
-        self.name
+        "IncorrectDelimiter"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

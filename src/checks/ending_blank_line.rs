@@ -2,14 +2,12 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct EndingBlankLineChecker<'a> {
-    name: &'a str,
     template: &'a str,
 }
 
 impl Default for EndingBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "EndingBlankLine",
             template: "No blank line at the end of the file",
         }
     }
@@ -31,7 +29,7 @@ impl Check for EndingBlankLineChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "EndingBlankLine"
     }
 
     fn skip_comments(&self) -> bool {

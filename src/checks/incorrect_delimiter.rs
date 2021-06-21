@@ -2,7 +2,6 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct IncorrectDelimiterChecker<'a> {
-    name: &'a str,
     template: &'a str,
 }
 
@@ -15,7 +14,6 @@ impl IncorrectDelimiterChecker<'_> {
 impl Default for IncorrectDelimiterChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "IncorrectDelimiter",
             template: "The {} key has incorrect delimiter",
         }
     }
@@ -41,7 +39,7 @@ impl Check for IncorrectDelimiterChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "IncorrectDelimiter"
     }
 }
 

@@ -3,7 +3,6 @@ use crate::common::*;
 
 pub(crate) struct SpaceCharacterChecker<'a> {
     template: &'a str,
-    name: &'a str,
 }
 
 impl SpaceCharacterChecker<'_> {
@@ -15,7 +14,6 @@ impl SpaceCharacterChecker<'_> {
 impl Default for SpaceCharacterChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "SpaceCharacter",
             template: "The line has spaces around equal sign",
         }
     }
@@ -35,7 +33,7 @@ impl Check for SpaceCharacterChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "SpaceCharacter"
     }
 }
 

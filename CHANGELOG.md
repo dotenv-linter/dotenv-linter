@@ -8,20 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Get rid of the name field in checks and fixes structs [#432](https://github.com/dotenv-linter/dotenv-linter/pull/432) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v3.1.0] - 2021-06-09
 ### 🚀 Added
 - Add fixer: Substitution Key [#428](https://github.com/dotenv-linter/dotenv-linter/pull/428) ([@DDtKey](https://github.com/DDtKey))
-- Refactor check unit tests [#421](https://github.com/dotenv-linter/dotenv-linter/pull/421) [@mc1098](https://github.com/mc1098)
+- Refactor check unit tests [#421](https://github.com/dotenv-linter/dotenv-linter/pull/421) ([@mc1098](https://github.com/mc1098))
 - Add missing integration tests [#420](https://github.com/dotenv-linter/dotenv-linter/pull/420) ([@gosolivs](https://github.com/gosolivs))
 - Add checker: Substitution Key [#414](https://github.com/dotenv-linter/dotenv-linter/pull/414) ([@de-sh](https://github.com/de-sh))
-- Print a message if the amount of checks doesn't match the amount of fixes [#415](https://github.com/dotenv-linter/dotenv-linter/pull/415) ([@marcel-baur](https://github.com/marcel-baur)))
+- Print a message if the amount of checks doesn't match the amount of fixes [#415](https://github.com/dotenv-linter/dotenv-linter/pull/415) ([@marcel-baur](https://github.com/marcel-baur))
 - Print a message "Nothing to compare" [#398](https://github.com/dotenv-linter/dotenv-linter/pull/398) ([@jakecorrenti](https://github.com/jakecorrenti))
 - Add action-hadolint [#400](https://github.com/dotenv-linter/dotenv-linter/pull/400) ([@iovanom](https://github.com/iovanom))
 - Add method to get substitution keys to LineEntry [#391](https://github.com/dotenv-linter/dotenv-linter/pull/391) ([@zotho](https://github.com/zotho))
 - Added a Fix Benchmark [#399](https://github.com/dotenv-linter/dotenv-linter/pull/399) ([@a4blue](https://github.com/a4blue))
-- Add benchmark for the compare function
-  [#395](https://github.com/dotenv-linter/dotenv-linter/pull/395) ([@FrancisMurillo](https://github.com/FrancisMurillo))
+- Add benchmark for the compare function [#395](https://github.com/dotenv-linter/dotenv-linter/pull/395) ([@FrancisMurillo](https://github.com/FrancisMurillo))
 - Print a message when there are no input files for fix subcommand [#394](https://github.com/dotenv-linter/dotenv-linter/pull/394) ([@mdycz](https://github.com/mdycz))
 - Print a message when there are no input files [#392](https://github.com/dotenv-linter/dotenv-linter/pull/392) ([@jodli](https://github.com/jodli))
 - Add a GitHub Action to compare benchmarks [#378](https://github.com/dotenv-linter/dotenv-linter/pull/378) ([@mgrachev](https://github.com/mgrachev))

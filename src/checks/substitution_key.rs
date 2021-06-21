@@ -2,14 +2,12 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct SubstitutionKeyChecker<'a> {
-    name: &'a str,
     template: &'a str,
 }
 
 impl Default for SubstitutionKeyChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "SubstitutionKey",
             template: "The {} key is not assigned properly",
         }
     }
@@ -48,7 +46,7 @@ impl Check for SubstitutionKeyChecker<'_> {
             if is_incorrect_substitution && !is_escaped(prefix) {
                 return Some(Warning::new(
                     line.clone(),
-                    self.name,
+                    self.name(),
                     self.message(line.get_key()?),
                 ));
             }
@@ -59,7 +57,7 @@ impl Check for SubstitutionKeyChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "SubstitutionKey"
     }
 }
 
