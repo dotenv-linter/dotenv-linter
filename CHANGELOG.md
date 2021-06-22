@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Get rid of the name field in checks and fixes structs [#432](https://github.com/dotenv-linter/dotenv-linter/pull/432) ([@mgrachev](https://github.com/mgrachev))
+- Replace filter with unwrap on flatten [#434](https://github.com/dotenv-linter/dotenv-linter/pull/434) ([@Fcukit](https://github.com/Fcukit))
 
 ## [v3.1.0] - 2021-06-09
 ### 🚀 Added

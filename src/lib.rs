@@ -164,8 +164,7 @@ fn get_lines(args: &clap::ArgMatches, current_dir: &Path) -> BTreeMap<FileEntry,
     file_paths
         .iter()
         .map(|path| fs_utils::get_relative_path(&path, &current_dir).and_then(FileEntry::from))
-        .filter(Option::is_some)
-        .map(Option::unwrap)
+        .flatten()
         .collect::<BTreeMap<_, _>>()
 }
 
