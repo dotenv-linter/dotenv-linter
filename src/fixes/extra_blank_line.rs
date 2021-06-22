@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct ExtraBlankLineFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct ExtraBlankLineFixer {}
 
-impl Default for ExtraBlankLineFixer<'_> {
+impl Default for ExtraBlankLineFixer {
     fn default() -> Self {
-        Self {
-            name: "ExtraBlankLine",
-        }
+        Self {}
     }
 }
 
-impl Fix for ExtraBlankLineFixer<'_> {
+impl Fix for ExtraBlankLineFixer {
     fn name(&self) -> &str {
-        self.name
+        "ExtraBlankLine"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

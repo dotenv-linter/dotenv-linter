@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct EndingBlankLineFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct EndingBlankLineFixer {}
 
-impl Default for EndingBlankLineFixer<'_> {
+impl Default for EndingBlankLineFixer {
     fn default() -> Self {
-        Self {
-            name: "EndingBlankLine",
-        }
+        Self {}
     }
 }
 
-impl Fix for EndingBlankLineFixer<'_> {
+impl Fix for EndingBlankLineFixer {
     fn name(&self) -> &str {
-        self.name
+        "EndingBlankLine"
     }
 
     fn fix_warnings(

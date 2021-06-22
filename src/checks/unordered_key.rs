@@ -4,7 +4,6 @@ use crate::common::*;
 pub(crate) struct UnorderedKeyChecker<'a> {
     template: &'a str,
     keys: Vec<String>,
-    name: &'a str,
 }
 
 impl UnorderedKeyChecker<'_> {
@@ -18,7 +17,6 @@ impl UnorderedKeyChecker<'_> {
 impl Default for UnorderedKeyChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "UnorderedKey",
             keys: Vec::new(),
             template: "The {1} key should go before the {2} key",
         }
@@ -58,7 +56,7 @@ impl Check for UnorderedKeyChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "UnorderedKey"
     }
 
     fn skip_comments(&self) -> bool {

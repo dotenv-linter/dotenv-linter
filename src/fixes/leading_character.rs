@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct LeadingCharacterFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct LeadingCharacterFixer {}
 
-impl Default for LeadingCharacterFixer<'_> {
+impl Default for LeadingCharacterFixer {
     fn default() -> Self {
-        Self {
-            name: "LeadingCharacter",
-        }
+        Self {}
     }
 }
 
-impl Fix for LeadingCharacterFixer<'_> {
+impl Fix for LeadingCharacterFixer {
     fn name(&self) -> &str {
-        self.name
+        "LeadingCharacter"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

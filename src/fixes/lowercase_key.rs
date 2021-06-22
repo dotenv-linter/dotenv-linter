@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct LowercaseKeyFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct LowercaseKeyFixer {}
 
-impl Default for LowercaseKeyFixer<'_> {
+impl Default for LowercaseKeyFixer {
     fn default() -> Self {
-        Self {
-            name: "LowercaseKey",
-        }
+        Self {}
     }
 }
 
-impl Fix for LowercaseKeyFixer<'_> {
+impl Fix for LowercaseKeyFixer {
     fn name(&self) -> &str {
-        self.name
+        "LowercaseKey"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

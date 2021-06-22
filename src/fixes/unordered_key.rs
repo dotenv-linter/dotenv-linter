@@ -1,15 +1,11 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct UnorderedKeyFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct UnorderedKeyFixer {}
 
-impl Default for UnorderedKeyFixer<'_> {
+impl Default for UnorderedKeyFixer {
     fn default() -> Self {
-        Self {
-            name: "UnorderedKey",
-        }
+        Self {}
     }
 }
 
@@ -28,9 +24,9 @@ impl Default for UnorderedKeyFixer<'_> {
 // ```
 // We check the order separately in each group of entries (groups are separated by blank lines or
 // control comments).
-impl Fix for UnorderedKeyFixer<'_> {
+impl Fix for UnorderedKeyFixer {
     fn name(&self) -> &str {
-        self.name
+        "UnorderedKey"
     }
 
     fn fix_warnings(
@@ -52,7 +48,7 @@ impl Fix for UnorderedKeyFixer<'_> {
 
             if let Some(comment) = line.get_control_comment() {
                 is_control_comment = true;
-                controls_this_check = comment.checks.contains(&self.name);
+                controls_this_check = comment.checks.contains(&self.name());
                 is_off = comment.is_disabled();
             }
 
@@ -110,7 +106,7 @@ impl Fix for UnorderedKeyFixer<'_> {
     }
 }
 
-impl UnorderedKeyFixer<'_> {
+impl UnorderedKeyFixer {
     fn sort_part(part: &mut [LineEntry]) {
         // Each slice includes a significant line (with key) and previous comments (if present)
         let mut slices = Vec::with_capacity(part.len());

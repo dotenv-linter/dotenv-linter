@@ -1,21 +1,17 @@
 use crate::common::LineEntry;
 use crate::fixes::Fix;
 
-pub(crate) struct SubstitutionKeyFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct SubstitutionKeyFixer {}
 
-impl Default for SubstitutionKeyFixer<'_> {
+impl Default for SubstitutionKeyFixer {
     fn default() -> Self {
-        Self {
-            name: "SubstitutionKey",
-        }
+        Self {}
     }
 }
 
-impl Fix for SubstitutionKeyFixer<'_> {
+impl Fix for SubstitutionKeyFixer {
     fn name(&self) -> &str {
-        self.name
+        "SubstitutionKey"
     }
 
     // TODO: refactor

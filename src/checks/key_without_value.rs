@@ -2,14 +2,12 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct KeyWithoutValueChecker<'a> {
-    name: &'a str,
     template: &'a str,
 }
 
 impl Default for KeyWithoutValueChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "KeyWithoutValue",
             template: "The {} key should be with a value or have an equal sign",
         }
     }
@@ -35,7 +33,7 @@ impl Check for KeyWithoutValueChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "KeyWithoutValue"
     }
 }
 

@@ -2,14 +2,12 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct LeadingCharacterChecker<'a> {
-    name: &'a str,
     template: &'a str,
 }
 
 impl Default for LeadingCharacterChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "LeadingCharacter",
             template: "Invalid leading character detected",
         }
     }
@@ -35,7 +33,7 @@ impl Check for LeadingCharacterChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "LeadingCharacter"
     }
 }
 

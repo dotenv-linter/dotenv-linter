@@ -1,21 +1,17 @@
 use super::Fix;
 use crate::common::*;
 
-pub(crate) struct QuoteCharacterFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct QuoteCharacterFixer {}
 
-impl Default for QuoteCharacterFixer<'_> {
+impl Default for QuoteCharacterFixer {
     fn default() -> Self {
-        Self {
-            name: "QuoteCharacter",
-        }
+        Self {}
     }
 }
 
-impl Fix for QuoteCharacterFixer<'_> {
+impl Fix for QuoteCharacterFixer {
     fn name(&self) -> &str {
-        self.name
+        "QuoteCharacter"
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {

@@ -2,21 +2,17 @@ use super::Fix;
 use crate::common::*;
 use std::collections::HashSet;
 
-pub(crate) struct DuplicatedKeyFixer<'a> {
-    name: &'a str,
-}
+pub(crate) struct DuplicatedKeyFixer {}
 
-impl Default for DuplicatedKeyFixer<'_> {
+impl Default for DuplicatedKeyFixer {
     fn default() -> Self {
-        Self {
-            name: "DuplicatedKey",
-        }
+        Self {}
     }
 }
 
-impl Fix for DuplicatedKeyFixer<'_> {
+impl Fix for DuplicatedKeyFixer {
     fn name(&self) -> &str {
-        self.name
+        "DuplicatedKey"
     }
 
     fn fix_warnings(
@@ -29,7 +25,7 @@ impl Fix for DuplicatedKeyFixer<'_> {
 
         for line in lines {
             if let Some(comment) = line.get_control_comment() {
-                if comment.checks.contains(&self.name) {
+                if comment.checks.contains(&self.name()) {
                     is_disabled = comment.is_disabled();
                 }
             }

@@ -2,7 +2,6 @@ use crate::checks::Check;
 use crate::common::*;
 
 pub(crate) struct QuoteCharacterChecker<'a> {
-    name: &'a str,
     template: &'a str,
 }
 
@@ -15,7 +14,6 @@ impl QuoteCharacterChecker<'_> {
 impl Default for QuoteCharacterChecker<'_> {
     fn default() -> Self {
         Self {
-            name: "QuoteCharacter",
             template: "The value has quote characters (\', \")",
         }
     }
@@ -36,7 +34,7 @@ impl Check for QuoteCharacterChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "QuoteCharacter"
     }
 }
 

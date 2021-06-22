@@ -3,7 +3,6 @@ use crate::common::*;
 
 pub(crate) struct ExtraBlankLineChecker<'a> {
     template: &'a str,
-    name: &'a str,
     last_blank_number: Option<usize>,
 }
 
@@ -17,7 +16,6 @@ impl Default for ExtraBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
             template: "Extra blank line detected",
-            name: "ExtraBlankLine",
             last_blank_number: None,
         }
     }
@@ -43,7 +41,7 @@ impl Check for ExtraBlankLineChecker<'_> {
     }
 
     fn name(&self) -> &str {
-        self.name
+        "ExtraBlankLine"
     }
 }
 
