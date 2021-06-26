@@ -14,7 +14,6 @@ pub enum LintKind {
     SubstitutionKey,
     TrailingWhitespace,
     UnorderedKey,
-    Unfixable,
 }
 
 impl FromStr for LintKind {

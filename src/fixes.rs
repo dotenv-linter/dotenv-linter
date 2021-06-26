@@ -131,22 +131,6 @@ mod tests {
     }
 
     #[test]
-    fn run_with_unfixable_warning_test() {
-        let mut lines = vec![
-            line_entry(1, 3, "A=B"),
-            line_entry(2, 3, "UNFIXABLE-"),
-            blank_line_entry(3, 3),
-        ];
-        let mut warnings = vec![Warning::new(
-            lines[1].clone(),
-            LintKind::Unfixable,
-            "The UNFIXABLE- key is not fixable",
-        )];
-
-        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
-    }
-
-    #[test]
     fn run_when_lines_do_not_fit_numbers_test() {
         let mut lines = vec![
             line_entry(1, 3, "a=B"),
