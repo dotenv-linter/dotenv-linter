@@ -1,4 +1,4 @@
-use crate::{common::*, lints::*};
+use crate::{common::*, lint_kind::*};
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -59,10 +59,10 @@ pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
         if let Some(comment) = line.get_control_comment() {
             if comment.is_disabled() {
                 // Disable checks from a comment using the dotenv-linter:off flag
-                disabled_checks.extend(comment.checks.variants);
+                disabled_checks.extend(comment.checks);
             } else {
                 // Enable checks if the comment has the dotenv-linter:on flag
-                disabled_checks.retain(|&s| !comment.checks.variants.contains(&s));
+                disabled_checks.retain(|&s| !comment.checks.contains(&s));
             }
         }
 

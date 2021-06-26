@@ -1,4 +1,6 @@
-use crate::lints::*;
+use std::str::FromStr;
+
+use crate::lint_kind::*;
 
 const PREFIX: &str = "dotenv-linter";
 const ON: &str = "on";
@@ -7,7 +9,7 @@ const OFF: &str = "off";
 #[derive(Debug, PartialEq)]
 pub struct Comment {
     disable: bool,
-    pub checks: Lint,
+    pub checks: Vec<LintKind>,
 }
 
 pub fn parse(s: &str) -> Option<Comment> {
@@ -41,8 +43,12 @@ pub fn parse(s: &str) -> Option<Comment> {
 
     let disable = flag == OFF;
 
-    // Cheap convertion from Vec<&str> to Vec<check_variants::Lint>
-    let checks: Lint = Lint::from(checks);
+    // Converting vec of &str lints to `Vec<LintKind>`
+    let checks: Vec<LintKind> = checks
+        .into_iter()
+        .map(LintKind::from_str)
+        .collect::<Result<Vec<LintKind>, _>>()
+        .unwrap();
 
     Some(Comment { disable, checks })
 }
@@ -56,6 +62,13 @@ impl Comment {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn as_lintkind_vec(vec: Vec<&str>) -> Vec<LintKind> {
+        vec.into_iter()
+            .map(LintKind::from_str)
+            .collect::<Result<Vec<LintKind>, _>>()
+            .unwrap()
+    }
 
     #[test]
     fn incorrect_comment() {
@@ -90,7 +103,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::new(),
+                checks: Vec::new(),
             }),
             parse("# dotenv-linter:on")
         );
@@ -98,7 +111,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::new(),
+                checks: Vec::new(),
             }),
             parse("# dotenv-linter:off")
         )
@@ -109,7 +122,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::new(),
+                checks: Vec::new(),
             }),
             parse("#dotenv-linter:on")
         );
@@ -117,7 +130,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::new(),
+                checks: Vec::new(),
             }),
             parse("#dotenv-linter:off")
         )
@@ -128,7 +141,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey")
         );
@@ -136,7 +149,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::from(vec!["UnorderedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey"]),
             }),
             parse("# dotenv-linter:on UnorderedKey")
         );
@@ -147,7 +160,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey"]),
             }),
             parse(" # dotenv-linter:off UnorderedKey")
         );
@@ -155,7 +168,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::from(vec!["UnorderedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey"]),
             }),
             parse("  #dotenv-linter:on UnorderedKey")
         );
@@ -166,7 +179,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey,DuplicatedKey")
         );
@@ -174,7 +187,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:on UnorderedKey, DuplicatedKey")
         );
@@ -182,7 +195,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey ,DuplicatedKey")
         );
@@ -190,7 +203,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:on UnorderedKey , DuplicatedKey")
         );
@@ -198,7 +211,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:off UnorderedKey,DuplicatedKey,")
         );
@@ -206,7 +219,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey"]),
             }),
             parse("# dotenv-linter:on ,UnorderedKey,DuplicatedKey,")
         );
@@ -217,7 +230,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"]),
             }),
             parse("# dotenv-linter:off UnorderedKey,DuplicatedKey, EndingBlankLine")
         );
@@ -225,7 +238,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: false,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"]),
             }),
             parse("# dotenv-linter:on UnorderedKey,DuplicatedKey,   EndingBlankLine")
         );
@@ -233,7 +246,7 @@ mod tests {
         assert_eq!(
             Some(Comment {
                 disable: true,
-                checks: Lint::from(vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"]),
+                checks: as_lintkind_vec(vec!["UnorderedKey", "DuplicatedKey", "EndingBlankLine"]),
             }),
             parse("# dotenv-linter:off  ,  UnorderedKey,DuplicatedKey,  EndingBlankLine,   ")
         );

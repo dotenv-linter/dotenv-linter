@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lints::*};
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct SpaceCharacterFixer {}
 

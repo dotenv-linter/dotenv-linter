@@ -1,10 +1,5 @@
 use std::{fmt, str::FromStr};
 
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Lint {
-    pub variants: Vec<LintKind>,
-}
-
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LintKind {
     DuplicatedKey,
@@ -20,14 +15,6 @@ pub enum LintKind {
     TrailingWhitespace,
     UnorderedKey,
     Unfixable,
-}
-
-impl Lint {
-    pub fn new() -> Self {
-        Self {
-            variants: Vec::new(),
-        }
-    }
 }
 
 impl FromStr for LintKind {
@@ -58,18 +45,6 @@ impl fmt::Display for LintKind {
     }
 }
 
-impl From<Vec<&str>> for Lint {
-    fn from(string_lints: Vec<&str>) -> Self {
-        let mut lint = Lint::new();
-
-        for string in string_lints {
-            lint.variants.push(LintKind::from_str(string).unwrap());
-        }
-
-        lint
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,19 +55,6 @@ mod tests {
         let expected = LintKind::from_str(lint_as_str).unwrap();
 
         assert_eq!(expected, LintKind::DuplicatedKey);
-    }
-
-    #[test]
-    fn test_vec_str_to_lint_struct_conversion() {
-        let mut expected = Lint::new();
-        expected.variants = vec![
-            LintKind::DuplicatedKey,
-            LintKind::ExtraBlankLine,
-            LintKind::EndingBlankLine,
-        ];
-        let vec_of_lints = vec!["DuplicatedKey", "ExtraBlankLine", "EndingBlankLine"];
-
-        assert_eq!(expected, Lint::from(vec_of_lints));
     }
 
     #[test]

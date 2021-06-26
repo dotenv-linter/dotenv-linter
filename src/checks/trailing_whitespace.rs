@@ -1,6 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
-use crate::lints::LintKind;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct TrailingWhitespaceChecker<'a> {
     template: &'a str,

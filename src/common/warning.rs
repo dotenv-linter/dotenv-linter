@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::{common::*, lints::*};
+use crate::{common::*, lint_kind::*};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {

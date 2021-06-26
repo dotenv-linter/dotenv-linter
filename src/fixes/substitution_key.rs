@@ -1,5 +1,5 @@
-use crate::common::LineEntry;
 use crate::fixes::Fix;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct SubstitutionKeyFixer {}
 
@@ -10,8 +10,8 @@ impl Default for SubstitutionKeyFixer {
 }
 
 impl Fix for SubstitutionKeyFixer {
-    fn name(&self) -> &str {
-        "SubstitutionKey"
+    fn name(&self) -> LintKind {
+        LintKind::SubstitutionKey
     }
 
     // TODO: refactor
@@ -112,7 +112,7 @@ mod tests {
             .map(|l| {
                 Warning::new(
                     l.clone(),
-                    "SubstitutionKey",
+                    LintKind::SubstitutionKey,
                     String::from("The key is not assigned properly"),
                 )
             })

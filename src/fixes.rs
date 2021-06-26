@@ -1,4 +1,4 @@
-use crate::{common::*, lints::*};
+use crate::{common::*, lint_kind::*};
 
 mod duplicated_key;
 mod ending_blank_line;

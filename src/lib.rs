@@ -3,17 +3,18 @@ use std::collections::BTreeMap;
 use std::collections::HashSet;
 use std::error::Error;
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
 mod checks;
 pub mod cli;
 mod common;
 mod fixes;
 mod fs_utils;
-mod lints;
+mod lint_kind;
 
 pub use checks::available_check_names;
 use common::CompareWarning;
-use lints::Lint;
+use lint_kind::LintKind;
 use std::rc::Rc;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<dyn Error>> {
@@ -30,7 +31,11 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<d
         skip_checks = skip.collect();
     }
 
-    let skip_checks = Lint::from(skip_checks);
+    let skip_checks = skip_checks
+        .into_iter()
+        .map(LintKind::from_str)
+        .collect::<Result<Vec<LintKind>, _>>()
+        .unwrap();
 
     let warnings_count =
         lines_map
@@ -40,7 +45,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<d
                 output.print_processing_info(&fe);
 
                 let lines = get_line_entries(&fe, strings);
-                let result = checks::run(&lines, &skip_checks.variants);
+                let result = checks::run(&lines, &skip_checks);
 
                 output.print_warnings(&result, index);
                 acc + result.len()
@@ -66,17 +71,21 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
     }
-    let skip_checks = Lint::from(skip_checks);
+    let skip_checks = skip_checks
+        .into_iter()
+        .map(LintKind::from_str)
+        .collect::<Result<Vec<LintKind>, _>>()
+        .unwrap();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
         let mut lines = get_line_entries(&fe, strings);
-        let mut result = checks::run(&lines, &skip_checks.variants);
+        let mut result = checks::run(&lines, &skip_checks);
         if result.is_empty() {
             continue;
         }
-        let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks.variants);
+        let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks);
         if fixes_done != result.len() {
             output.print_not_all_warnings_fixed();
         }
