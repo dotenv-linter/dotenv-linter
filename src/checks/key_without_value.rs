@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct KeyWithoutValueChecker<'a> {
     template: &'a str,
@@ -32,8 +32,8 @@ impl Check for KeyWithoutValueChecker<'_> {
         }
     }
 
-    fn name(&self) -> &str {
-        "KeyWithoutValue"
+    fn name(&self) -> LintKind {
+        LintKind::KeyWithoutValue
     }
 }
 

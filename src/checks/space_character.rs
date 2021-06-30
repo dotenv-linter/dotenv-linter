@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct SpaceCharacterChecker<'a> {
     template: &'a str,
@@ -32,8 +32,8 @@ impl Check for SpaceCharacterChecker<'_> {
         None
     }
 
-    fn name(&self) -> &str {
-        "SpaceCharacter"
+    fn name(&self) -> LintKind {
+        LintKind::SpaceCharacter
     }
 }
 

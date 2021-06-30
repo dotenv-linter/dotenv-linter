@@ -1,4 +1,4 @@
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -14,7 +14,7 @@ mod trailing_whitespace;
 mod unordered_key;
 
 trait Fix {
-    fn name(&self) -> &str;
+    fn name(&self) -> LintKind;
 
     fn fix_warnings(
         &mut self,
@@ -62,7 +62,11 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     ]
 }
 
-pub fn run(warnings: &mut [Warning], lines: &mut Vec<LineEntry>, skip_checks: &[&str]) -> usize {
+pub fn run(
+    warnings: &mut [Warning],
+    lines: &mut Vec<LineEntry>,
+    skip_checks: &[LintKind],
+) -> usize {
     if warnings.is_empty() {
         return 0;
     }
@@ -118,28 +122,12 @@ mod tests {
         ];
         let mut warnings = vec![Warning::new(
             lines[1].clone(),
-            "LowercaseKey",
+            LintKind::LowercaseKey,
             "The c key should be in uppercase",
         )];
 
         assert_eq!(1, run(&mut warnings, &mut lines, &[]));
         assert_eq!("C=d", lines[1].raw_string);
-    }
-
-    #[test]
-    fn run_with_unfixable_warning_test() {
-        let mut lines = vec![
-            line_entry(1, 3, "A=B"),
-            line_entry(2, 3, "UNFIXABLE-"),
-            blank_line_entry(3, 3),
-        ];
-        let mut warnings = vec![Warning::new(
-            lines[1].clone(),
-            "Unfixable",
-            "The UNFIXABLE- key is not fixable",
-        )];
-
-        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
     }
 
     #[test]
@@ -152,12 +140,12 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[0].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a key should be in uppercase",
             ),
             Warning::new(
                 lines[1].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The c key should be in uppercase",
             ),
         ];
@@ -177,12 +165,12 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
@@ -207,17 +195,20 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &["DuplicatedKey"]));
+        assert_eq!(
+            2,
+            run(&mut warnings, &mut lines, &[LintKind::DuplicatedKey])
+        );
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -237,17 +228,17 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LowercaseKey",
+                LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &["UnorderedKey"]));
+        assert_eq!(2, run(&mut warnings, &mut lines, &[LintKind::UnorderedKey]));
         assert_eq!("A1=1", lines[0].raw_string);
         assert_eq!("A2=2", lines[1].raw_string);
         assert_eq!("A0=0", lines[2].raw_string);
@@ -255,12 +246,12 @@ mod tests {
         assert_eq!("\n", lines[4].raw_string);
     }
 
-    struct TestFixer<'a> {
-        name: &'a str,
+    struct TestFixer {
+        name: LintKind,
     }
 
-    impl Fix for TestFixer<'_> {
-        fn name(&self) -> &str {
+    impl Fix for TestFixer {
+        fn name(&self) -> LintKind {
             self.name
         }
 

@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct LowercaseKeyFixer {}
 
@@ -10,8 +10,8 @@ impl Default for LowercaseKeyFixer {
 }
 
 impl Fix for LowercaseKeyFixer {
-    fn name(&self) -> &str {
-        "LowercaseKey"
+    fn name(&self) -> LintKind {
+        LintKind::LowercaseKey
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -47,7 +47,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "LowercaseKey",
+            LintKind::LowercaseKey,
             String::from("The FOO key should be in uppercase"),
         );
 

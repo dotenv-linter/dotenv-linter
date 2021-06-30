@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct EndingBlankLineFixer {}
 
@@ -10,8 +10,8 @@ impl Default for EndingBlankLineFixer {
 }
 
 impl Fix for EndingBlankLineFixer {
-    fn name(&self) -> &str {
-        "EndingBlankLine"
+    fn name(&self) -> LintKind {
+        LintKind::EndingBlankLine
     }
 
     fn fix_warnings(
@@ -43,7 +43,7 @@ mod tests {
         let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, "Z=Y")];
         let mut warning = Warning::new(
             lines[1].clone(),
-            "EndingBlankLine",
+            LintKind::EndingBlankLine,
             "No blank line at the end of the file",
         );
 

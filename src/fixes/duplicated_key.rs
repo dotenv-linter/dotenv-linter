@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyFixer {}
@@ -11,8 +11,8 @@ impl Default for DuplicatedKeyFixer {
 }
 
 impl Fix for DuplicatedKeyFixer {
-    fn name(&self) -> &str {
-        "DuplicatedKey"
+    fn name(&self) -> LintKind {
+        LintKind::DuplicatedKey
     }
 
     fn fix_warnings(
@@ -73,10 +73,14 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[2].clone(),
-                "DuplicatedKey",
+                LintKind::DuplicatedKey,
                 "The FOO key is duplicated",
             ),
-            Warning::new(lines[3].clone(), "DuplicatedKey", "The Z key is duplicated"),
+            Warning::new(
+                lines[3].clone(),
+                LintKind::DuplicatedKey,
+                "The Z key is duplicated",
+            ),
         ];
 
         assert_eq!(

@@ -3,15 +3,18 @@ use std::collections::BTreeMap;
 use std::collections::HashSet;
 use std::error::Error;
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
 mod checks;
 pub mod cli;
 mod common;
 mod fixes;
 mod fs_utils;
+mod lint_kind;
 
 pub use checks::available_check_names;
 use common::CompareWarning;
+use lint_kind::LintKind;
 use std::rc::Rc;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<dyn Error>> {
@@ -27,6 +30,11 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<d
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
     }
+
+    let skip_checks = skip_checks
+        .into_iter()
+        .filter_map(|c| LintKind::from_str(c).ok())
+        .collect::<Vec<LintKind>>();
 
     let warnings_count =
         lines_map
@@ -62,6 +70,10 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
     if let Some(skip) = args.values_of("skip") {
         skip_checks = skip.collect();
     }
+    let skip_checks = skip_checks
+        .into_iter()
+        .filter_map(|c| LintKind::from_str(c).ok())
+        .collect::<Vec<LintKind>>();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);

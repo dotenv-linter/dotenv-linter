@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct IncorrectDelimiterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for IncorrectDelimiterFixer {
 }
 
 impl Fix for IncorrectDelimiterFixer {
-    fn name(&self) -> &str {
-        "IncorrectDelimiter"
+    fn name(&self) -> LintKind {
+        LintKind::IncorrectDelimiter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -70,7 +70,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "IncorrectDelimiter",
+            LintKind::IncorrectDelimiter,
             "The RAILS-ENV key has has an incorrect delimter",
         );
 

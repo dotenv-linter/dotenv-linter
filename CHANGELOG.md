@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Use enum instead of string for lint's identity [#427](https://github.com/dotenv-linter/dotenv-linter/pull/427) ([@fabricio7p](https://github.com/fabricio7p))
 - Get rid of the name field in checks and fixes structs [#432](https://github.com/dotenv-linter/dotenv-linter/pull/432) ([@mgrachev](https://github.com/mgrachev))
 - Replace filter with unwrap on flatten [#434](https://github.com/dotenv-linter/dotenv-linter/pull/434) ([@Fcukit](https://github.com/Fcukit))
 

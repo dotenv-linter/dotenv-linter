@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct EndingBlankLineChecker<'a> {
     template: &'a str,
@@ -28,8 +28,8 @@ impl Check for EndingBlankLineChecker<'_> {
         }
     }
 
-    fn name(&self) -> &str {
-        "EndingBlankLine"
+    fn name(&self) -> LintKind {
+        LintKind::EndingBlankLine
     }
 
     fn skip_comments(&self) -> bool {

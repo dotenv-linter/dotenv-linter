@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct LeadingCharacterChecker<'a> {
     template: &'a str,
@@ -32,8 +32,8 @@ impl Check for LeadingCharacterChecker<'_> {
         }
     }
 
-    fn name(&self) -> &str {
-        "LeadingCharacter"
+    fn name(&self) -> LintKind {
+        LintKind::LeadingCharacter
     }
 }
 

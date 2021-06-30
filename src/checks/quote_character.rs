@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct QuoteCharacterChecker<'a> {
     template: &'a str,
@@ -33,8 +33,8 @@ impl Check for QuoteCharacterChecker<'_> {
         }
     }
 
-    fn name(&self) -> &str {
-        "QuoteCharacter"
+    fn name(&self) -> LintKind {
+        LintKind::QuoteCharacter
     }
 }
 

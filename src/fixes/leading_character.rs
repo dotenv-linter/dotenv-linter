@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct LeadingCharacterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for LeadingCharacterFixer {
 }
 
 impl Fix for LeadingCharacterFixer {
-    fn name(&self) -> &str {
-        "LeadingCharacter"
+    fn name(&self) -> LintKind {
+        LintKind::LeadingCharacter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -109,22 +109,22 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[0].clone(),
-                "LeadingCharacter",
+                LintKind::LeadingCharacter,
                 "Invalid leading character detected",
             ),
             Warning::new(
                 lines[1].clone(),
-                "LeadingCharacter",
+                LintKind::LeadingCharacter,
                 "Invalid leading character detected",
             ),
             Warning::new(
                 lines[2].clone(),
-                "LeadingCharacter",
+                LintKind::LeadingCharacter,
                 "Invalid leading character detected",
             ),
             Warning::new(
                 lines[3].clone(),
-                "LeadingCharacter",
+                LintKind::LeadingCharacter,
                 "Invalid leading character detected",
             ),
         ];

@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct UnorderedKeyFixer {}
 
@@ -25,8 +25,8 @@ impl Default for UnorderedKeyFixer {
 // We check the order separately in each group of entries (groups are separated by blank lines or
 // control comments).
 impl Fix for UnorderedKeyFixer {
-    fn name(&self) -> &str {
-        "UnorderedKey"
+    fn name(&self) -> LintKind {
+        LintKind::UnorderedKey
     }
 
     fn fix_warnings(
@@ -149,7 +149,7 @@ mod tests {
     fn get_warnings(lines: &[LineEntry], warnings: Vec<(usize, &str)>) -> Vec<Warning> {
         warnings
             .into_iter()
-            .map(|(i, line)| Warning::new(lines[i].clone(), "UnorderedKey", line))
+            .map(|(i, line)| Warning::new(lines[i].clone(), LintKind::UnorderedKey, line))
             .collect()
     }
 

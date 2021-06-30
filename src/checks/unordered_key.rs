@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct UnorderedKeyChecker<'a> {
     template: &'a str,
@@ -55,8 +55,8 @@ impl Check for UnorderedKeyChecker<'_> {
         ))
     }
 
-    fn name(&self) -> &str {
-        "UnorderedKey"
+    fn name(&self) -> LintKind {
+        LintKind::UnorderedKey
     }
 
     fn skip_comments(&self) -> bool {

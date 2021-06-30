@@ -1,5 +1,5 @@
 use crate::checks::Check;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct TrailingWhitespaceChecker<'a> {
     template: &'a str,
@@ -30,8 +30,8 @@ impl Check for TrailingWhitespaceChecker<'_> {
         None
     }
 
-    fn name(&self) -> &str {
-        "TrailingWhitespace"
+    fn name(&self) -> LintKind {
+        LintKind::TrailingWhitespace
     }
 }
 

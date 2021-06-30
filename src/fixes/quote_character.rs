@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct QuoteCharacterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for QuoteCharacterFixer {
 }
 
 impl Fix for QuoteCharacterFixer {
-    fn name(&self) -> &str {
-        "QuoteCharacter"
+    fn name(&self) -> LintKind {
+        LintKind::QuoteCharacter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -48,7 +48,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "QuoteCharacter",
+            LintKind::QuoteCharacter,
             "The value has quote characters (\', \")",
         );
 

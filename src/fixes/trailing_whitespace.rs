@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct TrailingWhitespaceFixer {}
 
@@ -10,8 +10,8 @@ impl Default for TrailingWhitespaceFixer {
 }
 
 impl Fix for TrailingWhitespaceFixer {
-    fn name(&self) -> &str {
-        "TrailingWhitespace"
+    fn name(&self) -> LintKind {
+        LintKind::TrailingWhitespace
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -45,7 +45,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "TrailingWhitespace",
+            LintKind::TrailingWhitespace,
             "Trailing whitespace detected",
         );
 

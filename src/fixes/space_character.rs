@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct SpaceCharacterFixer {}
 
@@ -10,8 +10,8 @@ impl Default for SpaceCharacterFixer {
 }
 
 impl Fix for SpaceCharacterFixer {
-    fn name(&self) -> &str {
-        "SpaceCharacter"
+    fn name(&self) -> LintKind {
+        LintKind::SpaceCharacter
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -57,12 +57,12 @@ mod tests {
         let mut warnings = vec![
             Warning::new(
                 lines[0].clone(),
-                "SpaceCharacter",
+                LintKind::SpaceCharacter,
                 "The line has spaces around equal sign",
             ),
             Warning::new(
                 lines[1].clone(),
-                "SpaceCharacter",
+                LintKind::SpaceCharacter,
                 "The line has spaces around equal sign",
             ),
         ];

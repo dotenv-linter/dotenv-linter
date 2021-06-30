@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::*;
+use crate::{common::*, lint_kind::*};
 
 pub(crate) struct KeyWithoutValueFixer {}
 
@@ -10,8 +10,8 @@ impl Default for KeyWithoutValueFixer {
 }
 
 impl Fix for KeyWithoutValueFixer {
-    fn name(&self) -> &str {
-        "KeyWithoutValue"
+    fn name(&self) -> LintKind {
+        LintKind::KeyWithoutValue
     }
 
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
@@ -45,7 +45,7 @@ mod tests {
         ];
         let mut warning = Warning::new(
             lines[0].clone(),
-            "KeyWithoutValue",
+            LintKind::KeyWithoutValue,
             "The FOO key should be with a value or have an equal sign",
         );
 
