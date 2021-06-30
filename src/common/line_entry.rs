@@ -302,14 +302,6 @@ mod tests {
 
     mod get_control_comment {
         use crate::lint_kind::LintKind;
-        use std::str::FromStr;
-
-        fn as_lintkind_vec(vec: Vec<&str>) -> Vec<LintKind> {
-            vec.into_iter()
-                .map(LintKind::from_str)
-                .collect::<Result<Vec<LintKind>, _>>()
-                .unwrap()
-        }
 
         use super::*;
 
@@ -321,7 +313,7 @@ mod tests {
 
             let comment = entry.get_control_comment().expect("comment");
             assert_eq!(comment.is_disabled(), true);
-            assert_eq!(comment.checks, as_lintkind_vec(vec!["LowercaseKey"]));
+            assert_eq!(comment.checks, vec![LintKind::LowercaseKey]);
         }
 
         #[test]
