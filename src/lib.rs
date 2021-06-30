@@ -33,9 +33,8 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize, Box<d
 
     let skip_checks = skip_checks
         .into_iter()
-        .map(LintKind::from_str)
-        .collect::<Result<Vec<LintKind>, _>>()
-        .unwrap();
+        .filter_map(|c| LintKind::from_str(c).ok())
+        .collect::<Vec<LintKind>>();
 
     let warnings_count =
         lines_map
@@ -73,9 +72,8 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<(), Box<dyn Er
     }
     let skip_checks = skip_checks
         .into_iter()
-        .map(LintKind::from_str)
-        .collect::<Result<Vec<LintKind>, _>>()
-        .unwrap();
+        .filter_map(|c| LintKind::from_str(c).ok())
+        .collect::<Vec<LintKind>>();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
