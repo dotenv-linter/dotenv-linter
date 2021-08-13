@@ -20,11 +20,25 @@ jobs:
           tar -czf dotenv-linter-linux-x86_64.tar.gz dotenv-linter
           rm dotenv-linter
 
+          rustup target add aarch64-unknown-linux-gnu
+          cargo build --release --target aarch64-unknown-linux-gnu
+          mv target/aarch64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+          tar -czf dotenv-linter-linux-aarch64.tar.gz dotenv-linter
+          rm dotenv-linter
+
           rustup target add x86_64-unknown-linux-musl
           cargo build --release --target x86_64-unknown-linux-musl
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
           chmod +x dotenv-linter
           tar -czf dotenv-linter-alpine-x86_64.tar.gz dotenv-linter
+          rm dotenv-linter
+
+          rustup target add aarch64-unknown-linux-musl
+          cargo build --release --target aarch64-unknown-linux-musl
+          mv target/aarch64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+          tar -czf dotenv-linter-alpine-aarch64.tar.gz dotenv-linter
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -47,6 +61,13 @@ jobs:
           mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter
           chmod +x dotenv-linter
           tar -czf dotenv-linter-darwin-x86_64.tar.gz dotenv-linter
+          rm dotenv-linter
+
+          rustup target add aarch64-apple-darwin
+          cargo build --release --target aarch64-apple-darwin
+          mv target/aarch64-apple-darwin/release/dotenv-linter ./dotenv-linter
+          chmod +x dotenv-linter
+          tar -czf dotenv-linter-darwin-arm64.tar.gz dotenv-linter
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -126,6 +147,10 @@ jobs:
         run: |
           cargo build --release --target x86_64-pc-windows-msvc
           Compress-Archive -Path ".\target\x86_64-pc-windows-msvc\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-win-x64.zip"
+
+          rustup target add aarch64-pc-windows-msvc
+          cargo build --release --target aarch64-pc-windows-msvc
+          Compress-Archive -Path ".\target\aarch64-pc-windows-msvc\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-win-aarch64.zip"
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
