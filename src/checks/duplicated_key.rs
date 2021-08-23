@@ -9,7 +9,7 @@ pub(crate) struct DuplicatedKeyChecker<'a> {
 
 impl DuplicatedKeyChecker<'_> {
     fn message(&self, key: &str) -> String {
-        self.template.replace("{}", &key)
+        self.template.replace("{}", key)
     }
 }
 
@@ -27,7 +27,7 @@ impl Check for DuplicatedKeyChecker<'_> {
         let key = line.get_key()?;
 
         if self.keys.contains(key) {
-            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
+            return Some(Warning::new(line.clone(), self.name(), self.message(key)));
         }
 
         self.keys.insert(key.to_string());

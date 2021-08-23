@@ -7,7 +7,7 @@ pub(crate) struct IncorrectDelimiterChecker<'a> {
 
 impl IncorrectDelimiterChecker<'_> {
     fn message(&self, key: &str) -> String {
-        self.template.replace("{}", &key)
+        self.template.replace("{}", key)
     }
 }
 
@@ -25,14 +25,14 @@ impl Check for IncorrectDelimiterChecker<'_> {
 
         // delimiters occur /between/ characters, not as the initial character, so we should
         // remove all invalid leading characters before checking for incorrect delimiters
-        let cleaned_key = remove_invalid_leading_chars(&key);
+        let cleaned_key = remove_invalid_leading_chars(key);
 
         if cleaned_key
             .trim()
             .chars()
             .any(|c| !c.is_alphanumeric() && c != '_')
         {
-            return Some(Warning::new(line.clone(), self.name(), self.message(&key)));
+            return Some(Warning::new(line.clone(), self.name(), self.message(key)));
         }
 
         None

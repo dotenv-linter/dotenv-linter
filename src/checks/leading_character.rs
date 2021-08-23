@@ -5,17 +5,17 @@ pub(crate) struct LeadingCharacterChecker<'a> {
     template: &'a str,
 }
 
+impl LeadingCharacterChecker<'_> {
+    fn message(&self) -> &str {
+        self.template
+    }
+}
+
 impl Default for LeadingCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             template: "Invalid leading character detected",
         }
-    }
-}
-
-impl LeadingCharacterChecker<'_> {
-    fn message(&self) -> &str {
-        self.template
     }
 }
 

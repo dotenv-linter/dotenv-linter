@@ -5,17 +5,17 @@ pub(crate) struct KeyWithoutValueChecker<'a> {
     template: &'a str,
 }
 
+impl KeyWithoutValueChecker<'_> {
+    fn message(&self, key: &str) -> String {
+        self.template.replace("{}", key)
+    }
+}
+
 impl Default for KeyWithoutValueChecker<'_> {
     fn default() -> Self {
         Self {
             template: "The {} key should be with a value or have an equal sign",
         }
-    }
-}
-
-impl KeyWithoutValueChecker<'_> {
-    fn message(&self, key: &str) -> String {
-        self.template.replace("{}", &key)
     }
 }
 

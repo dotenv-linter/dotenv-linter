@@ -37,7 +37,7 @@ impl Fix for SubstitutionKeyFixer {
                 .map(|i| raw_key.split_at(i))
                 .unwrap_or_else(|| (raw_key, ""));
 
-            value = &rest;
+            value = rest;
 
             let stripped_key = initial_key.strip_prefix('{').unwrap_or(initial_key);
 

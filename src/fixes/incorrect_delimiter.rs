@@ -17,7 +17,7 @@ impl Fix for IncorrectDelimiterFixer {
     fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
 
-        let cleaned_key = remove_invalid_leading_chars(&key);
+        let cleaned_key = remove_invalid_leading_chars(key);
         let start_idx = key.len() - cleaned_key.len();
 
         let cleaned_key = key[start_idx..].replace(|c: char| !c.is_alphanumeric(), "_");

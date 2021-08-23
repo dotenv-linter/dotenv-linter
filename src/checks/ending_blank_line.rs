@@ -5,17 +5,17 @@ pub(crate) struct EndingBlankLineChecker<'a> {
     template: &'a str,
 }
 
+impl EndingBlankLineChecker<'_> {
+    fn message(&self) -> &str {
+        self.template
+    }
+}
+
 impl Default for EndingBlankLineChecker<'_> {
     fn default() -> Self {
         Self {
             template: "No blank line at the end of the file",
         }
-    }
-}
-
-impl EndingBlankLineChecker<'_> {
-    fn message(&self) -> &str {
-        self.template
     }
 }
 

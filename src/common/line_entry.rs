@@ -113,7 +113,7 @@ impl LineEntry {
             let raw_key = &value[index + 1..];
 
             if is_escaped(prefix) {
-                value = &raw_key;
+                value = raw_key;
             } else {
                 let (key, rest) = raw_key
                     .strip_prefix('{')
