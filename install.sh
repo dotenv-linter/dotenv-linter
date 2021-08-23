@@ -109,8 +109,8 @@ get_architecture() {
     _cputype="$(uname -m)"
     _clibtype="gnu"
 
-    if [ "$_cputype" != "x86_64" ]; then
-	    err "Error: Unsupported architecture $_cputype. Only x86_64 binaries are available."
+    if [ "$_cputype" != "x86_64" ] && [ "$_cputype" != "aarch64" ] && [ "$_cputype" != "arm64" ]; then
+	    err "Error: Unsupported architecture $_cputype. Only 'x86_64' and 'aarch64/arm64' binaries are available."
     fi
 
     if [ "$_ostype" = "Linux" ]; then
@@ -136,7 +136,9 @@ get_architecture() {
 
         CYGWIN*|MINGW32*|MSYS*|MINGW*) # windows systems
             _ostype=win
-            _cputype="x64"
+            if [ "$_cputype" = "x86_64" ]; then
+                _cputype="x64"
+            fi
         ;;
 
         *)

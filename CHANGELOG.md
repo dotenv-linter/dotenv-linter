@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- `aarch64` support (mac, linux, win) [#436](https://github.com/dotenv-linter/dotenv-linter/pull/436) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
 - Fix clippy warnings [#437](https://github.com/dotenv-linter/dotenv-linter/pull/437) ([@mgrachev](https://github.com/mgrachev))
