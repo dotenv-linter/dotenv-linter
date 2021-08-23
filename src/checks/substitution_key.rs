@@ -5,6 +5,12 @@ pub(crate) struct SubstitutionKeyChecker<'a> {
     template: &'a str,
 }
 
+impl SubstitutionKeyChecker<'_> {
+    fn message(&self, key: &str) -> String {
+        self.template.replace("{}", key)
+    }
+}
+
 impl Default for SubstitutionKeyChecker<'_> {
     fn default() -> Self {
         Self {
@@ -51,19 +57,13 @@ impl Check for SubstitutionKeyChecker<'_> {
                 ));
             }
 
-            value = &rest;
+            value = rest;
         }
         None
     }
 
     fn name(&self) -> LintKind {
         LintKind::SubstitutionKey
-    }
-}
-
-impl SubstitutionKeyChecker<'_> {
-    fn message(&self, key: &str) -> String {
-        self.template.replace("{}", &key)
     }
 }
 

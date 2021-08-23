@@ -5,6 +5,12 @@ pub(crate) struct LowercaseKeyChecker<'a> {
     template: &'a str,
 }
 
+impl LowercaseKeyChecker<'_> {
+    fn message(&self, key: &str) -> String {
+        self.template.replace("{}", key)
+    }
+}
+
 impl Default for LowercaseKeyChecker<'_> {
     fn default() -> Self {
         Self {
@@ -19,18 +25,12 @@ impl Check for LowercaseKeyChecker<'_> {
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line.clone(), self.name(), self.message(&key)))
+            Some(Warning::new(line.clone(), self.name(), self.message(key)))
         }
     }
 
     fn name(&self) -> LintKind {
         LintKind::LowercaseKey
-    }
-}
-
-impl LowercaseKeyChecker<'_> {
-    fn message(&self, key: &str) -> String {
-        self.template.replace("{}", key)
     }
 }
 

@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
         ("fix", Some(fix_args)) => {
-            dotenv_linter::fix(&fix_args, &current_dir)?;
+            dotenv_linter::fix(fix_args, &current_dir)?;
             process::exit(0);
         }
         ("list", Some(_)) => {
@@ -30,9 +30,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             process::exit(0);
         }
         ("compare", Some(compare_args)) => {
-            disable_color_output(&compare_args);
+            disable_color_output(compare_args);
 
-            let warnings = dotenv_linter::compare(&compare_args, &current_dir)?;
+            let warnings = dotenv_linter::compare(compare_args, &current_dir)?;
             if warnings.is_empty() {
                 process::exit(0);
             }

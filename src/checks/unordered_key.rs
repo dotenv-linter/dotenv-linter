@@ -51,7 +51,7 @@ impl Check for UnorderedKeyChecker<'_> {
         Some(Warning::new(
             line.clone(),
             self.name(),
-            self.message(&key, &another_key),
+            self.message(key, another_key),
         ))
     }
 
