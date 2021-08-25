@@ -213,7 +213,7 @@ jobs:
           command: clean
           args: --package dotenv-linter
         if: steps.cache-target.outputs.cache-hit != 'true'
-  
+
   windows_test:
     name: Test / Windows
     runs-on: windows-latest
