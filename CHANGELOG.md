@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 
-## [v3.1.1] - 2021-08-24
+## [v3.1.1] - 2021-08-25
 ### 🚀 Added
 - `aarch64` support (mac, linux, win) [#436](https://github.com/dotenv-linter/dotenv-linter/pull/436) ([@DDtKey](https://github.com/DDtKey))
 
