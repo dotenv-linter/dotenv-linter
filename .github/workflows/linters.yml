@@ -23,7 +23,7 @@ jobs:
           reporter: github-pr-review
           fail_on_error: true
           # yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
-          yamllint_flags: "-d \"{extends: relaxed, rules: {line-length: {max: 120}}}\" ."
+          yamllint_flags: "-d '{extends: relaxed, rules: {line-length: {max: 120}}}' ."
 
   shellcheck:
     name: linters / shellcheck
