@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Display a message on installation error [#443](https://github.com/dotenv-linter/dotenv-linter/pull/443) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v3.1.1] - 2021-08-25
 ### 🚀 Added

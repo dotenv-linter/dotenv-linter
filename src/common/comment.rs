@@ -32,14 +32,11 @@ pub fn parse(s: &str) -> Option<Comment> {
     // Normalize list of checks. For example:
     // ["UnorderedKey,", "DuplicatedKey"] => ["UnorderedKey", "DuplicatedKey"]
     // ["ExtraBlankLine,LowercaseKey"] => ["ExtraBlankLine", "LowercaseKey"]
-    let checks: Vec<&str> = checks
-        .iter()
-        .flat_map(|&s| {
-            s.split(',')
-                .filter(|&s| !s.is_empty())
-                .collect::<Vec<&str>>()
-        })
-        .collect();
+    let checks = checks.iter().flat_map(|&s| {
+        s.split(',')
+            .filter(|&s| !s.is_empty())
+            .collect::<Vec<&str>>()
+    });
 
     let disable = flag == OFF;
 
