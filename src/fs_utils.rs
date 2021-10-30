@@ -1,9 +1,10 @@
-use crate::common::{FileEntry, LineEntry};
-use crate::Result;
 use std::fs::{copy, File};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::time::SystemTime;
+
+use crate::common::{FileEntry, LineEntry};
+use crate::Result;
 
 /// For the Windows platform, we need to remove the UNC prefix.
 #[cfg(windows)]
@@ -62,9 +63,10 @@ pub fn backup_file(fe: &FileEntry) -> Result<PathBuf> {
 
 #[cfg(test)]
 mod tests {
+    use std::fs::{self, File};
+
     use super::*;
     use crate::common::tests::*;
-    use std::fs::{self, File};
 
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
         for (target, base, relative) in assertions {

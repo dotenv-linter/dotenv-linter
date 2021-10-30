@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lint_kind::*};
+use crate::common::{LineEntry, LintKind, Warning, LF};
 
 pub(crate) struct EndingBlankLineFixer {}
 
@@ -35,7 +35,7 @@ impl Fix for EndingBlankLineFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::line_entry;
 
     #[test]
     fn fix_warnings_test() {

@@ -1,8 +1,7 @@
-use std::fmt;
-use std::fs;
 use std::path::{Path, PathBuf};
+use std::{fmt, fs};
 
-use crate::common::*;
+use super::LF;
 
 const EXCLUDED_FILES: &[&str] = &[".envrc"];
 

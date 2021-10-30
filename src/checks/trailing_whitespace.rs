@@ -1,5 +1,5 @@
-use crate::checks::Check;
-use crate::{common::*, lint_kind::*};
+use super::Check;
+use crate::common::{LineEntry, LintKind, Warning};
 
 pub(crate) struct TrailingWhitespaceChecker<'a> {
     template: &'a str,
@@ -38,7 +38,7 @@ impl Check for TrailingWhitespaceChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::check_test;
 
     const MESSAGE: &str = "Trailing whitespace detected";
 

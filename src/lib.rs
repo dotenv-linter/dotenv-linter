@@ -1,18 +1,18 @@
-use common::*;
-use lint_kind::LintKind;
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::str::FromStr;
 
+use crate::common::*;
+
 pub use checks::available_check_names;
 
 mod checks;
-pub mod cli;
 mod common;
 mod fixes;
 mod fs_utils;
-mod lint_kind;
+
+pub mod cli;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -90,7 +90,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
             let should_backup = !args.is_present("no-backup");
             // create backup copy unless user specifies not to
             if should_backup {
-                let backup_file = fs_utils::backup_file(&fe)?.into_os_string();
+                let backup_file = fs_utils::backup_file(&fe)?;
                 output.print_backup(&backup_file);
             }
 

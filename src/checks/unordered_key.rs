@@ -1,5 +1,5 @@
-use crate::checks::Check;
-use crate::{common::*, lint_kind::*};
+use super::Check;
+use crate::common::{LineEntry, LintKind, Warning};
 
 pub(crate) struct UnorderedKeyChecker<'a> {
     template: &'a str,
@@ -67,7 +67,7 @@ impl Check for UnorderedKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::check_test;
 
     #[test]
     fn one_key_test() {

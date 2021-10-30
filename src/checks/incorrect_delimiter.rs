@@ -1,5 +1,5 @@
-use crate::checks::Check;
-use crate::{common::*, lint_kind::*};
+use super::Check;
+use crate::common::{remove_invalid_leading_chars, LineEntry, LintKind, Warning};
 
 pub(crate) struct IncorrectDelimiterChecker<'a> {
     template: &'a str,
@@ -46,7 +46,7 @@ impl Check for IncorrectDelimiterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::check_test;
 
     #[test]
     fn working_run() {

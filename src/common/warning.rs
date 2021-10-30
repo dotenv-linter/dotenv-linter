@@ -1,6 +1,7 @@
+use colored::*;
 use std::fmt;
 
-use crate::{common::*, lint_kind::*};
+use super::{LineEntry, LintKind};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
@@ -39,7 +40,7 @@ impl fmt::Display for Warning {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::line_entry;
 
     #[test]
     fn warning_fmt_test() {

@@ -1,5 +1,5 @@
-use crate::fixes::Fix;
-use crate::{common::*, lint_kind::*};
+use super::Fix;
+use crate::common::{LineEntry, LintKind};
 
 pub(crate) struct SubstitutionKeyFixer {}
 
@@ -69,8 +69,7 @@ impl Fix for SubstitutionKeyFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
-    use crate::common::Warning;
+    use crate::common::{tests::*, Warning};
 
     #[test]
     fn fix_line_test() {

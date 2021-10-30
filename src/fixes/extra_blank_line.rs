@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lint_kind::*};
+use crate::common::{LineEntry, LintKind};
 
 pub(crate) struct ExtraBlankLineFixer {}
 
@@ -23,7 +23,7 @@ impl Fix for ExtraBlankLineFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::{tests::line_entry, Warning};
 
     #[test]
     fn no_blank_lines_test() {

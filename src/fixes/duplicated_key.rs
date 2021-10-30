@@ -1,6 +1,7 @@
-use super::Fix;
-use crate::{common::*, lint_kind::*};
 use std::collections::HashSet;
+
+use super::Fix;
+use crate::common::{LineEntry, LintKind, Warning};
 
 pub(crate) struct DuplicatedKeyFixer {}
 
@@ -59,7 +60,7 @@ impl Fix for DuplicatedKeyFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::line_entry;
 
     #[test]
     fn fix_warnings() {

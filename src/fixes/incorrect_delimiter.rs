@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lint_kind::*};
+use crate::common::{remove_invalid_leading_chars, LineEntry, LintKind};
 
 pub(crate) struct IncorrectDelimiterFixer {}
 
@@ -31,7 +31,10 @@ impl Fix for IncorrectDelimiterFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::{
+        tests::{blank_line_entry, line_entry},
+        Warning,
+    };
 
     #[test]
     fn fix_line_test() {

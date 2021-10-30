@@ -1,15 +1,17 @@
-pub(crate) mod comment;
 mod compare;
 mod file_entry;
 mod line_entry;
-pub(crate) mod output;
 mod warning;
 
-use colored::*;
+pub(crate) mod comment;
+pub(crate) mod lint_kind;
+pub(crate) mod output;
+
 pub use compare::CompareFileType;
 pub use compare::CompareWarning;
 pub use file_entry::FileEntry;
 pub use line_entry::LineEntry;
+pub use lint_kind::LintKind;
 pub use output::check::CheckOutput;
 pub use output::compare::CompareOutput;
 pub use output::fix::FixOutput;
@@ -23,10 +25,11 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
 
 #[cfg(test)]
 pub(crate) mod tests {
-    use super::*;
-    use crate::checks::Check;
     use std::path::PathBuf;
     use std::rc::Rc;
+
+    use super::*;
+    use crate::checks::Check;
 
     /**
         Helper function for testing `Check` implementations.
