@@ -1,5 +1,5 @@
 use crate::common::{FileEntry, LineEntry};
-use std::error::Error;
+use crate::Result;
 use std::fs::{copy, File};
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
@@ -46,7 +46,7 @@ pub fn write_file(path: &Path, lines: Vec<LineEntry>) -> io::Result<()> {
     Ok(())
 }
 
-pub fn backup_file(fe: &FileEntry) -> Result<PathBuf, Box<dyn Error>> {
+pub fn backup_file(fe: &FileEntry) -> Result<PathBuf> {
     let timestamp = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)?
         .as_secs();
