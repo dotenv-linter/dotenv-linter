@@ -1,6 +1,5 @@
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
-use std::rc::Rc;
 use std::str::FromStr;
 
 use crate::common::*;
@@ -42,7 +41,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
             .fold(0, |acc, (index, (fe, strings))| {
                 output.print_processing_info(&fe);
 
-                let lines = get_line_entries(&fe, strings);
+                let lines = get_line_entries(strings);
                 let result = checks::run(&lines, &skip_checks);
 
                 output.print_warnings(&fe, &result, index);
@@ -77,7 +76,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
-        let mut lines = get_line_entries(&fe, strings);
+        let mut lines = get_line_entries(strings);
         let result = checks::run(&lines, &skip_checks);
         if result.is_empty() {
             continue;
@@ -125,7 +124,7 @@ pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<Compar
     // Create CompareFileType structures for each file
     for (_, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
-        let lines = get_line_entries(&fe, strings);
+        let lines = get_line_entries(strings);
         let mut keys: Vec<String> = Vec::new();
 
         for line in lines {
@@ -235,11 +234,12 @@ fn get_file_paths(
     file_paths
 }
 
-fn get_line_entries(fe: &FileEntry, lines: Vec<String>) -> Vec<LineEntry> {
-    let fe = Rc::new(fe.clone());
+fn get_line_entries(lines: Vec<String>) -> Vec<LineEntry> {
+    let length = lines.len();
+
     lines
         .into_iter()
         .enumerate()
-        .map(|(index, line)| LineEntry::new(index + 1, fe.clone(), line))
+        .map(|(index, line)| LineEntry::new(index + 1, line, length == (index + 1)))
         .collect()
 }

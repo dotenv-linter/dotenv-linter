@@ -21,8 +21,7 @@ impl Fix for EndingBlankLineFixer {
             return Some(0);
         }
 
-        let file = lines.first()?.file.clone();
-        lines.push(LineEntry::new(lines.len() + 1, file, LF));
+        lines.push(LineEntry::new(lines.len() + 1, LF, true));
 
         Some(1)
     }

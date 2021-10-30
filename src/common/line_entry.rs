@@ -1,27 +1,26 @@
-use std::rc::Rc;
-
-use super::{comment::Comment, FileEntry};
+use super::comment::Comment;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
     pub number: usize,
-    pub file: Rc<FileEntry>,
     pub raw_string: String,
 
     /// Used in ExtraBlankLineFixer
     pub is_deleted: bool,
+    /// Used in EndingBlankLineChecker
+    pub is_last_line: bool,
 }
 
 impl LineEntry {
-    pub fn new<T>(number: usize, file: Rc<FileEntry>, raw_string: T) -> Self
+    pub fn new<T>(number: usize, raw_string: T, is_last_line: bool) -> Self
     where
         T: Into<String>,
     {
         LineEntry {
             number,
-            file,
             raw_string: raw_string.into(),
             is_deleted: false,
+            is_last_line,
         }
     }
 
@@ -68,10 +67,6 @@ impl LineEntry {
             .unwrap_or(trimmed)
     }
 
-    pub fn is_last_line(&self) -> bool {
-        self.file.total_lines == self.number
-    }
-
     pub fn mark_as_deleted(&mut self) {
         self.is_deleted = true;
     }
@@ -86,7 +81,6 @@ impl LineEntry {
         Comment::parse(self.raw_string.as_str())
     }
 
-    #[allow(dead_code)]
     pub fn get_substitution_keys(&self) -> Vec<&str> {
         let mut keys = Vec::new();
 

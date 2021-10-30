@@ -21,7 +21,7 @@ impl Default for EndingBlankLineChecker<'_> {
 
 impl Check for EndingBlankLineChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        if line.is_last_line() && !line.raw_string.ends_with(LF) {
+        if line.is_last_line && !line.raw_string.ends_with(LF) {
             Some(Warning::new(line.number, self.name(), self.message()))
         } else {
             None
