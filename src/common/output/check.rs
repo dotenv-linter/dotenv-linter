@@ -32,8 +32,10 @@ impl CheckOutput {
     }
 
     /// Prints warnings without any additional information
-    pub fn print_warnings(&self, warnings: &[Warning], file_index: usize) {
-        warnings.iter().for_each(|w| println!("{}", w));
+    pub fn print_warnings(&self, file: &FileEntry, warnings: &[Warning], file_index: usize) {
+        warnings
+            .iter()
+            .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
 
         if self.is_quiet_mode {
             return;

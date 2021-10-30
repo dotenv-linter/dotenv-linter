@@ -32,7 +32,7 @@ impl Check for IncorrectDelimiterChecker<'_> {
             .chars()
             .any(|c| !c.is_alphanumeric() && c != '_')
         {
-            return Some(Warning::new(line.clone(), self.name(), self.message(key)));
+            return Some(Warning::new(line.number, self.name(), self.message(key)));
         }
 
         None

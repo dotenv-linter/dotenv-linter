@@ -14,7 +14,7 @@ impl Fix for LeadingCharacterFixer {
         LintKind::LeadingCharacter
     }
 
-    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
 
         let cleaned_key = remove_invalid_leading_chars(key);
@@ -28,11 +28,11 @@ impl Fix for LeadingCharacterFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::{tests::*, Warning};
+    use crate::common::tests::*;
 
     #[test]
     fn fix_leading_dot() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut leading_period = line_entry(1, 1, ".FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_period));
@@ -41,7 +41,7 @@ mod tests {
 
     #[test]
     fn fix_leading_space() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut leading_space = line_entry(1, 1, " FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_space));
@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn fix_leading_asterisk() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut leading_asterisk = line_entry(1, 1, "*FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_asterisk));
@@ -59,7 +59,7 @@ mod tests {
 
     #[test]
     fn fix_leading_number() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut leading_number = line_entry(1, 1, "1FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
@@ -68,7 +68,7 @@ mod tests {
 
     #[test]
     fn fix_many_invalid_leading_chars() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut leading_number = line_entry(1, 1, "-1&*FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_number));
@@ -77,7 +77,7 @@ mod tests {
 
     #[test]
     fn leading_underscore_is_unchanged() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut leading_underscore = line_entry(1, 1, "_FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut leading_underscore));
@@ -86,7 +86,7 @@ mod tests {
 
     #[test]
     fn no_leading_char_is_unchanged() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut normal = line_entry(1, 1, "FOO=BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut normal));
@@ -95,7 +95,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = LeadingCharacterFixer::default();
+        let fixer = LeadingCharacterFixer::default();
         let mut lines = vec![
             line_entry(1, 7, ".FOO=BAR"),
             line_entry(2, 7, " Z=Y"),
@@ -105,34 +105,14 @@ mod tests {
             line_entry(6, 7, "KEY=VALUE"),
             blank_line_entry(6, 7),
         ];
-
-        let mut warnings = vec![
-            Warning::new(
-                lines[0].clone(),
-                LintKind::LeadingCharacter,
-                "Invalid leading character detected",
-            ),
-            Warning::new(
-                lines[1].clone(),
-                LintKind::LeadingCharacter,
-                "Invalid leading character detected",
-            ),
-            Warning::new(
-                lines[2].clone(),
-                LintKind::LeadingCharacter,
-                "Invalid leading character detected",
-            ),
-            Warning::new(
-                lines[3].clone(),
-                LintKind::LeadingCharacter,
-                "Invalid leading character detected",
-            ),
+        let warning_lines = [
+            lines[0].number,
+            lines[1].number,
+            lines[2].number,
+            lines[3].number,
         ];
 
-        assert_eq!(
-            Some(4),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
-        );
+        assert_eq!(Some(4), fixer.fix_warnings(&warning_lines, &mut lines));
 
         assert_eq!("FOO=BAR", lines[0].raw_string);
         assert_eq!("Z=Y", lines[1].raw_string);

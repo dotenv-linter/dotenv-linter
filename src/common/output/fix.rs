@@ -45,12 +45,15 @@ impl FixOutput {
     }
 
     /// Prints warnings without any additional information
-    pub fn print_warnings(&self, warnings: &[Warning], file_index: usize) {
+    pub fn print_warnings(&self, file: &FileEntry, warnings: &[Warning], file_index: usize) {
         if self.is_quiet_mode {
             return;
         }
 
-        warnings.iter().for_each(|w| println!("{}", w));
+        warnings
+            .iter()
+            .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
+
         let is_last_file = file_index == self.files_count - 1;
         if !warnings.is_empty() && !is_last_file {
             println!();

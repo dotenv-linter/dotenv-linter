@@ -24,7 +24,7 @@ impl Check for TrailingWhitespaceChecker<'_> {
         let raw_string = &line.raw_string;
 
         if raw_string.ends_with(' ') {
-            return Some(Warning::new(line.clone(), self.name(), self.message()));
+            return Some(Warning::new(line.number, self.name(), self.message()));
         }
 
         None

@@ -14,7 +14,7 @@ impl Fix for IncorrectDelimiterFixer {
         LintKind::IncorrectDelimiter
     }
 
-    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
 
         let cleaned_key = remove_invalid_leading_chars(key);
@@ -31,14 +31,11 @@ impl Fix for IncorrectDelimiterFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::{
-        tests::{blank_line_entry, line_entry},
-        Warning,
-    };
+    use crate::common::tests::{blank_line_entry, line_entry};
 
     #[test]
     fn fix_line_test() {
-        let mut fixer = IncorrectDelimiterFixer::default();
+        let fixer = IncorrectDelimiterFixer::default();
         let mut line = line_entry(1, 1, "RAILS-ENV=development");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -47,7 +44,7 @@ mod tests {
 
     #[test]
     fn fix_line_with_invalid_prefix_test() {
-        let mut fixer = IncorrectDelimiterFixer::default();
+        let fixer = IncorrectDelimiterFixer::default();
         let mut line = line_entry(1, 1, "**RAILS-ENV=development");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -56,7 +53,7 @@ mod tests {
 
     #[test]
     fn fix_line_with_invalid_suffix_test() {
-        let mut fixer = IncorrectDelimiterFixer::default();
+        let fixer = IncorrectDelimiterFixer::default();
         let mut line = line_entry(1, 1, "RAILS-ENV--=development");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -65,19 +62,15 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = IncorrectDelimiterFixer::default();
+        let fixer = IncorrectDelimiterFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "RAILS-ENV=development"),
             line_entry(2, 3, "RAILS_ENV=true"),
             blank_line_entry(3, 3),
         ];
-        let mut warning = Warning::new(
-            lines[0].clone(),
-            LintKind::IncorrectDelimiter,
-            "The RAILS-ENV key has has an incorrect delimter",
-        );
+        let warning_lines = [lines[0].number];
 
-        assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
+        assert_eq!(Some(1), fixer.fix_warnings(&warning_lines, &mut lines));
         assert_eq!("RAILS_ENV=development", lines[0].raw_string);
     }
 }

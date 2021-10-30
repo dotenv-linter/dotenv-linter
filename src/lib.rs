@@ -45,7 +45,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
                 let lines = get_line_entries(&fe, strings);
                 let result = checks::run(&lines, &skip_checks);
 
-                output.print_warnings(&result, index);
+                output.print_warnings(&fe, &result, index);
                 acc + result.len()
             });
 
@@ -78,11 +78,11 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
         output.print_processing_info(&fe);
 
         let mut lines = get_line_entries(&fe, strings);
-        let mut result = checks::run(&lines, &skip_checks);
+        let result = checks::run(&lines, &skip_checks);
         if result.is_empty() {
             continue;
         }
-        let fixes_done = fixes::run(&mut result, &mut lines, &skip_checks);
+        let fixes_done = fixes::run(&result, &mut lines, &skip_checks);
         if fixes_done != result.len() {
             output.print_not_all_warnings_fixed();
         }
@@ -98,7 +98,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        output.print_warnings(&result, index);
+        output.print_warnings(&fe, &result, index);
         warnings_count += result.len();
     }
 
