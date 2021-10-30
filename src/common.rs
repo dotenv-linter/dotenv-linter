@@ -25,9 +25,6 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
 
 #[cfg(test)]
 pub(crate) mod tests {
-    use std::path::PathBuf;
-    use std::rc::Rc;
-
     use super::*;
     use crate::checks::Check;
 
@@ -81,27 +78,11 @@ pub(crate) mod tests {
     }
 
     pub fn blank_line_entry(number: usize, total_lines: usize) -> LineEntry {
-        LineEntry::new(
-            number,
-            Rc::new(FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines,
-            }),
-            "\n",
-        )
+        LineEntry::new(number, "\n", total_lines == number)
     }
 
     pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
-        LineEntry::new(
-            number,
-            Rc::new(FileEntry {
-                path: PathBuf::from(".env"),
-                file_name: ".env".to_string(),
-                total_lines,
-            }),
-            raw_string,
-        )
+        LineEntry::new(number, raw_string, total_lines == number)
     }
 
     #[test]
