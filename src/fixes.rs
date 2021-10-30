@@ -16,14 +16,10 @@ mod unordered_key;
 trait Fix {
     fn name(&self) -> LintKind;
 
-    fn fix_warnings(
-        &mut self,
-        warnings: Vec<&mut Warning>,
-        lines: &mut Vec<LineEntry>,
-    ) -> Option<usize> {
+    fn fix_warnings(&self, warning_lines: &[usize], lines: &mut Vec<LineEntry>) -> Option<usize> {
         let mut count: usize = 0;
-        for warning in warnings {
-            let line = lines.get_mut(warning.line_number() - 1)?;
+        for line_number in warning_lines {
+            let line = lines.get_mut(line_number - 1)?;
             if self.fix_line(line).is_some() {
                 count += 1;
             }
@@ -32,7 +28,7 @@ trait Fix {
         Some(count)
     }
 
-    fn fix_line(&mut self, _line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&self, _line: &mut LineEntry) -> Option<()> {
         None
     }
 
@@ -62,11 +58,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     ]
 }
 
-pub fn run(
-    warnings: &mut [Warning],
-    lines: &mut Vec<LineEntry>,
-    skip_checks: &[LintKind],
-) -> usize {
+pub fn run(warnings: &[Warning], lines: &mut Vec<LineEntry>, skip_checks: &[LintKind]) -> usize {
     if warnings.is_empty() {
         return 0;
     }
@@ -76,16 +68,17 @@ pub fn run(
     fixes.retain(|f| !skip_checks.contains(&f.name()));
 
     let mut count = 0;
-    for mut fixer in fixes {
+    for fixer in fixes {
         // We can optimize it: create check_name:warnings map in advance
-        let fixer_warnings: Vec<&mut Warning> = warnings
-            .iter_mut()
+        let warning_lines: Vec<usize> = warnings
+            .iter()
             .filter(|w| w.check_name == fixer.name())
+            .map(|w| w.line_number)
             .collect();
 
         // Some fixers are mandatory because previous fixers can spawn warnings for them
-        if fixer.is_mandatory() || !fixer_warnings.is_empty() {
-            match fixer.fix_warnings(fixer_warnings, lines) {
+        if fixer.is_mandatory() || !warning_lines.is_empty() {
+            match fixer.fix_warnings(&warning_lines, lines) {
                 Some(fixer_count) => count += fixer_count,
                 None => {
                     return 0;
@@ -121,7 +114,7 @@ mod tests {
             blank_line_entry(3, 3),
         ];
         let mut warnings = vec![Warning::new(
-            lines[1].clone(),
+            lines[1].number,
             LintKind::LowercaseKey,
             "The c key should be in uppercase",
         )];
@@ -139,12 +132,12 @@ mod tests {
         ];
         let mut warnings = vec![
             Warning::new(
-                lines[0].clone(),
+                lines[0].number,
                 LintKind::LowercaseKey,
                 "The a key should be in uppercase",
             ),
             Warning::new(
-                lines[1].clone(),
+                lines[1].number,
                 LintKind::LowercaseKey,
                 "The c key should be in uppercase",
             ),
@@ -162,20 +155,20 @@ mod tests {
             line_entry(4, 5, "a2=2"),
             blank_line_entry(5, 5),
         ];
-        let mut warnings = vec![
+        let warnings = vec![
             Warning::new(
-                lines[2].clone(),
+                lines[2].number,
                 LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
-                lines[3].clone(),
+                lines[3].number,
                 LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(2, run(&warnings, &mut lines, &[]));
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -192,23 +185,20 @@ mod tests {
             line_entry(4, 5, "a2=2"),
             blank_line_entry(5, 5),
         ];
-        let mut warnings = vec![
+        let warnings = vec![
             Warning::new(
-                lines[2].clone(),
+                lines[2].number,
                 LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
-                lines[3].clone(),
+                lines[3].number,
                 LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(
-            2,
-            run(&mut warnings, &mut lines, &[LintKind::DuplicatedKey])
-        );
+        assert_eq!(2, run(&warnings, &mut lines, &[LintKind::DuplicatedKey]));
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -225,20 +215,20 @@ mod tests {
             line_entry(4, 5, "a2=2"),
             blank_line_entry(5, 5),
         ];
-        let mut warnings = vec![
+        let warnings = vec![
             Warning::new(
-                lines[2].clone(),
+                lines[2].number,
                 LintKind::LowercaseKey,
                 "The a0 key should be in uppercase",
             ),
             Warning::new(
-                lines[3].clone(),
+                lines[3].number,
                 LintKind::LowercaseKey,
                 "The a2 key should be in uppercase",
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &[LintKind::UnorderedKey]));
+        assert_eq!(2, run(&warnings, &mut lines, &[LintKind::UnorderedKey]));
         assert_eq!("A1=1", lines[0].raw_string);
         assert_eq!("A2=2", lines[1].raw_string);
         assert_eq!("A0=0", lines[2].raw_string);
@@ -255,7 +245,7 @@ mod tests {
             self.name
         }
 
-        fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
+        fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
             if line.raw_string.chars().count() > 5 {
                 Some(())
             } else {

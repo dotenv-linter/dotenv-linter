@@ -34,7 +34,7 @@ impl Check for ExtraBlankLineChecker<'_> {
         self.last_blank_number = Some(line.number);
 
         if is_extra {
-            return Some(Warning::new(line.clone(), self.name(), self.message()));
+            return Some(Warning::new(line.number, self.name(), self.message()));
         }
 
         None

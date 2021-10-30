@@ -49,7 +49,7 @@ impl Check for UnorderedKeyChecker<'_> {
         let another_key = sorted_keys.iter().skip_while(|&s| s != key).nth(1)?;
 
         Some(Warning::new(
-            line.clone(),
+            line.number,
             self.name(),
             self.message(key, another_key),
         ))

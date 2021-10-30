@@ -25,7 +25,7 @@ impl Check for LowercaseKeyChecker<'_> {
         if key.to_uppercase() == key {
             None
         } else {
-            Some(Warning::new(line.clone(), self.name(), self.message(key)))
+            Some(Warning::new(line.number, self.name(), self.message(key)))
         }
     }
 

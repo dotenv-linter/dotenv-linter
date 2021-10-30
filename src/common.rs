@@ -74,7 +74,7 @@ pub(crate) mod tests {
             line_number += 1;
 
             let result = checker.run(&line);
-            let expected = expected.map(|e| Warning::new(line, checker.name(), e));
+            let expected = expected.map(|e| Warning::new(line.number, checker.name(), e));
 
             assert_eq!(result, expected);
         }

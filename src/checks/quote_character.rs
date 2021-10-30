@@ -27,7 +27,7 @@ impl Check for QuoteCharacterChecker<'_> {
         }
 
         if val.contains('\"') || val.contains('\'') {
-            Some(Warning::new(line.clone(), self.name(), self.message()))
+            Some(Warning::new(line.number, self.name(), self.message()))
         } else {
             None
         }

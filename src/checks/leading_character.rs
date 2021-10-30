@@ -28,7 +28,7 @@ impl Check for LeadingCharacterChecker<'_> {
         {
             None
         } else {
-            Some(Warning::new(line.clone(), self.name(), self.message()))
+            Some(Warning::new(line.number, self.name(), self.message()))
         }
     }
 

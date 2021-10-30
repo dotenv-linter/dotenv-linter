@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::{LineEntry, LintKind, Warning};
+use crate::common::{LineEntry, LintKind};
 
 pub(crate) struct UnorderedKeyFixer {}
 
@@ -29,11 +29,7 @@ impl Fix for UnorderedKeyFixer {
         LintKind::UnorderedKey
     }
 
-    fn fix_warnings(
-        &mut self,
-        warnings: Vec<&mut Warning>,
-        lines: &mut Vec<LineEntry>,
-    ) -> Option<usize> {
+    fn fix_warnings(&self, warning_lines: &[usize], lines: &mut Vec<LineEntry>) -> Option<usize> {
         // We find all sorting groups and sort them
         let mut start_index = 0;
         let mut end = None;
@@ -72,7 +68,7 @@ impl Fix for UnorderedKeyFixer {
                 }
 
                 if line.is_empty()
-                    || line.is_last_line()
+                    || lines.len() == line.number // Is this the last line?
                     || is_control_comment
                     || has_substitution_variables
                 {
@@ -98,7 +94,7 @@ impl Fix for UnorderedKeyFixer {
             }
         }
 
-        Some(warnings.len())
+        Some(warning_lines.len())
     }
 
     fn is_mandatory(&self) -> bool {
@@ -146,18 +142,10 @@ mod tests {
             .collect()
     }
 
-    fn get_warnings(lines: &[LineEntry], warnings: Vec<(usize, &str)>) -> Vec<Warning> {
-        warnings
-            .into_iter()
-            .map(|(i, line)| Warning::new(lines[i].clone(), LintKind::UnorderedKey, line))
-            .collect()
-    }
+    fn run_fixer(warning_lines: &[usize], lines: &mut Vec<LineEntry>) -> Option<usize> {
+        let fixer = UnorderedKeyFixer::default();
 
-    fn run_fixer(warnings: &mut [Warning], lines: &mut Vec<LineEntry>) -> Option<usize> {
-        let mut fixer = UnorderedKeyFixer::default();
-        let warning_refs = warnings.iter_mut().collect();
-
-        fixer.fix_warnings(warning_refs, lines)
+        fixer.fix_warnings(warning_lines, lines)
     }
 
     fn assert_lines(result: &[LineEntry], lines: Vec<&str>) {
@@ -170,9 +158,9 @@ mod tests {
     #[test]
     fn fix_warnings_test() {
         let mut lines = get_lines(vec!["B=C", "A=B", "D=E", "\n"]);
-        let mut warnings = get_warnings(&lines, vec![(1, "The A key should go before B key")]);
+        let warning_lines = [1];
 
-        assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(1), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(&lines, vec!["A=B", "B=C", "D=E", "\n"]);
     }
@@ -180,9 +168,9 @@ mod tests {
     #[test]
     fn fix_when_no_warnings_test() {
         let mut lines = get_lines(vec!["B=C", "A=B", "D=E", "\n"]);
-        let mut warnings = get_warnings(&lines, vec![]);
+        let warning_lines = [];
 
-        assert_eq!(Some(0), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(0), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(&lines, vec!["A=B", "B=C", "D=E", "\n"]);
     }
@@ -190,16 +178,9 @@ mod tests {
     #[test]
     fn many_moves_test() {
         let mut lines = get_lines(vec!["X=X", "A=A", "D=D", "Z=Z", "Y=Y", "KLM=123", "\n"]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The A key should go before B key"),
-                (4, "The Y key should go before Z key"),
-                (5, "The KLM key should go before Y key"),
-            ],
-        );
+        let warning_lines = [1, 4, 5];
 
-        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -219,9 +200,9 @@ mod tests {
             "Z=Z",
             "\n",
         ]);
-        let mut warnings = get_warnings(&lines, vec![(4, "The A key should go before X key")]);
+        let warning_lines = [4];
 
-        assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(1), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -260,15 +241,9 @@ mod tests {
             "# end comment",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (6, "The C key should go before E key"),
-                (12, "The B key should go before D key"),
-            ],
-        );
+        let warning_lines = [6, 12];
 
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -298,9 +273,9 @@ mod tests {
     #[test]
     fn no_ending_blank_line_test() {
         let mut lines = get_lines(vec!["B=C", "A=B", "D=E"]);
-        let mut warnings = get_warnings(&lines, vec![(2, "The A key should go before B key")]);
+        let warning_lines = [2];
 
-        assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(1), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(&lines, vec!["A=B", "B=C", "D=E"]);
     }
@@ -315,16 +290,9 @@ mod tests {
             "XYZ=ABC",
             "BAR=FOO",
         ]);
+        let warning_lines = [1, 5];
 
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The ABC key should go before KEY key"),
-                (5, "The BAR key should go before BOO key"),
-            ],
-        );
-
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -354,16 +322,9 @@ mod tests {
             "A=$M",
             "B=3",
         ]);
+        let warning_lines = [1, 5];
 
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The ABC key should go before KEY key"),
-                (5, "The BAR key should go before BOO key"),
-            ],
-        );
-
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -386,16 +347,9 @@ mod tests {
     #[test]
     fn key_order_multiple_substitution_variable_together_test() {
         let mut lines = get_lines(vec!["FOO=1", "BAR=2", "A=$FOO$BAR", "B=3", "AA=4"]);
+        let warning_lines = [1, 4];
 
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The BAR key should go before FOO key"),
-                (4, "The AA key should go before B key"),
-            ],
-        );
-
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -418,10 +372,9 @@ mod tests {
             "EEE=1",
             "AAA=$EEE$CCC$BBB$DDD$FFF",
         ]);
+        let warning_lines = [];
 
-        let mut warnings = get_warnings(&lines, vec![]);
-
-        assert_eq!(Some(0), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(0), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -438,16 +391,9 @@ mod tests {
     #[test]
     fn key_order_substitution_variable_in_different_group_test() {
         let mut lines = get_lines(vec!["FOO=1", "BAR=2", "", "B=3", "A=$FOO"]);
+        let warning_lines = [1, 4];
 
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The BAR key should go before FOO key"),
-                (4, "The A key should go before B key"),
-            ],
-        );
-
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(&lines, vec!["BAR=2", "FOO=1", "", "A=$FOO", "B=3"]);
     }
@@ -455,17 +401,9 @@ mod tests {
     #[test]
     fn key_order_many_substitution_variable_test() {
         let mut lines = get_lines(vec!["Z=1", "Y=2", "X=$Y", "W=$Y", "V=4", "U=5", "T=$V"]);
+        let warning_lines = [1, 4, 5];
 
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The Y key should go before Z key"),
-                (4, "The V key should go before W key"),
-                (5, "The U key should go before W key"),
-            ],
-        );
-
-        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -500,17 +438,9 @@ mod tests {
             "CAB=$FOO",
             "CAA=$CCC",
         ]);
+        let warning_lines = [1, 5, 12];
 
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (1, "The BAZ key should go before FOO key"),
-                (5, "The AAB key should go before AAC key"),
-                (12, "The CAB key should go before CCC key"),
-            ],
-        );
-
-        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -545,9 +475,9 @@ mod tests {
             "D=E",
             "\n",
         ]);
-        let mut warnings = vec![];
+        let warning_lines = [];
 
-        assert_eq!(Some(0), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(0), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -576,15 +506,9 @@ mod tests {
             "A=A",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (2, "The B key should go before C key"),
-                (8, "The A key should go before X key"),
-            ],
-        );
+        let warning_lines = [2, 8];
 
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -615,16 +539,9 @@ mod tests {
             "A=A",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (2, "The B key should go before C key"),
-                (5, "The A1 key should go before A2 key"),
-                (8, "The A key should go before X key"),
-            ],
-        );
+        let warning_lines = [2, 5, 8];
 
-        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -658,15 +575,9 @@ mod tests {
             "# some comment",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (2, "The B key should go before C key"),
-                (9, "The B1 key should go before B2 key"),
-            ],
-        );
+        let warning_lines = [2, 9];
 
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -701,9 +612,9 @@ mod tests {
             "# dotenv-linter:on LowercaseKey",
             "\n",
         ]);
-        let mut warnings = get_warnings(&lines, vec![(8, "The B1 key should go before B2 key")]);
+        let warning_lines = [8];
 
-        assert_eq!(Some(1), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(1), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -738,15 +649,9 @@ mod tests {
             "C1=1",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (3, "The A2 key should go before A3 key"),
-                (11, "The C1 key should go before C2 key"),
-            ],
-        );
+        let warning_lines = [3, 11];
 
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -785,16 +690,9 @@ mod tests {
             "B1=1",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (4, "The A3 key should go before A4 key"),
-                (10, "The C1 key should go before C2 key"),
-                (13, "The B1 key should go before B2 key"),
-            ],
-        );
+        let warning_lines = [4, 10, 13];
 
-        assert_eq!(Some(3), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -830,15 +728,9 @@ mod tests {
             "A1=1",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (6, "The A2 key should go before A4 key"),
-                (8, "The A1 key should go before A3 key"),
-            ],
-        );
+        let warning_lines = [6, 8];
 
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,
@@ -890,15 +782,9 @@ mod tests {
             "# end comment",
             "\n",
         ]);
-        let mut warnings = get_warnings(
-            &lines,
-            vec![
-                (8, "The C key should go before E key"),
-                (19, "The D key should go before W key"),
-            ],
-        );
+        let warning_lines = [8, 19];
 
-        assert_eq!(Some(2), run_fixer(&mut warnings, &mut lines));
+        assert_eq!(Some(2), run_fixer(&warning_lines, &mut lines));
 
         assert_lines(
             &lines,

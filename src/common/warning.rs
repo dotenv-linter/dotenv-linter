@@ -1,27 +1,23 @@
 use colored::*;
 use std::fmt;
 
-use super::{LineEntry, LintKind};
+use super::LintKind;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Warning {
     pub check_name: LintKind,
-    line: LineEntry,
+    pub line_number: usize,
     message: String,
 }
 
 impl Warning {
-    pub fn new(line: LineEntry, check_name: LintKind, message: impl Into<String>) -> Self {
+    pub fn new(line_number: usize, check_name: LintKind, message: impl Into<String>) -> Self {
         let message = message.into();
         Self {
             check_name,
-            line,
+            line_number,
             message,
         }
-    }
-
-    pub fn line_number(&self) -> usize {
-        self.line.number
     }
 }
 
@@ -30,7 +26,7 @@ impl fmt::Display for Warning {
         write!(
             f,
             "{} {}: {}",
-            format!("{}:{}", self.line.file, self.line.number).italic(),
+            format!("{}", self.line_number).italic(),
             self.check_name.to_string().red().bold(),
             self.message
         )
@@ -40,17 +36,15 @@ impl fmt::Display for Warning {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::line_entry;
 
     #[test]
     fn warning_fmt_test() {
-        let line = line_entry(1, 1, "FOO=BAR");
-        let warning = Warning::new(line, LintKind::DuplicatedKey, "The FOO key is duplicated");
+        let warning = Warning::new(1, LintKind::DuplicatedKey, "The FOO key is duplicated");
 
         assert_eq!(
             format!(
                 "{} {}: {}",
-                format!("{}:{}", ".env", "1").italic(),
+                format!("{}", 1).italic(),
                 LintKind::DuplicatedKey.to_string().red().bold(),
                 "The FOO key is duplicated"
             ),

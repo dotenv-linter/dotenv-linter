@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::{LineEntry, LintKind, Warning, LF};
+use crate::common::{LineEntry, LintKind, LF};
 
 pub(crate) struct EndingBlankLineFixer {}
 
@@ -14,11 +14,7 @@ impl Fix for EndingBlankLineFixer {
         LintKind::EndingBlankLine
     }
 
-    fn fix_warnings(
-        &mut self,
-        _warnings: Vec<&mut Warning>,
-        lines: &mut Vec<LineEntry>,
-    ) -> Option<usize> {
+    fn fix_warnings(&self, _: &[usize], lines: &mut Vec<LineEntry>) -> Option<usize> {
         let last_line = lines.last()?;
 
         if last_line.raw_string.ends_with(LF) {
@@ -39,24 +35,20 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = EndingBlankLineFixer::default();
+        let fixer = EndingBlankLineFixer::default();
         let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, "Z=Y")];
-        let mut warning = Warning::new(
-            lines[1].clone(),
-            LintKind::EndingBlankLine,
-            "No blank line at the end of the file",
-        );
+        let warning_lines = [lines[1].number];
 
-        assert_eq!(Some(1), fixer.fix_warnings(vec![&mut warning], &mut lines));
+        assert_eq!(Some(1), fixer.fix_warnings(&warning_lines, &mut lines));
         assert_eq!("\n", lines[2].raw_string);
     }
 
     #[test]
     fn ending_blank_line_exist_test() {
-        let mut fixer = EndingBlankLineFixer::default();
+        let fixer = EndingBlankLineFixer::default();
         let mut lines = vec![line_entry(1, 2, "FOO=BAR"), line_entry(2, 2, LF)];
 
-        assert_eq!(Some(0), fixer.fix_warnings(vec![], &mut lines));
+        assert_eq!(Some(0), fixer.fix_warnings(&[], &mut lines));
         assert_eq!(lines.len(), 2);
     }
 }

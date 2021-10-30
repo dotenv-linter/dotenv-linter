@@ -25,7 +25,7 @@ impl Check for SpaceCharacterChecker<'_> {
 
         if let [key, value] = &line_splitted[..] {
             if key.ends_with(' ') || value.starts_with(' ') {
-                return Some(Warning::new(line.clone(), self.name(), self.message()));
+                return Some(Warning::new(line.number, self.name(), self.message()));
             }
         }
 

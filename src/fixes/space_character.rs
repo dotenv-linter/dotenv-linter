@@ -14,7 +14,7 @@ impl Fix for SpaceCharacterFixer {
         LintKind::SpaceCharacter
     }
 
-    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
         let value = line.get_value()?;
         line.raw_string = format!("{}={}", key.trim_end(), value.trim_start());
@@ -26,11 +26,11 @@ impl Fix for SpaceCharacterFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::{tests::*, Warning};
+    use crate::common::tests::*;
 
     #[test]
     fn fix_line_test() {
-        let mut fixer = SpaceCharacterFixer::default();
+        let fixer = SpaceCharacterFixer::default();
         let mut line = line_entry(1, 1, "FOO = BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -39,7 +39,7 @@ mod tests {
 
     #[test]
     fn trailing_should_not_be_fixed() {
-        let mut fixer = SpaceCharacterFixer::default();
+        let fixer = SpaceCharacterFixer::default();
         let mut line = line_entry(1, 1, "DEBUG_HTTP=true ");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -48,29 +48,15 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = SpaceCharacterFixer::default();
+        let fixer = SpaceCharacterFixer::default();
         let mut lines = vec![
             line_entry(1, 3, "FOO= BAR"),
             line_entry(2, 3, "Z =Y"),
             blank_line_entry(3, 3),
         ];
-        let mut warnings = vec![
-            Warning::new(
-                lines[0].clone(),
-                LintKind::SpaceCharacter,
-                "The line has spaces around equal sign",
-            ),
-            Warning::new(
-                lines[1].clone(),
-                LintKind::SpaceCharacter,
-                "The line has spaces around equal sign",
-            ),
-        ];
+        let warning_lines = [lines[0].number, lines[1].number];
 
-        assert_eq!(
-            Some(2),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
-        );
+        assert_eq!(Some(2), fixer.fix_warnings(&warning_lines, &mut lines));
         assert_eq!("FOO=BAR", lines[0].raw_string);
         assert_eq!("Z=Y", lines[1].raw_string);
     }

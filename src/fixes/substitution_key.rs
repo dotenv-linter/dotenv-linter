@@ -15,7 +15,7 @@ impl Fix for SubstitutionKeyFixer {
     }
 
     // TODO: refactor
-    fn fix_line(&mut self, line: &mut LineEntry) -> Option<()> {
+    fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let mut value = line
             .get_value()
             .map(str::trim)
@@ -69,11 +69,11 @@ impl Fix for SubstitutionKeyFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::{tests::*, Warning};
+    use crate::common::tests::*;
 
     #[test]
     fn fix_line_test() {
-        let mut fixer = SubstitutionKeyFixer::default();
+        let fixer = SubstitutionKeyFixer::default();
         let mut line = line_entry(1, 1, "FOO=${BAR");
 
         assert_eq!(Some(()), fixer.fix_line(&mut line));
@@ -82,7 +82,7 @@ mod tests {
 
     #[test]
     fn fix_warnings_test() {
-        let mut fixer = SubstitutionKeyFixer::default();
+        let fixer = SubstitutionKeyFixer::default();
         let mut lines = vec![
             line_entry(1, 7, "FOO=${BAR-$ABC_ROOT}"),
             line_entry(2, 7, "Z=$Y"),
@@ -92,29 +92,12 @@ mod tests {
             line_entry(6, 7, "GOD=${BAR!}"),
             blank_line_entry(7, 7),
         ];
-        let mut warnings = warnings(&lines, &[1, 3, 4, 6]);
+        let warning_lines = [1, 3, 4, 6];
 
-        assert_eq!(
-            Some(4),
-            fixer.fix_warnings(warnings.iter_mut().collect(), &mut lines)
-        );
+        assert_eq!(Some(4), fixer.fix_warnings(&warning_lines, &mut lines));
         assert_eq!("FOO=${BAR}-${ABC_ROOT}", lines[0].raw_string);
         assert_eq!("BAR=${Y}-${OPTS}", lines[2].raw_string);
         assert_eq!("ABC=${BAR}${XYZ}", lines[3].raw_string);
         assert_eq!("GOD=${BAR}!}", lines[5].raw_string);
-    }
-
-    fn warnings(lines: &Vec<LineEntry>, warning_lines: &[usize]) -> Vec<Warning> {
-        lines
-            .iter()
-            .filter(|l| warning_lines.contains(&l.number))
-            .map(|l| {
-                Warning::new(
-                    l.clone(),
-                    LintKind::SubstitutionKey,
-                    String::from("The key is not assigned properly"),
-                )
-            })
-            .collect()
     }
 }

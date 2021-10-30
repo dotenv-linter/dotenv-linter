@@ -51,7 +51,7 @@ impl Check for SubstitutionKeyChecker<'_> {
 
             if is_incorrect_substitution && !is_escaped(prefix) {
                 return Some(Warning::new(
-                    line.clone(),
+                    line.number,
                     self.name(),
                     self.message(line.get_key()?),
                 ));
