@@ -1,8 +1,6 @@
 use std::rc::Rc;
 
-use comment::Comment;
-
-use crate::common::*;
+use super::{comment::Comment, FileEntry};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
@@ -85,7 +83,7 @@ impl LineEntry {
         if !self.is_comment() {
             return None;
         }
-        comment::parse(self.raw_string.as_str())
+        Comment::parse(self.raw_string.as_str())
     }
 
     #[allow(dead_code)]
@@ -138,7 +136,7 @@ impl LineEntry {
 
 #[cfg(test)]
 mod tests {
-    use crate::common::tests::*;
+    use crate::common::tests::line_entry;
 
     mod is_empty_or_comment {
         use super::*;
@@ -301,7 +299,7 @@ mod tests {
     }
 
     mod get_control_comment {
-        use crate::lint_kind::LintKind;
+        use crate::common::LintKind;
 
         use super::*;
 

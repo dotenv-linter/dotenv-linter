@@ -1,5 +1,5 @@
-use crate::checks::Check;
-use crate::{common::*, lint_kind::*};
+use super::Check;
+use crate::common::{LineEntry, LintKind, Warning};
 
 pub(crate) struct QuoteCharacterChecker<'a> {
     template: &'a str,
@@ -41,7 +41,7 @@ impl Check for QuoteCharacterChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::check_test;
 
     const WARNING: &str = "The value has quote characters (\', \")";
 

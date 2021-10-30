@@ -1,6 +1,7 @@
-use crate::common::{FileEntry, Warning};
 use colored::*;
-use std::ffi::OsString;
+use std::path::Path;
+
+use crate::common::{FileEntry, Warning};
 
 /// Prefix for the backup output
 const BACKUP_PREFIX: &str = "Original file was backed up to: ";
@@ -36,7 +37,7 @@ impl FixOutput {
     }
 
     /// Prints the backup file's path
-    pub fn print_backup(&self, backup_path: &OsString) {
+    pub fn print_backup(&self, backup_path: &Path) {
         println!("{}{:?}", BACKUP_PREFIX, backup_path);
         if !self.is_quiet_mode {
             println!();

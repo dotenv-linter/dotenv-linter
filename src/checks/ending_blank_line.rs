@@ -1,5 +1,5 @@
-use crate::checks::Check;
-use crate::{common::*, lint_kind::*};
+use super::Check;
+use crate::common::{LineEntry, LintKind, Warning, LF};
 
 pub(crate) struct EndingBlankLineChecker<'a> {
     template: &'a str,
@@ -40,7 +40,7 @@ impl Check for EndingBlankLineChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::check_test;
 
     #[test]
     fn blank_line() {

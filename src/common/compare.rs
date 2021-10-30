@@ -1,7 +1,5 @@
-use std::fmt;
-use std::path::PathBuf;
-
-use crate::common::*;
+use colored::*;
+use std::{fmt, path::PathBuf};
 
 // A structure used to compare environment files
 pub struct CompareFileType {

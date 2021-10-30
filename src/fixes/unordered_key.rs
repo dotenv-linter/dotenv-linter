@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lint_kind::*};
+use crate::common::{LineEntry, LintKind, Warning};
 
 pub(crate) struct UnorderedKeyFixer {}
 

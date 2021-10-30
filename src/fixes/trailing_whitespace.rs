@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lint_kind::*};
+use crate::common::{LineEntry, LintKind};
 
 pub(crate) struct TrailingWhitespaceFixer {}
 
@@ -24,7 +24,7 @@ impl Fix for TrailingWhitespaceFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::{tests::*, Warning};
 
     #[test]
     fn fix_line_test() {

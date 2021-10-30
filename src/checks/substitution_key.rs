@@ -1,5 +1,5 @@
-use crate::checks::Check;
-use crate::{common::*, lint_kind::*};
+use super::Check;
+use crate::common::{LineEntry, LintKind, Warning};
 
 pub(crate) struct SubstitutionKeyChecker<'a> {
     template: &'a str,
@@ -70,7 +70,7 @@ impl Check for SubstitutionKeyChecker<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::tests::check_test;
 
     #[test]
     fn correct_substitution_key_test() {

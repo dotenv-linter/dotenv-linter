@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::{common::*, lint_kind::*};
+use crate::common::{remove_invalid_leading_chars, LineEntry, LintKind};
 
 pub(crate) struct LeadingCharacterFixer {}
 
@@ -28,7 +28,7 @@ impl Fix for LeadingCharacterFixer {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::tests::*;
+    use crate::common::{tests::*, Warning};
 
     #[test]
     fn fix_leading_dot() {

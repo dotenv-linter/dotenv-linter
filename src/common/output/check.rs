@@ -1,5 +1,6 @@
-use crate::common::{FileEntry, Warning};
 use colored::*;
+
+use crate::common::{FileEntry, Warning};
 
 pub struct CheckOutput {
     // Quiet program output mode
