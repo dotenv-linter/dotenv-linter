@@ -1,7 +1,7 @@
-use std::error::Error;
+use dotenv_linter::Result;
 use std::{env, process};
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
     #[cfg(windows)]
     colored::control::set_virtual_terminal(true).ok();
 
