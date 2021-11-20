@@ -56,6 +56,9 @@ pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
+        if line.is_multiline_value {
+            continue;
+        }
         if let Some(comment) = line.get_control_comment() {
             if comment.is_disabled() {
                 // Disable checks from a comment using the dotenv-linter:off flag

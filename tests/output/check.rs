@@ -39,6 +39,19 @@ Found 3 problems
 }
 
 #[test]
+fn run_with_valid_multiline_value_test() {
+    let test_dir = TestDir::new();
+    test_dir.create_testfile(".env", "ABC=DEF\nB='bbb\n  BAR'\n");
+
+    let expected_output = r#"Checking .env
+
+No problems found
+"#;
+
+    test_dir.test_command_success(expected_output);
+}
+
+#[test]
 fn problems_first_and_last_file() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "abc=DEF\n");

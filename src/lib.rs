@@ -5,7 +5,6 @@ use std::str::FromStr;
 use crate::common::*;
 
 pub use checks::available_check_names;
-
 mod checks;
 mod common;
 mod fixes;
@@ -237,9 +236,41 @@ fn get_file_paths(
 fn get_line_entries(lines: Vec<String>) -> Vec<LineEntry> {
     let length = lines.len();
 
-    lines
+    let mut lines: Vec<LineEntry> = lines
         .into_iter()
         .enumerate()
         .map(|(index, line)| LineEntry::new(index + 1, line, length == (index + 1)))
-        .collect()
+        .collect();
+
+    // TODO: refactor
+    let mut multiline_ranges: Vec<(usize, usize)> = Vec::new();
+    let mut start_number: Option<usize> = None;
+
+    // here we find ranges of multi-line values and mark them
+    lines.iter_mut().for_each(|l| {
+        let is_multiline_start = l
+            .get_value()
+            .filter(|e| e.starts_with('\'') && !e.ends_with('\''))
+            .is_some();
+        if start_number.is_none() && is_multiline_start {
+            start_number = Some(l.number);
+        } else if start_number.is_some() {
+            if l.raw_string.ends_with('\'') {
+                // end of multi-line value, add range to vector
+                multiline_ranges.push((start_number.unwrap(), l.number))
+            } else if l.get_value().is_some() {
+                // if next line correct env line - then previous start-line incorrect multi-value
+                start_number = None;
+            }
+        }
+    });
+
+    // set flags here
+    for val in multiline_ranges {
+        lines[val.0 - 1..val.1]
+            .iter_mut()
+            .for_each(|e| e.is_multiline_value = true)
+    }
+
+    lines
 }

@@ -9,6 +9,7 @@ pub struct LineEntry {
     pub is_deleted: bool,
     /// Used in EndingBlankLineChecker
     pub is_last_line: bool,
+    pub is_multiline_value: bool,
 }
 
 impl LineEntry {
@@ -21,6 +22,7 @@ impl LineEntry {
             raw_string: raw_string.into(),
             is_deleted: false,
             is_last_line,
+            is_multiline_value: false,
         }
     }
 
