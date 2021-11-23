@@ -1,5 +1,5 @@
 use super::Check;
-use crate::common::{LineEntry, LintKind, Warning};
+use crate::common::{is_escaped, LineEntry, LintKind, Warning};
 
 pub(crate) struct SubstitutionKeyChecker<'a> {
     template: &'a str,
@@ -25,9 +25,6 @@ impl Check for SubstitutionKeyChecker<'_> {
             Some(value) if !value.starts_with('\'') => value,
             _ => return None,
         };
-
-        let is_escaped =
-            |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
 
         // Checks if keys used in value have both '{' '}' or neither
         while let Some(index) = value.find('$') {

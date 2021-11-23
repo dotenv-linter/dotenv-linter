@@ -23,6 +23,10 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
     string.trim_start_matches(|c: char| !(c.is_alphabetic() || c == '_'))
 }
 
+pub fn is_escaped(prefix: &str) -> bool {
+    prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
+}
+
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;

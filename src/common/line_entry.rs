@@ -1,4 +1,4 @@
-use super::comment::Comment;
+use super::{comment::Comment, is_escaped};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
@@ -9,7 +9,6 @@ pub struct LineEntry {
     pub is_deleted: bool,
     /// Used in EndingBlankLineChecker
     pub is_last_line: bool,
-    pub is_multiline_value: bool,
 }
 
 impl LineEntry {
@@ -22,7 +21,6 @@ impl LineEntry {
             raw_string: raw_string.into(),
             is_deleted: false,
             is_last_line,
-            is_multiline_value: false,
         }
     }
 
@@ -90,9 +88,6 @@ impl LineEntry {
             Some(value) if !value.starts_with('\'') => value,
             _ => return keys,
         };
-
-        let is_escaped =
-            |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
 
         if value.starts_with('\"') {
             if value.ends_with('\"') && !is_escaped(&value[..value.len() - 1]) {
