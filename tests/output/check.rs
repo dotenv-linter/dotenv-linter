@@ -43,7 +43,7 @@ fn valid_multiline_value_test() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(
         ".env",
-        "FOO=bar\nMULTILINE_FOO='{\n\"first\": 1,\n\"second\": 1\n}'\nZAC=baz\n",
+        "FOO=bar\nMULTILINE_1='{\n\"first\": 1,\n\"second\": 1\n}'\nMULTILINE_2='multiline \\'escaped\\' \n value'\nZAC=baz\n",
     );
 
     let expected_output = r#"Checking .env

@@ -68,7 +68,7 @@ impl Fix for UnorderedKeyFixer {
                 }
 
                 if line.is_empty()
-                    || lines.len() == line.number // Is this the last line?
+                    || lines.len() == i + 1 // Is this the last line?
                     || is_control_comment
                     || has_substitution_variables
                 {
@@ -115,11 +115,7 @@ impl UnorderedKeyFixer {
             }
         });
 
-        slices.sort_by_cached_key(|slice| {
-            // I think, that we should modify get_key() so it will return Option<&str> instead of
-            // Option<String>.
-            slice.last()?.get_key()
-        });
+        slices.sort_by_cached_key(|slice| slice.last()?.get_key());
 
         let sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
 

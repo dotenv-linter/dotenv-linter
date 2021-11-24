@@ -242,48 +242,61 @@ fn get_line_entries(lines: Vec<String>) -> Vec<LineEntry> {
         .map(|(index, line)| LineEntry::new(index + 1, line, length == (index + 1)))
         .collect();
 
-    // TODO: refactor this part
+    reduce_multiline_entries(&mut lines);
+    lines
+}
+
+fn reduce_multiline_entries(lines: &mut Vec<LineEntry>) {
+    let length = lines.len();
+    let multiline_ranges = find_multiline_ranges(lines);
+
+    // Replace multiline value to one line-entry for checking
+    let mut offset = 1; // index offset to account deleted lines (for access by index)
+    for (start, end) in multiline_ranges {
+        let result = lines
+            .drain(start - offset..end - offset + 1) // TODO: consider `drain_filter` (after stabilization in rust std)
+            .map(|entry| entry.raw_string)
+            .reduce(|result, line| result + "\n" + &line); // TODO: `intersperse` (after stabilization in rust std)
+
+        if let Some(value) = result {
+            lines.insert(start - offset, LineEntry::new(start, value, length == end));
+        }
+
+        offset += end - start;
+    }
+}
+
+fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
     let mut multiline_ranges: Vec<(usize, usize)> = Vec::new();
     let mut start_number: Option<usize> = None;
 
-    // here we find ranges of multi-line values and mark them
-    lines.iter_mut().for_each(|line| {
-        let is_multiline_start = line
-            .get_value()
-            // .map(|val| val.trim())
-            .filter(|val| {
-                val.starts_with('\'') && (!val.ends_with('\'') || is_escaped(&val[..val.len() - 1]))
-            })
-            .is_some();
-
-        if start_number.is_none() && is_multiline_start {
-            start_number = Some(line.number);
-        } else if let Some(start) = start_number {
-            if line.raw_string.ends_with('\'')
-                && !is_escaped(&line.raw_string[..line.raw_string.len() - 1])
-            {
-                // end of multi-line value, add range to vector
-                multiline_ranges.push((start, line.number))
-            } else if line.get_value().is_some() {
+    // here we find ranges of multi-line values
+    lines.iter().for_each(|entry| {
+        if let Some(start) = start_number {
+            if let Some(idx) = entry.raw_string.find('\'') {
+                if !is_escaped(&entry.raw_string[..idx]) {
+                    multiline_ranges.push((start, entry.number));
+                    start_number = None;
+                }
+            } else if entry.get_value().is_some() {
                 // if next line correct env line - then previous start-line incorrect multi-value
                 start_number = None;
+            }
+        } else {
+            let is_multiline_start = entry
+                .get_value()
+                .map(|val| val.trim())
+                .filter(|val| {
+                    val.starts_with('\'')
+                        && (!val.ends_with('\'') || is_escaped(&val[..val.len() - 1]))
+                })
+                .is_some();
+
+            if is_multiline_start {
+                start_number = Some(entry.number);
             }
         }
     });
 
-    // replace multiline value to one line-entry for checking
-    for (start, end) in multiline_ranges {
-        let mut result: String = String::new();
-
-        for i in start - 1..end {
-            let removed_entry = lines.remove(start - 1);
-            result += &removed_entry.raw_string;
-            if i < end - 1 {
-                result += "\n";
-            }
-        }
-        lines.insert(start - 1, LineEntry::new(start, result, length == end));
-    }
-
-    lines
+    multiline_ranges
 }
