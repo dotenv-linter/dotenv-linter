@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Support of single-quoted multiline values [#450](https://github.com/dotenv-linter/dotenv-linter/pull/450) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
 - Get rid of `Rc<FileEntry>` in `LineEntry` [#448](https://github.com/dotenv-linter/dotenv-linter/pull/448) ([@mgrachev](https://github.com/mgrachev))

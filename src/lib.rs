@@ -5,7 +5,6 @@ use std::str::FromStr;
 use crate::common::*;
 
 pub use checks::available_check_names;
-
 mod checks;
 mod common;
 mod fixes;
@@ -237,9 +236,67 @@ fn get_file_paths(
 fn get_line_entries(lines: Vec<String>) -> Vec<LineEntry> {
     let length = lines.len();
 
-    lines
+    let mut lines: Vec<LineEntry> = lines
         .into_iter()
         .enumerate()
         .map(|(index, line)| LineEntry::new(index + 1, line, length == (index + 1)))
-        .collect()
+        .collect();
+
+    reduce_multiline_entries(&mut lines);
+    lines
+}
+
+fn reduce_multiline_entries(lines: &mut Vec<LineEntry>) {
+    let length = lines.len();
+    let multiline_ranges = find_multiline_ranges(lines);
+
+    // Replace multiline value to one line-entry for checking
+    let mut offset = 1; // index offset to account deleted lines (for access by index)
+    for (start, end) in multiline_ranges {
+        let result = lines
+            .drain(start - offset..end - offset + 1) // TODO: consider `drain_filter` (after stabilization in rust std)
+            .map(|entry| entry.raw_string)
+            .reduce(|result, line| result + "\n" + &line); // TODO: `intersperse` (after stabilization in rust std)
+
+        if let Some(value) = result {
+            lines.insert(start - offset, LineEntry::new(start, value, length == end));
+        }
+
+        offset += end - start;
+    }
+}
+
+fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
+    let mut multiline_ranges: Vec<(usize, usize)> = Vec::new();
+    let mut start_number: Option<usize> = None;
+
+    // here we find ranges of multi-line values
+    lines.iter().for_each(|entry| {
+        if let Some(start) = start_number {
+            if let Some(idx) = entry.raw_string.find('\'') {
+                if !is_escaped(&entry.raw_string[..idx]) {
+                    multiline_ranges.push((start, entry.number));
+                    start_number = None;
+                }
+            } else if entry.get_value().is_some() {
+                // if next line correct env line - then previous start-line incorrect multi-value
+                start_number = None;
+            }
+        } else {
+            let is_multiline_start = entry
+                .get_value()
+                .map(|val| val.trim())
+                .filter(|val| {
+                    val.starts_with('\'')
+                        && (!val.ends_with('\'') || is_escaped(&val[..val.len() - 1]))
+                })
+                .is_some();
+
+            if is_multiline_start {
+                start_number = Some(entry.number);
+            }
+        }
+    });
+
+    multiline_ranges
 }

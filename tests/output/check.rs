@@ -39,6 +39,22 @@ Found 3 problems
 }
 
 #[test]
+fn valid_multiline_value_test() {
+    let test_dir = TestDir::new();
+    test_dir.create_testfile(
+        ".env",
+        "FOO=bar\nMULTILINE_1='{\n\"first\": 1,\n\"second\": 1\n}'\nMULTILINE_2='multiline \\'escaped\\' \n value'\nZAC=baz\n",
+    );
+
+    let expected_output = r#"Checking .env
+
+No problems found
+"#;
+
+    test_dir.test_command_success(expected_output);
+}
+
+#[test]
 fn problems_first_and_last_file() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "abc=DEF\n");

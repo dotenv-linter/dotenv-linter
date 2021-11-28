@@ -23,6 +23,10 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
     string.trim_start_matches(|c: char| !(c.is_alphabetic() || c == '_'))
 }
 
+pub fn is_escaped(prefix: &str) -> bool {
+    prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
+}
+
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
@@ -92,5 +96,20 @@ pub(crate) mod tests {
 
         let string = "***FOO-BAR";
         assert_eq!("FOO-BAR", remove_invalid_leading_chars(string));
+    }
+
+    #[test]
+    fn is_escaped_value_test() {
+        let escaped = "\\";
+        assert!(is_escaped(escaped));
+
+        let escaped = "\\\\\\";
+        assert!(is_escaped(escaped));
+
+        let non_escaped = "\\\\";
+        assert!(!is_escaped(non_escaped));
+
+        let random_string = "text without escaping";
+        assert!(!is_escaped(random_string));
     }
 }

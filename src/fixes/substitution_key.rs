@@ -1,5 +1,5 @@
 use super::Fix;
-use crate::common::{LineEntry, LintKind};
+use crate::common::{is_escaped, LineEntry, LintKind};
 
 pub(crate) struct SubstitutionKeyFixer {}
 
@@ -20,9 +20,6 @@ impl Fix for SubstitutionKeyFixer {
             .get_value()
             .map(str::trim)
             .filter(|val| !val.starts_with('\''))?;
-
-        let is_escaped =
-            |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
 
         let mut result = String::with_capacity(value.len());
 

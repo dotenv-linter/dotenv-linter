@@ -1,4 +1,4 @@
-use super::comment::Comment;
+use super::{comment::Comment, is_escaped};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct LineEntry {
@@ -88,9 +88,6 @@ impl LineEntry {
             Some(value) if !value.starts_with('\'') => value,
             _ => return keys,
         };
-
-        let is_escaped =
-            |prefix: &str| prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1;
 
         if value.starts_with('\"') {
             if value.ends_with('\"') && !is_escaped(&value[..value.len() - 1]) {

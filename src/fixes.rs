@@ -19,7 +19,9 @@ trait Fix {
     fn fix_warnings(&self, warning_lines: &[usize], lines: &mut Vec<LineEntry>) -> Option<usize> {
         let mut count: usize = 0;
         for line_number in warning_lines {
-            let line = lines.get_mut(line_number - 1)?;
+            let line = lines
+                .iter_mut()
+                .find(|entry| entry.number == *line_number)?;
             if self.fix_line(line).is_some() {
                 count += 1;
             }
@@ -143,7 +145,7 @@ mod tests {
             ),
         ];
 
-        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(2, run(&mut warnings, &mut lines, &[]));
     }
 
     #[test]
