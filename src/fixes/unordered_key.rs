@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct UnorderedKeyFixer {}
-
-impl Default for UnorderedKeyFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 // When we sort the keys, we handle a significant line (with key) with all previous comments
 // as a whole. E. g.:

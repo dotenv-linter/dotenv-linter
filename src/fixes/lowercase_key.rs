@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct LowercaseKeyFixer {}
-
-impl Default for LowercaseKeyFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for LowercaseKeyFixer {
     fn name(&self) -> LintKind {

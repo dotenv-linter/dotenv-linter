@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{is_escaped, LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct SubstitutionKeyFixer {}
-
-impl Default for SubstitutionKeyFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for SubstitutionKeyFixer {
     fn name(&self) -> LintKind {

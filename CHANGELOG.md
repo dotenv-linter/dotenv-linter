@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support of single-quoted multiline values [#450](https://github.com/dotenv-linter/dotenv-linter/pull/450) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Use derive (default) instead of impl [#452](https://github.com/dotenv-linter/dotenv-linter/pull/452) ([@mgrachev](https://github.com/mgrachev))
 - Get rid of `Rc<FileEntry>` in `LineEntry` [#448](https://github.com/dotenv-linter/dotenv-linter/pull/448) ([@mgrachev](https://github.com/mgrachev))
 - Replace `LineEntry` with line number in `Warning` [#447](https://github.com/dotenv-linter/dotenv-linter/pull/447) ([@mgrachev](https://github.com/mgrachev))
 - Tidy up imports [#446](https://github.com/dotenv-linter/dotenv-linter/pull/446) ([@mgrachev](https://github.com/mgrachev))

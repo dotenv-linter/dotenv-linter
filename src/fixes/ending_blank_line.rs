@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind, LF};
 
+#[derive(Default)]
 pub(crate) struct EndingBlankLineFixer {}
-
-impl Default for EndingBlankLineFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for EndingBlankLineFixer {
     fn name(&self) -> LintKind {

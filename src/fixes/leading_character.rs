@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{remove_invalid_leading_chars, LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct LeadingCharacterFixer {}
-
-impl Default for LeadingCharacterFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for LeadingCharacterFixer {
     fn name(&self) -> LintKind {

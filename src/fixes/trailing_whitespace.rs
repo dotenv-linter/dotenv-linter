@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct TrailingWhitespaceFixer {}
-
-impl Default for TrailingWhitespaceFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for TrailingWhitespaceFixer {
     fn name(&self) -> LintKind {

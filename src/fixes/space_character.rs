@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct SpaceCharacterFixer {}
-
-impl Default for SpaceCharacterFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for SpaceCharacterFixer {
     fn name(&self) -> LintKind {
