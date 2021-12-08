@@ -3,13 +3,8 @@ use std::collections::HashSet;
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct DuplicatedKeyFixer {}
-
-impl Default for DuplicatedKeyFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for DuplicatedKeyFixer {
     fn name(&self) -> LintKind {

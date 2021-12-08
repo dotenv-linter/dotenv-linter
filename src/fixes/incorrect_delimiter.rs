@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{remove_invalid_leading_chars, LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct IncorrectDelimiterFixer {}
-
-impl Default for IncorrectDelimiterFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for IncorrectDelimiterFixer {
     fn name(&self) -> LintKind {

@@ -1,13 +1,8 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
 
+#[derive(Default)]
 pub(crate) struct KeyWithoutValueFixer {}
-
-impl Default for KeyWithoutValueFixer {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 impl Fix for KeyWithoutValueFixer {
     fn name(&self) -> LintKind {
