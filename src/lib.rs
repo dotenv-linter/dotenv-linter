@@ -5,6 +5,7 @@ use std::str::FromStr;
 use crate::common::*;
 
 pub use checks::available_check_names;
+use common::quote_type::QuoteType;
 mod checks;
 mod common;
 mod fixes;
@@ -269,34 +270,39 @@ fn reduce_multiline_entries(lines: &mut Vec<LineEntry>) {
 fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
     let mut multiline_ranges: Vec<(usize, usize)> = Vec::new();
     let mut start_number: Option<usize> = None;
+    let mut quote_char: Option<char> = None;
 
     // here we find ranges of multi-line values
     lines.iter().for_each(|entry| {
         if let Some(start) = start_number {
-            if let Some(idx) = entry.raw_string.find('\'') {
-                if !is_escaped(&entry.raw_string[..idx]) {
-                    multiline_ranges.push((start, entry.number));
+            if let Some(quote_char) = quote_char {
+                if let Some(idx) = entry.raw_string.find(quote_char) {
+                    if !is_escaped(&entry.raw_string[..idx]) {
+                        multiline_ranges.push((start, entry.number));
+                        start_number = None;
+                    }
+                } else if entry.get_value().is_some() {
+                    // if next line correct env line - then previous start-line incorrect multi-value
                     start_number = None;
                 }
-            } else if entry.get_value().is_some() {
-                // if next line correct env line - then previous start-line incorrect multi-value
-                start_number = None;
             }
-        } else {
-            let is_multiline_start = entry
-                .get_value()
-                .map(|val| val.trim())
-                .filter(|val| {
-                    val.starts_with('\'')
-                        && (!val.ends_with('\'') || is_escaped(&val[..val.len() - 1]))
-                })
-                .is_some();
-
-            if is_multiline_start {
+        } else if let Some(trimmed_value) = entry.get_value().map(|val| val.trim()) {
+            if let Some(quote_type) = is_multiline_start(trimmed_value) {
+                quote_char = Some(quote_type.char());
                 start_number = Some(entry.number);
             }
         }
     });
 
     multiline_ranges
+}
+
+/// returns the QuoteType for a str starting with a quote-char
+fn is_multiline_start(val: &str) -> Option<QuoteType> {
+    for quote_type in [QuoteType::SINGLE, QuoteType::DOUBLE] {
+        if quote_type.is_quoted_value(val) {
+            return Some(quote_type);
+        }
+    }
+    None
 }

@@ -6,6 +6,7 @@ mod warning;
 pub(crate) mod comment;
 pub(crate) mod lint_kind;
 pub(crate) mod output;
+pub(crate) mod quote_type;
 
 pub use compare::CompareFileType;
 pub use compare::CompareWarning;
