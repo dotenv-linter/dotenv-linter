@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Support of double-quoted multiline values [#453](https://github.com/dotenv-linter/dotenv-linter/pull/453) ([@DDtKey](https://github.com/DDtKey))
 - Support of single-quoted multiline values [#450](https://github.com/dotenv-linter/dotenv-linter/pull/450) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
