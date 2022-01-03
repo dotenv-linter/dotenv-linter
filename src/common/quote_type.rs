@@ -1,6 +1,6 @@
 use super::is_escaped;
 
-pub enum QuoteType {
+pub(crate) enum QuoteType {
     Single,
     Double,
 }

@@ -15,7 +15,7 @@ fn correct_files() {
 
         let expected_output = check_output(&[(".env", &[])]);
 
-        testdir.test_command_success_with_args(args, expected_output);
+        testdir.test_command_success_with_args(with_default_args(args), expected_output);
     }
 }
 
@@ -37,7 +37,7 @@ fn incorrect_files() {
             .as_str()],
         )]);
 
-        testdir.test_command_fail_with_args(args, expected_output);
+        testdir.test_command_fail_with_args(with_default_args(args), expected_output);
     }
 }
 
@@ -57,5 +57,5 @@ fn many_duplicates() {
         ],
     )]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }

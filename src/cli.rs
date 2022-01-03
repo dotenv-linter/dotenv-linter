@@ -11,6 +11,7 @@ pub fn new(current_dir: &OsStr) -> App {
         .version(env!("CARGO_PKG_VERSION"))
         .version_short("v")
         .args(common_args(current_dir).as_ref())
+        .args(&[not_check_updates_flag()])
         .subcommand(
             SubCommand::with_name("list")
                 .setting(AppSettings::ColoredHelp)
@@ -91,4 +92,10 @@ fn no_color_flag() -> clap::Arg<'static, 'static> {
     Arg::with_name("no-color")
         .long("no-color")
         .help("Turns off the colored output")
+}
+
+fn not_check_updates_flag() -> clap::Arg<'static, 'static> {
+    Arg::with_name("not-check-updates")
+        .long("not-check-updates")
+        .help("Doesn't check for updates")
 }
