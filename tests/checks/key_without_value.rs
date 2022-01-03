@@ -16,6 +16,6 @@ fn also_detect_lowercase_key() {
             ],
         )]);
 
-        testdir.test_command_fail_with_args(args, expected_output);
+        testdir.test_command_fail_with_args(with_default_args(args), expected_output);
     }
 }

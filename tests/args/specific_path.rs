@@ -24,7 +24,7 @@ fn checks_one_specific_path() {
         .as_str()],
     )]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -68,7 +68,7 @@ fn checks_two_specific_paths() {
         ),
     ]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -87,7 +87,7 @@ fn checks_one_specific_file() {
         .as_str()],
     )]);
 
-    test_dir.test_command_fail_with_args(args, expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -124,7 +124,7 @@ fn checks_two_specific_files() {
         ),
     ]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -166,7 +166,7 @@ fn checks_each_file_only_once_when_listing_same_path_twice() {
         ),
     ]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -207,7 +207,7 @@ fn checks_each_file_only_once_when_listing_one_path_and_one_file() {
         ),
     ]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -244,7 +244,7 @@ fn checks_one_specific_file_and_one_path() {
         ),
     ]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -263,5 +263,5 @@ fn checks_one_specific_file_twice() {
         .as_str()],
     )]);
 
-    test_dir.test_command_fail_with_args(args, expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }

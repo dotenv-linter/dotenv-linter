@@ -1,4 +1,4 @@
-use crate::common::{check_output, TestDir};
+use crate::common::*;
 use std::path::Path;
 
 #[test]
@@ -26,7 +26,7 @@ fn checks_one_in_subdir() {
         ("correct.env", &[]),
     ]);
 
-    test_dir.test_command_fail_with_args(args, expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -71,7 +71,7 @@ fn checks_files_in_deep_subdirs() {
         ("correct.env", &[]),
     ]);
 
-    test_dir.test_command_fail_with_args(args, expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -84,7 +84,7 @@ fn checks_without_recursive_flag() {
     let expected_output = check_output(&[("correct.env", &[])]);
 
     // incorrect file located in a subdirectory should not be checked
-    test_dir.test_command_success(expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
 }
 
 #[test]
@@ -116,7 +116,7 @@ fn checks_recursive_with_exclude_subdir() {
         ("correct.env", &[]),
     ]);
 
-    test_dir.test_command_fail_with_args(args, expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -142,5 +142,5 @@ fn checks_nofollow_subdir_symlinks() {
         .as_str()],
     )]);
 
-    test_dir.test_command_fail_with_args(args, expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }

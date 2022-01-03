@@ -116,6 +116,7 @@ fn fixtures() {
         assert_eq!(testfile.contents(), expected_content);
 
         // Check the fixed file again and then clean up
-        testdir.test_command_success(check_output(&[(".env", &[])]));
+        testdir
+            .test_command_success_with_args(with_default_args(&[]), check_output(&[(".env", &[])]));
     }
 }

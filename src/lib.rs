@@ -1,11 +1,14 @@
+use crate::common::*;
+use crate::quote_type::QuoteType;
+use colored::*;
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
-
-use crate::common::*;
+use std::time::Duration;
+use update_informer::registry::Crates;
 
 pub use checks::available_check_names;
-use common::quote_type::QuoteType;
+
 mod checks;
 mod common;
 mod fixes;
@@ -21,6 +24,8 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
 
     if lines_map.is_empty() {
         output.print_nothing_to_check();
+        print_new_version_if_available(args);
+
         return Ok(0);
     }
 
@@ -49,6 +54,7 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
             });
 
     output.print_total(warnings_count);
+    print_new_version_if_available(args);
 
     Ok(warnings_count)
 }
@@ -102,7 +108,6 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
     }
 
     output.print_total(warnings_count);
-
     Ok(())
 }
 
@@ -297,7 +302,7 @@ fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
     multiline_ranges
 }
 
-/// returns the QuoteType for a str starting with a quote-char
+/// Returns the `QuoteType` for a `&str` starting with a quote-char
 fn is_multiline_start(val: &str) -> Option<QuoteType> {
     for quote_type in [QuoteType::Single, QuoteType::Double] {
         if quote_type.is_quoted_value(val) {
@@ -305,4 +310,45 @@ fn is_multiline_start(val: &str) -> Option<QuoteType> {
         }
     }
     None
+}
+
+/// Prints information about the new version to `STDOUT` if a new version available
+fn print_new_version_if_available(args: &clap::ArgMatches) {
+    if args.is_present("not-check-updates") || args.is_present("quiet") {
+        return;
+    }
+
+    #[cfg(not(feature = "stub_check_version"))]
+    let current_version = env!("CARGO_PKG_VERSION");
+
+    #[cfg(feature = "stub_check_version")]
+    let current_version = "3.0.0";
+
+    let pkg_name = env!("CARGO_PKG_NAME");
+    let interval = Duration::from_secs(60 * 60 * 24);
+
+    #[cfg(not(feature = "stub_check_version"))]
+    let result = update_informer::check_version(Crates, pkg_name, current_version, interval);
+
+    #[cfg(feature = "stub_check_version")]
+    let result =
+        update_informer::stub_check_version(Crates, pkg_name, current_version, interval, "3.1.1");
+
+    if let Ok(Some(version)) = result {
+        let msg = format!(
+            "A new release of {pkg_name} is available: v{current_version} -> {new_version}",
+            pkg_name = pkg_name.italic().cyan(),
+            current_version = current_version,
+            new_version = version.to_string().green()
+        );
+
+        let release_url = format!(
+            "https://github.com/{pkg_name}/{pkg_name}/releases/tag/{version}",
+            pkg_name = pkg_name,
+            version = version
+        )
+        .yellow();
+
+        println!("\n{msg}\n{url}", msg = msg, url = release_url);
+    }
 }

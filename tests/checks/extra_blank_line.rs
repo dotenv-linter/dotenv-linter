@@ -15,7 +15,7 @@ fn correct_files() {
 
         let expected_output = check_output(&[(".env", &[])]);
 
-        testdir.test_command_success_with_args(args, expected_output);
+        testdir.test_command_success_with_args(with_default_args(args), expected_output);
     }
 }
 
@@ -31,7 +31,7 @@ fn two_blank_lines_at_the_beginning() {
         &[".env:2 ExtraBlankLine: Extra blank line detected"],
     )]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -46,7 +46,7 @@ fn two_blank_lines_in_the_middle() {
         &[".env:4 ExtraBlankLine: Extra blank line detected"],
     )]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
 
 #[test]
@@ -61,5 +61,5 @@ fn two_blank_lines_at_the_end() {
         &[".env:5 ExtraBlankLine: Extra blank line detected"],
     )]);
 
-    testdir.test_command_fail_with_args(args, expected_output);
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
