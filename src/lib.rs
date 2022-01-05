@@ -5,7 +5,7 @@ use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::time::Duration;
-use update_informer::registry::Crates;
+use update_informer::{registry::Crates, Check};
 
 pub use checks::available_check_names;
 
@@ -318,23 +318,29 @@ fn print_new_version_if_available(args: &clap::ArgMatches) {
         return;
     }
 
+    let pkg_name = env!("CARGO_PKG_NAME");
+    let interval = Duration::from_secs(60 * 60 * 24);
+
     #[cfg(not(feature = "stub_check_version"))]
     let current_version = env!("CARGO_PKG_VERSION");
 
     #[cfg(feature = "stub_check_version")]
     let current_version = "3.0.0";
 
-    let pkg_name = env!("CARGO_PKG_NAME");
-    let interval = Duration::from_secs(60 * 60 * 24);
-
     #[cfg(not(feature = "stub_check_version"))]
-    let result = update_informer::check_version(Crates, pkg_name, current_version, interval);
+    let informer =
+        update_informer::UpdateInformer::new(Crates, pkg_name, current_version, interval);
 
     #[cfg(feature = "stub_check_version")]
-    let result =
-        update_informer::stub_check_version(Crates, pkg_name, current_version, interval, "3.1.1");
+    let informer = update_informer::FakeUpdateInformer::new(
+        Crates,
+        pkg_name,
+        current_version,
+        interval,
+        "3.1.1",
+    );
 
-    if let Ok(Some(version)) = result {
+    if let Ok(Some(version)) = informer.check_version() {
         let msg = format!(
             "A new release of {pkg_name} is available: v{current_version} -> {new_version}",
             pkg_name = pkg_name.italic().cyan(),

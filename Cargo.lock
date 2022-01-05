@@ -908,9 +908,9 @@ checksum = "a156c684c91ea7d62626509bce3cb4e1d9ed5c4d978f7b4352658f96a4c26b4a"
 
 [[package]]
 name = "update-informer"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "55206b0f4cf553293b11581fcc48d4595b2a00a12aa645fbf51543d632fd1a45"
+checksum = "7f498b9569da0f0e74cb6036c95883f41d2d8e33d51e8032b6c4890d4f257a67"
 dependencies = [
  "semver",
  "serde",
