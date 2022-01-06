@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support of single-quoted multiline values [#450](https://github.com/dotenv-linter/dotenv-linter/pull/450) ([@DDtKey](https://github.com/DDtKey))
 
 ### 🔧 Changed
+- Update `cargo-deny` config [#459](https://github.com/dotenv-linter/dotenv-linter/pull/459) ([@mgrachev](https://github.com/mgrachev))
 - Update docker build [#456](https://github.com/dotenv-linter/dotenv-linter/pull/456) ([@mgrachev](https://github.com/mgrachev))
 - Update dependencies [#455](https://github.com/dotenv-linter/dotenv-linter/pull/455) ([@mgrachev](https://github.com/mgrachev))
 - Use derive (default) instead of impl [#452](https://github.com/dotenv-linter/dotenv-linter/pull/452) ([@mgrachev](https://github.com/mgrachev))

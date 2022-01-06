@@ -7,12 +7,10 @@ targets = [
 
 [advisories]
 vulnerability = "deny"
-unmaintained = "deny"
+unmaintained = "warn"
 yanked = "warn"
 notice = "warn"
-ignore = [
-    "RUSTSEC-2020-0095",
-]
+ignore = []
 
 [licenses]
 unlicensed = "deny"
@@ -24,7 +22,28 @@ allow = [
     "Apache-2.0",
     "CC0-1.0",
     "MIT",
-    "MPL-2.0"
+    "MPL-2.0",
+    "ISC",
+    "OpenSSL"
+]
+
+# Some crates don't have (easily) machine readable licensing information,
+# adding a clarification entry for it allows you to manually specify the
+# licensing information
+[[licenses.clarify]]
+name = "webpki"
+version = "*"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [
+    { path = "LICENSE", hash = 0x001c7e6c }
+]
+
+[[licenses.clarify]]
+name = "ring"
+version = "*"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [
+    { path = "LICENSE", hash = 0xbd0eed23 }
 ]
 
 [bans]
