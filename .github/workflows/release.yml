@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - '*.*.*'
+      - "*.*.*"
 
 env:
   CARGO_TERM_COLOR: always
@@ -93,11 +93,11 @@ jobs:
           GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-          docker build -t dotenvlinter/dotenv-linter:${GIT_TAG} .
-          docker push dotenvlinter/dotenv-linter:${GIT_TAG}
+          # creates a new builder instance and uses it
+          docker buildx create --use
 
-          docker build -t dotenvlinter/dotenv-linter:latest .
-          docker push dotenvlinter/dotenv-linter:latest
+          docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:${GIT_TAG} .
+          docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:latest .
 
   release-crate:
     runs-on: ubuntu-latest
