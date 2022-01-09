@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add type alias for `Result` [#445](https://github.com/dotenv-linter/dotenv-linter/pull/445) ([@mgrachev](https://github.com/mgrachev))
 - Change edition to 2021 [#444](https://github.com/dotenv-linter/dotenv-linter/pull/444) ([@mgrachev](https://github.com/mgrachev))
 - Display a message on installation error [#443](https://github.com/dotenv-linter/dotenv-linter/pull/443) ([@mgrachev](https://github.com/mgrachev))
+- Detect multi-line values if they contain a `=` sign [#463](https://github.com/dotenv-linter/dotenv-linter/pull/463) ([@DDtKey](https://github.com/DDtKey))
 
 ## [v3.1.1] - 2021-08-25
 ### 🚀 Added
