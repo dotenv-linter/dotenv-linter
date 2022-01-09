@@ -90,7 +90,7 @@ impl LineEntry {
         };
 
         if value.starts_with('\"') {
-            if value.ends_with('\"') && !is_escaped(&value[..value.len() - 1]) {
+            if value.len() > 1 && value.ends_with('\"') && !is_escaped(&value[..value.len() - 1]) {
                 value = &value[1..value.len() - 1]
             } else {
                 return keys;
