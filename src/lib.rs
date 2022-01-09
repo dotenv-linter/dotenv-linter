@@ -286,9 +286,6 @@ fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
                         multiline_ranges.push((start, entry.number));
                         start_number = None;
                     }
-                } else if entry.get_value().is_some() {
-                    // if next line correct env line - then previous start-line incorrect multi-value
-                    start_number = None;
                 }
             }
         } else if let Some(trimmed_value) = entry.get_value().map(|val| val.trim()) {

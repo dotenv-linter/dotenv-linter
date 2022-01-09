@@ -46,9 +46,11 @@ fn valid_multiline_value_test() {
         "FOO=bar\nMULTILINE_1='{\n\"first\": 1,\n\"second\": 1\n}'\nMULTILINE_2='multiline \\'escaped\\' \n value'\nZAC=baz\n",
     );
     test_dir.create_testfile(".env1", "MULTILINE=\"\n{\n'key':'value'\n}\n\"\n");
+    test_dir.create_testfile(".env2", "MULTILINE=\"[\nkey=value\n]\"\n");
 
     let expected_output = r#"Checking .env
 Checking .env1
+Checking .env2
 
 No problems found
 "#;
