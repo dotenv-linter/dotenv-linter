@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+
+### 🔧 Changed
+
+## [v3.2.0] - 2022-01-24
+### 🚀 Added
 - Add check for new version [#454](https://github.com/dotenv-linter/dotenv-linter/pull/454) ([@mgrachev](https://github.com/mgrachev))
 - Support of double-quoted multiline values [#453](https://github.com/dotenv-linter/dotenv-linter/pull/453) ([@DDtKey](https://github.com/DDtKey))
 - Support of single-quoted multiline values [#450](https://github.com/dotenv-linter/dotenv-linter/pull/450) ([@DDtKey](https://github.com/DDtKey))
@@ -251,6 +256,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace field warning with template for all check structs [#26](https://github.com/dotenv-linter/dotenv-linter/pull/26) ([@mgrachev](https://github.com/mgrachev))
 - Prepare a template for easy adding new checks [#14](https://github.com/dotenv-linter/dotenv-linter/pull/14) ([@mgrachev](https://github.com/mgrachev))
 
+[v3.2.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.2.0
 [v3.1.1]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.1.1
 [v3.1.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.1.0
 [v3.0.0]: https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.0.0

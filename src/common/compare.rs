@@ -17,16 +17,13 @@ impl fmt::Display for CompareWarning {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{}",
-            format!(
-                "{} is missing keys: {}",
-                self.path.display().to_string().italic(),
-                self.missing_keys
-                    .iter()
-                    .map(|k| k.red().bold().to_string())
-                    .collect::<Vec<String>>()
-                    .join(", ")
-            )
+            "{} is missing keys: {}",
+            self.path.display().to_string().italic(),
+            self.missing_keys
+                .iter()
+                .map(|k| k.red().bold().to_string())
+                .collect::<Vec<String>>()
+                .join(", ")
         )
     }
 }
