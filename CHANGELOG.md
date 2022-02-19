@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 ### 🔧 Changed
+- Update dependency: [`update-infromer`](https://github.com/mgrachev/update-informer) [#470](https://github.com/dotenv-linter/dotenv-linter/pull/470) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v3.2.0] - 2022-01-24
 ### 🚀 Added
