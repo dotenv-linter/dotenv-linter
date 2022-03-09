@@ -35,7 +35,7 @@ impl Fix for SubstitutionKeyFixer {
 
             let correct_end_index = stripped_key
                 .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
-                .unwrap_or_else(|| stripped_key.len());
+                .unwrap_or(stripped_key.len());
 
             if is_escaped(prefix) || correct_end_index == 0 {
                 result.push_str(stripped_key);
