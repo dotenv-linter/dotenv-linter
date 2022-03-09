@@ -10,7 +10,10 @@ vulnerability = "deny"
 unmaintained = "warn"
 yanked = "warn"
 notice = "warn"
-ignore = []
+ignore = [
+    "RUSTSEC-2022-0013", # regex is a criterion dependency (dev)
+    "RUSTSEC-2021-0127", # serde_cbor is a criterion dependency (dev)
+]
 
 [licenses]
 unlicensed = "deny"
@@ -49,6 +52,9 @@ license-files = [
 [bans]
 multiple-versions = "warn"
 highlight = "all"
+skip = [
+    { name = "itoa", version = "=0.4.8" },
+]
 
 [sources]
 unknown-registry = "deny"
