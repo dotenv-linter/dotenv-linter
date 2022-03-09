@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add dependabot [#472](https://github.com/dotenv-linter/dotenv-linter/pull/472) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Fix clippy warnings [#480](https://github.com/dotenv-linter/dotenv-linter/pull/480) ([@shapurid](https://github.com/shapurid))
 - Update dependency: [`update-infromer`](https://github.com/mgrachev/update-informer) [#470](https://github.com/dotenv-linter/dotenv-linter/pull/470) ([@mgrachev](https://github.com/mgrachev))
 
 ## [v3.2.0] - 2022-01-24

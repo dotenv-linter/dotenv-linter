@@ -174,9 +174,10 @@ fn get_lines(args: &clap::ArgMatches, current_dir: &Path) -> BTreeMap<FileEntry,
 
     file_paths
         .iter()
-        .map(|path| fs_utils::get_relative_path(path, current_dir).and_then(FileEntry::from))
-        .flatten()
-        .collect::<BTreeMap<_, _>>()
+        .filter_map(|path: &PathBuf| -> Option<(FileEntry, Vec<String>)> {
+            fs_utils::get_relative_path(path, current_dir).and_then(FileEntry::from)
+        })
+        .collect()
 }
 
 /// Getting a list of all files for checking/fixing without custom exclusion files
