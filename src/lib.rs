@@ -28,15 +28,11 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
         return Ok(0);
     }
 
-    let mut skip_checks: Vec<&str> = Vec::new();
-    if let Some(skip) = args.values_of("skip") {
-        skip_checks = skip.collect();
-    }
-
-    let skip_checks = skip_checks
-        .into_iter()
-        .filter_map(|c| LintKind::from_str(c).ok())
-        .collect::<Vec<LintKind>>();
+    let skip_checks: Vec<LintKind> = args
+        .values_of("skip")
+        .unwrap_or_default()
+        .filter_map(|check: &str| LintKind::from_str(check).ok())
+        .collect();
 
     let warnings_count =
         lines_map
@@ -69,14 +65,11 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
         return Ok(());
     }
 
-    let mut skip_checks: Vec<&str> = Vec::new();
-    if let Some(skip) = args.values_of("skip") {
-        skip_checks = skip.collect();
-    }
-    let skip_checks = skip_checks
-        .into_iter()
-        .filter_map(|c| LintKind::from_str(c).ok())
-        .collect::<Vec<LintKind>>();
+    let skip_checks: Vec<LintKind> = args
+        .values_of("skip")
+        .unwrap_or_default()
+        .filter_map(|check: &str| LintKind::from_str(check).ok())
+        .collect();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
