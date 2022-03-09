@@ -21,7 +21,7 @@ dunce = "1.0.2"
 [dev-dependencies]
 assert_cmd = "2.0.4"
 criterion = "0.3.5"
-tempfile = "3.2.0"
+tempfile = "3.3.0"
 
 [target.'cfg(not(windows))'.dev-dependencies]
 gag = "1.0.0"
