@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 Added
+- Add `stale` action [#483](https://github.com/dotenv-linter/dotenv-linter/pull/483) ([@mgrachev](https://github.com/mgrachev))
 - Add dependabot [#472](https://github.com/dotenv-linter/dotenv-linter/pull/472) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
