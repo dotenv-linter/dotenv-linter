@@ -6,7 +6,7 @@ jobs:
     name: linters / misspell
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: reviewdog/action-misspell@v1
         with:
           locale: "US"
@@ -15,7 +15,7 @@ jobs:
     name: linters / yamllint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: yamllint
         uses: reviewdog/action-yamllint@v1
         with:
@@ -28,7 +28,7 @@ jobs:
     name: linters / shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: shellcheck
         uses: reviewdog/action-shellcheck@v1
         with:
@@ -40,7 +40,7 @@ jobs:
     name: linters / commitlint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: wagoid/commitlint-github-action@v2
@@ -49,7 +49,7 @@ jobs:
     name: linters / hadolint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: hadolint
         uses: reviewdog/action-hadolint@v1
         with:

@@ -17,7 +17,7 @@ jobs:
     name: Check / Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         id: toolchain
         with:
@@ -47,7 +47,7 @@ jobs:
     name: Rustfmt / Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -62,7 +62,7 @@ jobs:
     name: Clippy / Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         id: toolchain
         with:
@@ -93,7 +93,7 @@ jobs:
     name: Build / Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         id: toolchain
         with:
@@ -123,7 +123,7 @@ jobs:
     name: Test and coverage / Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         id: toolchain
         with:
@@ -175,7 +175,7 @@ jobs:
     name: Install / Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
@@ -190,7 +190,7 @@ jobs:
     name: Build / Windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         id: toolchain
         with:
@@ -220,7 +220,7 @@ jobs:
     steps:
       - name: Disable EOL conversion
         run: git config --global core.autocrlf false
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         id: toolchain
         with:
@@ -250,7 +250,7 @@ jobs:
     name: Install / Windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Setup dotenv-linter
         shell: bash # it uses Git Bash, i.e. MinGW
         run: |
@@ -267,7 +267,7 @@ jobs:
     name: Install / MacOS
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
@@ -282,6 +282,6 @@ jobs:
     name: Build / Docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Build
         run: docker build --target builder .
