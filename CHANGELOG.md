@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add dependabot [#472](https://github.com/dotenv-linter/dotenv-linter/pull/472) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Update `criterion-compare` action [#484](https://github.com/dotenv-linter/dotenv-linter/pull/484) ([@mgrachev](https://github.com/mgrachev))
 - Refactor skip_checks with use default iterator [#482](https://github.com/dotenv-linter/dotenv-linter/pull/482) ([@shapurid](https://github.com/shapurid))
 - Update `cargo-deny` config [#481](https://github.com/dotenv-linter/dotenv-linter/pull/481) ([@mgrachev](https://github.com/mgrachev))
 - Fix clippy warnings [#480](https://github.com/dotenv-linter/dotenv-linter/pull/480) ([@shapurid](https://github.com/shapurid))
