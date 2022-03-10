@@ -19,7 +19,7 @@ update-informer = { version = "0.4.0" }
 dunce = "1.0.2"
 
 [dev-dependencies]
-assert_cmd = "2.0.2"
+assert_cmd = "2.0.4"
 criterion = "0.3.5"
 tempfile = "3.2.0"
 
