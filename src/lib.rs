@@ -1,5 +1,6 @@
 use crate::common::*;
 use crate::quote_type::QuoteType;
+use clap::Values;
 use colored::*;
 use std::collections::{BTreeMap, HashSet};
 use std::path::{Path, PathBuf};
@@ -18,7 +19,12 @@ pub mod cli;
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
-    let lines_map = get_lines(args, current_dir);
+    let lines_map = get_lines(
+        args,
+        current_dir,
+        args.is_present("recursive"),
+        args.values_of("exclude"),
+    );
     let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
 
     if lines_map.is_empty() {
@@ -56,7 +62,12 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
 
 pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
     let mut warnings_count = 0;
-    let lines_map = get_lines(args, current_dir);
+    let lines_map = get_lines(
+        args,
+        current_dir,
+        args.is_present("recursive"),
+        args.values_of("exclude"),
+    );
     let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
 
     // Nothing to fix
@@ -106,7 +117,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
 // Compares if different environment files contains the same variables and returns warnings if not
 pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<CompareWarning>> {
     let mut all_keys: HashSet<String> = HashSet::new();
-    let lines_map = get_lines(args, current_dir);
+    let lines_map = get_lines(args, current_dir, false, None);
     let output = CompareOutput::new(args.is_present("quiet"));
 
     let mut warnings: Vec<CompareWarning> = Vec::new();
@@ -162,8 +173,13 @@ pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<Compar
     Ok(warnings)
 }
 
-fn get_lines(args: &clap::ArgMatches, current_dir: &Path) -> BTreeMap<FileEntry, Vec<String>> {
-    let file_paths: Vec<PathBuf> = get_needed_file_paths(args);
+fn get_lines(
+    args: &clap::ArgMatches,
+    current_dir: &Path,
+    is_recursive: bool,
+    exclude: Option<Values>,
+) -> BTreeMap<FileEntry, Vec<String>> {
+    let file_paths: Vec<PathBuf> = get_needed_file_paths(args, is_recursive, exclude);
 
     file_paths
         .iter()
@@ -174,13 +190,15 @@ fn get_lines(args: &clap::ArgMatches, current_dir: &Path) -> BTreeMap<FileEntry,
 }
 
 /// Getting a list of all files for checking/fixing without custom exclusion files
-fn get_needed_file_paths(args: &clap::ArgMatches) -> Vec<PathBuf> {
+fn get_needed_file_paths(
+    args: &clap::ArgMatches,
+    is_recursive: bool,
+    exclude: Option<Values>,
+) -> Vec<PathBuf> {
     let mut file_paths: Vec<PathBuf> = Vec::new();
     let mut excluded_paths: Vec<PathBuf> = Vec::new();
 
-    let is_recursive = args.is_present("recursive");
-
-    if let Some(excluded) = args.values_of("exclude") {
+    if let Some(excluded) = exclude {
         excluded_paths = excluded
             .filter_map(|f| fs_utils::canonicalize(f).ok())
             .collect();
