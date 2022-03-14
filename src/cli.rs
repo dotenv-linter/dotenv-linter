@@ -26,7 +26,7 @@ pub fn new(current_dir: &OsStr) -> Command {
                         .long("no-backup")
                         .help("Prevents backing up .env files"),
                 )
-                .override_usage("dotenv-linter fix [FLAGS] [OPTIONS] <input>...")
+                .override_usage("dotenv-linter fix [OPTIONS] <input>...")
                 .about("Automatically fixes warnings"),
         )
         .subcommand(
@@ -43,7 +43,7 @@ pub fn new(current_dir: &OsStr) -> Command {
                     quiet_flag(),
                 ])
                 .about("Compares if files have the same keys")
-                .override_usage("dotenv-linter compare <files>..."),
+                .override_usage("dotenv-linter compare [OPTIONS] <input>..."),
         )
 }
 
