@@ -22,13 +22,11 @@ fn generate_arg_matches(app: &Command, with_backup: bool) -> ArgMatches {
     args_vector.push(simple_fix_path.to_str().expect("path to str"));
 
     // Generate the ArgMatches
-    let matches = app.clone().get_matches_from(args_vector);
-    let matches = matches
+    app.clone()
+        .get_matches_from(args_vector)
         .subcommand_matches("fix")
         .expect("fix command")
-        .to_owned();
-
-    matches
+        .to_owned()
 }
 
 /// Runs the Fix Benchmark
