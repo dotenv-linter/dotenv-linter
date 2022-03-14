@@ -11,25 +11,25 @@ fn main() -> Result<()> {
     disable_color_output(&args);
 
     match args.subcommand() {
-        ("", None) => {
+        None => {
             let total_warnings = dotenv_linter::check(&args, &current_dir)?;
 
             if total_warnings == 0 {
                 process::exit(0);
             }
         }
-        ("fix", Some(fix_args)) => {
+        Some(("fix", fix_args)) => {
             dotenv_linter::fix(fix_args, &current_dir)?;
             process::exit(0);
         }
-        ("list", Some(_)) => {
+        Some(("list", _)) => {
             dotenv_linter::available_check_names()
                 .iter()
                 .for_each(|name| println!("{}", name));
 
             process::exit(0);
         }
-        ("compare", Some(compare_args)) => {
+        Some(("compare", compare_args)) => {
             disable_color_output(compare_args);
 
             let warnings = dotenv_linter::compare(compare_args, &current_dir)?;

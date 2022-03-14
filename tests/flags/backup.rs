@@ -7,7 +7,7 @@ fn output_backup_file() {
     let testdir = TestDir::new();
     let content = "foo=bar\n";
     let testfile = testdir.create_testfile(".env", content);
-    let args = &[testfile.as_str(), "fix"];
+    let args = &["fix", testfile.as_str()];
 
     testdir.test_command_success_with_args_without_closing(args);
 
