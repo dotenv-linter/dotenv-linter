@@ -2,23 +2,20 @@ use clap::{Arg, Command};
 use std::ffi::OsStr;
 
 pub fn new(current_dir: &OsStr) -> Command {
-    let list_command: Command = Command::new("list")
-        .visible_alias("l")
-        .override_usage("dotenv-linter list")
-        .about("Shows list of available checks");
-
-    let fix_command: Command = Command::new("fix")
-        .visible_alias("f")
+    Command::new(env!("CARGO_PKG_NAME"))
+        .about(env!("CARGO_PKG_DESCRIPTION"))
+        .author(env!("CARGO_PKG_AUTHORS"))
+        .version(env!("CARGO_PKG_VERSION"))
+        .disable_help_subcommand(true)
+        .propagate_version(true)
+        .mut_arg("version", |a| a.short('v'))
         .args(common_args(current_dir))
-        .arg(
-            Arg::new("no-backup")
-                .long("no-backup")
-                .help("Prevents backing up .env files"),
-        )
-        .override_usage("dotenv-linter fix [OPTIONS] <input>...")
-        .about("Automatically fixes warnings");
+        .arg(not_check_updates_flag())
+        .subcommands([compare_command(), fix_command(current_dir), list_command()])
+}
 
-    let compare_command: Command = Command::new("compare")
+fn compare_command<'a>() -> Command<'a> {
+    Command::new("compare")
         .visible_alias("c")
         .args(&vec![
             Arg::new("input")
@@ -31,18 +28,27 @@ pub fn new(current_dir: &OsStr) -> Command {
             quiet_flag(),
         ])
         .about("Compares if files have the same keys")
-        .override_usage("dotenv-linter compare [OPTIONS] <input>...");
+        .override_usage("dotenv-linter compare [OPTIONS] <input>...")
+}
 
-    Command::new(env!("CARGO_PKG_NAME"))
-        .about(env!("CARGO_PKG_DESCRIPTION"))
-        .author(env!("CARGO_PKG_AUTHORS"))
-        .version(env!("CARGO_PKG_VERSION"))
-        .disable_help_subcommand(true)
-        .propagate_version(true)
-        .mut_arg("version", |a| a.short('v'))
+fn fix_command(current_dir: &OsStr) -> Command {
+    Command::new("fix")
+        .visible_alias("f")
         .args(common_args(current_dir))
-        .arg(not_check_updates_flag())
-        .subcommands([list_command, fix_command, compare_command])
+        .arg(
+            Arg::new("no-backup")
+                .long("no-backup")
+                .help("Prevents backing up .env files"),
+        )
+        .override_usage("dotenv-linter fix [OPTIONS] <input>...")
+        .about("Automatically fixes warnings")
+}
+
+fn list_command<'a>() -> Command<'a> {
+    Command::new("list")
+        .visible_alias("l")
+        .override_usage("dotenv-linter list")
+        .about("Shows list of available checks")
 }
 
 fn common_args(current_dir: &OsStr) -> Vec<Arg> {
