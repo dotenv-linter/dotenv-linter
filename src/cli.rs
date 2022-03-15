@@ -2,6 +2,37 @@ use clap::{Arg, Command};
 use std::ffi::OsStr;
 
 pub fn new(current_dir: &OsStr) -> Command {
+    let list_command: Command = Command::new("list")
+        .visible_alias("l")
+        .override_usage("dotenv-linter list")
+        .about("Shows list of available checks");
+
+    let fix_command: Command = Command::new("fix")
+        .visible_alias("f")
+        .args(common_args(current_dir))
+        .arg(
+            Arg::new("no-backup")
+                .long("no-backup")
+                .help("Prevents backing up .env files"),
+        )
+        .override_usage("dotenv-linter fix [OPTIONS] <input>...")
+        .about("Automatically fixes warnings");
+
+    let compare_command: Command = Command::new("compare")
+        .visible_alias("c")
+        .args(&vec![
+            Arg::new("input")
+                .help("Files to compare")
+                .multiple_occurrences(true)
+                .multiple_values(true)
+                .min_values(2)
+                .required(true),
+            no_color_flag(),
+            quiet_flag(),
+        ])
+        .about("Compares if files have the same keys")
+        .override_usage("dotenv-linter compare [OPTIONS] <input>...");
+
     Command::new(env!("CARGO_PKG_NAME"))
         .about(env!("CARGO_PKG_DESCRIPTION"))
         .author(env!("CARGO_PKG_AUTHORS"))
@@ -10,41 +41,8 @@ pub fn new(current_dir: &OsStr) -> Command {
         .propagate_version(true)
         .mut_arg("version", |a| a.short('v'))
         .args(common_args(current_dir))
-        .args(&[not_check_updates_flag()])
-        .subcommand(
-            Command::new("list")
-                .visible_alias("l")
-                .override_usage("dotenv-linter list")
-                .about("Shows list of available checks"),
-        )
-        .subcommand(
-            Command::new("fix")
-                .visible_alias("f")
-                .args(common_args(current_dir))
-                .arg(
-                    Arg::new("no-backup")
-                        .long("no-backup")
-                        .help("Prevents backing up .env files"),
-                )
-                .override_usage("dotenv-linter fix [FLAGS] [OPTIONS] <input>...")
-                .about("Automatically fixes warnings"),
-        )
-        .subcommand(
-            Command::new("compare")
-                .visible_alias("c")
-                .args(&vec![
-                    Arg::new("input")
-                        .help("Files to compare")
-                        .multiple_occurrences(true)
-                        .multiple_values(true)
-                        .min_values(2)
-                        .required(true),
-                    no_color_flag(),
-                    quiet_flag(),
-                ])
-                .about("Compares if files have the same keys")
-                .override_usage("dotenv-linter compare <files>..."),
-        )
+        .arg(not_check_updates_flag())
+        .subcommands([list_command, fix_command, compare_command])
 }
 
 fn common_args(current_dir: &OsStr) -> Vec<Arg> {
@@ -80,20 +78,20 @@ fn common_args(current_dir: &OsStr) -> Vec<Arg> {
     ]
 }
 
-fn quiet_flag<'a>() -> clap::Arg<'a> {
+fn quiet_flag<'a>() -> Arg<'a> {
     Arg::new("quiet")
         .short('q')
         .long("quiet")
         .help("Doesn't display additional information")
 }
 
-fn no_color_flag<'a>() -> clap::Arg<'a> {
+fn no_color_flag<'a>() -> Arg<'a> {
     Arg::new("no-color")
         .long("no-color")
         .help("Turns off the colored output")
 }
 
-fn not_check_updates_flag<'a>() -> clap::Arg<'a> {
+fn not_check_updates_flag<'a>() -> Arg<'a> {
     Arg::new("not-check-updates")
         .long("not-check-updates")
         .help("Doesn't check for updates")
