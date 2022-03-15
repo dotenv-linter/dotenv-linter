@@ -1,3 +1,4 @@
+use clap::{ArgMatches, Command};
 use criterion::{black_box, criterion_group, criterion_main, BatchSize, Criterion};
 use std::{env, fs};
 use tempfile::tempdir;
@@ -6,7 +7,7 @@ use tempfile::tempdir;
 use gag::Gag;
 
 /// Generates clap::ArgMatches for the fix Benchmarks and Copies the needed temporary Files
-fn generate_arg_matches<'a>(app: &'a clap::App, with_backup: bool) -> clap::ArgMatches<'a> {
+fn generate_arg_matches(app: &Command, with_backup: bool) -> ArgMatches {
     // Prepare the temporary Files
     let temp = tempdir().expect("create tempdir");
     let path = temp.into_path();
@@ -21,13 +22,11 @@ fn generate_arg_matches<'a>(app: &'a clap::App, with_backup: bool) -> clap::ArgM
     args_vector.push(simple_fix_path.to_str().expect("path to str"));
 
     // Generate the ArgMatches
-    let matches = app.clone().get_matches_from(args_vector);
-    let matches = matches
+    app.clone()
+        .get_matches_from(args_vector)
         .subcommand_matches("fix")
         .expect("fix command")
-        .to_owned();
-
-    matches
+        .to_owned()
 }
 
 /// Runs the Fix Benchmark
