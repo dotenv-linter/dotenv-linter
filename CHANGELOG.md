@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🔧 Changed
 - Move CLI commands to separate functions [#489](https://github.com/dotenv-linter/dotenv-linter/pull/489) ([@mgrachev](https://github.com/mgrachev))
+- Refactor check ci with all-targets arg [#488](https://github.com/dotenv-linter/dotenv-linter/pull/488) ([@shapurid](https://github.com/shapurid))
 - Refactor usage of fix and compare [#486](https://github.com/dotenv-linter/dotenv-linter/pull/486) ([@shapurid](https://github.com/shapurid))
 - Update `clap` [#485](https://github.com/dotenv-linter/dotenv-linter/pull/485) ([@mgrachev](https://github.com/mgrachev))
 - Update `criterion-compare` action [#484](https://github.com/dotenv-linter/dotenv-linter/pull/484) ([@mgrachev](https://github.com/mgrachev))
