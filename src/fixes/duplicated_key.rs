@@ -1,7 +1,6 @@
-use std::collections::HashSet;
-
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
+use std::collections::HashSet;
 
 #[derive(Default)]
 pub(crate) struct DuplicatedKeyFixer {}

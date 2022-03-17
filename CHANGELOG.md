@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add dependabot [#472](https://github.com/dotenv-linter/dotenv-linter/pull/472) ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
+- Add tests to verify CLI application [#490](https://github.com/dotenv-linter/dotenv-linter/pull/490) ([@mgrachev](https://github.com/mgrachev))
 - Move CLI commands to separate functions [#489](https://github.com/dotenv-linter/dotenv-linter/pull/489) ([@mgrachev](https://github.com/mgrachev))
 - Refactor check ci with all-targets arg [#488](https://github.com/dotenv-linter/dotenv-linter/pull/488) ([@shapurid](https://github.com/shapurid))
 - Refactor usage of fix and compare [#486](https://github.com/dotenv-linter/dotenv-linter/pull/486) ([@shapurid](https://github.com/shapurid))

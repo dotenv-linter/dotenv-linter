@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use super::LintKind;
+use std::str::FromStr;
 
 const PREFIX: &str = "dotenv-linter";
 const ON: &str = "on";

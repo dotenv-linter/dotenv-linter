@@ -102,3 +102,15 @@ fn not_check_updates_flag<'a>() -> Arg<'a> {
         .long("not-check-updates")
         .help("Doesn't check for updates")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::env;
+
+    #[test]
+    fn verify_app() {
+        let current_dir = env::current_dir().expect("Failed to get current dir");
+        new(current_dir.as_os_str()).debug_assert();
+    }
+}
