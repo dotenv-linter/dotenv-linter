@@ -1,7 +1,6 @@
-use std::collections::HashSet;
-
 use super::Check;
 use crate::common::{LineEntry, LintKind, Warning};
+use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyChecker<'a> {
     template: &'a str,

@@ -1,7 +1,6 @@
+use super::LF;
 use std::path::{Path, PathBuf};
 use std::{fmt, fs};
-
-use super::LF;
 
 const EXCLUDED_FILES: &[&str] = &[".envrc"];
 

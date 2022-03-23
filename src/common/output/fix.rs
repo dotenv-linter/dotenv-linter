@@ -1,7 +1,6 @@
+use crate::common::{FileEntry, Warning};
 use colored::*;
 use std::path::Path;
-
-use crate::common::{FileEntry, Warning};
 
 /// Prefix for the backup output
 const BACKUP_PREFIX: &str = "Original file was backed up to: ";

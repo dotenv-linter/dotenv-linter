@@ -1,10 +1,11 @@
-use crate::common::*;
-use crate::quote_type::QuoteType;
+use crate::{common::*, quote_type::QuoteType};
 use clap::Values;
 use colored::*;
-use std::collections::{BTreeMap, HashSet};
-use std::path::{Path, PathBuf};
-use std::str::FromStr;
+use std::{
+    collections::{BTreeMap, HashSet},
+    path::{Path, PathBuf},
+    str::FromStr,
+};
 use update_informer::{registry::Crates, Check};
 
 pub use checks::available_check_names;

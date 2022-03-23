@@ -1,10 +1,13 @@
-use std::fs::{copy, File};
-use std::io::{self, Write};
-use std::path::{Path, PathBuf};
-use std::time::SystemTime;
-
-use crate::common::{FileEntry, LineEntry};
-use crate::Result;
+use crate::{
+    common::{FileEntry, LineEntry},
+    Result,
+};
+use std::{
+    fs::{copy, File},
+    io::{self, Write},
+    path::{Path, PathBuf},
+    time::SystemTime,
+};
 
 /// For the Windows platform, we need to remove the UNC prefix.
 #[cfg(windows)]
