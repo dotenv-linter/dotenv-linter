@@ -43,32 +43,6 @@ pub(crate) struct Args {
     command: Option<Commands>,
 }
 
-impl Args {
-    pub fn skip_checks(&self) -> Vec<LintKind> {
-        self.skip
-            .skip
-            .iter()
-            .filter_map(|check| LintKind::from_str(&check).ok())
-            .collect()
-    }
-
-    pub fn excluded_paths(&self) -> Vec<PathBuf> {
-        self.exclude
-            .exclude
-            .iter()
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect()
-    }
-
-    pub fn input_paths(&self) -> Vec<PathBuf> {
-        self.input
-            .input
-            .iter()
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect()
-    }
-}
-
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
 pub(crate) struct Exclude {
@@ -77,11 +51,29 @@ pub(crate) struct Exclude {
     pub(crate) exclude: Vec<String>,
 }
 
+impl Exclude {
+    pub fn paths(&self) -> Vec<PathBuf> {
+        self.exclude
+            .iter()
+            .filter_map(|f| fs_utils::canonicalize(f).ok())
+            .collect()
+    }
+}
+
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
 pub(crate) struct Input {
     /// Files or paths
     pub(crate) input: Vec<String>,
+}
+
+impl Input {
+    pub fn paths(&self) -> Vec<PathBuf> {
+        self.input
+            .iter()
+            .filter_map(|f| fs_utils::canonicalize(f).ok())
+            .collect()
+    }
 }
 
 // TODO: remove debug
@@ -114,6 +106,15 @@ pub(crate) struct Skip {
     /// Skip checks
     #[clap(short, long)]
     pub(crate) skip: Vec<String>,
+}
+
+impl Skip {
+    pub fn checks(&self) -> Vec<LintKind> {
+        self.skip
+            .iter()
+            .filter_map(|check| LintKind::from_str(&check).ok())
+            .collect()
+    }
 }
 
 // TODO: remove debug

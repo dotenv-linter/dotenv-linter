@@ -24,7 +24,7 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
         args,
         current_dir,
         args.recursive.recursive,
-        Some(args.excluded_paths()),
+        Some(args.exclude.paths()),
     );
     let output = CheckOutput::new(args.quiet.quiet, lines_map.len());
 
@@ -33,7 +33,7 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
         return Ok(0);
     }
 
-    let skip_checks = args.skip_checks();
+    let skip_checks = args.skip.checks();
 
     let warnings_count =
         lines_map
@@ -60,7 +60,7 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
         args,
         current_dir,
         args.recursive.recursive,
-        Some(args.excluded_paths()),
+        Some(args.exclude.paths()),
     );
     let output = FixOutput::new(args.quiet.quiet, lines_map.len());
 
@@ -70,7 +70,7 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
         return Ok(());
     }
 
-    let skip_checks = args.skip_checks();
+    let skip_checks = args.skip.checks();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
@@ -176,7 +176,7 @@ fn get_lines(
         excluded_paths = e;
     }
 
-    let mut input_paths = args.input_paths();
+    let mut input_paths = args.input.paths();
 
     if input_paths.len() == 0 {
         input_paths.push(current_dir.to_path_buf());
