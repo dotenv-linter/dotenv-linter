@@ -6,7 +6,6 @@ use std::{
     path::{Path, PathBuf},
     str::FromStr,
 };
-use update_informer::{registry::Crates, Check};
 
 pub use checks::available_check_names;
 
@@ -321,8 +320,10 @@ fn is_multiline_start(val: &str) -> Option<QuoteType> {
     None
 }
 
-/// Prints information about the new version to `STDOUT` if a new version available
+/// Prints information about the new version to `STDOUT` if a new version is available
 fn print_new_version_if_available(args: &clap::ArgMatches) {
+    use update_informer::{registry, Check};
+
     if args.is_present("not-check-updates") || args.is_present("quiet") {
         return;
     }
@@ -331,16 +332,13 @@ fn print_new_version_if_available(args: &clap::ArgMatches) {
 
     #[cfg(not(feature = "stub_check_version"))]
     let current_version = env!("CARGO_PKG_VERSION");
-
     #[cfg(feature = "stub_check_version")]
     let current_version = "3.0.0";
 
     #[cfg(not(feature = "stub_check_version"))]
-    let informer = update_informer::UpdateInformer::new(Crates, pkg_name, current_version);
-
+    let informer = update_informer::new(registry::Crates, pkg_name, current_version);
     #[cfg(feature = "stub_check_version")]
-    let informer =
-        update_informer::FakeUpdateInformer::new(Crates, pkg_name, current_version, "3.1.1");
+    let informer = update_informer::fake(registry::Crates, pkg_name, current_version, "3.1.1");
 
     if let Ok(Some(version)) = informer.check_version() {
         let msg = format!(
