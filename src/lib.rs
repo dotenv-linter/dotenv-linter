@@ -1,13 +1,14 @@
-use crate::{common::*, quote_type::QuoteType};
-use clap::Values;
+#![allow(dead_code, unused_assignments)]
+use crate::cli::Args;
+use crate::common::*;
+use crate::quote_type::QuoteType;
 use colored::*;
 use std::{
     collections::{BTreeMap, HashSet},
     path::{Path, PathBuf},
-    str::FromStr,
 };
 
-pub use checks::available_check_names;
+// pub use checks::available_check_names;
 
 mod checks;
 mod common;
@@ -18,27 +19,21 @@ pub mod cli;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
+pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
     let lines_map = get_lines(
         args,
         current_dir,
-        args.is_present("recursive"),
-        args.values_of("exclude"),
+        args.recursive.recursive,
+        Some(args.excluded_paths()),
     );
-    let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
+    let output = CheckOutput::new(args.quiet.quiet, lines_map.len());
 
     if lines_map.is_empty() {
         output.print_nothing_to_check();
-        print_new_version_if_available(args);
-
         return Ok(0);
     }
 
-    let skip_checks: Vec<LintKind> = args
-        .values_of("skip")
-        .unwrap_or_default()
-        .filter_map(|check: &str| LintKind::from_str(check).ok())
-        .collect();
+    let skip_checks = args.skip_checks();
 
     let warnings_count =
         lines_map
@@ -55,20 +50,19 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
             });
 
     output.print_total(warnings_count);
-    print_new_version_if_available(args);
-
     Ok(warnings_count)
 }
 
-pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
+pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
     let mut warnings_count = 0;
+
     let lines_map = get_lines(
         args,
         current_dir,
-        args.is_present("recursive"),
-        args.values_of("exclude"),
+        args.recursive.recursive,
+        Some(args.excluded_paths()),
     );
-    let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
+    let output = FixOutput::new(args.quiet.quiet, lines_map.len());
 
     // Nothing to fix
     if lines_map.is_empty() {
@@ -76,11 +70,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
         return Ok(());
     }
 
-    let skip_checks: Vec<LintKind> = args
-        .values_of("skip")
-        .unwrap_or_default()
-        .filter_map(|check: &str| LintKind::from_str(check).ok())
-        .collect();
+    let skip_checks = args.skip_checks();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
         output.print_processing_info(&fe);
@@ -95,12 +85,12 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
             output.print_not_all_warnings_fixed();
         }
         if fixes_done > 0 {
-            let should_backup = !args.is_present("no-backup");
+            // let should_backup = !args.is_present("no-backup");
             // create backup copy unless user specifies not to
-            if should_backup {
-                let backup_file = fs_utils::backup_file(&fe)?;
-                output.print_backup(&backup_file);
-            }
+            // if should_backup {
+            //     let backup_file = fs_utils::backup_file(&fe)?;
+            //     output.print_backup(&backup_file);
+            // }
 
             // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
@@ -115,10 +105,11 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
 }
 
 // Compares if different environment files contains the same variables and returns warnings if not
-pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<CompareWarning>> {
+pub(crate) fn compare(args: &Args, current_dir: &Path) -> Result<Vec<CompareWarning>> {
     let mut all_keys: HashSet<String> = HashSet::new();
+
     let lines_map = get_lines(args, current_dir, false, None);
-    let output = CompareOutput::new(args.is_present("quiet"));
+    let output = CompareOutput::new(args.quiet.quiet);
 
     let mut warnings: Vec<CompareWarning> = Vec::new();
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
@@ -174,45 +165,29 @@ pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<Compar
 }
 
 fn get_lines(
-    args: &clap::ArgMatches,
+    args: &Args,
     current_dir: &Path,
     is_recursive: bool,
-    exclude: Option<Values>,
+    exclude: Option<Vec<PathBuf>>,
 ) -> BTreeMap<FileEntry, Vec<String>> {
-    let file_paths: Vec<PathBuf> = get_needed_file_paths(args, is_recursive, exclude);
+    let mut excluded_paths: Vec<PathBuf> = Vec::new();
 
-    file_paths
+    if let Some(e) = exclude {
+        excluded_paths = e;
+    }
+
+    let mut input_paths = args.input_paths();
+
+    if input_paths.len() == 0 {
+        input_paths.push(current_dir.to_path_buf());
+    }
+
+    get_file_paths(input_paths, &excluded_paths, is_recursive)
         .iter()
         .filter_map(|path: &PathBuf| -> Option<(FileEntry, Vec<String>)> {
             fs_utils::get_relative_path(path, current_dir).and_then(FileEntry::from)
         })
         .collect()
-}
-
-/// Getting a list of all files for checking/fixing without custom exclusion files
-fn get_needed_file_paths(
-    args: &clap::ArgMatches,
-    is_recursive: bool,
-    exclude: Option<Values>,
-) -> Vec<PathBuf> {
-    let mut file_paths: Vec<PathBuf> = Vec::new();
-    let mut excluded_paths: Vec<PathBuf> = Vec::new();
-
-    if let Some(excluded) = exclude {
-        excluded_paths = excluded
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect();
-    }
-
-    if let Some(inputs) = args.values_of("input") {
-        let input_paths = inputs
-            .filter_map(|s| fs_utils::canonicalize(s).ok())
-            .collect();
-
-        file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
-    }
-
-    file_paths
 }
 
 fn get_file_paths(
@@ -321,12 +296,8 @@ fn is_multiline_start(val: &str) -> Option<QuoteType> {
 }
 
 /// Prints information about the new version to `STDOUT` if a new version is available
-fn print_new_version_if_available(args: &clap::ArgMatches) {
+pub(crate) fn print_new_version_if_available() {
     use update_informer::{registry, Check};
-
-    if args.is_present("not-check-updates") || args.is_present("quiet") {
-        return;
-    }
 
     let pkg_name = env!("CARGO_PKG_NAME");
 
