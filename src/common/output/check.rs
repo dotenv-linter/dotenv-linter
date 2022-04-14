@@ -1,7 +1,7 @@
 use crate::common::{FileEntry, Warning};
 use colored::*;
 
-pub struct CheckOutput {
+pub(crate) struct CheckOutput {
     // Quiet program output mode
     is_quiet_mode: bool,
     // Total number of files to check
@@ -9,29 +9,36 @@ pub struct CheckOutput {
 }
 
 impl CheckOutput {
-    pub fn new(is_quiet_mode: bool, files_count: usize) -> Self {
-        CheckOutput {
+    pub(crate) fn new(is_quiet_mode: bool) -> Self {
+        Self {
             is_quiet_mode,
+            files_count: 0,
+        }
+    }
+
+    pub(crate) fn files_count(self, files_count: usize) -> Self {
+        Self {
             files_count,
+            ..self
         }
     }
 
     /// Prints a message that there is nothing to check
-    pub fn print_nothing_to_check(&self) {
+    pub(crate) fn print_nothing_to_check(&self) {
         if !self.is_quiet_mode {
             println!("Nothing to check");
         }
     }
 
     /// Prints information about a file in process
-    pub fn print_processing_info(&self, file: &FileEntry) {
+    pub(crate) fn print_processing_info(&self, file: &FileEntry) {
         if !self.is_quiet_mode {
             println!("Checking {}", file);
         }
     }
 
     /// Prints warnings without any additional information
-    pub fn print_warnings(&self, file: &FileEntry, warnings: &[Warning], file_index: usize) {
+    pub(crate) fn print_warnings(&self, file: &FileEntry, warnings: &[Warning], file_index: usize) {
         warnings
             .iter()
             .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
@@ -46,7 +53,7 @@ impl CheckOutput {
         }
     }
 
-    pub fn print_total(&self, total: usize) {
+    pub(crate) fn print_total(&self, total: usize) {
         if self.is_quiet_mode {
             return;
         }

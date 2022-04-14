@@ -43,6 +43,16 @@ pub(crate) struct Args {
     command: Option<Commands>,
 }
 
+impl Args {
+    pub(crate) fn is_recursive(&self) -> bool {
+        self.recursive.recursive
+    }
+
+    pub(crate) fn is_quiet(&self) -> bool {
+        self.quiet.quiet
+    }
+}
+
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
 pub(crate) struct Exclude {

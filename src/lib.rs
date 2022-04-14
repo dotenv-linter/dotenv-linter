@@ -12,6 +12,7 @@ use std::{
 
 mod checks;
 mod common;
+mod dotenv;
 mod fixes;
 mod fs_utils;
 
@@ -20,19 +21,25 @@ pub mod cli;
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
+    let dotenv_files = dotenv::new(args.input.paths(), current_dir)
+        .recursive(args.is_recursive())
+        .exclude(args.exclude.paths())
+        .parse();
+
     let lines_map = get_lines(
         args,
         current_dir,
         args.recursive.recursive,
         Some(args.exclude.paths()),
     );
-    let output = CheckOutput::new(args.quiet.quiet, lines_map.len());
+    let output = CheckOutput::new(args.is_quiet());
 
     if lines_map.is_empty() {
         output.print_nothing_to_check();
         return Ok(0);
     }
 
+    let output = output.files_count(lines_map.len());
     let skip_checks = args.skip.checks();
 
     let warnings_count =
@@ -62,7 +69,7 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
         args.recursive.recursive,
         Some(args.exclude.paths()),
     );
-    let output = FixOutput::new(args.quiet.quiet, lines_map.len());
+    let output = FixOutput::new(args.quiet.quiet);
 
     // Nothing to fix
     if lines_map.is_empty() {
@@ -70,6 +77,7 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
         return Ok(());
     }
 
+    let output = output.files_count(lines_map.len());
     let skip_checks = args.skip.checks();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
