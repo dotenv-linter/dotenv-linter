@@ -51,6 +51,10 @@ impl Args {
     pub(crate) fn is_quiet(&self) -> bool {
         self.quiet.quiet
     }
+
+    fn can_check_updates(&self) -> bool {
+        self.not_check_updates || self.is_quiet()
+    }
 }
 
 // TODO: remove debug
@@ -194,7 +198,9 @@ pub fn run(_current_dir: &OsStr) -> Result<i32> {
 
             let total_warnings = crate::check(&args, &current_dir)?;
 
-            crate::print_new_version_if_available();
+            if args.can_check_updates() {
+                crate::print_new_version_if_available();
+            }
 
             if total_warnings == 0 {
                 return Ok(0);
