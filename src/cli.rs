@@ -53,7 +53,7 @@ impl Args {
     }
 
     fn can_check_updates(&self) -> bool {
-        self.not_check_updates || self.is_quiet()
+        !self.not_check_updates && !self.is_quiet()
     }
 }
 
