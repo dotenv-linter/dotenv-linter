@@ -1,5 +1,5 @@
 #![allow(dead_code, unused_assignments)]
-use crate::cli::Args;
+use crate::cli::{Args, CompareArgs, FixArgs};
 use crate::common::*;
 use colored::*;
 use std::{collections::HashSet, path::Path};
@@ -47,13 +47,13 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
     Ok(warnings_count)
 }
 
-pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
+pub(crate) fn fix(args: &FixArgs, current_dir: &Path) -> Result<()> {
     let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
         .recursive(args.is_recursive())
         .exclude(args.exclude.paths())
         .lookup_files();
 
-    let output = FixOutput::new(args.quiet.quiet);
+    let output = FixOutput::new(args.is_quiet());
 
     if dotenv_files.is_empty() {
         output.print_nothing_to_fix();
@@ -75,12 +75,11 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
             output.print_not_all_warnings_fixed();
         }
         if fixes_done > 0 {
-            // let should_backup = !args.is_present("no-backup");
             // create backup copy unless user specifies not to
-            // if should_backup {
-            //     let backup_file = fs_utils::backup_file(&fe)?;
-            //     output.print_backup(&backup_file);
-            // }
+            if args.can_backup() {
+                let backup_file = fs_utils::backup_file(&fe)?;
+                output.print_backup(&backup_file);
+            }
 
             // write corrected file
             fs_utils::write_file(&fe.path, lines)?;
@@ -95,11 +94,11 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
 }
 
 // Compares if different environment files contains the same variables and returns warnings if not
-pub(crate) fn compare(args: &Args, current_dir: &Path) -> Result<Vec<CompareWarning>> {
+pub(crate) fn compare(args: &CompareArgs, current_dir: &Path) -> Result<Vec<CompareWarning>> {
     let dotenv_files =
-        dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir).lookup_files();
+        dotenv::new(args.paths(current_dir.to_path_buf()), current_dir).lookup_files();
 
-    let output = CompareOutput::new(args.quiet.quiet);
+    let output = CompareOutput::new(args.is_quiet());
     let mut warnings: Vec<CompareWarning> = Vec::new();
 
     if dotenv_files.is_empty() {

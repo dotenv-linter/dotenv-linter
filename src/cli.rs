@@ -27,10 +27,10 @@ pub(crate) struct Args {
     pub(crate) not_check_updates: bool,
 
     #[clap(flatten)]
-    pub(crate) quiet: Quiet,
+    quiet: Quiet,
 
     #[clap(flatten)]
-    pub(crate) recursive: Recursive,
+    recursive: Recursive,
 
     #[clap(flatten)]
     pub(crate) skip: Skip,
@@ -66,7 +66,7 @@ pub(crate) struct Exclude {
 }
 
 impl Exclude {
-    pub fn paths(&self) -> Vec<PathBuf> {
+    pub(crate) fn paths(&self) -> Vec<PathBuf> {
         self.exclude
             .iter()
             .filter_map(|f| fs_utils::canonicalize(f).ok())
@@ -82,7 +82,7 @@ pub(crate) struct Input {
 }
 
 impl Input {
-    pub fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
+    pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
         let mut input: Vec<PathBuf> = self
             .input
             .iter()
@@ -130,7 +130,7 @@ pub(crate) struct Skip {
 }
 
 impl Skip {
-    pub fn checks(&self) -> Vec<LintKind> {
+    pub(crate) fn checks(&self) -> Vec<LintKind> {
         self.skip
             .iter()
             .filter_map(|check| LintKind::from_str(check).ok())
@@ -144,58 +144,121 @@ impl Skip {
 enum Commands {
     /// Compare if files have the same keys
     #[clap(visible_alias = "c")]
-    Compare {
-        /// Files or paths
-        #[clap(min_values = 2)]
-        input: Vec<String>,
-
-        #[clap(flatten)]
-        no_color: NoColor,
-
-        #[clap(flatten)]
-        quiet: Quiet,
-    },
+    Compare(CompareArgs),
 
     /// Automatically fix warnings
     #[clap(visible_alias = "f")]
-    Fix {
-        /// Prevent backing up .env files
-        #[clap(long)]
-        no_backup: bool,
-
-        #[clap(flatten)]
-        input: Input,
-
-        #[clap(flatten)]
-        no_color: NoColor,
-
-        #[clap(flatten)]
-        quiet: Quiet,
-
-        #[clap(flatten)]
-        recursive: Recursive,
-    },
+    Fix(FixArgs),
 
     /// Show list of available checks
     #[clap(visible_alias = "l")]
     List,
 }
 
+// TODO: remove debug
+#[derive(clap::Args, Debug)]
+pub(crate) struct CompareArgs {
+    /// Files or paths
+    #[clap(min_values = 2)]
+    pub(crate) input: Vec<String>,
+
+    #[clap(flatten)]
+    no_color: NoColor,
+
+    #[clap(flatten)]
+    quiet: Quiet,
+}
+
+impl CompareArgs {
+    pub(crate) fn is_quiet(&self) -> bool {
+        self.quiet.quiet
+    }
+
+    pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
+        let mut input: Vec<PathBuf> = self
+            .input
+            .iter()
+            .filter_map(|f| fs_utils::canonicalize(f).ok())
+            .collect();
+
+        if input.is_empty() {
+            input.push(current_dir);
+        }
+
+        input
+    }
+}
+
+// TODO: remove debug
+#[derive(clap::Args, Debug)]
+pub(crate) struct FixArgs {
+    #[clap(flatten)]
+    pub(crate) exclude: Exclude,
+
+    /// Prevent backing up .env files
+    #[clap(long)]
+    no_backup: bool,
+
+    #[clap(flatten)]
+    pub(crate) input: Input,
+
+    #[clap(flatten)]
+    no_color: NoColor,
+
+    #[clap(flatten)]
+    quiet: Quiet,
+
+    #[clap(flatten)]
+    recursive: Recursive,
+
+    #[clap(flatten)]
+    pub(crate) skip: Skip,
+}
+
+impl FixArgs {
+    pub(crate) fn is_recursive(&self) -> bool {
+        self.recursive.recursive
+    }
+
+    pub(crate) fn is_quiet(&self) -> bool {
+        self.quiet.quiet
+    }
+
+    pub(crate) fn can_backup(&self) -> bool {
+        !self.no_backup
+    }
+}
+
 pub fn run(_current_dir: &OsStr) -> Result<i32> {
     let current_dir = env::current_dir()?;
     let args: Args = Args::parse();
 
-    // fix(fix_args, &current_dir)?
-
     match args.command {
-        Some(Commands::Compare { .. }) => {}
-        Some(Commands::Fix { .. }) => {}
-        Some(Commands::List) => checks::available_check_names()
-            .iter()
-            .for_each(|name| println!("{}", name)),
+        Some(Commands::Compare(args)) => {
+            println!("compare...");
+            dbg!(&args);
+            let warnings = crate::compare(&args, &current_dir)?;
+            if warnings.is_empty() {
+                return Ok(0);
+            }
+        }
+        Some(Commands::Fix(args)) => {
+            println!("fix...");
+            dbg!(&args);
+            crate::fix(&args, &current_dir)?;
+            return Ok(0);
+        }
+        Some(Commands::List) => {
+            println!("list...");
+            checks::available_check_names()
+                .iter()
+                .for_each(|name| println!("{}", name));
+            return Ok(0);
+        }
         None => {
             println!("check...");
 
+            dbg!(&args);
             let total_warnings = crate::check(&args, &current_dir)?;
 
             if args.can_check_updates() {
@@ -208,8 +271,6 @@ pub fn run(_current_dir: &OsStr) -> Result<i32> {
             }
         }
     }
-
-    dbg!(args);
 
     Ok(1)
 }
