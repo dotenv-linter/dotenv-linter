@@ -112,7 +112,7 @@ impl Skip {
     pub fn checks(&self) -> Vec<LintKind> {
         self.skip
             .iter()
-            .filter_map(|check| LintKind::from_str(&check).ok())
+            .filter_map(|check| LintKind::from_str(check).ok())
             .collect()
     }
 }

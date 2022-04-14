@@ -8,15 +8,15 @@ pub(crate) mod lint_kind;
 pub(crate) mod output;
 pub(crate) mod quote_type;
 
-pub use compare::CompareFileType;
-pub use compare::CompareWarning;
-pub use file_entry::FileEntry;
-pub use line_entry::LineEntry;
-pub use lint_kind::LintKind;
-pub use output::check::CheckOutput;
-pub use output::compare::CompareOutput;
-pub use output::fix::FixOutput;
-pub use warning::Warning;
+pub(crate) use compare::CompareFileType;
+pub(crate) use compare::CompareWarning;
+pub(crate) use file_entry::FileEntry;
+pub(crate) use line_entry::LineEntry;
+pub(crate) use lint_kind::LintKind;
+pub(crate) use output::check::CheckOutput;
+pub(crate) use output::compare::CompareOutput;
+pub(crate) use output::fix::FixOutput;
+pub(crate) use warning::Warning;
 
 pub const LF: &str = "\n";
 

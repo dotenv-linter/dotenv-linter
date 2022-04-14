@@ -178,7 +178,7 @@ fn get_lines(
 
     let mut input_paths = args.input.paths();
 
-    if input_paths.len() == 0 {
+    if input_paths.is_empty() {
         input_paths.push(current_dir.to_path_buf());
     }
 

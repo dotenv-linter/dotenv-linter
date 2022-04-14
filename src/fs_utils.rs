@@ -11,11 +11,11 @@ use std::{
 
 /// For the Windows platform, we need to remove the UNC prefix.
 #[cfg(windows)]
-pub use dunce::canonicalize;
+pub(crate) use dunce::canonicalize;
 
 /// For other platforms - continue use `std:fs`
 #[cfg(not(windows))]
-pub use std::fs::canonicalize;
+pub(crate) use std::fs::canonicalize;
 
 /// Returns the relative path for `target_path` relative to `base_path`
 pub fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf> {
