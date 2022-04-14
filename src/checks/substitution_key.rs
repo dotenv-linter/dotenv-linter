@@ -1,5 +1,6 @@
 use super::Check;
-use crate::common::{is_escaped, LineEntry, LintKind, Warning};
+use crate::common::{is_escaped, LintKind, Warning};
+use dotenv::LineEntry;
 
 pub(crate) struct SubstitutionKeyChecker<'a> {
     template: &'a str,

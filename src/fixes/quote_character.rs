@@ -1,5 +1,6 @@
 use super::Fix;
-use crate::common::{LineEntry, LintKind};
+use crate::common::LintKind;
+use dotenv::LineEntry;
 
 #[derive(Default)]
 pub(crate) struct QuoteCharacterFixer {}

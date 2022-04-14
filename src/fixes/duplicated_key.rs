@@ -1,6 +1,7 @@
 use super::Fix;
-use crate::common::{LineEntry, LintKind};
+use crate::common::LintKind;
 use crate::get_control_comment;
+use dotenv::LineEntry;
 use std::collections::HashSet;
 
 #[derive(Default)]

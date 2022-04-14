@@ -1,5 +1,6 @@
 use super::Check;
-use crate::common::{LineEntry, LintKind, Warning, LF};
+use crate::common::{LintKind, Warning, LF};
+use dotenv::LineEntry;
 
 pub(crate) struct EndingBlankLineChecker<'a> {
     template: &'a str,

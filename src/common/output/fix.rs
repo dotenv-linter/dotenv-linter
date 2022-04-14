@@ -1,5 +1,6 @@
-use crate::common::{FileEntry, Warning};
+use crate::common::Warning;
 use colored::*;
+use dotenv::FileEntry;
 use std::path::Path;
 
 /// Prefix for the backup output

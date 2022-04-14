@@ -1,5 +1,6 @@
 use super::Fix;
-use crate::common::{LineEntry, LintKind, LF};
+use crate::common::{LintKind, LF};
+use dotenv::LineEntry;
 
 #[derive(Default)]
 pub(crate) struct EndingBlankLineFixer {}

@@ -1,5 +1,6 @@
 use super::Fix;
-use crate::common::{is_escaped, LineEntry, LintKind};
+use crate::common::{is_escaped, LintKind};
+use dotenv::LineEntry;
 
 #[derive(Default)]
 pub(crate) struct SubstitutionKeyFixer {}

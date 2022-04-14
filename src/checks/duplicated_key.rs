@@ -1,5 +1,6 @@
 use super::Check;
-use crate::common::{LineEntry, LintKind, Warning};
+use crate::common::{LintKind, Warning};
+use dotenv::LineEntry;
 use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyChecker<'a> {

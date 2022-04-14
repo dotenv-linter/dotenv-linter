@@ -1,4 +1,5 @@
 use crate::quote_type::QuoteType;
+use crate::LineEntry;
 use crate::{is_escaped, LF};
 use std::path::{Path, PathBuf};
 use std::{fmt, fs};
@@ -39,6 +40,7 @@ impl FileEntry {
         let file_name = get_file_name(&path)?.to_string();
         let content = fs::read_to_string(&path).ok()?;
 
+        // TODO
         let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
 
         // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
@@ -46,6 +48,7 @@ impl FileEntry {
             lines.push(LF.to_string());
         }
 
+        // TODO
         let lines = get_line_entries(lines);
 
         Some((
@@ -56,6 +59,72 @@ impl FileEntry {
             },
             lines,
         ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod from {
+        use super::*;
+
+        #[test]
+        fn path_without_file_test() {
+            let f = FileEntry::from(PathBuf::from("/"));
+            assert_eq!(None, f);
+        }
+
+        #[test]
+        fn path_with_file_test() {
+            let file_name = String::from(".env");
+            let dir = tempfile::tempdir().expect("create temp dir");
+            let path = dir.path().join(&file_name);
+            fs::File::create(&path).expect("create testfile");
+
+            let f = FileEntry::from(path.clone());
+            assert_eq!(
+                Some((
+                    FileEntry {
+                        path,
+                        file_name,
+                        total_lines: 0
+                    },
+                    vec![]
+                )),
+                f
+            );
+            dir.close().expect("temp dir deleted");
+        }
+    }
+
+    #[test]
+    fn is_env_file_test() {
+        let mut assertions = vec![
+            (".env", true),
+            ("foo.env", true),
+            (".env.foo", true),
+            (".env.foo.common", true),
+            ("env", false),
+            ("env.foo", false),
+            ("foo_env", false),
+            ("foo-env", false),
+            (".my-env-file", false),
+            ("dev.env.js", false),
+            (".env.bak", false),
+        ];
+
+        assertions.extend(EXCLUDED_FILES.iter().map(|file| (*file, false)));
+
+        for (file_name, expected) in assertions {
+            assert_eq!(
+                expected,
+                FileEntry::is_env_file(&PathBuf::from(file_name)),
+                "Expected {} for the file name {}",
+                expected,
+                file_name
+            )
+        }
     }
 }
 

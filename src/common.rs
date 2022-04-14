@@ -1,18 +1,14 @@
 mod compare;
-mod file_entry;
-mod line_entry;
 mod warning;
 
 pub(crate) mod comment;
 pub(crate) mod lint_kind;
 pub(crate) mod output;
-pub(crate) mod quote_type;
 
 use crate::comment::Comment;
 pub(crate) use compare::CompareFileType;
 pub(crate) use compare::CompareWarning;
-pub(crate) use file_entry::FileEntry;
-pub(crate) use line_entry::LineEntry;
+use dotenv::LineEntry;
 pub(crate) use lint_kind::LintKind;
 pub(crate) use output::check::CheckOutput;
 pub(crate) use output::compare::CompareOutput;

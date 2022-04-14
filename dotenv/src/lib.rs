@@ -15,18 +15,18 @@ fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }
 
-pub struct DotenvOptions<'a> {
+pub struct Options<'a> {
     input: Vec<PathBuf>,
     current_dir: &'a Path,
     is_recursive: bool,
     excluded: Option<Vec<PathBuf>>,
 }
 
-pub struct DotenvFiles {
+pub struct Files {
     files: BTreeMap<FileEntry, Vec<LineEntry>>,
 }
 
-impl DotenvFiles {
+impl Files {
     pub fn is_empty(&self) -> bool {
         self.files.is_empty()
     }
@@ -36,7 +36,7 @@ impl DotenvFiles {
     }
 }
 
-impl IntoIterator for DotenvFiles {
+impl IntoIterator for Files {
     type Item = (FileEntry, Vec<LineEntry>);
     type IntoIter = IntoIter<FileEntry, Vec<LineEntry>>;
 
@@ -45,8 +45,8 @@ impl IntoIterator for DotenvFiles {
     }
 }
 
-pub fn new(input: Vec<PathBuf>, current_dir: &Path) -> DotenvOptions {
-    DotenvOptions {
+pub fn new(input: Vec<PathBuf>, current_dir: &Path) -> Options {
+    Options {
         input,
         current_dir,
         excluded: None,
@@ -54,7 +54,7 @@ pub fn new(input: Vec<PathBuf>, current_dir: &Path) -> DotenvOptions {
     }
 }
 
-impl<'a> DotenvOptions<'a> {
+impl<'a> Options<'a> {
     pub fn recursive(self, is_recursive: bool) -> Self {
         Self {
             is_recursive,
@@ -69,7 +69,7 @@ impl<'a> DotenvOptions<'a> {
         }
     }
 
-    pub fn lookup_files(self) -> DotenvFiles {
+    pub fn lookup_files(self) -> Files {
         let files = lookup_dotenv_paths(
             self.input,
             &self.excluded.unwrap_or_default(),
@@ -81,7 +81,7 @@ impl<'a> DotenvOptions<'a> {
         })
         .collect();
 
-        DotenvFiles { files }
+        Files { files }
     }
 }
 

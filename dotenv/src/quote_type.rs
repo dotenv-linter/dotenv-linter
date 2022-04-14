@@ -6,14 +6,14 @@ pub(crate) enum QuoteType {
 }
 
 impl QuoteType {
-    pub fn char(&self) -> char {
+    pub(crate) fn char(&self) -> char {
         match self {
             QuoteType::Single => '\'',
             QuoteType::Double => '\"',
         }
     }
 
-    pub fn is_quoted_value(&self, val: &str) -> bool {
+    pub(crate) fn is_quoted_value(&self, val: &str) -> bool {
         val.starts_with(self.char())
             && (val.len() == 1 || !val.ends_with(self.char()) || is_escaped(&val[..val.len() - 1]))
     }

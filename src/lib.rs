@@ -1,13 +1,8 @@
 #![allow(dead_code, unused_assignments)]
 use crate::cli::Args;
 use crate::common::*;
-use crate::quote_type::QuoteType;
 use colored::*;
-use dotenv::{FileEntry, LineEntry};
-use std::{
-    collections::{BTreeMap, HashSet},
-    path::{Path, PathBuf},
-};
+use std::{collections::HashSet, path::Path};
 
 // pub use checks::available_check_names;
 
@@ -105,9 +100,7 @@ pub(crate) fn compare(args: &Args, current_dir: &Path) -> Result<Vec<CompareWarn
         dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir).lookup_files();
 
     let output = CompareOutput::new(args.quiet.quiet);
-
     let mut warnings: Vec<CompareWarning> = Vec::new();
-    let mut files_to_compare: Vec<CompareFileType> = Vec::new();
 
     if dotenv_files.is_empty() {
         output.print_nothing_to_compare();
@@ -116,6 +109,7 @@ pub(crate) fn compare(args: &Args, current_dir: &Path) -> Result<Vec<CompareWarn
 
     // Create CompareFileType structures for each file
     let mut all_keys: HashSet<String> = HashSet::new();
+    let mut files_to_compare: Vec<CompareFileType> = Vec::new();
     for (_, (fe, lines)) in dotenv_files.into_iter().enumerate() {
         output.print_processing_info(&fe);
         let mut keys: Vec<String> = Vec::new();

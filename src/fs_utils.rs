@@ -1,7 +1,6 @@
-use crate::{
-    common::{FileEntry, LineEntry},
-    Result,
-};
+use crate::Result;
+use dotenv::FileEntry;
+use dotenv::LineEntry;
 use std::{
     fs::{copy, File},
     io::{self, Write},

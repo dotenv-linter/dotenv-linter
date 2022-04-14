@@ -1,6 +1,7 @@
 use super::Check;
-use crate::common::{LineEntry, LintKind, Warning};
+use crate::common::{LintKind, Warning};
 use crate::get_control_comment;
+use dotenv::LineEntry;
 
 pub(crate) struct UnorderedKeyChecker<'a> {
     template: &'a str,

@@ -1,4 +1,5 @@
-use crate::common::{CompareWarning, FileEntry};
+use crate::common::CompareWarning;
+use dotenv::FileEntry;
 
 pub(crate) struct CompareOutput {
     // Quiet program output mode
