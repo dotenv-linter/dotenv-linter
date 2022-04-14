@@ -21,10 +21,10 @@ pub mod cli;
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
-    let dotenv_files = dotenv::new(args.input.paths(), current_dir)
+    let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
         .recursive(args.is_recursive())
         .exclude(args.exclude.paths())
-        .parse();
+        .lookup_files();
 
     let lines_map = get_lines(
         args,
@@ -34,16 +34,16 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
     );
     let output = CheckOutput::new(args.is_quiet());
 
-    if lines_map.is_empty() {
+    if dotenv_files.is_empty() {
         output.print_nothing_to_check();
         return Ok(0);
     }
 
-    let output = output.files_count(lines_map.len());
+    let output = output.files_count(dotenv_files.count());
     let skip_checks = args.skip.checks();
 
     let warnings_count =
-        lines_map
+        dotenv_files
             .into_iter()
             .enumerate()
             .fold(0, |acc, (index, (fe, strings))| {
@@ -184,11 +184,7 @@ fn get_lines(
         excluded_paths = e;
     }
 
-    let mut input_paths = args.input.paths();
-
-    if input_paths.is_empty() {
-        input_paths.push(current_dir.to_path_buf());
-    }
+    let input_paths = args.input.paths(current_dir.to_path_buf());
 
     get_file_paths(input_paths, &excluded_paths, is_recursive)
         .iter()

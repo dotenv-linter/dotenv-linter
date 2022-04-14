@@ -1,5 +1,6 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
+use crate::get_control_comment;
 use std::collections::HashSet;
 
 #[derive(Default)]
@@ -15,7 +16,7 @@ impl Fix for DuplicatedKeyFixer {
         let mut is_disabled = false;
 
         for line in lines {
-            if let Some(comment) = line.get_control_comment() {
+            if let Some(comment) = get_control_comment(line) {
                 if comment.checks.contains(&self.name()) {
                     is_disabled = comment.is_disabled();
                 }

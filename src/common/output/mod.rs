@@ -1,3 +1,3 @@
-pub mod check;
-pub mod compare;
-pub mod fix;
+pub(crate) mod check;
+pub(crate) mod compare;
+pub(crate) mod fix;

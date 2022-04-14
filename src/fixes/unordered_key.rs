@@ -1,5 +1,6 @@
 use super::Fix;
 use crate::common::{LineEntry, LintKind};
+use crate::get_control_comment;
 
 #[derive(Default)]
 pub(crate) struct UnorderedKeyFixer {}
@@ -37,7 +38,7 @@ impl Fix for UnorderedKeyFixer {
             let mut controls_this_check = false;
             let mut is_off = false;
 
-            if let Some(comment) = line.get_control_comment() {
+            if let Some(comment) = get_control_comment(line) {
                 is_control_comment = true;
                 controls_this_check = comment.checks.contains(&self.name());
                 is_off = comment.is_disabled();

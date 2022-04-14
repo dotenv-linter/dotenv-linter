@@ -1,4 +1,5 @@
 use crate::common::{LineEntry, LintKind, Warning};
+use crate::get_control_comment;
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -56,7 +57,7 @@ pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
     let mut warnings: Vec<Warning> = Vec::new();
 
     for line in lines {
-        if let Some(comment) = line.get_control_comment() {
+        if let Some(comment) = get_control_comment(line) {
             if comment.is_disabled() {
                 // Disable checks from a comment using the dotenv-linter:off flag
                 disabled_checks.extend(comment.checks);

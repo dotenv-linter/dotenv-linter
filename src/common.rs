@@ -8,6 +8,7 @@ pub(crate) mod lint_kind;
 pub(crate) mod output;
 pub(crate) mod quote_type;
 
+use crate::comment::Comment;
 pub(crate) use compare::CompareFileType;
 pub(crate) use compare::CompareWarning;
 pub(crate) use file_entry::FileEntry;
@@ -26,6 +27,16 @@ pub fn remove_invalid_leading_chars(string: &str) -> &str {
 
 pub fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
+}
+
+// Maybe we should add the comment field to the LineEntry struct (but this requires some
+// refactoring of the line entries creation)
+// pub control_comment: Option<Comment<'a>>
+pub fn get_control_comment(line_entry: &LineEntry) -> Option<Comment> {
+    if !line_entry.is_comment() {
+        return None;
+    }
+    Comment::parse(line_entry.raw_string.as_str())
 }
 
 #[cfg(test)]

@@ -1,5 +1,6 @@
 use super::Check;
 use crate::common::{LineEntry, LintKind, Warning};
+use crate::get_control_comment;
 
 pub(crate) struct UnorderedKeyChecker<'a> {
     template: &'a str,
@@ -31,7 +32,7 @@ impl Check for UnorderedKeyChecker<'_> {
             .any(|k| self.keys.iter().any(|key| key == k));
 
         // Support of grouping variables through blank lines and control comments
-        if line.is_empty() || line.get_control_comment().is_some() || has_substitution_in_group {
+        if line.is_empty() || get_control_comment(line).is_some() || has_substitution_in_group {
             self.keys.clear();
             return None;
         }

@@ -78,11 +78,18 @@ pub(crate) struct Input {
 }
 
 impl Input {
-    pub fn paths(&self) -> Vec<PathBuf> {
-        self.input
+    pub fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
+        let mut input: Vec<PathBuf> = self
+            .input
             .iter()
             .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect()
+            .collect();
+
+        if input.is_empty() {
+            input.push(current_dir);
+        }
+
+        input
     }
 }
 
