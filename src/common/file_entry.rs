@@ -5,7 +5,7 @@ use std::{fmt, fs};
 const EXCLUDED_FILES: &[&str] = &[".envrc"];
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub struct FileEntry {
+struct FileEntry {
     pub path: PathBuf,
     pub file_name: String,
     pub total_lines: usize,

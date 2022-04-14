@@ -3,6 +3,7 @@ use crate::cli::Args;
 use crate::common::*;
 use crate::quote_type::QuoteType;
 use colored::*;
+use dotenv::{FileEntry, LineEntry};
 use std::{
     collections::{BTreeMap, HashSet},
     path::{Path, PathBuf},
@@ -12,7 +13,6 @@ use std::{
 
 mod checks;
 mod common;
-mod dotenv;
 mod fixes;
 mod fs_utils;
 
@@ -26,12 +26,6 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
         .exclude(args.exclude.paths())
         .lookup_files();
 
-    let lines_map = get_lines(
-        args,
-        current_dir,
-        args.recursive.recursive,
-        Some(args.exclude.paths()),
-    );
     let output = CheckOutput::new(args.is_quiet());
 
     if dotenv_files.is_empty() {
@@ -46,10 +40,8 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
         dotenv_files
             .into_iter()
             .enumerate()
-            .fold(0, |acc, (index, (fe, strings))| {
+            .fold(0, |acc, (index, (fe, lines))| {
                 output.print_processing_info(&fe);
-
-                let lines = get_line_entries(strings);
                 let result = checks::run(&lines, &skip_checks);
 
                 output.print_warnings(&fe, &result, index);
@@ -61,29 +53,24 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
 }
 
 pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
-    let mut warnings_count = 0;
+    let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
+        .recursive(args.is_recursive())
+        .exclude(args.exclude.paths())
+        .lookup_files();
 
-    let lines_map = get_lines(
-        args,
-        current_dir,
-        args.recursive.recursive,
-        Some(args.exclude.paths()),
-    );
     let output = FixOutput::new(args.quiet.quiet);
 
-    // Nothing to fix
-    if lines_map.is_empty() {
+    if dotenv_files.is_empty() {
         output.print_nothing_to_fix();
         return Ok(());
     }
 
-    let output = output.files_count(lines_map.len());
+    let output = output.files_count(dotenv_files.count());
     let skip_checks = args.skip.checks();
 
-    for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
+    let mut warnings_count = 0;
+    for (index, (fe, mut lines)) in dotenv_files.into_iter().enumerate() {
         output.print_processing_info(&fe);
-
-        let mut lines = get_line_entries(strings);
         let result = checks::run(&lines, &skip_checks);
         if result.is_empty() {
             continue;
@@ -114,24 +101,23 @@ pub(crate) fn fix(args: &Args, current_dir: &Path) -> Result<()> {
 
 // Compares if different environment files contains the same variables and returns warnings if not
 pub(crate) fn compare(args: &Args, current_dir: &Path) -> Result<Vec<CompareWarning>> {
-    let mut all_keys: HashSet<String> = HashSet::new();
+    let dotenv_files =
+        dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir).lookup_files();
 
-    let lines_map = get_lines(args, current_dir, false, None);
     let output = CompareOutput::new(args.quiet.quiet);
 
     let mut warnings: Vec<CompareWarning> = Vec::new();
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
 
-    // Nothing to check
-    if lines_map.is_empty() {
+    if dotenv_files.is_empty() {
         output.print_nothing_to_compare();
         return Ok(warnings);
     }
 
     // Create CompareFileType structures for each file
-    for (_, (fe, strings)) in lines_map.into_iter().enumerate() {
+    let mut all_keys: HashSet<String> = HashSet::new();
+    for (_, (fe, lines)) in dotenv_files.into_iter().enumerate() {
         output.print_processing_info(&fe);
-        let lines = get_line_entries(strings);
         let mut keys: Vec<String> = Vec::new();
 
         for line in lines {
@@ -170,133 +156,6 @@ pub(crate) fn compare(args: &Args, current_dir: &Path) -> Result<Vec<CompareWarn
 
     output.print_warnings(&warnings);
     Ok(warnings)
-}
-
-fn get_lines(
-    args: &Args,
-    current_dir: &Path,
-    is_recursive: bool,
-    exclude: Option<Vec<PathBuf>>,
-) -> BTreeMap<FileEntry, Vec<String>> {
-    let mut excluded_paths: Vec<PathBuf> = Vec::new();
-
-    if let Some(e) = exclude {
-        excluded_paths = e;
-    }
-
-    let input_paths = args.input.paths(current_dir.to_path_buf());
-
-    get_file_paths(input_paths, &excluded_paths, is_recursive)
-        .iter()
-        .filter_map(|path: &PathBuf| -> Option<(FileEntry, Vec<String>)> {
-            fs_utils::get_relative_path(path, current_dir).and_then(FileEntry::from)
-        })
-        .collect()
-}
-
-fn get_file_paths(
-    dir_entries: Vec<PathBuf>,
-    excludes: &[PathBuf],
-    is_recursive: bool,
-) -> Vec<PathBuf> {
-    let nested_paths: Vec<PathBuf> = dir_entries
-        .iter()
-        .filter(|entry| entry.is_dir())
-        .filter(|entry| !excludes.contains(entry))
-        .filter_map(|dir| dir.read_dir().ok())
-        .map(|read_dir| {
-            read_dir
-                .filter_map(|e| e.ok())
-                .map(|e| e.path())
-                .filter(|path| {
-                    FileEntry::is_env_file(path)
-                        || (is_recursive && path.is_dir() && path.read_link().is_err())
-                })
-                .collect()
-        })
-        .flat_map(|dir_entries| get_file_paths(dir_entries, excludes, is_recursive))
-        .collect();
-
-    let mut file_paths: Vec<PathBuf> = dir_entries
-        .into_iter()
-        .filter(|entry| entry.is_file())
-        .filter(|entry| !excludes.contains(entry))
-        .collect();
-
-    file_paths.extend(nested_paths);
-    file_paths.sort();
-    file_paths.dedup();
-    file_paths
-}
-
-fn get_line_entries(lines: Vec<String>) -> Vec<LineEntry> {
-    let length = lines.len();
-
-    let mut lines: Vec<LineEntry> = lines
-        .into_iter()
-        .enumerate()
-        .map(|(index, line)| LineEntry::new(index + 1, line, length == (index + 1)))
-        .collect();
-
-    reduce_multiline_entries(&mut lines);
-    lines
-}
-
-fn reduce_multiline_entries(lines: &mut Vec<LineEntry>) {
-    let length = lines.len();
-    let multiline_ranges = find_multiline_ranges(lines);
-
-    // Replace multiline value to one line-entry for checking
-    let mut offset = 1; // index offset to account deleted lines (for access by index)
-    for (start, end) in multiline_ranges {
-        let result = lines
-            .drain(start - offset..end - offset + 1) // TODO: consider `drain_filter` (after stabilization in rust std)
-            .map(|entry| entry.raw_string)
-            .reduce(|result, line| result + "\n" + &line); // TODO: `intersperse` (after stabilization in rust std)
-
-        if let Some(value) = result {
-            lines.insert(start - offset, LineEntry::new(start, value, length == end));
-        }
-
-        offset += end - start;
-    }
-}
-
-fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
-    let mut multiline_ranges: Vec<(usize, usize)> = Vec::new();
-    let mut start_number: Option<usize> = None;
-    let mut quote_char: Option<char> = None;
-
-    // here we find ranges of multi-line values
-    lines.iter().for_each(|entry| {
-        if let Some(start) = start_number {
-            if let Some(quote_char) = quote_char {
-                if let Some(idx) = entry.raw_string.find(quote_char) {
-                    if !is_escaped(&entry.raw_string[..idx]) {
-                        multiline_ranges.push((start, entry.number));
-                        start_number = None;
-                    }
-                }
-            }
-        } else if let Some(trimmed_value) = entry.get_value().map(|val| val.trim()) {
-            if let Some(quote_type) = is_multiline_start(trimmed_value) {
-                quote_char = Some(quote_type.char());
-                start_number = Some(entry.number);
-            }
-        }
-    });
-
-    multiline_ranges
-}
-
-/// Returns the `QuoteType` for a `&str` starting with a quote-char
-fn is_multiline_start(val: &str) -> Option<QuoteType> {
-    for quote_type in [QuoteType::Single, QuoteType::Double] {
-        if quote_type.is_quoted_value(val) {
-            return Some(quote_type);
-        }
-    }
-    None
 }
 
 /// Prints information about the new version to `STDOUT` if a new version is available

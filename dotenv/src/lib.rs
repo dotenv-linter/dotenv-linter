@@ -1,40 +1,51 @@
-use crate::file_entry::FileEntry;
-use crate::line_entry::LineEntry;
+use std::collections::btree_map::IntoIter;
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
-mod file_entry;
-mod line_entry;
+mod file;
+mod line;
 mod quote_type;
 
-pub const LF: &str = "\n";
+pub use crate::file::FileEntry;
+pub use crate::line::LineEntry;
+
+pub(crate) const LF: &str = "\n";
 
 fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }
 
-pub(crate) struct DotenvOptions<'a> {
+pub struct DotenvOptions<'a> {
     input: Vec<PathBuf>,
     current_dir: &'a Path,
     is_recursive: bool,
     excluded: Option<Vec<PathBuf>>,
 }
 
-pub(crate) struct DotenvFiles {
+pub struct DotenvFiles {
     files: BTreeMap<FileEntry, Vec<LineEntry>>,
 }
 
 impl DotenvFiles {
-    pub(crate) fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.files.is_empty()
     }
 
-    pub(crate) fn count(&self) -> usize {
+    pub fn count(&self) -> usize {
         self.files.len()
     }
 }
 
-pub(crate) fn new(input: Vec<PathBuf>, current_dir: &Path) -> DotenvOptions {
+impl IntoIterator for DotenvFiles {
+    type Item = (FileEntry, Vec<LineEntry>);
+    type IntoIter = IntoIter<FileEntry, Vec<LineEntry>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.files.into_iter()
+    }
+}
+
+pub fn new(input: Vec<PathBuf>, current_dir: &Path) -> DotenvOptions {
     DotenvOptions {
         input,
         current_dir,
@@ -44,21 +55,21 @@ pub(crate) fn new(input: Vec<PathBuf>, current_dir: &Path) -> DotenvOptions {
 }
 
 impl<'a> DotenvOptions<'a> {
-    pub(crate) fn recursive(self, is_recursive: bool) -> Self {
+    pub fn recursive(self, is_recursive: bool) -> Self {
         Self {
             is_recursive,
             ..self
         }
     }
 
-    pub(crate) fn exclude(self, excluded: Vec<PathBuf>) -> Self {
+    pub fn exclude(self, excluded: Vec<PathBuf>) -> Self {
         Self {
             excluded: Some(excluded),
             ..self
         }
     }
 
-    pub(crate) fn lookup_files(self) -> DotenvFiles {
+    pub fn lookup_files(self) -> DotenvFiles {
         let files = lookup_dotenv_paths(
             self.input,
             &self.excluded.unwrap_or_default(),
@@ -89,7 +100,7 @@ fn lookup_dotenv_paths(
                 .filter_map(|e| e.ok())
                 .map(|e| e.path())
                 .filter(|path| {
-                    file_entry::is_dotenv_file(path)
+                    file::is_dotenv_file(path)
                         || (is_recursive && path.is_dir() && path.read_link().is_err())
                 })
                 .collect()

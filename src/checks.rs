@@ -1,5 +1,6 @@
-use crate::common::{LineEntry, LintKind, Warning};
+use crate::common::{LintKind, Warning};
 use crate::get_control_comment;
+use dotenv::LineEntry;
 
 mod duplicated_key;
 mod ending_blank_line;

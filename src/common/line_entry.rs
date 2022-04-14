@@ -1,7 +1,7 @@
 use super::{comment::Comment, is_escaped};
 
 #[derive(Clone, Debug, PartialEq)]
-pub struct LineEntry {
+struct LineEntry {
     pub number: usize,
     pub raw_string: String,
 

@@ -1,5 +1,5 @@
 use crate::quote_type::QuoteType;
-use crate::{is_escaped, LineEntry, LF};
+use crate::{is_escaped, LF};
 use std::path::{Path, PathBuf};
 use std::{fmt, fs};
 
