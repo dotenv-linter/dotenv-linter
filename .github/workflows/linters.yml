@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: wagoid/commitlint-github-action@v4.1.11
+      - uses: wagoid/commitlint-github-action@v4.1.12
 
   hadolint:
     name: linters / hadolint
