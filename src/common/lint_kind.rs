@@ -14,6 +14,7 @@ pub enum LintKind {
     SubstitutionKey,
     TrailingWhitespace,
     UnorderedKey,
+    ValueWithoutQuotes,
 }
 
 impl FromStr for LintKind {
@@ -33,6 +34,7 @@ impl FromStr for LintKind {
             "SubstitutionKey" => Ok(LintKind::SubstitutionKey),
             "TrailingWhitespace" => Ok(LintKind::TrailingWhitespace),
             "UnorderedKey" => Ok(LintKind::UnorderedKey),
+            "ValueWithoutQuotes" => Ok(LintKind::ValueWithoutQuotes),
             _ => Err(()),
         }
     }
