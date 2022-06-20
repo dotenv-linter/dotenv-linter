@@ -12,6 +12,7 @@ mod space_character;
 mod substitution_key;
 mod trailing_whitespace;
 mod unordered_key;
+mod value_without_quotes;
 
 // This trait is used for checks which needs to know of only a single line
 pub trait Check {
@@ -37,6 +38,7 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::new(substitution_key::SubstitutionKeyChecker::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceChecker::default()),
         Box::new(unordered_key::UnorderedKeyChecker::default()),
+        Box::new(value_without_quotes::ValueWithoutQuotesChecker::default()),
     ]
 }
 
