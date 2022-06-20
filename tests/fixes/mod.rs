@@ -14,6 +14,7 @@ mod space_character;
 mod substitution_key;
 mod trailing_whitespace;
 mod unordered_key;
+mod value_without_quotes;
 
 #[test]
 fn correct_file() {
