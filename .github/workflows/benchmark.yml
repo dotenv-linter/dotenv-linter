@@ -21,12 +21,12 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cache cargo
-        uses: actions/cache@v3.0.2
+        uses: actions/cache@v3.0.4
         with:
           path: /usr/share/rust/.cargo
           key: bench-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Criterion Compare PRs
-        uses: boa-dev/criterion-compare-action@v3.2.1
+        uses: boa-dev/criterion-compare-action@v3.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branchName: ${{ github.base_ref }}

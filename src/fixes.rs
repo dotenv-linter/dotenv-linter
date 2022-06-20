@@ -12,6 +12,7 @@ mod space_character;
 mod substitution_key;
 mod trailing_whitespace;
 mod unordered_key;
+mod value_without_quotes;
 
 trait Fix {
     fn name(&self) -> LintKind;
@@ -49,6 +50,7 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::new(space_character::SpaceCharacterFixer::default()),
         Box::new(trailing_whitespace::TrailingWhitespaceFixer::default()),
         Box::new(leading_character::LeadingCharacterFixer::default()),
+        Box::new(value_without_quotes::ValueWithoutQuotesFixer::default()),
         Box::new(quote_character::QuoteCharacterFixer::default()),
         Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
         Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
