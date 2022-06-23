@@ -62,12 +62,12 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 
 **Articles about dotenv-linter**:
 
-* [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
-* [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
-* [EN] [What are the key changes in dotenv-linter v3.0.0 release?](https://evrone.com/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
-* [RU] [Dotenv-linter: линтер .env файлов](https://www.mgrachev.com/2020/04/20/dotenv-linter)
-* [RU] [Что нового в dotenv-linter v2.2.1?](https://evrone.ru/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
-* [RU] [Что нового в dotenv-linter v3.0.0?](https://evrone.ru/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
+- [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
+- [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
+- [EN] [What are the key changes in dotenv-linter v3.0.0 release?](https://evrone.com/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
+- [RU] [Dotenv-linter: линтер .env файлов](https://www.mgrachev.com/2020/04/20/dotenv-linter)
+- [RU] [Что нового в dotenv-linter v2.2.1?](https://evrone.ru/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
+- [RU] [Что нового в dotenv-linter v3.0.0?](https://evrone.ru/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
 
 [Dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
@@ -138,11 +138,11 @@ Comparing .env.example
 
 Other use cases you can find on the documentation site (https://dotenv-linter.github.io):
 
-* [Check](https://dotenv-linter.github.io/#/usage/check)
-* [Fix](https://dotenv-linter.github.io/#/usage/fix)
-* [Compare](https://dotenv-linter.github.io/#/usage/compare)
+- [Check](https://dotenv-linter.github.io/#/usage/check)
+- [Fix](https://dotenv-linter.github.io/#/usage/fix)
+- [Compare](https://dotenv-linter.github.io/#/usage/compare)
 
-## 🚦 Continuous Integration 
+## 🚦 Continuous Integration
 
 `dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/integrations/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/integrations/circleci).
 
@@ -185,12 +185,12 @@ We act [as a mentor](https://rustbeginners.github.io/awesome-rust-mentors) withi
 
 If you've ever wanted to contribute to open source, now you have a great opportunity:
 
-* [How to set up the project](/CONTRIBUTING.md#how-to-set-up-the-project)
-* [How to add a new check](/CONTRIBUTING.md#how-to-add-a-new-check)
+- [How to set up the project](/CONTRIBUTING.md#how-to-set-up-the-project)
+- [How to add a new check](/CONTRIBUTING.md#how-to-add-a-new-check)
 
 ## 👍 Similar projects
 
-* [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
+- [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) (Python)
 
 ## ✨ Contributors
 

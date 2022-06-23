@@ -1,32 +1,25 @@
 name: Benchmark
 on:
   pull_request:
-    types: [ labeled ]
+    types: [labeled]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   compare:
-    name: Compare
     if: ${{ github.event.label.name == 'benchmark' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions-rs/toolchain@v1
-        id: toolchain
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: stable
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Cache cargo
-        uses: actions/cache@v3.0.4
-        with:
-          path: /usr/share/rust/.cargo
-          key: bench-${{ steps.toolchain.outputs.rustc_hash }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - name: Criterion Compare PRs
-        uses: boa-dev/criterion-compare-action@v3.2.2
+      - uses: Swatinem/rust-cache@v1.3.0
+      - uses: boa-dev/criterion-compare-action@v3.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branchName: ${{ github.base_ref }}

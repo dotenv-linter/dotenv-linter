@@ -2,15 +2,15 @@
 name = "dotenv-linter"
 version = "3.2.0"
 authors = ["Mikhail Grachev <work@mgrachev.com>"]
+categories = ["command-line-utilities"]
 edition = "2021"
-description = "Lightning-fast linter for .env files"
 homepage = "https://dotenv-linter.github.io"
-repository = "https://github.com/dotenv-linter/dotenv-linter"
+include = ["/src", "/benches", "README.md"]
+keywords = ["cli", "dotenv", "environment", "env", "linter"]
 license = "MIT"
 readme = "README.md"
-keywords = ["cli", "dotenv", "environment", "env", "linter"]
-categories = ["command-line-utilities"]
-include = ["/src", "/benches", "README.md"]
+repository = "https://github.com/dotenv-linter/dotenv-linter"
+description = "Lightning-fast linter for .env files"
 
 [dependencies]
 clap = "3.1.10"
@@ -32,7 +32,7 @@ gag = "1.0.0"
 stub_check_version = []
 
 [profile.release]
-opt-level = 'z'  # Optimize for size
+opt-level = 'z' # Optimize for size
 lto = true
 codegen-units = 1
 panic = 'abort'

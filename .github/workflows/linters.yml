@@ -3,7 +3,6 @@ on: pull_request
 
 jobs:
   misspell:
-    name: linters / misspell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -12,12 +11,10 @@ jobs:
           locale: "US"
 
   yamllint:
-    name: linters / yamllint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: yamllint
-        uses: reviewdog/action-yamllint@v1
+      - uses: reviewdog/action-yamllint@v1
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
@@ -25,19 +22,16 @@ jobs:
           yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
 
   shellcheck:
-    name: linters / shellcheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: shellcheck
-        uses: reviewdog/action-shellcheck@v1
+      - uses: reviewdog/action-shellcheck@v1
         with:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
           exclude: "./.git/*"
 
   commitlint:
-    name: linters / commitlint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -46,13 +40,28 @@ jobs:
       - uses: wagoid/commitlint-github-action@v5.0.1
 
   hadolint:
-    name: linters / hadolint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: hadolint
-        uses: reviewdog/action-hadolint@v1
+      - uses: reviewdog/action-hadolint@v1
         with:
           github_token: ${{ secrets.github_token }}
           fail_on_error: true
           reporter: github-pr-review
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: lycheeverse/lychee-action@v1.5.0
+        with:
+          args: . --verbose --exclude-path CHANGELOG.md
+          fail: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dprint/check@v2.0
