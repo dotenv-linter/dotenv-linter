@@ -55,14 +55,18 @@ pub fn new(input: Vec<PathBuf>, current_dir: &Path) -> Options {
 }
 
 impl<'a> Options<'a> {
-    pub fn recursive(self, is_recursive: bool) -> Self {
-        Self {
-            is_recursive,
-            ..self
-        }
+    pub fn recursive(mut self, is_recursive: bool) -> Self {
+        self.is_recursive = is_recursive;
+        self
+
+        // Self {
+        //     is_recursive,
+        //     ..self
+        // }
     }
 
     pub fn exclude(self, excluded: Vec<PathBuf>) -> Self {
+        // todo
         Self {
             excluded: Some(excluded),
             ..self
