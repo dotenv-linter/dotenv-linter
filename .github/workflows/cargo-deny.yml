@@ -1,5 +1,6 @@
 name: Cargo-deny
 on: pull_request
+
 jobs:
   cargo-deny:
     runs-on: ubuntu-latest

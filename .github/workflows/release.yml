@@ -1,8 +1,7 @@
 name: Release
 on:
   push:
-    tags:
-      - '*.*.*'
+    tags: ['*.*.*']
 
 env:
   CARGO_TERM_COLOR: always
@@ -60,7 +59,7 @@ jobs:
     runs-on: macos-11
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: stable
       - name: Build
@@ -112,7 +111,6 @@ jobs:
   release-aur:
     runs-on: ubuntu-latest
     container: archlinux:base
-
     steps:
       # see: https://github.community/t5/GitHub-Actions/How-to-get-just-the-tag-name/m-p/32167#M1027
       - name: Get the version
@@ -147,7 +145,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: stable
       - name: Build

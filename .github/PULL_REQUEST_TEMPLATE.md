@@ -8,6 +8,7 @@ Bug fixes and new features should include tests.
 <!-- _Please make sure to review and check all of these items:_ -->
 
 #### ✔ Checklist:
+
 <!-- Remove items that do not apply. For completed items, change [ ] to [x]. -->
 
 - [ ] Commit messages have been written in [Conventional Commits](https://www.conventionalcommits.org) format;
