@@ -25,7 +25,6 @@ jobs:
       - run: cargo check --all-targets
       - run: cargo fmt --all --check
       - run: cargo clippy --all-features -- -D warnings
-      - run: cargo build --release --all-features
 
   test-coverage:
     runs-on: ubuntu-latest
@@ -56,6 +55,18 @@ jobs:
         with:
           file: ./lcov.info
 
+  cargo-sort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v1.4.0
+      - run: cargo install cargo-sort
+      - run: cargo-sort --check
+
   linux_install:
     runs-on: ubuntu-latest
     steps:
@@ -70,7 +81,7 @@ jobs:
   ####################
   ### Windows jobs ###
   ####################
-  windows_build_test:
+  windows_test:
     runs-on: windows-latest
     steps:
       - name: Disable EOL conversion
@@ -81,7 +92,6 @@ jobs:
           profile: minimal
           toolchain: stable
       - uses: Swatinem/rust-cache@v1.3.0
-      - run: cargo build --release --all-features
       - run: cargo test --all-features --no-fail-fast
 
   windows_install:
@@ -119,3 +129,89 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: docker build --target builder .
+
+  ####################
+  ### Check builds ###
+  ####################
+  builds:
+    name: Build
+    runs-on: ${{ matrix.OS }}
+    strategy:
+      matrix:
+        build:
+          - x86_64-linux-gnu
+          - x86_64-linux-musl
+          - aarch64-linux-gnu
+          - aarch64-linux-musl
+          - x86_64-darwin
+          - aarch64-darwin
+          - x86_64-windows-msvc
+          - aarch64-windows-msvc
+        include:
+          # Linux
+          - BUILD: x86_64-linux-gnu
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: x86_64-unknown-linux-gnu
+            BUILD_OPTIONS: ''
+          - BUILD: x86_64-linux-musl
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: x86_64-unknown-linux-musl
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-linux-gnu
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: aarch64-unknown-linux-gnu
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-linux-musl
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: aarch64-unknown-linux-musl
+            BUILD_OPTIONS: '--no-default-features'
+          # macOS
+          - BUILD: x86_64-darwin
+            OS: macos-11
+            TOOLCHAIN: stable
+            TARGET: x86_64-apple-darwin
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-darwin
+            OS: macos-11
+            TOOLCHAIN: stable
+            TARGET: aarch64-apple-darwin
+            BUILD_OPTIONS: ''
+          # Windows
+          - BUILD: x86_64-windows-msvc
+            OS: windows-latest
+            TOOLCHAIN: stable
+            TARGET: x86_64-pc-windows-msvc
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-windows-msvc
+            OS: windows-latest
+            TOOLCHAIN: stable
+            TARGET: aarch64-pc-windows-msvc
+            BUILD_OPTIONS: '--no-default-features'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install musl-tools
+        if: matrix.TARGET == 'x86_64-unknown-linux-musl'
+        run: |
+          sudo apt-get install -y --no-install-recommends musl-tools
+      - name: Install aarch64 gnu linker
+        if: matrix.TARGET == 'aarch64-unknown-linux-gnu' || matrix.TARGET == 'aarch64-unknown-linux-musl'
+        run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
+      - uses: actions-rs/toolchain@v1.0.7
+        with:
+          toolchain: ${{ matrix.TOOLCHAIN }}
+          target: ${{ matrix.TARGET }}
+          override: true
+      - uses: Swatinem/rust-cache@v1.3.0
+        with:
+          key: ${{ matrix.TARGET }}
+      - name: Build
+        run: |
+          rustup target add ${{ matrix.TARGET }}
+          cargo build --release --target ${{ matrix.TARGET }} ${{ matrix.BUILD_OPTIONS }}

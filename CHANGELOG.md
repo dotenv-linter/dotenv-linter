@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning].
 
 ### 🚀 Added
 
+- Add a GH action job to check release builds [#529] ([@mgrachev](https://github.com/mgrachev))
 - Add new check: Value without quotes [#521] ([tabfugnic](https://github.com/tabfugnic))
 - Add `dprint` and `lychee` actions + CI optimization [#503] ([@mgrachev](https://github.com/mgrachev))
 - Add `stale` action [#483] ([@mgrachev](https://github.com/mgrachev))
@@ -30,6 +31,7 @@ and this project adheres to [Semantic Versioning].
 - Fix clippy warnings [#480] ([@shapurid](https://github.com/shapurid))
 - Update dependency: [`update-infromer`] [#470], [#493] ([@mgrachev](https://github.com/mgrachev))
 
+[#529]: https://github.com/dotenv-linter/dotenv-linter/pull/529
 [#521]: https://github.com/dotenv-linter/dotenv-linter/pull/521
 [#503]: https://github.com/dotenv-linter/dotenv-linter/pull/503
 [#493]: https://github.com/dotenv-linter/dotenv-linter/pull/493

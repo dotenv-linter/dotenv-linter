@@ -15,7 +15,10 @@ description = "Lightning-fast linter for .env files"
 [dependencies]
 clap = "3.1.10"
 colored = "2.0.0"
-update-informer = "0.5.0"
+
+[dependencies.update-informer]
+version = "0.5.0"
+optional = true
 
 [target.'cfg(windows)'.dependencies]
 dunce = "1.0.2"
@@ -29,6 +32,7 @@ tempfile = "3.3.0"
 gag = "1.0.0"
 
 [features]
+default = ["update-informer"]
 stub_check_version = []
 
 [profile.release]
