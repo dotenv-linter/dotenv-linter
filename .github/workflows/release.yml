@@ -20,17 +20,17 @@ jobs:
           tar -czf dotenv-linter-linux-x86_64.tar.gz dotenv-linter
           rm dotenv-linter
 
-          # install aarch64 gnu linker
-          sudo apt-get install gcc-aarch64-linux-gnu musl-tools
-          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
-          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc
-
           rustup target add x86_64-unknown-linux-musl
           cargo build --release --target x86_64-unknown-linux-musl
           mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
           chmod +x dotenv-linter
           tar -czf dotenv-linter-alpine-x86_64.tar.gz dotenv-linter
           rm dotenv-linter
+
+          # install aarch64 gnu linker
+          sudo apt-get install gcc-aarch64-linux-gnu musl-tools
+          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc
 
           # arm64 builds
           rustup target add aarch64-unknown-linux-gnu
