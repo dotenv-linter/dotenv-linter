@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning].
 
 ### 🔧 Changed
 
+- Fix release builds: `aarch64-unknown-linux-musl` and `aarch64-pc-windows-msvc` [#531] ([@mgrachev](https://github.com/mgrachev))
 - Add tests to verify CLI application [#490] ([@mgrachev](https://github.com/mgrachev))
 - Move CLI commands to separate functions [#489] ([@mgrachev](https://github.com/mgrachev))
 - Refactor check ci with all-targets arg [#488] ([@shapurid](https://github.com/shapurid))
@@ -31,6 +32,7 @@ and this project adheres to [Semantic Versioning].
 - Fix clippy warnings [#480] ([@shapurid](https://github.com/shapurid))
 - Update dependency: [`update-infromer`] [#470], [#493] ([@mgrachev](https://github.com/mgrachev))
 
+[#531]: https://github.com/dotenv-linter/dotenv-linter/pull/531
 [#529]: https://github.com/dotenv-linter/dotenv-linter/pull/529
 [#521]: https://github.com/dotenv-linter/dotenv-linter/pull/521
 [#503]: https://github.com/dotenv-linter/dotenv-linter/pull/503
