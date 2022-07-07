@@ -7,74 +7,106 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  release-linux:
-    runs-on: ubuntu-latest
+  release-binary:
+    runs-on: ${{ matrix.OS }}
+    strategy:
+      matrix:
+        build:
+          - x86_64-linux-gnu
+          - x86_64-linux-musl
+          - aarch64-linux-gnu
+          - aarch64-linux-musl
+          - x86_64-darwin
+          - aarch64-darwin
+          - x86_64-windows-msvc
+          - aarch64-windows-msvc
+        include:
+          # Linux
+          - BUILD: x86_64-linux-gnu
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: x86_64-unknown-linux-gnu
+            ARCH_SUFFIX: linux-x86_64
+            BUILD_OPTIONS: ''
+          - BUILD: x86_64-linux-musl
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: x86_64-unknown-linux-musl
+            ARCH_SUFFIX: alpine-x86_64
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-linux-gnu
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: aarch64-unknown-linux-gnu
+            ARCH_SUFFIX: linux-aarch64
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-linux-musl
+            OS: ubuntu-latest
+            TOOLCHAIN: stable
+            TARGET: aarch64-unknown-linux-musl
+            ARCH_SUFFIX: alpine-aarch64
+            BUILD_OPTIONS: '--no-default-features'
+          # macOS
+          - BUILD: x86_64-darwin
+            OS: macos-11
+            TOOLCHAIN: stable
+            TARGET: x86_64-apple-darwin
+            ARCH_SUFFIX: darwin-x86_64
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-darwin
+            OS: macos-11
+            TOOLCHAIN: stable
+            TARGET: aarch64-apple-darwin
+            ARCH_SUFFIX: darwin-arm64
+            BUILD_OPTIONS: ''
+          # Windows
+          - BUILD: x86_64-windows-msvc
+            OS: windows-latest
+            TOOLCHAIN: stable
+            TARGET: x86_64-pc-windows-msvc
+            ARCH_SUFFIX: win-x64
+            BUILD_OPTIONS: ''
+          - BUILD: aarch64-windows-msvc
+            OS: windows-latest
+            TOOLCHAIN: stable
+            TARGET: aarch64-pc-windows-msvc
+            ARCH_SUFFIX: win-aarch64
+            BUILD_OPTIONS: '--no-default-features'
     steps:
       - uses: actions/checkout@v3
-      - name: Build
+      - name: Install musl-tools
+        if: matrix.TARGET == 'x86_64-unknown-linux-musl'
         run: |
-          # build x86_64
-          cargo build --release --target x86_64-unknown-linux-gnu
-          mv target/x86_64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter
-          chmod +x dotenv-linter
-          tar -czf dotenv-linter-linux-x86_64.tar.gz dotenv-linter
-          rm dotenv-linter
-
-          rustup target add x86_64-unknown-linux-musl
-          cargo build --release --target x86_64-unknown-linux-musl
-          mv target/x86_64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
-          chmod +x dotenv-linter
-          tar -czf dotenv-linter-alpine-x86_64.tar.gz dotenv-linter
-          rm dotenv-linter
-
-          # install aarch64 gnu linker
-          sudo apt-get install gcc-aarch64-linux-gnu musl-tools
-          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
-          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc
-
-          # arm64 builds
-          rustup target add aarch64-unknown-linux-gnu
-          cargo build --release --target aarch64-unknown-linux-gnu
-          mv target/aarch64-unknown-linux-gnu/release/dotenv-linter ./dotenv-linter
-          chmod +x dotenv-linter
-          tar -czf dotenv-linter-linux-aarch64.tar.gz dotenv-linter
-          rm dotenv-linter
-
-#          FIXME: https://github.com/briansmith/ring/issues/563
-#          rustup target add aarch64-unknown-linux-musl
-#          cargo build --release --target aarch64-unknown-linux-musl
-#          mv target/aarch64-unknown-linux-musl/release/dotenv-linter ./dotenv-linter
-#          chmod +x dotenv-linter
-#          tar -czf dotenv-linter-alpine-aarch64.tar.gz dotenv-linter
-      - name: Publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-*
-          draft: true
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  release-darwin:
-    runs-on: macos-11
-    steps:
-      - uses: actions/checkout@v3
+          sudo apt-get install -y --no-install-recommends musl-tools
+      - name: Install aarch64 gnu linker
+        if: matrix.TARGET == 'aarch64-unknown-linux-gnu' || matrix.TARGET == 'aarch64-unknown-linux-musl'
+        run: |
+          sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
+          echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
       - uses: actions-rs/toolchain@v1.0.7
         with:
-          toolchain: stable
+          toolchain: ${{ matrix.TOOLCHAIN }}
+          target: ${{ matrix.TARGET }}
+          override: true
+      - uses: Swatinem/rust-cache@v1.4.0
+        with:
+          key: ${{ matrix.TARGET }}
       - name: Build
         run: |
-          cargo build --release --target x86_64-apple-darwin
-          mv target/x86_64-apple-darwin/release/dotenv-linter ./dotenv-linter
+          rustup target add ${{ matrix.TARGET }}
+          cargo build --release --target ${{ matrix.TARGET }} ${{ matrix.BUILD_OPTIONS }}
+      - name: Archive binary (unix)
+        if: matrix.OS != 'windows-latest'
+        run: |
+          mv target/${{ matrix.TARGET }}/release/dotenv-linter ./dotenv-linter
           chmod +x dotenv-linter
-          tar -czf dotenv-linter-darwin-x86_64.tar.gz dotenv-linter
+          tar -czf dotenv-linter-${{ matrix.ARCH_SUFFIX }}.tar.gz dotenv-linter
           rm dotenv-linter
-
-          rustup target add aarch64-apple-darwin
-          cargo build --release --target aarch64-apple-darwin
-          mv target/aarch64-apple-darwin/release/dotenv-linter ./dotenv-linter
-          chmod +x dotenv-linter
-          tar -czf dotenv-linter-darwin-arm64.tar.gz dotenv-linter
+      - name: Archive binary (win)
+        if: matrix.OS == 'windows-latest'
+        run: |
+          Compress-Archive -Path ".\target\${{ matrix.TARGET }}\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-${{ matrix.ARCH_SUFFIX }}.zip"
       - name: Publish release
         uses: softprops/action-gh-release@v1
         with:
@@ -140,29 +172,3 @@ jobs:
             git commit -m 'release ${{ steps.get_version.outputs.VERSION }}' && \
             git push origin master
           "
-
-  release-win:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1.0.7
-        with:
-          toolchain: stable
-      - name: Build
-        shell: powershell
-        run: |
-          cargo build --release --target x86_64-pc-windows-msvc
-          Compress-Archive -Path ".\target\x86_64-pc-windows-msvc\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-win-x64.zip"
-
-#          FIXME: https://github.com/briansmith/ring/issues/1167
-#          rustup target add aarch64-pc-windows-msvc
-#          cargo build --release --target aarch64-pc-windows-msvc
-#          Compress-Archive -Path ".\target\aarch64-pc-windows-msvc\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-win-aarch64.zip"
-      - name: Publish release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dotenv-linter-*
-          draft: true
-          body_path: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
