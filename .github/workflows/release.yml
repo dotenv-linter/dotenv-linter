@@ -89,7 +89,7 @@ jobs:
           toolchain: ${{ matrix.TOOLCHAIN }}
           target: ${{ matrix.TARGET }}
           override: true
-      - uses: Swatinem/rust-cache@v1.4.0
+      - uses: Swatinem/rust-cache@v2.0.0
         with:
           key: ${{ matrix.TARGET }}
       - name: Build
