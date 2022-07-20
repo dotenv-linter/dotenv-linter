@@ -49,8 +49,8 @@ and this project adheres to [Semantic Versioning].
 [#482]: https://github.com/dotenv-linter/dotenv-linter/pull/482
 [#481]: https://github.com/dotenv-linter/dotenv-linter/pull/481
 [#480]: https://github.com/dotenv-linter/dotenv-linter/pull/480
-[#742]: https://github.com/dotenv-linter/dotenv-linter/pull/472
-[#740]: https://github.com/dotenv-linter/dotenv-linter/pull/470
+[#472]: https://github.com/dotenv-linter/dotenv-linter/pull/472
+[#470]: https://github.com/dotenv-linter/dotenv-linter/pull/470
 [`update-infromer`]: https://github.com/mgrachev/update-informer
 
 ## [v3.2.0] - 2022-01-24
