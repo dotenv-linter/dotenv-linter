@@ -12,7 +12,6 @@ Bug fixes and new features should include tests.
 <!-- Remove items that do not apply. For completed items, change [ ] to [x]. -->
 
 - [ ] Commit messages have been written in [Conventional Commits](https://www.conventionalcommits.org) format;
-- [ ] This PR has been added to [CHANGELOG.md](https://github.com/dotenv-linter/dotenv-linter/blob/master/CHANGELOG.md) (at the top of the list);
 - [ ] Tests for the changes have been added (for bug fixes / features);
 - [ ] Docs have been added / updated on the [dotenv-linter.github.io](https://github.com/dotenv-linter/dotenv-linter.github.io) (for bug fixes / features).
 
