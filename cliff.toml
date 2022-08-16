@@ -1,0 +1,71 @@
+# configuration file for git-cliff (0.8.1)
+
+[changelog]
+# changelog header
+header = """
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog],
+and this project adheres to [Semantic Versioning].
+
+[Keep a Changelog]: https://keepachangelog.com/en/1.0.0
+[Semantic Versioning]: https://semver.org/spec/v2.0.0.html\n
+"""
+# template for the changelog body
+# https://tera.netlify.app/docs/#introduction
+body = """
+{% if version %}\
+    ## [{{ version }}](https://github.com/dotenv-linter/dotenv-linter/releases/tag/{{ version }}) - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+    ## [Unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | replace(from="1", to="🚀") | replace(from="2", to="⚙️") | replace(from="3", to="🛠️") }}
+    {% for commit in commits %}
+        - {{ commit.message | upper_first }}\
+    {% endfor %}
+{% endfor %}\n
+"""
+
+# remove the leading and trailing whitespace from the template
+trim = true
+# changelog footer
+footer = ""
+
+[git]
+# parse the commits based on https://www.conventionalcommits.org
+conventional_commits = true
+# filter out the commits that are not conventional
+filter_unconventional = true
+# process each line of a commit as an individual commit
+split_commits = false
+# regex for preprocessing the commit messages
+commit_preprocessors = [
+  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](https://github.com/dotenv-linter/dotenv-linter/pull/${2}))" },
+]
+# regex for parsing and grouping commits
+commit_parsers = [
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^.*: add", group = "1 Added" },
+  { message = "^.*: support", group = "1 Added" },
+  { message = "^.*", group = "2 Changed" },
+  { message = "^test", group = "3 Fixed" },
+  { message = "^fix", group = "3 Fixed" },
+  { message = "^.*: fix", group = "3 Fixed" },
+  { message = "^.*: remove", group = "Removed" },
+  { message = "^.*: delete", group = "Removed" },
+]
+# filter out the commits that are not matched by commit parsers
+filter_commits = true
+# glob pattern for matching git tags
+tag_pattern = "v[0-9]*"
+# regex for skipping tags
+skip_tags = "v0.1.0-beta.1"
+# regex for ignoring tags
+ignore_tags = ""
+# sort the tags chronologically
+date_order = true
+# sort the commits inside sections by oldest/newest order
+sort_commits = "newest"
