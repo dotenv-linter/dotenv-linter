@@ -25,7 +25,7 @@
   </a>
 </p>
 
-Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compare)** `.env` files for problems that may cause the application to malfunction.
+`dotenv-linter` can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compare)** `.env` files for problems that may cause the application to malfunction.
 
 **Available checks**:
 
@@ -62,14 +62,12 @@ Dotenv-linter can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compar
 
 **Articles about dotenv-linter**:
 
-- [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter)
-- [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
-- [EN] [What are the key changes in dotenv-linter v3.0.0 release?](https://evrone.com/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
+- [EN] [Dotenv-linter: looking after the environment for you](https://evrone.com/dotenv-linter)
+- [EN] [What's new in dotenv-linter v2.2.0?](https://evrone.com/dotenv-linter-v220)
+- [EN] [What are the key changes in dotenv-linter v3.0.0 release?](https://evrone.com/dotenv-linter-v300)
 - [RU] [Dotenv-linter: линтер .env файлов](https://www.mgrachev.com/2020/04/20/dotenv-linter)
-- [RU] [Что нового в dotenv-linter v2.2.1?](https://evrone.ru/dotenv-linter-v220?utm_source=github&utm_campaign=dotenv-linter)
-- [RU] [Что нового в dotenv-linter v3.0.0?](https://evrone.ru/dotenv-linter-v300?utm_source=github&utm_campaign=dotenv-linter)
-
-[Dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
+- [RU] [Что нового в dotenv-linter v2.2.1?](https://evrone.ru/dotenv-linter-v220)
+- [RU] [Что нового в dotenv-linter v3.0.0?](https://evrone.ru/dotenv-linter-v300)
 
 ## 👨‍💻 Installation
 
@@ -175,7 +173,7 @@ snake_case_name=2
 
 ## ✌️ Mentorship
 
-`Dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with the purpose of helping others learn Rust using a simple, but useful tool. 😊
+`dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with the purpose of helping others learn Rust using a simple, but useful tool. 😊
 
 In addition to studying Rust, this project has another goal — to **promote love for open-source**, help you with the first steps in it and give an opportunity to contribute to the open-source project written in Rust. ❤️
 
@@ -201,6 +199,8 @@ This project exists thanks to all the people who contribute. [[Contribute](/CONT
 </a>
 
 ## ♥️ Sponsors
+
+[dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
 <p>
   <a href="https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter">
