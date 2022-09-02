@@ -13,7 +13,7 @@ repository = "https://github.com/dotenv-linter/dotenv-linter"
 description = "Lightning-fast linter for .env files"
 
 [dependencies]
-clap = "3.1.10"
+clap = "3.2.20"
 colored = "2.0.0"
 
 [dependencies.update-informer]
