@@ -48,6 +48,23 @@ parse_args() {
   done
 }
 
+# Returns 0 if $1 is a valid semantic version. For example 1.0.0
+check_semver() {
+    echo "$1" | grep -E '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$' > /dev/null
+}
+
+# Returns 0 if $1 is a valid semantic version prefixed by v. For example v1.0.0
+# Otherwise it calls err
+check_tag() {
+    if echo "$1" | grep -E "^v.+$" > /dev/null; then
+        version=$(printf '%s' "$1" | cut -c 2-)
+        if check_semver "$version"; then
+            return 0;
+        fi
+    fi
+    err "Invalid tag '$1': tag must be 'v' followed by a valid semantic version, like 'v3.2.0'"
+}
+
 main() {
     parse_args "$@"
 
@@ -70,6 +87,7 @@ main() {
         println "The latest version will be installed."
         _url="${DOTENV_LINTER_RELEASES}/latest/download/${_archive_name}"
     else
+        check_tag "${TAG}"
         println "Version ${TAG} will be installed"
         _url="${DOTENV_LINTER_RELEASES}/download/${TAG}/${_archive_name}"
     fi
