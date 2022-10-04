@@ -22,7 +22,11 @@ impl Default for QuoteCharacterChecker<'_> {
 impl Check for QuoteCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let val = line.get_value()?;
-        if val.contains("\\n") || val.contains(char::is_whitespace) || val.contains('$') {
+        if val.contains("\\n")
+            || val.contains(char::is_whitespace)
+            || val.contains('$')
+            || val.contains('#')
+        {
             return None;
         }
 
@@ -75,6 +79,19 @@ mod tests {
         check_test(
             &mut QuoteCharacterChecker::default(),
             [("BAR=\"$ABC\"", None), ("FOO='${BAR}BAR'", None)],
+        );
+    }
+
+    #[test]
+    fn with_comments_test() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=\"with #comment\"", None),
+                ("FOO='with #comment'", None),
+                ("FOO=\"#only-comment\"", None),
+                ("FOO='#only-comment'", None),
+            ],
         );
     }
 
