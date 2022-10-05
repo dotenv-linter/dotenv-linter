@@ -1,5 +1,7 @@
 # 🤝 Contributing
 
+For all contributions it is necessary that commits are made following a standard, that is why we use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
 ## How to set up the project
 
 ### 🦀 Install Rust via [rustup](https://rustup.rs)
