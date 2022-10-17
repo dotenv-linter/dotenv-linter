@@ -315,12 +315,9 @@ fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
 
 /// Returns the `QuoteType` for a `&str` starting with a quote-char
 fn is_multiline_start(val: &str) -> Option<QuoteType> {
-    for quote_type in [QuoteType::Single, QuoteType::Double] {
-        if quote_type.is_quoted_value(val) {
-            return Some(quote_type);
-        }
-    }
-    None
+    [QuoteType::Single, QuoteType::Double]
+        .into_iter()
+        .find(|quote_type| quote_type.is_quoted_value(val))
 }
 
 /// Prints information about the new version to `STDOUT` if a new version is available

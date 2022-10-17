@@ -84,11 +84,10 @@ jobs:
           sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
-      - uses: actions-rs/toolchain@v1.0.7
+      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
-          target: ${{ matrix.TARGET }}
-          override: true
+          targets: ${{ matrix.TARGET }}
       - uses: Swatinem/rust-cache@v2.0.1
         with:
           key: ${{ matrix.TARGET }}

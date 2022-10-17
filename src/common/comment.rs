@@ -5,7 +5,7 @@ const PREFIX: &str = "dotenv-linter";
 const ON: &str = "on";
 const OFF: &str = "off";
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Comment {
     disable: bool,
     pub checks: Vec<LintKind>,
