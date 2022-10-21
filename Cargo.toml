@@ -24,7 +24,7 @@ optional = true
 dunce = "1.0.3"
 
 [dev-dependencies]
-assert_cmd = "2.0.4"
+assert_cmd = "2.0.5"
 criterion = "0.4.0"
 tempfile = "3.3.0"
 
