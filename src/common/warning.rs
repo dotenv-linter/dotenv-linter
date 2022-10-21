@@ -2,7 +2,7 @@ use super::LintKind;
 use colored::*;
 use std::fmt;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Warning {
     pub check_name: LintKind,
     pub line_number: usize,

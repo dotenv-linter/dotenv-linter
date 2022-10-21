@@ -16,11 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1.0.7
-        with:
-          profile: minimal
-          toolchain: stable
-          components: rustfmt, clippy
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.0.1
       - run: cargo check --all-targets
       - run: cargo fmt --all --check
@@ -30,11 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1.0.7
-        with:
-          profile: minimal
-          toolchain: nightly
-          override: true
+      - uses: dtolnay/rust-toolchain@nightly
+      # https://github.com/dtolnay/rust-toolchain/issues/29
+      - run: rustup override set nightly
       - name: Set grcov version
         run: echo "GRCOV_VERSION=$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)" >> $GITHUB_ENV
       - uses: Swatinem/rust-cache@v2.0.1
@@ -59,10 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1.0.7
-        with:
-          profile: minimal
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.0.1
       - run: cargo install cargo-sort
       - run: cargo-sort --check
@@ -87,10 +78,7 @@ jobs:
       - name: Disable EOL conversion
         run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1.0.7
-        with:
-          profile: minimal
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.0.1
       - run: cargo test --all-features --no-fail-fast
 
@@ -216,11 +204,10 @@ jobs:
           sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
-      - uses: actions-rs/toolchain@v1.0.7
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
-          target: ${{ matrix.TARGET }}
-          override: true
+          targets: ${{ matrix.TARGET }}
       - uses: Swatinem/rust-cache@v2.0.1
         with:
           key: ${{ matrix.TARGET }}
