@@ -15,6 +15,8 @@ pub mod cli;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+// TODO: Move commands to modules
+
 pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
     let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
         .recursive(args.is_recursive())
