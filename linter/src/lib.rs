@@ -15,8 +15,17 @@ pub mod cli;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
+// Crates:
+// dotenv - finds .env files
+// linter - checks and fixes .env files
+
+// Parts:
+// main -> cli (parse args) -> dotenv -> linter -> printer
+
 // TODO: Move commands to modules
 
+// TODO: Pass current_dir once
+// TODO: Commands must return result, not print data via output
 pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
     let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
         .recursive(args.is_recursive())

@@ -1,0 +1,53 @@
+[package]
+name = "dotenv-linter"
+version = "3.2.0"
+authors = ["Mikhail Grachev <work@mgrachev.com>"]
+edition = "2021"
+description = "Lightning-fast linter for .env files"
+homepage = "https://dotenv-linter.github.io"
+repository = "https://github.com/dotenv-linter/dotenv-linter"
+license = "MIT"
+readme = "README.md"
+keywords = ["cli", "dotenv", "environment", "env", "linter"]
+categories = ["command-line-utilities"]
+include = ["/src", "/benches", "README.md"]
+
+[dependencies]
+clap = { version = "3.1.6", features = ["derive"] }
+colored = "2.0.0"
+update-informer = "0.5.0"
+dotenv = { version = "3.2.0", path = "../../dotenv-linter/dotenv" }
+
+[target.'cfg(windows)'.dependencies]
+dunce = "1.0.2"
+
+[dev-dependencies]
+assert_cmd = "2.0.4"
+criterion = "0.3.5"
+tempfile = "3.3.0"
+
+[target.'cfg(not(windows))'.dev-dependencies]
+gag = "1.0.0"
+
+[features]
+stub_check_version = []
+
+[[bench]]
+name = "check"
+harness = false
+
+[[bench]]
+name = "fix"
+harness = false
+
+[[bench]]
+name = "compare"
+harness = false
+
+[lib]
+bench = false
+
+[[bin]]
+name = "dotenv-linter"
+path = "src/main.rs"
+bench = false

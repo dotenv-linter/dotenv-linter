@@ -8,6 +8,8 @@ fn main() -> Result<()> {
     let current_dir = env::current_dir()?;
     // let args = dotenv_linter::cli::new(current_dir.as_os_str()).get_matches();
 
+    // linter::run
+
     let code = dotenv_linter::cli::run(current_dir.as_os_str())?;
     process::exit(code);
 
