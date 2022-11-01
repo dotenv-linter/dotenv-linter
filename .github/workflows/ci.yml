@@ -69,6 +69,39 @@ jobs:
       - name: Verify successful installation
         run: $HOME/bin/dotenv-linter -v
 
+  install_specific_versions:
+    strategy:
+      matrix:
+        version: [3.2.0, 2.2.1, 2.0.0, 1.1.1]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotenv-linter version ${{ matrix.version }}
+        run: |
+          mkdir -p $HOME/bin
+          sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin v${{ matrix.version }}
+      - name: Verify successful installation
+        run: test "$($HOME/bin/dotenv-linter -v)" = "dotenv-linter ${{ matrix.version }}"
+
+  install_specific_versions_wrong_input:
+    strategy:
+      matrix:
+        tag: [hello, v2, vasd, /home/]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotenv-linter with wrong tag ${{ matrix.tag }}
+        id: setup_dotenv_linter
+        continue-on-error: true
+        run: |
+          mkdir -p $HOME/bin
+          echo "OUTPUT=$(sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin ${{ matrix.tag }} 2>&1)" >> $GITHUB_OUTPUT
+      - name: Verify install.sh fails with correct error message when given wrong tag input ${{ matrix.tag }}
+        run: |
+          test "${{ steps.setup_dotenv_linter.outputs.OUTPUT }}" = "dotenv-linter installer: Invalid tag '${{ matrix.tag }}': tag must be 'v' followed by a valid semantic version, like 'v3.2.0'"
+
   ####################
   ### Windows jobs ###
   ####################
@@ -94,6 +127,41 @@ jobs:
       - name: Verify successful installation
         shell: bash
         run: $HOME/bin/dotenv-linter.exe -v
+
+  windows_install_specific_versions:
+    strategy:
+      matrix:
+        version: [3.2.0, 2.2.1, 2.1.0]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotenv-linter version ${{ matrix.version }}
+        shell: bash # it uses Git Bash, i.e. MinGW
+        run: |
+          mkdir -p $HOME/bin
+          sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin v${{ matrix.version }}
+      - name: Verify successful installation
+        shell: bash # it uses Git Bash, i.e. MinGW
+        run: test "$($HOME/bin/dotenv-linter -v)" = "dotenv-linter ${{ matrix.version }}"
+
+  windows_install_specific_versions_wrong_input:
+    strategy:
+      matrix:
+        tag: [hello, v2, vasd, /home/]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup dotenv-linter with wrong tag ${{ matrix.tag }}
+        shell: bash # it uses Git Bash, i.e. MinGW
+        id: setup_dotenv_linter_windows
+        continue-on-error: true
+        run: |
+          mkdir -p $HOME/bin
+          echo "OUTPUT=$(sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin ${{ matrix.tag }} 2>&1)" >> $GITHUB_OUTPUT
+      - name: Verify install.sh fails with correct error message when given wrong tag input ${{ matrix.tag }}
+        shell: bash # it uses Git Bash, i.e. MinGW
+        run: |
+          test "${{ steps.setup_dotenv_linter_windows.outputs.OUTPUT }}" = "dotenv-linter installer: Invalid tag '${{ matrix.tag }}': tag must be 'v' followed by a valid semantic version, like 'v3.2.0'"
 
   ##################
   ### macOS jobs ###
