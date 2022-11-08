@@ -1,7 +1,7 @@
 // use clap::{AppSettings, Args, Parser, Subcommand};
 use std::env;
 // use std::env;
-use crate::{checks, fs_utils, LintKind, Result};
+use crate::{checks, LintKind, Result};
 use std::ffi::OsStr;
 use std::path::PathBuf;
 use std::str::FromStr;
@@ -83,21 +83,21 @@ pub(crate) struct Input {
     pub(crate) input: Vec<String>,
 }
 
-impl Input {
-    pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
-        let mut input: Vec<PathBuf> = self
-            .input
-            .iter()
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect();
-
-        if input.is_empty() {
-            input.push(current_dir);
-        }
-
-        input
-    }
-}
+// impl Input {
+//     pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
+//         let mut input: Vec<PathBuf> = self
+//             .input
+//             .iter()
+//             .filter_map(|f| fs_utils::canonicalize(f).ok())
+//             .collect();
+//
+//         if input.is_empty() {
+//             input.push(current_dir);
+//         }
+//
+//         input
+//     }
+// }
 
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
@@ -167,29 +167,32 @@ pub(crate) struct CompareArgs {
     #[clap(flatten)]
     no_color: NoColor,
 
-    #[clap(flatten)]
-    quiet: Quiet,
+    // #[clap(flatten)]
+    // quiet: Quiet,
+    /// Don't display additional information
+    #[clap(short, long)]
+    pub(crate) quiet: bool,
 }
 
-impl CompareArgs {
-    pub(crate) fn is_quiet(&self) -> bool {
-        self.quiet.quiet
-    }
+// impl CompareArgs {
+// pub(crate) fn is_quiet(&self) -> bool {
+//     self.quiet.quiet
+// }
 
-    pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
-        let mut input: Vec<PathBuf> = self
-            .input
-            .iter()
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect();
-
-        if input.is_empty() {
-            input.push(current_dir);
-        }
-
-        input
-    }
-}
+// pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
+//     let mut input: Vec<PathBuf> = self
+//         .input
+//         .iter()
+//         .filter_map(|f| fs_utils::canonicalize(f).ok())
+//         .collect();
+//
+//     if input.is_empty() {
+//         input.push(current_dir);
+//     }
+//
+//     input
+// }
+// }
 
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
@@ -201,8 +204,10 @@ pub(crate) struct FixArgs {
     #[clap(long)]
     no_backup: bool,
 
-    #[clap(flatten)]
-    pub(crate) input: Input,
+    // #[clap(flatten)]
+    // pub(crate) input: Input,
+    /// Files or paths
+    pub(crate) input: Vec<String>,
 
     #[clap(flatten)]
     no_color: NoColor,
@@ -231,15 +236,19 @@ impl FixArgs {
     }
 }
 
-pub fn run(_current_dir: &OsStr) -> Result<i32> {
+pub fn run() -> Result<i32> {
     let current_dir = env::current_dir()?;
+    let dotenv = dotenv::new(current_dir);
     let args: Args = Args::parse();
 
     match args.command {
         Some(Commands::Compare(args)) => {
             println!("compare...");
             dbg!(&args);
-            let warnings = crate::compare(&args, &current_dir)?;
+
+            let files = dotenv.input(args.input).lookup_files();
+
+            let warnings = crate::compare(files, args.quiet)?;
             if warnings.is_empty() {
                 return Ok(0);
             }
@@ -247,7 +256,10 @@ pub fn run(_current_dir: &OsStr) -> Result<i32> {
         Some(Commands::Fix(args)) => {
             println!("fix...");
             dbg!(&args);
-            crate::fix(&args, &current_dir)?;
+
+            let files = dotenv.input(args.input).lookup_files();
+
+            crate::fix(files, &current_dir)?;
             return Ok(0);
         }
         Some(Commands::List) => {

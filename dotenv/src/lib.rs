@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 
 mod file;
+mod fs_utils;
 mod line;
 mod quote_type;
 
@@ -13,6 +14,64 @@ pub(crate) const LF: &str = "\n";
 
 fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
+}
+
+// TODO: Use PathBuf instead of String
+pub struct Dotenv {
+    current_dir: PathBuf,
+    input: Vec<PathBuf>,
+    recursive: bool,
+    excluded: Option<Vec<PathBuf>>,
+}
+
+pub fn new(current_dir: PathBuf) -> Dotenv {
+    Dotenv {
+        current_dir,
+        input: vec![],
+        excluded: None,
+        recursive: false,
+    }
+}
+
+impl Dotenv {
+    pub fn input(self, input: Vec<String>) -> Self {
+        let mut input: Vec<PathBuf> = input
+            .iter()
+            .filter_map(|f| fs_utils::canonicalize(f).ok())
+            .collect();
+
+        if input.is_empty() {
+            input.push(self.current_dir.to_path_buf());
+        }
+
+        Self { input, ..self }
+    }
+
+    pub fn exclude(self, excluded: Vec<PathBuf>) -> Self {
+        Self {
+            excluded: Some(excluded),
+            ..self
+        }
+    }
+
+    pub fn recursive(self, recursive: bool) -> Self {
+        Self { recursive, ..self }
+    }
+
+    pub fn lookup_files(self) -> Files {
+        let files = lookup_dotenv_paths(
+            self.input,
+            &self.excluded.unwrap_or_default(),
+            self.recursive,
+        )
+        .iter()
+        .filter_map(|path: &PathBuf| -> Option<(FileEntry, Vec<LineEntry>)> {
+            get_relative_path(path, &self.current_dir).and_then(FileEntry::from)
+        })
+        .collect();
+
+        Files { files }
+    }
 }
 
 pub struct Options<'a> {
@@ -45,7 +104,7 @@ impl IntoIterator for Files {
     }
 }
 
-pub fn new(input: Vec<PathBuf>, current_dir: &Path) -> Options {
+pub fn _new(input: Vec<PathBuf>, current_dir: &Path) -> Options {
     Options {
         input,
         current_dir,

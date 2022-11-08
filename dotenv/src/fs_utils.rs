@@ -1,6 +1,4 @@
-use crate::Result;
-use dotenv::FileEntry;
-use dotenv::LineEntry;
+use crate::{FileEntry, LineEntry};
 use std::{
     fs::{copy, File},
     io::{self, Write},
@@ -15,6 +13,8 @@ pub(crate) use dunce::canonicalize;
 /// For other platforms - continue use `std:fs`
 #[cfg(not(windows))]
 pub(crate) use std::fs::canonicalize;
+
+pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 /// Returns the relative path for `target_path` relative to `base_path`
 pub fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf> {

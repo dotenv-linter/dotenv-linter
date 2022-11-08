@@ -9,7 +9,6 @@ use std::{collections::HashSet, path::Path};
 mod checks;
 mod common;
 mod fixes;
-mod fs_utils;
 
 pub mod cli;
 
@@ -27,7 +26,7 @@ pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 // TODO: Pass current_dir once
 // TODO: Commands must return result, not print data via output
 pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
-    let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
+    let dotenv_files = dotenv::_new(args.input.paths(current_dir.to_path_buf()), current_dir)
         .recursive(args.is_recursive())
         .exclude(args.exclude.paths())
         .lookup_files();
@@ -59,7 +58,7 @@ pub(crate) fn check(args: &Args, current_dir: &Path) -> Result<usize> {
 }
 
 pub(crate) fn fix(args: &FixArgs, current_dir: &Path) -> Result<()> {
-    let dotenv_files = dotenv::new(args.input.paths(current_dir.to_path_buf()), current_dir)
+    let dotenv_files = dotenv::_new(args.input.paths(current_dir.to_path_buf()), current_dir)
         .recursive(args.is_recursive())
         .exclude(args.exclude.paths())
         .lookup_files();
@@ -88,12 +87,12 @@ pub(crate) fn fix(args: &FixArgs, current_dir: &Path) -> Result<()> {
         if fixes_done > 0 {
             // create backup copy unless user specifies not to
             if args.can_backup() {
-                let backup_file = fs_utils::backup_file(&fe)?;
-                output.print_backup(&backup_file);
+                // let backup_file = fs_utils::backup_file(&fe)?;
+                // output.print_backup(&backup_file);
             }
 
             // write corrected file
-            fs_utils::write_file(&fe.path, lines)?;
+            // fs_utils::write_file(&fe.path, lines)?;
         }
 
         output.print_warnings(&fe, &result, index);
@@ -105,14 +104,14 @@ pub(crate) fn fix(args: &FixArgs, current_dir: &Path) -> Result<()> {
 }
 
 // Compares if different environment files contains the same variables and returns warnings if not
-pub(crate) fn compare(args: &CompareArgs, current_dir: &Path) -> Result<Vec<CompareWarning>> {
-    let dotenv_files =
-        dotenv::new(args.paths(current_dir.to_path_buf()), current_dir).lookup_files();
+pub(crate) fn compare(files: impl IntoIterator, quiet: bool) -> Result<Vec<CompareWarning>> {
+    // let dotenv_files =
+    //     dotenv::_new(args.paths(current_dir.to_path_buf()), current_dir).lookup_files();
 
-    let output = CompareOutput::new(args.is_quiet());
+    let output = CompareOutput::new(quiet);
     let mut warnings: Vec<CompareWarning> = Vec::new();
 
-    if dotenv_files.is_empty() {
+    if files.is_empty() {
         output.print_nothing_to_compare();
         return Ok(warnings);
     }
@@ -120,7 +119,7 @@ pub(crate) fn compare(args: &CompareArgs, current_dir: &Path) -> Result<Vec<Comp
     // Create CompareFileType structures for each file
     let mut all_keys: HashSet<String> = HashSet::new();
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
-    for (_, (fe, lines)) in dotenv_files.into_iter().enumerate() {
+    for (_, (fe, lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
         let mut keys: Vec<String> = Vec::new();
 
