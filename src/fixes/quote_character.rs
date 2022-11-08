@@ -11,7 +11,7 @@ impl Fix for QuoteCharacterFixer {
 
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let value = line.get_value()?;
-        let pure_val = value.replace('\'', "").replace('\"', "");
+        let pure_val = value.replace(['\'', '\"'], "");
 
         line.raw_string = format!("{}={}", line.get_key()?, pure_val);
 
