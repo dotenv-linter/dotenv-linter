@@ -70,7 +70,7 @@ impl Dotenv {
         })
         .collect();
 
-        Files { files }
+        Files(files)
     }
 }
 
@@ -81,17 +81,15 @@ pub struct Options<'a> {
     excluded: Option<Vec<PathBuf>>,
 }
 
-pub struct Files {
-    files: BTreeMap<FileEntry, Vec<LineEntry>>,
-}
+pub struct Files(BTreeMap<FileEntry, Vec<LineEntry>>);
 
 impl Files {
     pub fn is_empty(&self) -> bool {
-        self.files.is_empty()
+        self.0.is_empty()
     }
 
     pub fn count(&self) -> usize {
-        self.files.len()
+        self.0.len()
     }
 }
 
@@ -100,7 +98,7 @@ impl IntoIterator for Files {
     type IntoIter = IntoIter<FileEntry, Vec<LineEntry>>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.files.into_iter()
+        self.0.into_iter()
     }
 }
 
@@ -144,7 +142,7 @@ impl<'a> Options<'a> {
         })
         .collect();
 
-        Files { files }
+        Files(files)
     }
 }
 

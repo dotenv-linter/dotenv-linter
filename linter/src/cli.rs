@@ -2,7 +2,6 @@
 use std::env;
 // use std::env;
 use crate::{checks, LintKind, Result};
-use std::ffi::OsStr;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -18,8 +17,10 @@ pub(crate) struct Args {
     #[clap(flatten)]
     pub(crate) exclude: Exclude,
 
-    #[clap(flatten)]
-    pub(crate) input: Input,
+    // #[clap(flatten)]
+    // pub(crate) input: Input,
+    /// Files or paths
+    pub(crate) input: Vec<String>,
 
     #[clap(flatten)]
     no_color: NoColor,
@@ -28,8 +29,11 @@ pub(crate) struct Args {
     #[clap(long)]
     pub(crate) not_check_updates: bool,
 
-    #[clap(flatten)]
-    quiet: Quiet,
+    // #[clap(flatten)]
+    // quiet: Quiet,
+    /// Don't display additional information
+    #[clap(short, long)]
+    pub(crate) quiet: bool,
 
     #[clap(flatten)]
     recursive: Recursive,
@@ -50,12 +54,12 @@ impl Args {
         self.recursive.recursive
     }
 
-    pub(crate) fn is_quiet(&self) -> bool {
-        self.quiet.quiet
-    }
+    // pub(crate) fn is_quiet(&self) -> bool {
+    //     self.quiet.quiet
+    // }
 
     fn can_check_updates(&self) -> bool {
-        !self.not_check_updates && !self.is_quiet()
+        !self.not_check_updates && !self.quiet
     }
 }
 
@@ -67,14 +71,14 @@ pub(crate) struct Exclude {
     pub(crate) exclude: Vec<String>,
 }
 
-impl Exclude {
-    pub(crate) fn paths(&self) -> Vec<PathBuf> {
-        self.exclude
-            .iter()
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect()
-    }
-}
+// impl Exclude {
+//     pub(crate) fn paths(&self) -> Vec<PathBuf> {
+//         self.exclude
+//             .iter()
+//             .filter_map(|f| fs_utils::canonicalize(f).ok())
+//             .collect()
+//     }
+// }
 
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
@@ -197,8 +201,11 @@ pub(crate) struct CompareArgs {
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
 pub(crate) struct FixArgs {
-    #[clap(flatten)]
-    pub(crate) exclude: Exclude,
+    // #[clap(flatten)]
+    // pub(crate) exclude: Exclude,
+    /// Exclude files from check
+    #[clap(short, long)]
+    pub(crate) exclude: Vec<PathBuf>,
 
     /// Prevent backing up .env files
     #[clap(long)]
@@ -212,24 +219,30 @@ pub(crate) struct FixArgs {
     #[clap(flatten)]
     no_color: NoColor,
 
-    #[clap(flatten)]
-    quiet: Quiet,
+    // #[clap(flatten)]
+    // quiet: Quiet,
+    /// Don't display additional information
+    #[clap(short, long)]
+    pub(crate) quiet: bool,
 
-    #[clap(flatten)]
-    recursive: Recursive,
+    // #[clap(flatten)]
+    // recursive: Recursive,
+    /// Recursively search and check .env files
+    #[clap(short, long)]
+    pub(crate) recursive: bool,
 
     #[clap(flatten)]
     pub(crate) skip: Skip,
 }
 
 impl FixArgs {
-    pub(crate) fn is_recursive(&self) -> bool {
-        self.recursive.recursive
-    }
+    // pub(crate) fn is_recursive(&self) -> bool {
+    //     self.recursive.recursive
+    // }
 
-    pub(crate) fn is_quiet(&self) -> bool {
-        self.quiet.quiet
-    }
+    // pub(crate) fn is_quiet(&self) -> bool {
+    //     self.quiet.quiet
+    // }
 
     pub(crate) fn can_backup(&self) -> bool {
         !self.no_backup
@@ -248,7 +261,7 @@ pub fn run() -> Result<i32> {
 
             let files = dotenv.input(args.input).lookup_files();
 
-            let warnings = crate::compare(files, args.quiet)?;
+            let warnings = crate::new(files, args.quiet).compare()?;
             if warnings.is_empty() {
                 return Ok(0);
             }
@@ -257,9 +270,19 @@ pub fn run() -> Result<i32> {
             println!("fix...");
             dbg!(&args);
 
-            let files = dotenv.input(args.input).lookup_files();
+            let files = dotenv
+                .input(args.input)
+                .recursive(args.recursive)
+                .exclude(args.exclude)
+                .lookup_files();
+            let skip_checks = args.skip.checks();
 
-            crate::fix(files, &current_dir)?;
+            // TODO: Add recursice and exlude
+
+            crate::new(files, args.quiet)
+                .skip_checks(&skip_checks)
+                .backup(!args.no_backup)
+                .fix()?;
             return Ok(0);
         }
         Some(Commands::List) => {
@@ -272,12 +295,19 @@ pub fn run() -> Result<i32> {
         None => {
             println!("check...");
 
-            dbg!(&args);
-            let total_warnings = crate::check(&args, &current_dir)?;
+            // dbg!(&args);
+            // let total_warnings = crate::check(&args, &current_dir)?;
 
-            if args.can_check_updates() {
-                crate::print_new_version_if_available();
-            }
+            let files = dotenv.input(args.input).lookup_files();
+            let skip_checks = args.skip.checks();
+
+            let total_warnings = crate::new(files, args.quiet)
+                .skip_checks(&skip_checks)
+                .check()?;
+
+            // if args.can_check_updates() {
+            //     crate::print_new_version_if_available();
+            // }
 
             if total_warnings == 0 {
                 return Ok(0);
