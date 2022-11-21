@@ -1,10 +1,8 @@
-#![allow(dead_code, unused_assignments)]
-use crate::cli::{Args, CompareArgs, FixArgs};
+// #![allow(dead_code, unused_assignments)]
+use crate::command::{check, compare, fix};
 use crate::common::*;
 use colored::*;
 use dotenv::Files;
-use std::borrow::Borrow;
-use std::{collections::HashSet, path::Path};
 
 // pub use checks::available_check_names;
 
@@ -13,10 +11,11 @@ mod common;
 mod fixes;
 
 pub mod cli;
+mod command;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-struct Linter<'a> {
+pub struct Linter<'a> {
     files: Files,
     quiet: bool,
     backup: bool,
@@ -44,142 +43,20 @@ impl<'a> Linter<'a> {
         }
     }
 
-    pub fn check(&self) -> Result<usize> {
-        // let dotenv_files = dotenv::_new(args.input.paths(current_dir.to_path_buf()), current_dir)
-        //     .recursive(args.is_recursive())
-        //     .exclude(args.exclude.paths())
-        //     .lookup_files();
-
-        let output = CheckOutput::new(self.quiet);
-
-        if self.files.is_empty() {
-            output.print_nothing_to_check();
-            return Ok(0);
-        }
-
-        let output = output.files_count(self.files.count());
-        // let skip_checks = args.skip.checks();
-
-        let warnings_count =
-            self.files
-                .into_iter()
-                .enumerate()
-                .fold(0, |acc, (index, (fe, lines))| {
-                    output.print_processing_info(&fe);
-                    let result = checks::run(&lines, self.skip_checks);
-
-                    output.print_warnings(&fe, &result, index);
-                    acc + result.len()
-                });
-
-        output.print_total(warnings_count);
-        Ok(warnings_count)
+    pub fn check(self) -> Result<usize> {
+        command::check(self)
     }
 
-    pub fn fix(&self) -> Result<()> {
-        // let dotenv_files = dotenv::_new(args.input.paths(current_dir.to_path_buf()), current_dir)
-        //     .recursive(args.is_recursive())
-        //     .exclude(args.exclude.paths())
-        //     .lookup_files();
-
-        let output = FixOutput::new(self.quiet);
-
-        if self.files.is_empty() {
-            output.print_nothing_to_fix();
-            return Ok(());
-        }
-
-        let output = output.files_count(self.files.count());
-        // let skip_checks = args.skip.checks();
-
-        let mut warnings_count = 0;
-        for (index, (fe, mut lines)) in self.files.into_iter().enumerate() {
-            output.print_processing_info(&fe);
-            let result = checks::run(&lines, self.skip_checks);
-            if result.is_empty() {
-                continue;
-            }
-            let fixes_done = fixes::run(&result, &mut lines, self.skip_checks);
-            if fixes_done != result.len() {
-                output.print_not_all_warnings_fixed();
-            }
-
-            // TODO: Backup file by implementing method `backup` for FileEntry
-            if fixes_done > 0 {
-                // create backup copy unless user specifies not to
-                if self.backup {
-                    // let backup_file = fs_utils::backup_file(&fe)?;
-                    // output.print_backup(&backup_file);
-                }
-
-                // write corrected file
-                // fs_utils::write_file(&fe.path, lines)?;
-            }
-
-            output.print_warnings(&fe, &result, index);
-            warnings_count += result.len();
-        }
-
-        output.print_total(warnings_count);
-        Ok(())
+    pub fn fix(self) -> Result<usize> {
+        command::fix(self)
     }
 
-    // Compares if different environment files contains the same variables and returns warnings if not
-    pub fn compare(&self) -> Result<Vec<CompareWarning>> {
-        // let dotenv_files =
-        //     dotenv::_new(args.paths(current_dir.to_path_buf()), current_dir).lookup_files();
+    pub fn compare(self) -> Result<usize> {
+        command::compare(self)
+    }
 
-        let output = CompareOutput::new(self.quiet);
-        let mut warnings: Vec<CompareWarning> = Vec::new();
-
-        if self.files.is_empty() {
-            output.print_nothing_to_compare();
-            return Ok(warnings);
-        }
-
-        // Create CompareFileType structures for each file
-        let mut all_keys: HashSet<String> = HashSet::new();
-        let mut files_to_compare: Vec<CompareFileType> = Vec::new();
-        for (_, (fe, lines)) in self.files.into_iter().enumerate() {
-            output.print_processing_info(&fe);
-            let mut keys: Vec<String> = Vec::new();
-
-            for line in lines {
-                if let Some(key) = line.get_key() {
-                    all_keys.insert(key.to_string());
-                    keys.push(key.to_string());
-                }
-            }
-
-            let file_to_compare: CompareFileType = CompareFileType {
-                path: fe.path,
-                keys,
-                missing: Vec::new(),
-            };
-
-            files_to_compare.push(file_to_compare);
-        }
-
-        // Create warnings if any file misses any key
-        for file in files_to_compare {
-            let missing_keys: Vec<_> = all_keys
-                .iter()
-                .filter(|key| !file.keys.contains(key))
-                .map(|key| key.to_owned())
-                .collect();
-
-            if !missing_keys.is_empty() {
-                let warning = CompareWarning {
-                    path: file.path,
-                    missing_keys,
-                };
-
-                warnings.push(warning)
-            }
-        }
-
-        output.print_warnings(&warnings);
-        Ok(warnings)
+    pub fn list(self) -> Vec<LintKind> {
+        command::list()
     }
 }
 

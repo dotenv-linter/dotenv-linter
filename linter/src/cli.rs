@@ -1,7 +1,5 @@
-// use clap::{AppSettings, Args, Parser, Subcommand};
-use std::env;
-// use std::env;
 use crate::{checks, LintKind, Result};
+use std::env;
 use std::path::PathBuf;
 use std::str::FromStr;
 
@@ -9,37 +7,41 @@ use clap::Parser;
 
 // TODO https://github.com/ducaale/xh/blob/master/src/cli.rs
 
+// TODO: Look at
+// https://docs.rs/clap_complete/latest/clap_complete
+
 // TODO: remove debug
 #[derive(clap::Parser, Debug)]
 #[clap(about, author, version)]
 #[clap(disable_help_subcommand = true)]
 pub(crate) struct Args {
-    #[clap(flatten)]
-    pub(crate) exclude: Exclude,
+    /// Exclude files from check
+    #[clap(short, long)]
+    pub(crate) exclude: Vec<PathBuf>,
 
-    // #[clap(flatten)]
-    // pub(crate) input: Input,
+    // TODO: Use ^ PathBuf?
     /// Files or paths
     pub(crate) input: Vec<String>,
 
-    #[clap(flatten)]
-    no_color: NoColor,
+    /// Turn off the colored output
+    #[clap(long)]
+    no_color: bool,
 
     /// Don't check for updates
     #[clap(long)]
     pub(crate) not_check_updates: bool,
 
-    // #[clap(flatten)]
-    // quiet: Quiet,
     /// Don't display additional information
     #[clap(short, long)]
     pub(crate) quiet: bool,
 
-    #[clap(flatten)]
-    recursive: Recursive,
+    /// Recursively search and check .env files
+    #[clap(short, long)]
+    pub(crate) recursive: bool,
 
-    #[clap(flatten)]
-    pub(crate) skip: Skip,
+    /// Skip checks
+    #[clap(short, long)]
+    pub(crate) skip: Vec<String>,
 
     /// Print version information
     #[clap(short, long)]
@@ -49,100 +51,14 @@ pub(crate) struct Args {
     command: Option<Commands>,
 }
 
-impl Args {
-    pub(crate) fn is_recursive(&self) -> bool {
-        self.recursive.recursive
-    }
-
-    // pub(crate) fn is_quiet(&self) -> bool {
-    //     self.quiet.quiet
-    // }
-
-    fn can_check_updates(&self) -> bool {
-        !self.not_check_updates && !self.quiet
-    }
-}
-
-// TODO: remove debug
-#[derive(clap::Args, Debug)]
-pub(crate) struct Exclude {
-    /// Exclude files from check
-    #[clap(short, long)]
-    pub(crate) exclude: Vec<String>,
-}
-
-// impl Exclude {
-//     pub(crate) fn paths(&self) -> Vec<PathBuf> {
-//         self.exclude
+// impl Skip {
+//     pub(crate) fn checks(&self) -> Vec<LintKind> {
+//         self.skip
 //             .iter()
-//             .filter_map(|f| fs_utils::canonicalize(f).ok())
+//             .filter_map(|check| LintKind::from_str(check).ok())
 //             .collect()
 //     }
 // }
-
-// TODO: remove debug
-#[derive(clap::Args, Debug)]
-pub(crate) struct Input {
-    /// Files or paths
-    pub(crate) input: Vec<String>,
-}
-
-// impl Input {
-//     pub(crate) fn paths(&self, current_dir: PathBuf) -> Vec<PathBuf> {
-//         let mut input: Vec<PathBuf> = self
-//             .input
-//             .iter()
-//             .filter_map(|f| fs_utils::canonicalize(f).ok())
-//             .collect();
-//
-//         if input.is_empty() {
-//             input.push(current_dir);
-//         }
-//
-//         input
-//     }
-// }
-
-// TODO: remove debug
-#[derive(clap::Args, Debug)]
-struct NoColor {
-    /// Turn off the colored output
-    #[clap(long)]
-    no_color: bool,
-}
-
-// TODO: remove debug
-#[derive(clap::Args, Debug)]
-pub(crate) struct Quiet {
-    /// Don't display additional information
-    #[clap(short, long)]
-    pub(crate) quiet: bool,
-}
-
-// TODO: remove debug
-#[derive(clap::Args, Debug)]
-pub(crate) struct Recursive {
-    /// Recursively search and check .env files
-    #[clap(short, long)]
-    pub(crate) recursive: bool,
-}
-
-// TODO: remove debug
-#[derive(clap::Args, Debug)]
-pub(crate) struct Skip {
-    /// Skip checks
-    #[clap(short, long)]
-    pub(crate) skip: Vec<String>,
-}
-
-impl Skip {
-    pub(crate) fn checks(&self) -> Vec<LintKind> {
-        self.skip
-            .iter()
-            .filter_map(|check| LintKind::from_str(check).ok())
-            .collect()
-    }
-}
 
 // TODO: remove debug
 // TODO: Add tests for aliases
@@ -168,11 +84,10 @@ pub(crate) struct CompareArgs {
     #[clap(min_values = 2)]
     pub(crate) input: Vec<String>,
 
-    #[clap(flatten)]
-    no_color: NoColor,
+    /// Turn off the colored output
+    #[clap(long)]
+    no_color: bool,
 
-    // #[clap(flatten)]
-    // quiet: Quiet,
     /// Don't display additional information
     #[clap(short, long)]
     pub(crate) quiet: bool,
@@ -201,8 +116,6 @@ pub(crate) struct CompareArgs {
 // TODO: remove debug
 #[derive(clap::Args, Debug)]
 pub(crate) struct FixArgs {
-    // #[clap(flatten)]
-    // pub(crate) exclude: Exclude,
     /// Exclude files from check
     #[clap(short, long)]
     pub(crate) exclude: Vec<PathBuf>,
@@ -211,42 +124,24 @@ pub(crate) struct FixArgs {
     #[clap(long)]
     no_backup: bool,
 
-    // #[clap(flatten)]
-    // pub(crate) input: Input,
     /// Files or paths
     pub(crate) input: Vec<String>,
 
-    #[clap(flatten)]
-    no_color: NoColor,
+    /// Turn off the colored output
+    #[clap(long)]
+    no_color: bool,
 
-    // #[clap(flatten)]
-    // quiet: Quiet,
     /// Don't display additional information
     #[clap(short, long)]
     pub(crate) quiet: bool,
 
-    // #[clap(flatten)]
-    // recursive: Recursive,
     /// Recursively search and check .env files
     #[clap(short, long)]
     pub(crate) recursive: bool,
 
-    #[clap(flatten)]
-    pub(crate) skip: Skip,
-}
-
-impl FixArgs {
-    // pub(crate) fn is_recursive(&self) -> bool {
-    //     self.recursive.recursive
-    // }
-
-    // pub(crate) fn is_quiet(&self) -> bool {
-    //     self.quiet.quiet
-    // }
-
-    pub(crate) fn can_backup(&self) -> bool {
-        !self.no_backup
-    }
+    /// Skip checks
+    #[clap(short, long)]
+    pub(crate) skip: Vec<String>,
 }
 
 pub fn run() -> Result<i32> {
@@ -262,7 +157,7 @@ pub fn run() -> Result<i32> {
             let files = dotenv.input(args.input).lookup_files();
 
             let warnings = crate::new(files, args.quiet).compare()?;
-            if warnings.is_empty() {
+            if warnings == 0 {
                 return Ok(0);
             }
         }
@@ -275,18 +170,22 @@ pub fn run() -> Result<i32> {
                 .recursive(args.recursive)
                 .exclude(args.exclude)
                 .lookup_files();
-            let skip_checks = args.skip.checks();
-
-            // TODO: Add recursice and exlude
+            let skip_checks = args
+                .skip
+                .iter()
+                .filter_map(|check| LintKind::from_str(check).ok())
+                .collect::<Vec<LintKind>>();
 
             crate::new(files, args.quiet)
                 .skip_checks(&skip_checks)
                 .backup(!args.no_backup)
                 .fix()?;
+
             return Ok(0);
         }
         Some(Commands::List) => {
             println!("list...");
+
             checks::available_check_names()
                 .iter()
                 .for_each(|name| println!("{}", name));
@@ -295,23 +194,23 @@ pub fn run() -> Result<i32> {
         None => {
             println!("check...");
 
-            // dbg!(&args);
-            // let total_warnings = crate::check(&args, &current_dir)?;
-
             let files = dotenv.input(args.input).lookup_files();
-            let skip_checks = args.skip.checks();
+            let skip_checks = args
+                .skip
+                .iter()
+                .filter_map(|check| LintKind::from_str(check).ok())
+                .collect::<Vec<LintKind>>();
 
             let total_warnings = crate::new(files, args.quiet)
                 .skip_checks(&skip_checks)
                 .check()?;
 
-            // if args.can_check_updates() {
-            //     crate::print_new_version_if_available();
-            // }
+            if !args.not_check_updates && !args.quiet {
+                crate::print_new_version_if_available();
+            }
 
             if total_warnings == 0 {
                 return Ok(0);
-                // process::exit(0);
             }
         }
     }
