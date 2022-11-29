@@ -10,12 +10,12 @@ fn new_version_output() -> String {
 #[test]
 fn print_new_version() {
     let test_dir = TestDir::new();
-    test_dir.create_testfile(".env", "FOO=bar\n");
-    let expected_output = check_output(&[(".env", &[])]);
-    let expected_output = format!("{}\n{}\n", expected_output, new_version_output());
+    //test_dir.create_testfile(".env", "FOO=bar\n");
+    //let expected_output = check_output(&[(".env", &[])]);
+    //let expected_output = format!("roflcopter{}{}", expected_output, new_version_output());
 
     let args: &[&str; 0] = &[];
-    test_dir.test_command_success_with_args(args, expected_output);
+    test_dir.test_command_success_with_args(args, roflcopter);
 }
 
 #[test]
