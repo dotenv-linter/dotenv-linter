@@ -26,19 +26,19 @@ pub trait Check {
 // Checklist for checks which needs to know of only a single line
 fn checklist() -> Vec<Box<dyn Check>> {
     vec![
-        Box::new(duplicated_key::DuplicatedKeyChecker::default()),
-        Box::new(ending_blank_line::EndingBlankLineChecker::default()),
-        Box::new(extra_blank_line::ExtraBlankLineChecker::default()),
-        Box::new(incorrect_delimiter::IncorrectDelimiterChecker::default()),
-        Box::new(key_without_value::KeyWithoutValueChecker::default()),
-        Box::new(leading_character::LeadingCharacterChecker::default()),
-        Box::new(lowercase_key::LowercaseKeyChecker::default()),
-        Box::new(quote_character::QuoteCharacterChecker::default()),
-        Box::new(space_character::SpaceCharacterChecker::default()),
-        Box::new(substitution_key::SubstitutionKeyChecker::default()),
-        Box::new(trailing_whitespace::TrailingWhitespaceChecker::default()),
-        Box::new(unordered_key::UnorderedKeyChecker::default()),
-        Box::new(value_without_quotes::ValueWithoutQuotesChecker::default()),
+        Box::<duplicated_key::DuplicatedKeyChecker>::default(),
+        Box::<ending_blank_line::EndingBlankLineChecker>::default(),
+        Box::<extra_blank_line::ExtraBlankLineChecker>::default(),
+        Box::<incorrect_delimiter::IncorrectDelimiterChecker>::default(),
+        Box::<key_without_value::KeyWithoutValueChecker>::default(),
+        Box::<leading_character::LeadingCharacterChecker>::default(),
+        Box::<lowercase_key::LowercaseKeyChecker>::default(),
+        Box::<quote_character::QuoteCharacterChecker>::default(),
+        Box::<space_character::SpaceCharacterChecker>::default(),
+        Box::<substitution_key::SubstitutionKeyChecker>::default(),
+        Box::<trailing_whitespace::TrailingWhitespaceChecker>::default(),
+        Box::<unordered_key::UnorderedKeyChecker>::default(),
+        Box::<value_without_quotes::ValueWithoutQuotesChecker>::default(),
     ]
 }
 

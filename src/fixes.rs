@@ -45,20 +45,20 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
     vec![
         // At first we run the fixers that handle a single line entry (they use default
         // implementation of the fix_warnings() function)
-        Box::new(key_without_value::KeyWithoutValueFixer::default()),
-        Box::new(lowercase_key::LowercaseKeyFixer::default()),
-        Box::new(space_character::SpaceCharacterFixer::default()),
-        Box::new(trailing_whitespace::TrailingWhitespaceFixer::default()),
-        Box::new(leading_character::LeadingCharacterFixer::default()),
-        Box::new(value_without_quotes::ValueWithoutQuotesFixer::default()),
-        Box::new(quote_character::QuoteCharacterFixer::default()),
-        Box::new(incorrect_delimiter::IncorrectDelimiterFixer::default()),
-        Box::new(extra_blank_line::ExtraBlankLineFixer::default()),
-        Box::new(substitution_key::SubstitutionKeyFixer::default()),
+        Box::<key_without_value::KeyWithoutValueFixer>::default(),
+        Box::<lowercase_key::LowercaseKeyFixer>::default(),
+        Box::<space_character::SpaceCharacterFixer>::default(),
+        Box::<trailing_whitespace::TrailingWhitespaceFixer>::default(),
+        Box::<leading_character::LeadingCharacterFixer>::default(),
+        Box::<value_without_quotes::ValueWithoutQuotesFixer>::default(),
+        Box::<quote_character::QuoteCharacterFixer>::default(),
+        Box::<incorrect_delimiter::IncorrectDelimiterFixer>::default(),
+        Box::<extra_blank_line::ExtraBlankLineFixer>::default(),
+        Box::<substitution_key::SubstitutionKeyFixer>::default(),
         // Then we should run the fixers that handle the line entry collection at whole
-        Box::new(unordered_key::UnorderedKeyFixer::default()),
-        Box::new(duplicated_key::DuplicatedKeyFixer::default()),
-        Box::new(ending_blank_line::EndingBlankLineFixer::default()),
+        Box::<unordered_key::UnorderedKeyFixer>::default(),
+        Box::<duplicated_key::DuplicatedKeyFixer>::default(),
+        Box::<ending_blank_line::EndingBlankLineFixer>::default(),
     ]
 }
 
