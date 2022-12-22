@@ -130,28 +130,20 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      # TODO: https://github.com/dotenv-linter/dotenv-linter/issues/572
       # To build cross-platform images
-      #- name: Set up QEMU
-      #  uses: docker/setup-qemu-action@v2
-      #  with:
-      #    platforms: arm64
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm64
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
-      # TODO: https://github.com/dotenv-linter/dotenv-linter/issues/572
-      #- name: Build and push image
-      #  run: |
-      #    GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
-      #
-      #    docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:${GIT_TAG} .
-      #    docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:latest .
       - name: Build and push image
         run: |
           GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
 
-          docker buildx build --push --platform linux/amd64 -f Dockerfile -t dotenvlinter/dotenv-linter:${GIT_TAG} .
-          docker buildx build --push --platform linux/amd64 -f Dockerfile -t dotenvlinter/dotenv-linter:latest .
+          docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:${GIT_TAG} .
+          docker buildx build --push --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:latest .
 
   release-crate:
     runs-on: ubuntu-latest
