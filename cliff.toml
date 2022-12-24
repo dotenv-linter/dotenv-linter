@@ -22,7 +22,7 @@ body = """
     ## [Unreleased]
 {% endif %}\
 {% for group, commits in commits | group_by(attribute="group") %}
-    ### {{ group | replace(from="1", to="🚀") | replace(from="2", to="⚙️") | replace(from="3", to="🛠️") }}
+    ### {{ group | replace(from="1", to="") | replace(from="2", to="") }}
     {% for commit in commits %}
         - {{ commit.message | upper_first }}\
     {% endfor %}
@@ -47,15 +47,22 @@ commit_preprocessors = [
 ]
 # regex for parsing and grouping commits
 commit_parsers = [
+  { message = "^feat", group = "1Features"},
+  { message = "^fix\\(ci\\):", group = "CI"},
+  { message = "^fix", group = "2Fixes"},
+  { message = "^doc", group = "Documentation"},
+  { message = "^perf", group = "Performance"},
+  { message = "^refactor", group = "Refactor"},
+  { message = "^style", group = "Styling"},
+  { message = "^test", group = "Testing"},
   { message = "^chore\\(release\\)", skip = true },
-  { message = "^.*: add", group = "1 Added" },
-  { message = "^.*: support", group = "1 Added" },
-  { message = "^.*", group = "2 Changed" },
-  { message = "^test", group = "3 Fixed" },
-  { message = "^fix", group = "3 Fixed" },
-  { message = "^.*: fix", group = "3 Fixed" },
-  { message = "^.*: remove", group = "Removed" },
-  { message = "^.*: delete", group = "Removed" },
+  { message = "^chore\\(deps\\):", group = "Update dependencies" },
+  { message = "^chore\\(ci\\):", group = "CI"},
+  { message = "^chore: bump", group = "Update dependencies" },
+  { message = "^chore: update dependency", group = "Update dependencies" },
+  { message = "^chore", group = "Miscellaneous Tasks"},
+  { message = "^ci:", group = "CI"},
+  { body = ".*security", group = "Security"},
 ]
 # filter out the commits that are not matched by commit parsers
 filter_commits = true

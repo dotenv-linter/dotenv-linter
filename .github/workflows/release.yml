@@ -107,6 +107,7 @@ jobs:
         run: |
           Compress-Archive -Path ".\target\${{ matrix.TARGET }}\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-${{ matrix.ARCH_SUFFIX }}.zip"
       - name: Generate a changelog
+        if: matrix.OS == 'ubuntu-latest'
         uses: orhun/git-cliff-action@v1
         id: git-cliff
         with:

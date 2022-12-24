@@ -1,6 +1,6 @@
 [package]
 name = "dotenv-linter"
-version = "3.2.0" # managed by release.sh
+version = "3.3.0" # managed by release.sh
 authors = ["Mikhail Grachev <work@mgrachev.com>"]
 categories = ["command-line-utilities"]
 edition = "2021"
