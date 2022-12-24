@@ -8,50 +8,105 @@ and this project adheres to [Semantic Versioning].
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html
 
-## [Unreleased]
+## [v3.3.0](https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.3.0) - 2022-12-24
 
-### 🚀 Added
+### Features
 
-- Add docker arm64 image [#533] ([@mstruebing](https://github.com/mstruebing), [@mgrachev](https://github.com/mgrachev))
-- Add a GH action job to check release builds [#529] ([@mgrachev](https://github.com/mgrachev))
-- Add new check: Value without quotes [#521] ([tabfugnic](https://github.com/tabfugnic))
-- Add `dprint` and `lychee` actions + CI optimization [#503] ([@mgrachev](https://github.com/mgrachev))
-- Add `stale` action [#483] ([@mgrachev](https://github.com/mgrachev))
-- Add dependabot [#472] ([@mgrachev](https://github.com/mgrachev))
+- Add check for values that require surrounding quotes ([#521](https://github.com/dotenv-linter/dotenv-linter/pull/521))
 
-### 🔧 Changed
+### Fixes
 
-- Fix release builds: `aarch64-unknown-linux-musl` and `aarch64-pc-windows-msvc` [#531] ([@mgrachev](https://github.com/mgrachev))
-- Add tests to verify CLI application [#490] ([@mgrachev](https://github.com/mgrachev))
-- Move CLI commands to separate functions [#489] ([@mgrachev](https://github.com/mgrachev))
-- Refactor check ci with all-targets arg [#488] ([@shapurid](https://github.com/shapurid))
-- Refactor usage of fix and compare [#486] ([@shapurid](https://github.com/shapurid))
-- Update `clap` [#485] ([@mgrachev](https://github.com/mgrachev))
-- Update `criterion-compare` action [#484] ([@mgrachev](https://github.com/mgrachev))
-- Refactor skip_checks with use default iterator [#482] ([@shapurid](https://github.com/shapurid))
-- Update `cargo-deny` config [#481] ([@mgrachev](https://github.com/mgrachev))
-- Fix clippy warnings [#480] ([@shapurid](https://github.com/shapurid))
-- Update dependency: [`update-infromer`] [#470], [#493] ([@mgrachev](https://github.com/mgrachev))
+- Check that tag is valid semver ([#556](https://github.com/dotenv-linter/dotenv-linter/pull/556))
+- Don't remove quotes for values containing hash-sign ([#560](https://github.com/dotenv-linter/dotenv-linter/pull/560))
 
-[#533]: https://github.com/dotenv-linter/dotenv-linter/pull/533
-[#531]: https://github.com/dotenv-linter/dotenv-linter/pull/531
-[#529]: https://github.com/dotenv-linter/dotenv-linter/pull/529
-[#521]: https://github.com/dotenv-linter/dotenv-linter/pull/521
-[#503]: https://github.com/dotenv-linter/dotenv-linter/pull/503
-[#493]: https://github.com/dotenv-linter/dotenv-linter/pull/493
-[#490]: https://github.com/dotenv-linter/dotenv-linter/pull/490
-[#489]: https://github.com/dotenv-linter/dotenv-linter/pull/489
-[#488]: https://github.com/dotenv-linter/dotenv-linter/pull/488
-[#486]: https://github.com/dotenv-linter/dotenv-linter/pull/486
-[#485]: https://github.com/dotenv-linter/dotenv-linter/pull/485
-[#484]: https://github.com/dotenv-linter/dotenv-linter/pull/484
-[#483]: https://github.com/dotenv-linter/dotenv-linter/pull/483
-[#482]: https://github.com/dotenv-linter/dotenv-linter/pull/482
-[#481]: https://github.com/dotenv-linter/dotenv-linter/pull/481
-[#480]: https://github.com/dotenv-linter/dotenv-linter/pull/480
-[#472]: https://github.com/dotenv-linter/dotenv-linter/pull/472
-[#470]: https://github.com/dotenv-linter/dotenv-linter/pull/470
-[`update-infromer`]: https://github.com/mgrachev/update-informer
+### CI
+
+- Fix arm docker build ([#609](https://github.com/dotenv-linter/dotenv-linter/pull/609))
+- Replace `actions-rs/toolchain` with `dtolnay/rust-toolchain` ([#573](https://github.com/dotenv-linter/dotenv-linter/pull/573))
+- Add docker arm64 image ([#533](https://github.com/dotenv-linter/dotenv-linter/pull/533))
+- Fix release builds ([#531](https://github.com/dotenv-linter/dotenv-linter/pull/531))
+- Add job to check release builds ([#529](https://github.com/dotenv-linter/dotenv-linter/pull/529))
+- Add dprint and lychee actions + ci optimization ([#503](https://github.com/dotenv-linter/dotenv-linter/pull/503))
+- Add `stale` action ([#483](https://github.com/dotenv-linter/dotenv-linter/pull/483))
+- Fix release ([#465](https://github.com/dotenv-linter/dotenv-linter/pull/465))
+
+### Documentation
+
+- Add commit standard for the CONTRIBUTION file ([#561](https://github.com/dotenv-linter/dotenv-linter/pull/561))
+- Update readme ([#543](https://github.com/dotenv-linter/dotenv-linter/pull/543))
+- Fix links in `CHANGELOG.md` ([#536](https://github.com/dotenv-linter/dotenv-linter/pull/536))
+
+### Miscellaneous Tasks
+
+- Use `Box::<T>::default()` instead of `Box::new(T::default())` ([#605](https://github.com/dotenv-linter/dotenv-linter/pull/605))
+- Fix clippy warning ([#585](https://github.com/dotenv-linter/dotenv-linter/pull/585))
+- Generate a changelog and update release process ([#544](https://github.com/dotenv-linter/dotenv-linter/pull/544))
+- Update `criterion-compare` action ([#484](https://github.com/dotenv-linter/dotenv-linter/pull/484))
+- Update `cargo-deny` config ([#481](https://github.com/dotenv-linter/dotenv-linter/pull/481))
+- Clippy warnings ([#480](https://github.com/dotenv-linter/dotenv-linter/pull/480))
+- Add dependabot ([#472](https://github.com/dotenv-linter/dotenv-linter/pull/472))
+
+### Refactor
+
+- Move CLI commands to separate functions ([#489](https://github.com/dotenv-linter/dotenv-linter/pull/489))
+- Check ci with all-targets arg ([#488](https://github.com/dotenv-linter/dotenv-linter/pull/488))
+- Usage of fix and compare ([#486](https://github.com/dotenv-linter/dotenv-linter/pull/486))
+- Skip_checks with use default iterator ([#482](https://github.com/dotenv-linter/dotenv-linter/pull/482))
+
+### Testing
+
+- Add tests to verify cli application ([#490](https://github.com/dotenv-linter/dotenv-linter/pull/490))
+
+### Update dependencies
+
+- Bump actions/stale from 6 to 7 ([#607](https://github.com/dotenv-linter/dotenv-linter/pull/607))
+- Bump update-informer from 0.5.0 to 0.6.0 ([#603](https://github.com/dotenv-linter/dotenv-linter/pull/603))
+- Bump wagoid/commitlint-github-action from 5.2.2 to 5.3.0 ([#595](https://github.com/dotenv-linter/dotenv-linter/pull/595))
+- Bump Swatinem/rust-cache from 2.1.0 to 2.2.0 ([#588](https://github.com/dotenv-linter/dotenv-linter/pull/588))
+- Bump lycheeverse/lychee-action from 1.5.3 to 1.5.4 ([#587](https://github.com/dotenv-linter/dotenv-linter/pull/587))
+- Bump lycheeverse/lychee-action from 1.5.2 to 1.5.3 ([#586](https://github.com/dotenv-linter/dotenv-linter/pull/586))
+- Bump Swatinem/rust-cache from 2.0.1 to 2.1.0 ([#582](https://github.com/dotenv-linter/dotenv-linter/pull/582))
+- Bump lycheeverse/lychee-action from 1.5.1 to 1.5.2 ([#583](https://github.com/dotenv-linter/dotenv-linter/pull/583))
+- Bump wagoid/commitlint-github-action from 5.2.0 to 5.2.2 ([#581](https://github.com/dotenv-linter/dotenv-linter/pull/581))
+- Bump boa-dev/criterion-compare-action from 3.2.3 to 3.2.4 ([#580](https://github.com/dotenv-linter/dotenv-linter/pull/580))
+- Bump assert_cmd from 2.0.4 to 2.0.5 ([#578](https://github.com/dotenv-linter/dotenv-linter/pull/578))
+- Bump criterion from 0.3.6 to 0.4.0 ([#575](https://github.com/dotenv-linter/dotenv-linter/pull/575))
+- Bump Swatinem/rust-cache from 2.0.0 to 2.0.1 ([#571](https://github.com/dotenv-linter/dotenv-linter/pull/571))
+- Bump dunce from 1.0.2 to 1.0.3 ([#564](https://github.com/dotenv-linter/dotenv-linter/pull/564))
+- Bump wagoid/commitlint-github-action from 5.0.2 to 5.2.0 ([#565](https://github.com/dotenv-linter/dotenv-linter/pull/565))
+- Bump boa-dev/criterion-compare-action from 3.2.2 to 3.2.3 ([#570](https://github.com/dotenv-linter/dotenv-linter/pull/570))
+- Bump actions/stale from 5 to 6 ([#552](https://github.com/dotenv-linter/dotenv-linter/pull/552))
+- Bump lycheeverse/lychee-action from 1.5.0 to 1.5.1 ([#538](https://github.com/dotenv-linter/dotenv-linter/pull/538))
+- Bump Swatinem/rust-cache from 1.4.0 to 2.0.0 ([#534](https://github.com/dotenv-linter/dotenv-linter/pull/534))
+- Bump dprint/check from 2.0 to 2.1 ([#535](https://github.com/dotenv-linter/dotenv-linter/pull/535))
+- Bump criterion from 0.3.5 to 0.3.6 ([#532](https://github.com/dotenv-linter/dotenv-linter/pull/532))
+- Bump wagoid/commitlint-github-action from 5.0.1 to 5.0.2 ([#530](https://github.com/dotenv-linter/dotenv-linter/pull/530))
+- Bump Swatinem/rust-cache from 1.3.0 to 1.4.0 ([#528](https://github.com/dotenv-linter/dotenv-linter/pull/528))
+- Bump actions/cache from 3.0.2 to 3.0.4 ([#522](https://github.com/dotenv-linter/dotenv-linter/pull/522))
+- Bump boa-dev/criterion-compare-action from 3.2.1 to 3.2.2 ([#518](https://github.com/dotenv-linter/dotenv-linter/pull/518))
+- Bump regex from 1.5.4 to 1.5.6 ([#520](https://github.com/dotenv-linter/dotenv-linter/pull/520))
+- Bump crossbeam-utils from 0.8.5 to 0.8.8 ([#519](https://github.com/dotenv-linter/dotenv-linter/pull/519))
+- Bump wagoid/commitlint-github-action from 4.1.11 to 5.0.1 ([#527](https://github.com/dotenv-linter/dotenv-linter/pull/527))
+- Bump boa-dev/criterion-compare-action from 3.2.0 to 3.2.1 ([#509](https://github.com/dotenv-linter/dotenv-linter/pull/509))
+- Bump clap from 3.1.9 to 3.1.10 ([#506](https://github.com/dotenv-linter/dotenv-linter/pull/506))
+- Bump clap from 3.1.8 to 3.1.9 ([#505](https://github.com/dotenv-linter/dotenv-linter/pull/505))
+- Bump actions/stale from 4 to 5 ([#502](https://github.com/dotenv-linter/dotenv-linter/pull/502))
+- Bump actions/cache from 3.0.1 to 3.0.2 ([#501](https://github.com/dotenv-linter/dotenv-linter/pull/501))
+- Bump codecov/codecov-action from 2.1.0 to 3 ([#499](https://github.com/dotenv-linter/dotenv-linter/pull/499))
+- Bump wagoid/commitlint-github-action from 4.1.10 to 4.1.11 ([#500](https://github.com/dotenv-linter/dotenv-linter/pull/500))
+- Bump clap from 3.1.6 to 3.1.8 ([#497](https://github.com/dotenv-linter/dotenv-linter/pull/497))
+- Bump wagoid/commitlint-github-action from 4.1.9 to 4.1.10 ([#495](https://github.com/dotenv-linter/dotenv-linter/pull/495))
+- Bump actions/cache from 3.0.0 to 3.0.1 ([#494](https://github.com/dotenv-linter/dotenv-linter/pull/494))
+- Update dependency `update-informer` ([#493](https://github.com/dotenv-linter/dotenv-linter/pull/493))
+- Bump actions/cache from 2 to 3.0.0 ([#491](https://github.com/dotenv-linter/dotenv-linter/pull/491))
+- Update `clap` ([#485](https://github.com/dotenv-linter/dotenv-linter/pull/485))
+- Bump wagoid/commitlint-github-action from 2 to 4.1.9 ([#473](https://github.com/dotenv-linter/dotenv-linter/pull/473))
+- Bump actions/checkout from 1 to 3 ([#474](https://github.com/dotenv-linter/dotenv-linter/pull/474))
+- Bump codecov/codecov-action from 1 to 2.1.0 ([#475](https://github.com/dotenv-linter/dotenv-linter/pull/475))
+- Bump tempfile from 3.2.0 to 3.3.0 ([#478](https://github.com/dotenv-linter/dotenv-linter/pull/478))
+- Bump assert_cmd from 2.0.2 to 2.0.4 ([#479](https://github.com/dotenv-linter/dotenv-linter/pull/479))
+- Bump update-informer from 0.3.0 to 0.4.0 ([#477](https://github.com/dotenv-linter/dotenv-linter/pull/477))
+- Update dependency `update-informer` ([#470](https://github.com/dotenv-linter/dotenv-linter/pull/470))
 
 ## [v3.2.0] - 2022-01-24
 
