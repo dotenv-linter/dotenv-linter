@@ -5,13 +5,7 @@
 header = """
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog],
-and this project adheres to [Semantic Versioning].
-
-[Keep a Changelog]: https://keepachangelog.com/en/1.0.0
-[Semantic Versioning]: https://semver.org/spec/v2.0.0.html\n
+All notable changes to this project will be documented in this file.\n
 """
 # template for the changelog body
 # https://tera.netlify.app/docs/#introduction
@@ -47,22 +41,22 @@ commit_preprocessors = [
 ]
 # regex for parsing and grouping commits
 commit_parsers = [
-  { message = "^feat", group = "1Features"},
-  { message = "^fix\\(ci\\):", group = "CI"},
-  { message = "^fix", group = "2Fixes"},
-  { message = "^doc", group = "Documentation"},
-  { message = "^perf", group = "Performance"},
-  { message = "^refactor", group = "Refactor"},
-  { message = "^style", group = "Styling"},
-  { message = "^test", group = "Testing"},
+  { message = "^feat", group = "1Features" },
+  { message = "^fix\\(ci\\):", group = "CI" },
+  { message = "^fix", group = "2Fixes" },
+  { message = "^doc", group = "Documentation" },
+  { message = "^perf", group = "Performance" },
+  { message = "^refactor", group = "Refactor" },
+  { message = "^style", group = "Styling" },
+  { message = "^test", group = "Testing" },
   { message = "^chore\\(release\\)", skip = true },
   { message = "^chore\\(deps\\):", group = "Update dependencies" },
-  { message = "^chore\\(ci\\):", group = "CI"},
+  { message = "^chore\\(ci\\):", group = "CI" },
   { message = "^chore: bump", group = "Update dependencies" },
   { message = "^chore: update dependency", group = "Update dependencies" },
-  { message = "^chore", group = "Miscellaneous Tasks"},
-  { message = "^ci:", group = "CI"},
-  { body = ".*security", group = "Security"},
+  { message = "^chore", group = "Miscellaneous Tasks" },
+  { message = "^ci:", group = "CI" },
+  { body = ".*security", group = "Security" },
 ]
 # filter out the commits that are not matched by commit parsers
 filter_commits = true
