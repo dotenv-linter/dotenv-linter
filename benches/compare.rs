@@ -10,7 +10,7 @@ pub fn compare_benchmark(c: &mut Criterion) {
     let path = temp.into_path();
 
     let current_dir = env::current_dir().expect("get current dir");
-    let app = dotenv_linter::cli::new(path.as_os_str());
+    let app = dotenv_linter::cli::command();
     let matches = app.get_matches_from(vec![
         "dotenv-linter",
         "compare",

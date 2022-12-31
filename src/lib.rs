@@ -1,5 +1,5 @@
 use crate::{common::*, quote_type::QuoteType};
-use clap::Values;
+use clap::parser::ValuesRef;
 use std::{
     collections::{BTreeMap, HashSet},
     path::{Path, PathBuf},
@@ -21,10 +21,10 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
     let lines_map = get_lines(
         args,
         current_dir,
-        args.is_present("recursive"),
-        args.values_of("exclude"),
+        args.get_flag("recursive"),
+        args.get_many("exclude"),
     );
-    let output = CheckOutput::new(args.is_present("quiet"), lines_map.len());
+    let output = CheckOutput::new(args.get_flag("quiet"), lines_map.len());
 
     if lines_map.is_empty() {
         output.print_nothing_to_check();
@@ -36,9 +36,9 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
     }
 
     let skip_checks: Vec<LintKind> = args
-        .values_of("skip")
+        .get_many::<String>("skip")
         .unwrap_or_default()
-        .filter_map(|check: &str| LintKind::from_str(check).ok())
+        .filter_map(|check| LintKind::from_str(check).ok())
         .collect();
 
     let warnings_count =
@@ -68,10 +68,10 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
     let lines_map = get_lines(
         args,
         current_dir,
-        args.is_present("recursive"),
-        args.values_of("exclude"),
+        args.get_flag("recursive"),
+        args.get_many("exclude"),
     );
-    let output = FixOutput::new(args.is_present("quiet"), lines_map.len());
+    let output = FixOutput::new(args.get_flag("quiet"), lines_map.len());
 
     // Nothing to fix
     if lines_map.is_empty() {
@@ -80,9 +80,9 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
     }
 
     let skip_checks: Vec<LintKind> = args
-        .values_of("skip")
+        .get_many::<String>("skip")
         .unwrap_or_default()
-        .filter_map(|check: &str| LintKind::from_str(check).ok())
+        .filter_map(|check| LintKind::from_str(check).ok())
         .collect();
 
     for (index, (fe, strings)) in lines_map.into_iter().enumerate() {
@@ -98,7 +98,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
             output.print_not_all_warnings_fixed();
         }
         if fixes_done > 0 {
-            let should_backup = !args.is_present("no-backup");
+            let should_backup = !args.get_flag("no-backup");
             // create backup copy unless user specifies not to
             if should_backup {
                 let backup_file = fs_utils::backup_file(&fe)?;
@@ -121,7 +121,7 @@ pub fn fix(args: &clap::ArgMatches, current_dir: &Path) -> Result<()> {
 pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<CompareWarning>> {
     let mut all_keys: HashSet<String> = HashSet::new();
     let lines_map = get_lines(args, current_dir, false, None);
-    let output = CompareOutput::new(args.is_present("quiet"));
+    let output = CompareOutput::new(args.get_flag("quiet"));
 
     let mut warnings: Vec<CompareWarning> = Vec::new();
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
@@ -180,9 +180,9 @@ fn get_lines(
     args: &clap::ArgMatches,
     current_dir: &Path,
     is_recursive: bool,
-    exclude: Option<Values>,
+    exclude: Option<ValuesRef<String>>,
 ) -> BTreeMap<FileEntry, Vec<String>> {
-    let file_paths: Vec<PathBuf> = get_needed_file_paths(args, is_recursive, exclude);
+    let file_paths: Vec<PathBuf> = get_needed_file_paths(args, current_dir, is_recursive, exclude);
 
     file_paths
         .iter()
@@ -195,8 +195,9 @@ fn get_lines(
 /// Getting a list of all files for checking/fixing without custom exclusion files
 fn get_needed_file_paths(
     args: &clap::ArgMatches,
+    current_dir: &Path,
     is_recursive: bool,
-    exclude: Option<Values>,
+    exclude: Option<ValuesRef<String>>,
 ) -> Vec<PathBuf> {
     let mut file_paths: Vec<PathBuf> = Vec::new();
     let mut excluded_paths: Vec<PathBuf> = Vec::new();
@@ -207,9 +208,26 @@ fn get_needed_file_paths(
             .collect();
     }
 
-    if let Some(inputs) = args.values_of("input") {
+    match args.get_many::<String>("input") {
+        Some(inputs) => {
+            let input_paths = inputs
+                .filter_map(|s| fs_utils::canonicalize(s).ok())
+                .collect();
+
+            file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
+        }
+        None => {
+            file_paths.extend(get_file_paths(
+                vec![current_dir.to_path_buf()],
+                &excluded_paths,
+                is_recursive,
+            ));
+        }
+    }
+
+    if let Some(inputs) = args.get_many("input") {
         let input_paths = inputs
-            .filter_map(|s| fs_utils::canonicalize(s).ok())
+            .filter_map(|s: &String| fs_utils::canonicalize(s).ok())
             .collect();
 
         file_paths.extend(get_file_paths(input_paths, &excluded_paths, is_recursive));
@@ -326,7 +344,7 @@ fn print_new_version_if_available(args: &clap::ArgMatches) {
     use colored::*;
     use update_informer::{registry, Check};
 
-    if args.is_present("not-check-updates") || args.is_present("quiet") {
+    if args.get_flag("not-check-updates") || args.get_flag("quiet") {
         return;
     }
 

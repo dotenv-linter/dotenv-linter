@@ -32,7 +32,7 @@ fn generate_arg_matches(app: &Command, with_backup: bool) -> ArgMatches {
 /// Runs the Fix Benchmark
 pub fn fix_benchmark(c: &mut Criterion) {
     let current_dir = env::current_dir().expect("get current dir");
-    let app = dotenv_linter::cli::new(current_dir.as_os_str());
+    let app = dotenv_linter::cli::command();
     c.bench_function("dotenv_linter fix", |b| {
         // Disable output to STDOUT
         #[cfg(not(windows))]
@@ -48,7 +48,7 @@ pub fn fix_benchmark(c: &mut Criterion) {
 /// Runs the fix Benchmark with Backup
 pub fn fix_benchmark_with_backup(c: &mut Criterion) {
     let current_dir = env::current_dir().expect("get current dir");
-    let app = dotenv_linter::cli::new(current_dir.as_os_str());
+    let app = dotenv_linter::cli::command();
     c.bench_function("dotenv_linter fix with backup", |b| {
         // Disable output to STDOUT
         #[cfg(not(windows))]
