@@ -28,10 +28,6 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
 
     if lines_map.is_empty() {
         output.print_nothing_to_check();
-
-        #[cfg(feature = "update-informer")]
-        print_new_version_if_available(args);
-
         return Ok(0);
     }
 
@@ -56,10 +52,6 @@ pub fn check(args: &clap::ArgMatches, current_dir: &Path) -> Result<usize> {
             });
 
     output.print_total(warnings_count);
-
-    #[cfg(feature = "update-informer")]
-    print_new_version_if_available(args);
-
     Ok(warnings_count)
 }
 
@@ -126,7 +118,7 @@ pub fn compare(args: &clap::ArgMatches, current_dir: &Path) -> Result<Vec<Compar
     let mut warnings: Vec<CompareWarning> = Vec::new();
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
 
-    // Nothing to check
+    // Nothing to compare
     if lines_map.is_empty() {
         output.print_nothing_to_compare();
         return Ok(warnings);
@@ -338,18 +330,13 @@ fn is_multiline_start(val: &str) -> Option<QuoteType> {
         .find(|quote_type| quote_type.is_quoted_value(val))
 }
 
-/// Prints information about the new version to `STDOUT` if a new version is available
+/// Checks for updates and prints information about the new version to `STDOUT`
 #[cfg(feature = "update-informer")]
-fn print_new_version_if_available(args: &clap::ArgMatches) {
+pub(crate) fn check_for_updates() {
     use colored::*;
     use update_informer::{registry, Check};
 
-    if args.get_flag("not-check-updates") || args.get_flag("quiet") {
-        return;
-    }
-
     let pkg_name = env!("CARGO_PKG_NAME");
-
     #[cfg(not(feature = "stub_check_version"))]
     let current_version = env!("CARGO_PKG_VERSION");
     #[cfg(feature = "stub_check_version")]
