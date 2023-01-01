@@ -14,6 +14,11 @@ pub fn run() -> Result<i32> {
         None => {
             let total_warnings = crate::check(&args, &current_dir)?;
 
+            #[cfg(feature = "update-informer")]
+            if !args.get_flag("not-check-updates") && !args.get_flag("quiet") {
+                crate::check_for_updates();
+            }
+
             if total_warnings == 0 {
                 return Ok(0);
             }
@@ -47,11 +52,16 @@ pub fn run() -> Result<i32> {
 }
 
 pub fn command() -> Command {
-    command!()
+    let mut cmd = command!()
         .disable_help_subcommand(true)
         .args(common_args())
-        .arg(not_check_updates_flag())
-        .subcommands([compare_command(), fix_command(), list_command()])
+        .subcommands([compare_command(), fix_command(), list_command()]);
+
+    if cfg!(feature = "update-informer") {
+        cmd = cmd.arg(not_check_updates_flag());
+    }
+
+    cmd
 }
 
 fn compare_command() -> Command {
