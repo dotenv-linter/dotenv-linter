@@ -6,11 +6,12 @@
   },
   "toml": {
   },
-  "includes": ["**/*.{json,md,toml}"],
+  "includes": ["**/*.{json,md,toml}", "Dockerfile"],
   "excludes": ["target/"],
   "plugins": [
     "https://plugins.dprint.dev/json-0.15.0.wasm",
     "https://plugins.dprint.dev/markdown-0.13.0.wasm",
-    "https://plugins.dprint.dev/toml-0.5.4.wasm"
+    "https://plugins.dprint.dev/toml-0.5.4.wasm",
+    "https://plugins.dprint.dev/dockerfile-0.3.0.wasm"
   ]
 }

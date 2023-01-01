@@ -9,6 +9,8 @@ jobs:
       - uses: reviewdog/action-misspell@v1
         with:
           locale: "US"
+          fail_on_error: true
+          reporter: github-pr-review
 
   yamllint:
     runs-on: ubuntu-latest
@@ -16,9 +18,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-yamllint@v1
         with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
           fail_on_error: true
+          reporter: github-pr-review
           yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
 
   shellcheck:
@@ -27,9 +28,9 @@ jobs:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-shellcheck@v1
         with:
-          github_token: ${{ secrets.github_token }}
-          fail_on_error: true
           exclude: "./.git/*"
+          fail_on_error: true
+          reporter: github-pr-review
 
   commitlint:
     runs-on: ubuntu-latest
@@ -45,7 +46,6 @@ jobs:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-hadolint@v1
         with:
-          github_token: ${{ secrets.github_token }}
           fail_on_error: true
           reporter: github-pr-review
 

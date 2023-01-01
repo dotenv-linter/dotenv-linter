@@ -67,7 +67,7 @@ jobs:
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
-        run: $HOME/bin/dotenv-linter -v
+        run: $HOME/bin/dotenv-linter --version
 
   install_specific_versions:
     strategy:
@@ -82,7 +82,7 @@ jobs:
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin v${{ matrix.version }}
       - name: Verify successful installation
-        run: test "$($HOME/bin/dotenv-linter -v)" = "dotenv-linter ${{ matrix.version }}"
+        run: test "$($HOME/bin/dotenv-linter --version)" = "dotenv-linter ${{ matrix.version }}"
 
   install_specific_versions_wrong_input:
     strategy:
@@ -126,7 +126,7 @@ jobs:
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
         shell: bash
-        run: $HOME/bin/dotenv-linter.exe -v
+        run: $HOME/bin/dotenv-linter.exe --version
 
   windows_install_specific_versions:
     strategy:
@@ -142,7 +142,7 @@ jobs:
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin v${{ matrix.version }}
       - name: Verify successful installation
         shell: bash # it uses Git Bash, i.e. MinGW
-        run: test "$($HOME/bin/dotenv-linter -v)" = "dotenv-linter ${{ matrix.version }}"
+        run: test "$($HOME/bin/dotenv-linter --version)" = "dotenv-linter ${{ matrix.version }}"
 
   windows_install_specific_versions_wrong_input:
     strategy:
@@ -175,7 +175,7 @@ jobs:
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
-        run: $HOME/bin/dotenv-linter -v
+        run: $HOME/bin/dotenv-linter --version
 
   ###################
   ### Docker jobs ###

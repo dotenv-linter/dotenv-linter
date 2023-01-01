@@ -34,6 +34,7 @@ parse_args() {
     case $1 in
         -h|--help)
             usage "$0"
+            # shellcheck disable=SC2317
             shift # past argument
             ;;
         -b|--bindir)
@@ -115,7 +116,7 @@ main() {
     install "${_temp_dir}/${_file_name}" "${BINDIR}/" || err "Failed to install"
     _exe_path=${BINDIR}/${_file_name}
 
-    println "Successfully installed $($_exe_path -v) to ${_exe_path}"
+    println "Successfully installed $($_exe_path --version) to ${_exe_path}"
 
     rm -rf "${_temp_dir}"
 
