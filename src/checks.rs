@@ -42,10 +42,6 @@ fn checklist() -> Vec<Box<dyn Check>> {
     ]
 }
 
-pub fn available_check_names() -> Vec<LintKind> {
-    checklist().iter().map(|check| check.name()).collect()
-}
-
 pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
     let mut checks = checklist();
 
@@ -255,15 +251,6 @@ mod tests {
         let skip_checks: Vec<LintKind> = Vec::new();
 
         assert_eq!(expected, run(&lines, &skip_checks));
-    }
-
-    #[test]
-    fn check_name_list() {
-        let available_check_names = available_check_names();
-        for check in checklist() {
-            let check_name = check.name();
-            assert!(available_check_names.iter().any(|name| name == &check_name));
-        }
     }
 
     #[test]

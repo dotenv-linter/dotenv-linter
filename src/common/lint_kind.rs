@@ -1,3 +1,5 @@
+use clap::builder::PossibleValue;
+use clap::ValueEnum;
 use std::{fmt, str::FromStr};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -15,6 +17,44 @@ pub enum LintKind {
     TrailingWhitespace,
     UnorderedKey,
     ValueWithoutQuotes,
+}
+
+impl ValueEnum for LintKind {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[
+            LintKind::DuplicatedKey,
+            LintKind::EndingBlankLine,
+            LintKind::ExtraBlankLine,
+            LintKind::IncorrectDelimiter,
+            LintKind::KeyWithoutValue,
+            LintKind::LeadingCharacter,
+            LintKind::LowercaseKey,
+            LintKind::QuoteCharacter,
+            LintKind::SpaceCharacter,
+            LintKind::SubstitutionKey,
+            LintKind::TrailingWhitespace,
+            LintKind::UnorderedKey,
+            LintKind::ValueWithoutQuotes,
+        ]
+    }
+
+    fn to_possible_value<'a>(&self) -> Option<PossibleValue> {
+        Some(match self {
+            LintKind::DuplicatedKey => PossibleValue::new("DuplicatedKey"),
+            LintKind::EndingBlankLine => PossibleValue::new("EndingBlankLine"),
+            LintKind::ExtraBlankLine => PossibleValue::new("ExtraBlankLine"),
+            LintKind::IncorrectDelimiter => PossibleValue::new("IncorrectDelimiter"),
+            LintKind::KeyWithoutValue => PossibleValue::new("KeyWithoutValue"),
+            LintKind::LeadingCharacter => PossibleValue::new("LeadingCharacter"),
+            LintKind::LowercaseKey => PossibleValue::new("LowercaseKey"),
+            LintKind::QuoteCharacter => PossibleValue::new("QuoteCharacter"),
+            LintKind::SpaceCharacter => PossibleValue::new("SpaceCharacter"),
+            LintKind::SubstitutionKey => PossibleValue::new("SubstitutionKey"),
+            LintKind::TrailingWhitespace => PossibleValue::new("TrailingWhitespace"),
+            LintKind::UnorderedKey => PossibleValue::new("UnorderedKey"),
+            LintKind::ValueWithoutQuotes => PossibleValue::new("ValueWithoutQuotes"),
+        })
+    }
 }
 
 impl FromStr for LintKind {
@@ -52,18 +92,13 @@ mod tests {
 
     #[test]
     fn test_str_to_lint_variant_conversion() {
-        let lint_as_str = "DuplicatedKey";
-        let expected = LintKind::from_str(lint_as_str).unwrap();
-
+        let expected = <LintKind as FromStr>::from_str("DuplicatedKey").unwrap();
         assert_eq!(expected, LintKind::DuplicatedKey);
     }
 
     #[test]
     fn test_invalid_lint_str_variant() {
-        let invalid_lint_str = "FooBarLint";
-        let expected = Err(());
-
-        assert_eq!(expected, LintKind::from_str(invalid_lint_str));
+        assert_eq!(Err(()), <LintKind as FromStr>::from_str("FooBarLint"));
     }
 
     #[test]

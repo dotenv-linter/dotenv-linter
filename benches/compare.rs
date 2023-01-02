@@ -11,7 +11,7 @@ pub fn compare_benchmark(c: &mut Criterion) {
 
     let current_dir = env::current_dir().expect("get current dir");
     let app = dotenv_linter::cli::command();
-    let matches = app.get_matches_from(vec![
+    let args = app.get_matches_from(vec![
         "dotenv-linter",
         "compare",
         path.join(".env").to_str().expect(".env to str"),
@@ -19,6 +19,7 @@ pub fn compare_benchmark(c: &mut Criterion) {
             .to_str()
             .expect(".env.compare to str"),
     ]);
+    let opts = dotenv_linter::cli::options::CompareOptions::new(&args);
 
     fs::copy("benches/fixtures/simple.env", path.join(".env")).expect("copy .env file");
     fs::copy("benches/fixtures/compare.env", path.join(".env.compare"))
@@ -29,7 +30,7 @@ pub fn compare_benchmark(c: &mut Criterion) {
         #[cfg(not(windows))]
         let _print_gag = Gag::stdout().expect("disable stdout");
 
-        b.iter(|| dotenv_linter::compare(black_box(&matches), black_box(&current_dir)))
+        b.iter(|| dotenv_linter::compare(black_box(&opts), black_box(&current_dir)))
     });
 }
 
