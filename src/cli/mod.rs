@@ -1,5 +1,12 @@
-use crate::Result;
-use clap::{command, Arg, ArgAction, Command};
+use crate::{
+    cli::options::{CheckOptions, CompareOptions, FixOptions},
+    common::LintKind,
+    Result,
+};
+use clap::{command, value_parser, Arg, ArgAction, Command};
+use std::path::PathBuf;
+
+pub mod options;
 
 pub fn run() -> Result<i32> {
     #[cfg(windows)]
@@ -12,7 +19,8 @@ pub fn run() -> Result<i32> {
 
     match args.subcommand() {
         None => {
-            let total_warnings = crate::check(&args, &current_dir)?;
+            let opts = CheckOptions::new(&args);
+            let total_warnings = crate::check(&opts, &current_dir)?;
 
             #[cfg(feature = "update-informer")]
             if !args.get_flag("not-check-updates") && !args.get_flag("quiet") {
@@ -24,21 +32,16 @@ pub fn run() -> Result<i32> {
             }
         }
         Some(("fix", fix_args)) => {
-            crate::fix(fix_args, &current_dir)?;
-
-            return Ok(0);
-        }
-        Some(("list", _)) => {
-            crate::available_check_names()
-                .iter()
-                .for_each(|name| println!("{}", name));
+            let opts = FixOptions::new(fix_args);
+            crate::fix(&opts, &current_dir)?;
 
             return Ok(0);
         }
         Some(("compare", compare_args)) => {
             disable_color_output(compare_args);
 
-            let warnings = crate::compare(compare_args, &current_dir)?;
+            let opts = CompareOptions::new(compare_args);
+            let warnings = crate::compare(&opts, &current_dir)?;
             if warnings.is_empty() {
                 return Ok(0);
             }
@@ -55,7 +58,7 @@ pub fn command() -> Command {
     let mut cmd = command!()
         .disable_help_subcommand(true)
         .args(common_args())
-        .subcommands([compare_command(), fix_command(), list_command()]);
+        .subcommands([compare_command(), fix_command()]);
 
     if cfg!(feature = "update-informer") {
         cmd = cmd.arg(not_check_updates_flag());
@@ -72,7 +75,8 @@ fn compare_command() -> Command {
                 .help("Files to compare")
                 .action(ArgAction::Append)
                 .required(true)
-                .num_args(2..),
+                .num_args(2..)
+                .value_parser(value_parser!(PathBuf)),
             no_color_flag(),
             quiet_flag(),
         ])
@@ -94,34 +98,30 @@ fn fix_command() -> Command {
         .about("Automatically fixes warnings")
 }
 
-fn list_command() -> Command {
-    Command::new("list")
-        .visible_alias("l")
-        .override_usage("dotenv-linter list")
-        .about("Shows list of available checks")
-}
-
 fn common_args() -> Vec<Arg> {
     vec![
         Arg::new("input")
             .help("files or paths")
             .index(1)
             .action(ArgAction::Append)
-            .num_args(0..),
+            .num_args(0..)
+            .value_parser(value_parser!(PathBuf)),
         Arg::new("exclude")
             .short('e')
             .long("exclude")
             .value_name("FILE_NAME")
             .help("Excludes files from check")
             .action(ArgAction::Append)
-            .num_args(0..),
+            .num_args(0..)
+            .value_parser(value_parser!(PathBuf)),
         Arg::new("skip")
             .short('s')
             .long("skip")
             .value_name("CHECK_NAME")
             .help("Skips checks")
             .action(ArgAction::Append)
-            .num_args(0..),
+            .num_args(0..)
+            .value_parser(value_parser!(LintKind)),
         Arg::new("recursive")
             .short('r')
             .long("recursive")

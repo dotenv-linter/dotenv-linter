@@ -40,7 +40,10 @@ pub fn fix_benchmark(c: &mut Criterion) {
         // iter_batched, so we can copy the files beforehand
         b.iter_batched(
             || generate_arg_matches(&app, false),
-            |arguments| dotenv_linter::fix(black_box(&arguments), black_box(&current_dir)),
+            |args| {
+                let opts = dotenv_linter::cli::options::FixOptions::new(&args);
+                dotenv_linter::fix(black_box(&opts), black_box(&current_dir))
+            },
             BatchSize::SmallInput,
         )
     });
@@ -56,7 +59,10 @@ pub fn fix_benchmark_with_backup(c: &mut Criterion) {
         // iter_batched, so we can copy the files beforehand
         b.iter_batched(
             || generate_arg_matches(&app, true),
-            |arguments| dotenv_linter::fix(black_box(&arguments), black_box(&current_dir)),
+            |args| {
+                let opts = dotenv_linter::cli::options::FixOptions::new(&args);
+                dotenv_linter::fix(black_box(&opts), black_box(&current_dir))
+            },
             BatchSize::SmallInput,
         )
     });
