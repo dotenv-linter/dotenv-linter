@@ -13,5 +13,5 @@
 # Environment Files
 *.env
 *.env_*
-!/tests/fixes/fixtures/*.env
-!/benches/fixtures/*.env
+!/dotenv-linter/tests/fixes/fixtures/*.env
+!/dotenv-linter/benches/fixtures/*.env

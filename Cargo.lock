@@ -310,10 +310,20 @@ dependencies = [
  "clap 4.0.32",
  "colored",
  "criterion",
+ "dotenv-lookup",
  "dunce",
  "gag",
  "tempfile",
  "update-informer",
+]
+
+[[package]]
+name = "dotenv-lookup"
+version = "1.0.0"
+dependencies = [
+ "assert_cmd",
+ "dunce",
+ "tempfile",
 ]
 
 [[package]]

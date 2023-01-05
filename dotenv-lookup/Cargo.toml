@@ -1,0 +1,16 @@
+[package]
+name = "dotenv-lookup"
+version = "1.0.0"
+authors.workspace = true
+edition.workspace = true
+include = ["/src"]
+license.workspace = true
+repository.workspace = true
+description = "A crate to find and parse .env files"
+
+[target.'cfg(windows)'.dependencies]
+dunce.workspace = true
+
+[dev-dependencies]
+assert_cmd.workspace = true
+tempfile.workspace = true
