@@ -122,7 +122,9 @@ fn common_args() -> Vec<Arg> {
             .help("Skips checks")
             .action(ArgAction::Append)
             .num_args(0..)
-            .value_parser(value_parser!(LintKind)),
+            .value_parser(value_parser!(LintKind))
+            .env("DOTENV_LINTER_SKIP")
+            .value_delimiter(','),
         Arg::new("recursive")
             .short('r')
             .long("recursive")
