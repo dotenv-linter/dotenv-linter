@@ -33,7 +33,7 @@ fn do_not_print_new_version() {
     let mut envs = HashMap::new();
     envs.insert("DOTENV_LINTER_NOT_CHECK_UPDATES".to_string(), "true".to_string());
     
-    let test_dir = TestDir::with_envs(Some(envs));
+    let test_dir = TestDir::with_envs(envs);
     test_dir.create_testfile(".env", "FOO=bar\n");
     let expected_output = check_output(&[(".env", &[])]);
     let expected_output = format!("{}", expected_output);
