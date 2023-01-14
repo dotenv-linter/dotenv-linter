@@ -218,7 +218,7 @@ impl TestDir {
     fn init_cmd(&self) -> Command {
         let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name");
 
-        cmd.envs(&self.envs.clone().unwrap_or_default());
+        cmd.envs(self.envs.as_ref().unwrap_or(&HashMap::new()));
 
         cmd
     }
