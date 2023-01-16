@@ -154,6 +154,8 @@ fn not_check_updates_flag() -> Arg {
     Arg::new("not-check-updates")
         .long("not-check-updates")
         .help("Doesn't check for updates")
+        .value_parser(clap::builder::BoolishValueParser::new())
+        .env("DOTENV_LINTER_NOT_CHECK_UPDATES")
         .action(ArgAction::SetTrue)
 }
 

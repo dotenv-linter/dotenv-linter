@@ -1,4 +1,5 @@
 use assert_cmd::Command;
+use std::collections::HashMap;
 use std::{borrow::Cow, ffi::OsStr};
 use tempfile::{tempdir, tempdir_in, TempDir};
 
@@ -14,6 +15,7 @@ use std::str::from_utf8;
 /// Use to test commands in temporary directories
 pub struct TestDir {
     current_dir: TempDir,
+    envs: HashMap<String, String>,
 }
 
 impl TestDir {
@@ -21,6 +23,16 @@ impl TestDir {
     pub fn new() -> Self {
         Self {
             current_dir: tempdir().expect("create testdir"),
+            envs: Default::default(),
+        }
+    }
+
+    // Only used in tests
+    #[allow(dead_code)]
+    pub fn with_envs(envs: HashMap<String, String>) -> Self {
+        Self {
+            current_dir: tempdir().expect("create testdir with envs"),
+            envs,
         }
     }
 
@@ -28,6 +40,7 @@ impl TestDir {
     pub fn subdir(&self) -> Self {
         Self {
             current_dir: tempdir_in(&self.current_dir).expect("create subdir"),
+            envs: self.envs.clone(),
         }
     }
 
@@ -76,7 +89,7 @@ impl TestDir {
         T: Into<String>,
     {
         let expected_output = expected_output.into();
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
             .args(args)
@@ -98,7 +111,7 @@ impl TestDir {
         T: Into<String>,
     {
         let expected_output = expected_output.into();
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
             .args(args)
@@ -118,7 +131,7 @@ impl TestDir {
         T: Into<String>,
     {
         let expected_output = expected_output.into();
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
             .args(&["fix", "--no-backup"])
@@ -131,7 +144,7 @@ impl TestDir {
     ///
     /// This method does NOT remove TestDir when finished
     pub fn test_command_fix_success_without_output(&self) {
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
             .args(&["fix", "--no-backup"])
@@ -150,7 +163,7 @@ impl TestDir {
         T: Into<String>,
     {
         let expected_output = expected_output.into();
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
             .args(&["fix", "--no-backup"])
@@ -169,7 +182,7 @@ impl TestDir {
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
     {
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         cmd.current_dir(&canonical_current_dir)
             .args(args)
@@ -186,7 +199,7 @@ impl TestDir {
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
     {
-        let mut cmd = Self::init_cmd();
+        let mut cmd = self.init_cmd();
         let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
         String::from(
             from_utf8(
@@ -202,7 +215,11 @@ impl TestDir {
         )
     }
 
-    fn init_cmd() -> Command {
-        Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name")
+    fn init_cmd(&self) -> Command {
+        let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name");
+
+        cmd.envs(&self.envs);
+
+        cmd
     }
 }
