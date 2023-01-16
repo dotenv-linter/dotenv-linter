@@ -15,7 +15,7 @@ use std::str::from_utf8;
 /// Use to test commands in temporary directories
 pub struct TestDir {
     current_dir: TempDir,
-    envs: Option<HashMap<String, String>>,
+    envs: HashMap<String, String>,
 }
 
 impl TestDir {
@@ -23,7 +23,7 @@ impl TestDir {
     pub fn new() -> Self {
         Self {
             current_dir: tempdir().expect("create testdir"),
-            envs: None,
+            envs: Default::default(),
         }
     }
 
@@ -32,7 +32,7 @@ impl TestDir {
     pub fn with_envs(envs: HashMap<String, String>) -> Self {
         Self {
             current_dir: tempdir().expect("create testdir with envs"),
-            envs: Some(envs.clone()),
+            envs,
         }
     }
 
@@ -218,7 +218,7 @@ impl TestDir {
     fn init_cmd(&self) -> Command {
         let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name");
 
-        cmd.envs(self.envs.as_ref().unwrap_or(&HashMap::new()));
+        cmd.envs(&self.envs);
 
         cmd
     }
