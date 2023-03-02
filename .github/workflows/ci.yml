@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.2.1
       - run: cargo check --all-targets
       - run: cargo fmt --all --check
       - run: cargo clippy --all-features -- -D warnings
@@ -31,7 +31,7 @@ jobs:
       - run: rustup override set nightly
       - name: Set grcov version
         run: echo "GRCOV_VERSION=$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)" >> $GITHUB_ENV
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.2.1
         with:
           key: ${{ env.GRCOV_VERSION }}
       - run: cargo install --version $GRCOV_VERSION grcov
@@ -54,7 +54,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.2.1
       - run: cargo install cargo-sort
       - run: cargo-sort --check
 
@@ -112,7 +112,7 @@ jobs:
         run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.2.1
       - run: cargo test --all-features --no-fail-fast
 
   windows_install:
@@ -272,7 +272,7 @@ jobs:
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
           targets: ${{ matrix.TARGET }}
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.2.1
         with:
           key: ${{ matrix.TARGET }}
       - name: Build
