@@ -1,8 +1,12 @@
 targets = [
   { triple = "x86_64-unknown-linux-gnu" },
   { triple = "x86_64-unknown-linux-musl" },
+  { triple = "aarch64-unknown-linux-gnu" },
+  { triple = "aarch64-unknown-linux-musl" },
   { triple = "x86_64-apple-darwin" },
+  { triple = "aarch64-apple-darwin" },
   { triple = "x86_64-pc-windows-msvc" },
+  { triple = "aarch64-pc-windows-msvc" },
 ]
 
 [advisories]
@@ -10,10 +14,7 @@ vulnerability = "deny"
 unmaintained = "warn"
 yanked = "warn"
 notice = "warn"
-ignore = [
-  "RUSTSEC-2022-0013", # regex is a criterion dependency (dev)
-  "RUSTSEC-2021-0127", # serde_cbor is a criterion dependency (dev)
-]
+ignore = []
 
 [licenses]
 unlicensed = "deny"
@@ -52,9 +53,7 @@ license-files = [
 [bans]
 multiple-versions = "warn"
 highlight = "all"
-skip = [
-  { name = "itoa", version = "=0.4.8" },
-]
+skip = []
 
 [sources]
 unknown-registry = "deny"
