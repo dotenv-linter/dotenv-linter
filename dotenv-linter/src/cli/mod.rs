@@ -9,9 +9,6 @@ use std::path::PathBuf;
 pub mod options;
 
 pub fn run() -> Result<i32> {
-    #[cfg(windows)]
-    colored::control::set_virtual_terminal(true).ok();
-
     let current_dir = std::env::current_dir()?;
     let args = command().get_matches();
 
@@ -161,7 +158,7 @@ fn not_check_updates_flag() -> Arg {
 
 fn disable_color_output(args: &clap::ArgMatches) {
     if args.get_flag("no-color") {
-        colored::control::set_override(false);
+        owo_colors::set_override(false);
     }
 }
 

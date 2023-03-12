@@ -1,4 +1,4 @@
-use colored::*;
+use owo_colors::{OwoColorize, Stream, Style};
 use std::{fmt, path::PathBuf};
 
 // A structure used to compare environment files
@@ -18,10 +18,15 @@ impl fmt::Display for CompareWarning {
         write!(
             f,
             "{} is missing keys: {}",
-            self.path.display().to_string().italic(),
+            self.path
+                .display()
+                .to_string()
+                .if_supports_color(Stream::Stdout, |text| text.italic()),
             self.missing_keys
                 .iter()
-                .map(|k| k.red().bold().to_string())
+                .map(|k| k
+                    .if_supports_color(Stream::Stdout, |text| text.style(Style::new().red().bold()))
+                    .to_string())
                 .collect::<Vec<String>>()
                 .join(", ")
         )

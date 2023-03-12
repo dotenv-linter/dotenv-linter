@@ -14,8 +14,8 @@ description = "Lightning-fast linter for .env files"
 
 [dependencies]
 clap = { version = "4.1.8", features = ["cargo", "env"] }
-colored = "2.0.0"
 dotenv-lookup = { version = "1.0.0", path = "../dotenv-lookup" }
+owo-colors = { version = "3.5.0", features = ["supports-colors"] }
 
 [dependencies.update-informer]
 version = "0.6.0"

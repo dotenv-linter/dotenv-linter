@@ -1,6 +1,6 @@
 use crate::common::Warning;
-use colored::*;
 use dotenv_lookup::FileEntry;
+use owo_colors::{OwoColorize, Stream, Style};
 
 pub struct CheckOutput {
     // Quiet program output mode
@@ -40,9 +40,13 @@ impl CheckOutput {
 
     /// Prints warnings without any additional information
     pub fn print_warnings(&self, file: &FileEntry, warnings: &[Warning], file_index: usize) {
-        warnings
-            .iter()
-            .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
+        warnings.iter().for_each(|w| {
+            println!(
+                "{}{}",
+                format!("{}:", file).if_supports_color(Stream::Stdout, |text| text.italic()),
+                w
+            )
+        });
 
         if self.is_quiet_mode {
             return;
@@ -68,10 +72,16 @@ impl CheckOutput {
 
             println!(
                 "\n{}",
-                format!("{} {} {}", "Found", total, problems).red().bold()
+                format!("{} {} {}", "Found", total, problems)
+                    .if_supports_color(Stream::Stdout, |text| text
+                        .style(Style::new().red().bold()))
             );
         } else {
-            println!("\n{}", "No problems found".green().bold());
+            println!(
+                "\n{}",
+                "No problems found".if_supports_color(Stream::Stdout, |text| text
+                    .style(Style::new().green().bold()))
+            );
         }
     }
 }

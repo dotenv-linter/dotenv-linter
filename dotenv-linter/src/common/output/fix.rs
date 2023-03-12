@@ -1,6 +1,6 @@
 use crate::common::Warning;
-use colored::*;
 use dotenv_lookup::FileEntry;
+use owo_colors::{OwoColorize, Stream, Style};
 use std::path::Path;
 
 /// Prefix for the backup output
@@ -57,9 +57,13 @@ impl FixOutput {
             return;
         }
 
-        warnings
-            .iter()
-            .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
+        warnings.iter().for_each(|w| {
+            println!(
+                "{}{}",
+                format!("{}:", file).if_supports_color(Stream::Stdout, |text| text.italic()),
+                w
+            )
+        });
 
         let is_last_file = file_index == self.files_count - 1;
         if !warnings.is_empty() && !is_last_file {
@@ -82,6 +86,10 @@ impl FixOutput {
             return;
         }
 
-        println!("{}", "Could not fix all warnings".red().bold());
+        println!(
+            "{}",
+            "Could not fix all warnings"
+                .if_supports_color(Stream::Stdout, |text| text.style(Style::new().red().bold()))
+        );
     }
 }

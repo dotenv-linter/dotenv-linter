@@ -1,5 +1,5 @@
 use super::LintKind;
-use colored::*;
+use owo_colors::{OwoColorize, Stream, Style};
 use std::fmt;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -25,8 +25,12 @@ impl fmt::Display for Warning {
         write!(
             f,
             "{} {}: {}",
-            format!("{}", self.line_number).italic(),
-            self.check_name.to_string().red().bold(),
+            self.line_number
+                .to_string()
+                .if_supports_color(Stream::Stdout, |text| text.italic()),
+            self.check_name
+                .to_string()
+                .if_supports_color(Stream::Stdout, |text| text.style(Style::new().red().bold())),
             self.message
         )
     }
@@ -43,8 +47,11 @@ mod tests {
         assert_eq!(
             format!(
                 "{} {}: {}",
-                format!("{}", 1).italic(),
-                LintKind::DuplicatedKey.to_string().red().bold(),
+                format!("{}", 1).if_supports_color(Stream::Stdout, |text| text.italic()),
+                LintKind::DuplicatedKey
+                    .to_string()
+                    .if_supports_color(Stream::Stdout, |test| test
+                        .style(Style::new().red().bold())),
                 "The FOO key is duplicated"
             ),
             format!("{}", warning)

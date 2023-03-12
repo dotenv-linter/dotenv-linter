@@ -150,7 +150,7 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
 /// Checks for updates and prints information about the new version to `STDOUT`
 #[cfg(feature = "update-informer")]
 pub(crate) fn check_for_updates() {
-    use colored::*;
+    use owo_colors::{OwoColorize, Stream, Style};
     use update_informer::{registry, Check};
 
     let pkg_name = env!("CARGO_PKG_NAME");
@@ -167,18 +167,24 @@ pub(crate) fn check_for_updates() {
     if let Ok(Some(version)) = informer.check_version() {
         let msg = format!(
             "A new release of {pkg_name} is available: v{current_version} -> {new_version}",
-            pkg_name = pkg_name.italic().cyan(),
+            pkg_name = pkg_name.if_supports_color(Stream::Stdout, |text| text
+                .style(Style::new().cyan().italic())),
             current_version = current_version,
-            new_version = version.to_string().green()
+            new_version = version
+                .to_string()
+                .if_supports_color(Stream::Stdout, |text| text.green())
         );
 
         let release_url = format!(
             "https://github.com/{pkg_name}/{pkg_name}/releases/tag/{version}",
             pkg_name = pkg_name,
             version = version
-        )
-        .yellow();
+        );
 
-        println!("\n{msg}\n{url}", msg = msg, url = release_url);
+        println!(
+            "\n{msg}\n{url}",
+            msg = msg,
+            url = release_url.if_supports_color(Stream::Stdout, |text| text.yellow())
+        );
     }
 }
