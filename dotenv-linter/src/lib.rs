@@ -143,6 +143,12 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
         }
     }
 
+    // Create success message if no warnings found.
+    if warnings.is_empty() {
+        output.print_no_difference_found();
+        return Ok(0);
+    }
+
     output.print_warnings(&warnings);
     Ok(warnings.len())
 }

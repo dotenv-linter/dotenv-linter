@@ -29,4 +29,11 @@ impl CompareOutput {
             println!("Nothing to compare");
         }
     }
+
+    /// Prints "No difference found" when the two compared files have no difference
+    pub fn print_no_difference_found(&self) {
+        if !self.is_quiet_mode {
+            println!("No difference found");
+        }
+    }
 }
