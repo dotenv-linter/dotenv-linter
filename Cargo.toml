@@ -9,7 +9,7 @@ repository = "https://github.com/dotenv-linter/dotenv-linter"
 
 [workspace.dependencies]
 assert_cmd = "2.0.8"
-dunce = "1.0.3"
+dunce = "1.0.4"
 tempfile = "3.4.0"
 
 [profile.release]
