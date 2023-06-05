@@ -265,6 +265,7 @@ jobs:
       - name: Install aarch64 gnu linker
         if: matrix.TARGET == 'aarch64-unknown-linux-gnu' || matrix.TARGET == 'aarch64-unknown-linux-musl'
         run: |
+          sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
