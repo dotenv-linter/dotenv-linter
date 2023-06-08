@@ -31,6 +31,11 @@ impl Check for QuoteCharacterChecker<'_> {
             return None;
         }
 
+        // Don't remove quotes for arrays of JSON strings, e.g.: '["a"]'
+        if val.contains('\'') && val.contains('\"') && val.contains('[') && val.contains(']') {
+            return None;
+        }
+
         if val.contains('\"') || val.contains('\'') {
             Some(Warning::new(line.number, self.name(), self.message()))
         } else {
@@ -99,5 +104,17 @@ mod tests {
     #[test]
     fn with_no_quotes_test() {
         check_test(&mut QuoteCharacterChecker::default(), [("FOO=BAR", None)]);
+    }
+
+    #[test]
+    fn with_json_str_array() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=\'[\"a\",\"b\"]\'", None),
+                ("FOO=\'[\"a\", \"b\"]\'", None),
+                ("FOO=\'[\"a\"]\'", None),
+            ],
+        )
     }
 }
