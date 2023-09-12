@@ -131,7 +131,7 @@ jobs:
           platforms: arm64
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - name: Build and push image
         run: |
           GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
