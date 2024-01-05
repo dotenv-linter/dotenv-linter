@@ -104,7 +104,7 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
     // Create CompareFileType structures for each file
     let mut all_keys: HashSet<String> = HashSet::new();
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
-    for (_, (fe, lines)) in files.into_iter().enumerate() {
+    for (fe, lines) in files.into_iter() {
         output.print_processing_info(&fe);
         let mut keys: Vec<String> = Vec::new();
 

@@ -1,5 +1,6 @@
 [workspace]
 members = ["dotenv-linter", "dotenv-lookup"]
+resolver = "2"
 
 [workspace.package]
 authors = ["Mikhail Grachev <work@mgrachev.com>", "dotenv-linter core team & contributors"]
