@@ -5,7 +5,7 @@ jobs:
   misspell:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-misspell@v1
         with:
           locale: "US"
@@ -15,7 +15,7 @@ jobs:
   yamllint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-yamllint@v1
         with:
           fail_on_error: true
@@ -25,7 +25,7 @@ jobs:
   shellcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-shellcheck@v1
         with:
           exclude: "./.git/*"
@@ -35,7 +35,7 @@ jobs:
   prlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: CondeNast/conventional-pull-request-action@v0.2.0
@@ -47,7 +47,7 @@ jobs:
   hadolint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-hadolint@v1
         with:
           fail_on_error: true
@@ -56,7 +56,7 @@ jobs:
   links:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: lycheeverse/lychee-action@v1.8.0
         with:
           args: . --verbose --exclude-path CHANGELOG.md
@@ -67,5 +67,5 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dprint/check@v2.2
