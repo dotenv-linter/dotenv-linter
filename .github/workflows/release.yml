@@ -126,7 +126,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       # To build cross-platform images
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
       - name: Set up Docker Buildx
