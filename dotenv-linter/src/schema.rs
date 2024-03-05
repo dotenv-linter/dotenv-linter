@@ -37,7 +37,11 @@ impl DotEnvSchema {
 }
 #[cfg(test)]
 mod tests {
+    use std::fs::{self, File};
+    use std::io::Write;
+
     use dotenv_lookup::LineEntry;
+    use tempfile::tempdir;
 
     use super::DotEnvSchema;
 
@@ -64,6 +68,10 @@ mod tests {
                 {
                     "key": "EMAIL",
                     "type": "Email"
+                },
+                {
+                    "key": "FLAG",
+                    "type": "Boolean"
                 }
             ]
         }"#;
@@ -215,5 +223,88 @@ mod tests {
         let mut opt = CliOptions::default();
         opt.schema = Some(schema);
         assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn boolean_good() {
+        let schema = load_schema();
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FLAG=true")];
+        let expected: Vec<Warning> = vec![];
+        let mut opt = CliOptions::default();
+        opt.schema = Some(schema);
+        assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn boolean_bad() {
+        let schema = load_schema();
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FLAG=joe")];
+        let expected: Vec<Warning> = vec![Warning::new(
+            1,
+            LintKind::SchemaViolation,
+            "The FLAG key is not a valid boolean",
+        )];
+        let mut opt = CliOptions::default();
+        opt.schema = Some(schema);
+        assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn create_file_schema() {
+        let json = r#"{
+            "version": "1.0.0",
+            "entries": [
+                {
+                    "key": "NAME",
+                    "type": "String"
+                },
+                {
+                    "key": "PORT",
+                    "type": "Number"
+                },
+                {
+                    "key": "URL",
+                    "type": "Url"
+                },
+                {
+                    "key": "EMAIL",
+                    "type": "Email"
+                },
+                {
+                    "key": "FLAG",
+                    "type": "Boolean"
+                }
+            ]
+        }"#;
+        // write the above json to a temp file
+        let temp_dir = tempdir().unwrap();
+        let file_path = temp_dir.path().join("schema.json");
+        let schema = {
+            let mut file = File::create(&file_path).unwrap();
+            file.write_all(json.as_bytes()).unwrap();
+            // load the schema from the file
+            DotEnvSchema::load(&file_path)
+        };
+        fs::remove_file(&file_path).unwrap();
+        assert!(schema.is_ok());
+    }
+    #[test]
+    fn load_missing_file() {
+        assert!(DotEnvSchema::load(std::path::Path::new("bad_file.json")).is_err());
+    }
+    #[test]
+    fn create_bad_file_schema() {
+        let json = r#"{
+            "version": "1.0.0",
+            bad:json
+        }"#;
+        // write the above json to a temp file
+        let temp_dir = tempdir().unwrap();
+        let file_path = temp_dir.path().join("schema.json");
+        let schema = {
+            let mut file = File::create(&file_path).unwrap();
+            file.write_all(json.as_bytes()).unwrap();
+            // load the schema from the file
+            DotEnvSchema::load(&file_path)
+        };
+        fs::remove_file(&file_path).unwrap();
+        assert!(schema.is_err());
     }
 }

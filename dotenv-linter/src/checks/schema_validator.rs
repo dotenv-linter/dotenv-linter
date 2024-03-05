@@ -49,6 +49,12 @@ impl Check for SchemaChecker<'_> {
                     SchemaValueType::Boolean => {
                         if value == "true" || value == "false" {
                             return None;
+                        } else {
+                            return Some(Warning::new(
+                                line.number,
+                                self.name(),
+                                format!("The {} key is not a valid boolean", key),
+                            ));
                         }
                     }
                     SchemaValueType::Number => {
