@@ -1,19 +1,17 @@
-use crate::{
-    cli::options::{CheckOptions, CompareOptions, FixOptions},
-    common::*,
-};
+use crate::{cli::options::CliOptions, common::*};
 use std::{collections::HashSet, path::PathBuf};
 
 mod checks;
 mod common;
 mod fixes;
 mod fs_utils;
+mod schema;
 
 pub mod cli;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
+pub fn check(opts: &CliOptions, current_dir: &PathBuf) -> Result<usize> {
     let files = dotenv_lookup::new(current_dir, &opts.input)
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
@@ -33,7 +31,7 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .enumerate()
         .fold(0, |acc, (index, (fe, lines))| {
             output.print_processing_info(&fe);
-            let result = checks::run(&lines, &opts.skip);
+            let result = checks::run(&lines, &opts);
 
             output.print_warnings(&fe, &result, index);
             acc + result.len()
@@ -43,7 +41,7 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
     Ok(warnings_count)
 }
 
-pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
+pub fn fix(opts: &CliOptions, current_dir: &PathBuf) -> Result<()> {
     let files = dotenv_lookup::new(current_dir, &opts.input)
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
@@ -61,9 +59,18 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
     let mut warnings_count = 0;
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
+        // let check_options = CliOptions {
+        //     input: opts.input.clone(),
 
+        //     skip: opts.skip.clone(),
+        //     exclude: opts.exclude.clone(),
+
+        //     quiet: opts.quiet,
+        //     recursive: opts.recursive,
+        //     schema: None,
+        // };
         // let mut lines = get_line_entries(strings);
-        let result = checks::run(&lines, &opts.skip);
+        let result = checks::run(&lines, &opts);
         if result.is_empty() {
             continue;
         }
@@ -92,7 +99,7 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 }
 
 // Compares if different environment files contains the same variables and returns warnings if not
-pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
+pub fn compare(opts: &CliOptions, current_dir: &PathBuf) -> Result<usize> {
     let files = dotenv_lookup::new(current_dir, &opts.input).lookup_files();
     let output = CompareOutput::new(opts.quiet);
 

@@ -1,8 +1,4 @@
-use crate::{
-    cli::options::{CheckOptions, CompareOptions, FixOptions},
-    common::LintKind,
-    Result,
-};
+use crate::{cli::options::CliOptions, common::LintKind, Result};
 use clap::{command, value_parser, Arg, ArgAction, Command};
 use std::path::PathBuf;
 
@@ -19,7 +15,7 @@ pub fn run() -> Result<i32> {
 
     match args.subcommand() {
         None => {
-            let opts = CheckOptions::new(&args);
+            let opts = CliOptions::new_check(&args);
             let total_warnings = crate::check(&opts, &current_dir)?;
 
             #[cfg(feature = "update-informer")]
@@ -32,7 +28,7 @@ pub fn run() -> Result<i32> {
             }
         }
         Some(("fix", fix_args)) => {
-            let opts = FixOptions::new(fix_args);
+            let opts = CliOptions::new_fix(fix_args);
             crate::fix(&opts, &current_dir)?;
 
             return Ok(0);
@@ -40,7 +36,7 @@ pub fn run() -> Result<i32> {
         Some(("compare", compare_args)) => {
             disable_color_output(compare_args);
 
-            let opts = CompareOptions::new(compare_args);
+            let opts = CliOptions::new_compare(compare_args);
             let total_warnings = crate::compare(&opts, &current_dir)?;
 
             if total_warnings == 0 {
@@ -130,6 +126,11 @@ fn common_args() -> Vec<Arg> {
             .long("recursive")
             .help("Recursively searches and checks .env files")
             .action(ArgAction::SetTrue),
+        Arg::new("schema")
+            .short('S')
+            .long("schema")
+            .help("Use schema file to check .env files")
+            .value_parser(value_parser!(PathBuf)),
         no_color_flag(),
         quiet_flag(),
     ]
