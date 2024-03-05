@@ -31,7 +31,7 @@ pub fn check(opts: &CliOptions, current_dir: &PathBuf) -> Result<usize> {
         .enumerate()
         .fold(0, |acc, (index, (fe, lines))| {
             output.print_processing_info(&fe);
-            let result = checks::run(&lines, &opts);
+            let result = checks::run(&lines, opts);
 
             output.print_warnings(&fe, &result, index);
             acc + result.len()
@@ -70,7 +70,7 @@ pub fn fix(opts: &CliOptions, current_dir: &PathBuf) -> Result<()> {
         //     schema: None,
         // };
         // let mut lines = get_line_entries(strings);
-        let result = checks::run(&lines, &opts);
+        let result = checks::run(&lines, opts);
         if result.is_empty() {
             continue;
         }

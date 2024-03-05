@@ -26,9 +26,7 @@ impl<'a> SchemaChecker<'a> {
 
 impl Check for SchemaChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        if self.schema.is_none() {
-            return None;
-        }
+        self.schema?;
         self.last_line_number = line.number;
         let schema = self.schema.unwrap();
         let key = line.get_key()?;
@@ -88,15 +86,14 @@ impl Check for SchemaChecker<'_> {
                     format!("The {} key is not defined in the schema", key),
                 ));
             }
-        } else {
-            if !schema.allow_other_keys {
-                return Some(Warning::new(
-                    line.number,
-                    self.name(),
-                    format!("The {} key is not defined in the schema", key),
-                ));
-            }
+        } else if !schema.allow_other_keys {
+            return Some(Warning::new(
+                line.number,
+                self.name(),
+                format!("The {} key is not defined in the schema", key),
+            ));
         }
+
         None
     }
 
