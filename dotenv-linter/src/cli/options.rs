@@ -38,7 +38,7 @@ impl<'a> CliOptions<'a> {
             match schema::DotEnvSchema::load(schema_path) {
                 Ok(schema) => Some(schema),
                 Err(e) => {
-                    eprintln!("Error loading schema: {}", e);
+                    println!("Error loading schema: {}", e);
                     std::process::exit(1);
                 }
             }

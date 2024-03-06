@@ -85,12 +85,6 @@ impl Check for SchemaChecker<'_> {
                         }
                     }
                 }
-            } else {
-                return Some(Warning::new(
-                    line.number,
-                    self.name(),
-                    format!("The {} key is not defined in the schema", key),
-                ));
             }
         } else if !schema.allow_other_keys {
             return Some(Warning::new(
