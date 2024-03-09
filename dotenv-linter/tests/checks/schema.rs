@@ -82,9 +82,10 @@ fn load_missing_schema() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
     let args = &["-S", "no_such_file", testfile.as_str()];
-
-    let expected_output =
-        "Error loading schema: The system cannot find the file specified. (os error 2)\n";
-
+    let expected_output = if cfg!(target_os = "windows") {
+        "Error loading schema: The system cannot find the file specified. (os error 2)\n"
+    } else {
+        "Error loading schema: The system cannot find the file specified. (os error 2)\n"
+    };
     testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }

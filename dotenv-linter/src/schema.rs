@@ -1,12 +1,19 @@
 use anyhow::Result;
 use serde::Deserialize;
-use std::{fs::File, io::BufReader, path::Path};
+use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
+
 #[derive(Deserialize, Default)]
 #[serde(default)]
-pub struct DotEnvSchema {
+struct ReadDotEnvSchema {
     pub version: String,
     pub allow_other_keys: bool,
     pub entries: Vec<SchemaEntry>,
+}
+
+pub struct DotEnvSchema {
+    pub version: String,
+    pub allow_other_keys: bool,
+    pub entries: HashMap<String, SchemaEntry>,
 }
 #[derive(Deserialize, Default)]
 #[serde(default)]
@@ -31,7 +38,16 @@ impl DotEnvSchema {
     pub fn load(path: &Path) -> Result<Self> {
         let file = File::open(path)?;
         let reader = BufReader::new(file);
-        let schema: Self = serde_json::from_reader(reader)?;
+        let read_schema: ReadDotEnvSchema = serde_json::from_reader(reader)?;
+        let schema = DotEnvSchema {
+            version: read_schema.version,
+            allow_other_keys: read_schema.allow_other_keys,
+            entries: read_schema
+                .entries
+                .into_iter()
+                .map(|e| (e.key.clone(), e))
+                .collect(),
+        };
         Ok(schema)
     }
 }
@@ -43,7 +59,7 @@ mod tests {
     use dotenv_lookup::LineEntry;
     use tempfile::tempdir;
 
-    use super::DotEnvSchema;
+    use super::{DotEnvSchema, ReadDotEnvSchema};
 
     use crate::cli::options::CliOptions;
     use crate::common::tests::*;
@@ -75,7 +91,16 @@ mod tests {
                 }
             ]
         }"#;
-        let schema: DotEnvSchema = serde_json::from_str(json).unwrap();
+        let read_schema: ReadDotEnvSchema = serde_json::from_str(json).unwrap();
+        let schema = DotEnvSchema {
+            version: read_schema.version,
+            allow_other_keys: read_schema.allow_other_keys,
+            entries: read_schema
+                .entries
+                .into_iter()
+                .map(|e| (e.key.clone(), e))
+                .collect(),
+        };
         schema
     }
     #[test]
@@ -179,7 +204,7 @@ mod tests {
     #[test]
     fn required_present() {
         let mut schema = load_schema();
-        schema.entries[3].required = true;
+        schema.entries.get_mut("EMAIL").unwrap().required = true;
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=joe@gmail.com")];
         let expected: Vec<Warning> = vec![];
         let mut opt = CliOptions::default();
@@ -189,7 +214,7 @@ mod tests {
     #[test]
     fn required_missing() {
         let mut schema = load_schema();
-        schema.entries[3].required = true;
+        schema.entries.get_mut("EMAIL").unwrap().required = true;
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
         let expected: Vec<Warning> = vec![Warning::new(
             1,
@@ -203,7 +228,7 @@ mod tests {
     #[test]
     fn regex_good() {
         let mut schema = load_schema();
-        schema.entries[0].regex = Some("^[ABCD]*$".to_string());
+        schema.entries.get_mut("NAME").unwrap().regex = Some("^[ABCD]*$".to_string());
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=BAD")];
         let expected: Vec<Warning> = vec![];
         let mut opt = CliOptions::default();
@@ -213,7 +238,7 @@ mod tests {
     #[test]
     fn regex_bad() {
         let mut schema = load_schema();
-        schema.entries[0].regex = Some("^[ABCD]*$".to_string());
+        schema.entries.get_mut("NAME").unwrap().regex = Some("^[ABCD]*$".to_string());
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
         let expected: Vec<Warning> = vec![Warning::new(
             1,

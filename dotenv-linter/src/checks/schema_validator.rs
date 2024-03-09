@@ -26,13 +26,12 @@ impl<'a> SchemaChecker<'a> {
 
 impl Check for SchemaChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        self.schema?;
+        let schema = self.schema?;
         self.last_line_number = line.number;
-        let schema = self.schema.unwrap();
         let key = line.get_key()?;
         self.seen_keys.insert(key.to_string());
 
-        if let Some(entry) = schema.entries.iter().find(|i| i.key == key) {
+        if let Some(entry) = schema.entries.get(key) {
             if let Some(value) = line.get_value() {
                 match entry.value_type {
                     SchemaValueType::String => {
@@ -103,8 +102,8 @@ impl Check for SchemaChecker<'_> {
     fn end(&mut self) -> Vec<Warning> {
         let mut warnings = Vec::new();
         if let Some(schema) = self.schema {
-            for entry in &schema.entries {
-                if entry.required && !self.seen_keys.contains(&entry.key) {
+            for (key, entry) in &schema.entries {
+                if entry.required && !self.seen_keys.contains(key) {
                     warnings.push(Warning::new(
                         self.last_line_number,
                         self.name(),

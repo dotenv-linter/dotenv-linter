@@ -59,17 +59,7 @@ pub fn fix(opts: &CliOptions, current_dir: &PathBuf) -> Result<()> {
     let mut warnings_count = 0;
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
-        // let check_options = CliOptions {
-        //     input: opts.input.clone(),
 
-        //     skip: opts.skip.clone(),
-        //     exclude: opts.exclude.clone(),
-
-        //     quiet: opts.quiet,
-        //     recursive: opts.recursive,
-        //     schema: None,
-        // };
-        // let mut lines = get_line_entries(strings);
         let result = checks::run(&lines, opts);
         if result.is_empty() {
             continue;
