@@ -29,7 +29,8 @@ pub struct SchemaEntry {
 pub enum SchemaValueType {
     #[default]
     String,
-    Number,
+    Integer,
+    Float,
     Boolean,
     Url,
     Email,
@@ -75,7 +76,11 @@ mod tests {
                 },
                 {
                     "key": "PORT",
-                    "type": "Number"
+                    "type": "Integer"
+                },
+                {
+                    "key": "PRICE",
+                    "type": "Float"
                 },
                 {
                     "key": "URL",
@@ -136,7 +141,7 @@ mod tests {
         assert_eq!(expected, crate::checks::run(&lines, &opt));
     }
     #[test]
-    fn numeric_good() {
+    fn integer_good() {
         let schema = load_schema();
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=42")];
         let expected: Vec<Warning> = vec![];
@@ -145,13 +150,57 @@ mod tests {
         assert_eq!(expected, crate::checks::run(&lines, &opt));
     }
     #[test]
-    fn numeric_bad() {
+    fn integer_bad() {
         let schema = load_schema();
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=p")];
         let expected: Vec<Warning> = vec![Warning::new(
             1,
             LintKind::SchemaViolation,
-            "The PORT key is not numeric",
+            "The PORT key is not an integer",
+        )];
+        let mut opt = CliOptions::default();
+        opt.schema = Some(schema);
+        assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn integer_is_float() {
+        let schema = load_schema();
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=2.4")];
+        let expected: Vec<Warning> = vec![Warning::new(
+            1,
+            LintKind::SchemaViolation,
+            "The PORT key is not an integer",
+        )];
+        let mut opt = CliOptions::default();
+        opt.schema = Some(schema);
+        assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn float_good() {
+        let schema = load_schema();
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=2.4")];
+        let expected: Vec<Warning> = vec![];
+        let mut opt = CliOptions::default();
+        opt.schema = Some(schema);
+        assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn float_good2() {
+        let schema = load_schema();
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=24")];
+        let expected: Vec<Warning> = vec![];
+        let mut opt = CliOptions::default();
+        opt.schema = Some(schema);
+        assert_eq!(expected, crate::checks::run(&lines, &opt));
+    }
+    #[test]
+    fn float_bad() {
+        let schema = load_schema();
+        let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=price")];
+        let expected: Vec<Warning> = vec![Warning::new(
+            1,
+            LintKind::SchemaViolation,
+            "The PRICE key is not a valid float",
         )];
         let mut opt = CliOptions::default();
         opt.schema = Some(schema);
@@ -282,7 +331,7 @@ mod tests {
                 },
                 {
                     "key": "PORT",
-                    "type": "Number"
+                    "type": "Integer"
                 },
                 {
                     "key": "URL",

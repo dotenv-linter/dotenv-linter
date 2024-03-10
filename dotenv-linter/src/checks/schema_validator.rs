@@ -46,7 +46,19 @@ impl Check for SchemaChecker<'_> {
                         }
                     }
                     SchemaValueType::Boolean => {
-                        if value == "true" || value == "false" {
+                        if matches!(
+                            value,
+                            "true"
+                                | "false"
+                                | "TRUE"
+                                | "FALSE"
+                                | "yes"
+                                | "no"
+                                | "YES"
+                                | "NO"
+                                | "1"
+                                | "0"
+                        ) {
                             return None;
                         } else {
                             return Some(Warning::new(
@@ -56,12 +68,21 @@ impl Check for SchemaChecker<'_> {
                             ));
                         }
                     }
-                    SchemaValueType::Number => {
+                    SchemaValueType::Integer => {
                         if value.parse::<i32>().is_err() {
                             return Some(Warning::new(
                                 line.number,
                                 self.name(),
-                                format!("The {} key is not numeric", key),
+                                format!("The {} key is not an integer", key),
+                            ));
+                        }
+                    }
+                    SchemaValueType::Float => {
+                        if value.parse::<f32>().is_err() {
+                            return Some(Warning::new(
+                                line.number,
+                                self.name(),
+                                format!("The {} key is not a valid float", key),
                             ));
                         }
                     }

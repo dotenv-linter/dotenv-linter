@@ -17,7 +17,11 @@ fn load_good_schema() {
             },
             {
                 "key": "PORT",
-                "type": "Number"
+                "type": "Integer"
+            },
+            {
+                "key": "PRICE",
+                "type": "Float"
             },
             {
                 "key": "URL",
