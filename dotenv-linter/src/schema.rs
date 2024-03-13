@@ -1,4 +1,3 @@
-use anyhow::Result;
 use serde::Deserialize;
 use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 
@@ -17,6 +16,7 @@ pub struct DotEnvSchema {
 }
 #[derive(Deserialize, Default)]
 #[serde(default)]
+
 pub struct SchemaEntry {
     pub key: String,
     pub required: bool,
@@ -36,7 +36,7 @@ pub enum SchemaValueType {
     Email,
 }
 impl DotEnvSchema {
-    pub fn load(path: &Path) -> Result<Self> {
+    pub fn load(path: &Path) -> Result<Self, std::io::Error> {
         let file = File::open(path)?;
         let reader = BufReader::new(file);
         let read_schema: ReadDotEnvSchema = serde_json::from_reader(reader)?;
