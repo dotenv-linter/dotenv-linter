@@ -107,7 +107,7 @@ jobs:
         run: |
           Compress-Archive -Path ".\target\${{ matrix.TARGET }}\release\dotenv-linter.exe" -DestinationPath ".\dotenv-linter-${{ matrix.ARCH_SUFFIX }}.zip"
       - name: Publish release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: dotenv-linter-*
           draft: true
