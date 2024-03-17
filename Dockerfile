@@ -1,6 +1,7 @@
 FROM messense/rust-musl-cross:x86_64-musl AS builder-amd64
 FROM messense/rust-musl-cross:aarch64-musl AS builder-arm64
 
+# hadolint ignore=DL3006
 FROM builder-${TARGETARCH} AS builder
 
 ARG TARGETARCH
