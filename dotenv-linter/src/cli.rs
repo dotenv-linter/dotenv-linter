@@ -1,6 +1,8 @@
-use crate::{cli::options::CliOptions, common::LintKind, Result};
+use crate::{common::LintKind, Result};
 use clap::{command, value_parser, Arg, ArgAction, Command};
 use std::path::PathBuf;
+
+use self::options::{CheckOptions, CompareOptions, FixOptions};
 
 pub mod options;
 
@@ -15,7 +17,7 @@ pub fn run() -> Result<i32> {
 
     match args.subcommand() {
         None => {
-            let opts = CliOptions::new_check(&args);
+            let opts = CheckOptions::new(&args);
             let total_warnings = crate::check(&opts, &current_dir)?;
 
             #[cfg(feature = "update-informer")]
@@ -28,7 +30,7 @@ pub fn run() -> Result<i32> {
             }
         }
         Some(("fix", fix_args)) => {
-            let opts = CliOptions::new_fix(fix_args);
+            let opts = FixOptions::new(fix_args);
             crate::fix(&opts, &current_dir)?;
 
             return Ok(0);
@@ -36,7 +38,7 @@ pub fn run() -> Result<i32> {
         Some(("compare", compare_args)) => {
             disable_color_output(compare_args);
 
-            let opts = CliOptions::new_compare(compare_args);
+            let opts = CompareOptions::new(compare_args);
             let total_warnings = crate::compare(&opts, &current_dir)?;
 
             if total_warnings == 0 {

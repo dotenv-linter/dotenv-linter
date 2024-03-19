@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use super::Check;
 use crate::{
     common::{LintKind, Warning},
-    schema::SchemaValueType,
+    schema::{DotEnvSchema, SchemaValueType},
 };
 use dotenv_lookup::LineEntry;
 use email_address::EmailAddress;
@@ -15,9 +15,9 @@ pub(crate) struct SchemaViolationChecker<'a> {
 }
 
 impl<'a> SchemaViolationChecker<'a> {
-    pub fn new(opts: &'a crate::cli::options::CliOptions) -> Self {
+    pub fn new(schema: Option<&'a DotEnvSchema>) -> Self {
         Self {
-            schema: opts.schema.as_ref(),
+            schema: schema,
             seen_keys: HashSet::new(),
             last_line_number: 0,
         }

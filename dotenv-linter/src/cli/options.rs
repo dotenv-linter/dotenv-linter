@@ -4,32 +4,32 @@ use crate::{
 };
 use clap::ArgMatches;
 use std::path::PathBuf;
-#[derive(Default)]
-pub struct CliOptions<'a> {
+
+pub struct CheckOptions<'a> {
     pub input: Vec<&'a PathBuf>,
     pub skip: Vec<LintKind>,
     pub exclude: Vec<&'a PathBuf>,
     pub quiet: bool,
     pub recursive: bool,
     pub schema: Option<DotEnvSchema>,
-    pub no_backup: bool,
 }
 
-pub struct FixOptionsx<'a> {
+pub struct FixOptions<'a> {
     pub input: Vec<&'a PathBuf>,
     pub skip: Vec<LintKind>,
     pub exclude: Vec<&'a PathBuf>,
     pub quiet: bool,
     pub recursive: bool,
+    pub no_backup: bool,
 }
 
-pub struct CompareOptionsx<'a> {
+pub struct CompareOptions<'a> {
     pub input: Vec<&'a PathBuf>,
     pub quiet: bool,
 }
 
-impl<'a> CliOptions<'a> {
-    pub fn new_check(args: &'a ArgMatches) -> Self {
+impl<'a> CheckOptions<'a> {
+    pub fn new(args: &'a ArgMatches) -> Self {
         let skip = get_many_from_args::<LintKind>(args, "skip")
             .into_iter()
             .map(|l| l.to_owned())
@@ -37,8 +37,8 @@ impl<'a> CliOptions<'a> {
         let schema = if let Some(schema_path) = args.get_one::<PathBuf>("schema") {
             match schema::DotEnvSchema::load(schema_path) {
                 Ok(schema) => Some(schema),
-                Err(e) => {
-                    println!("Error loading schema: {}", e);
+                Err(err) => {
+                    println!("Error loading schema: {}", err);
                     std::process::exit(1);
                 }
             }
@@ -52,11 +52,12 @@ impl<'a> CliOptions<'a> {
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
             schema,
-            no_backup: false,
         }
     }
+}
 
-    pub fn new_fix(args: &'a ArgMatches) -> Self {
+impl<'a> FixOptions<'a> {
+    pub fn new(args: &'a ArgMatches) -> Self {
         let skip = get_many_from_args::<LintKind>(args, "skip")
             .into_iter()
             .map(|l| l.to_owned())
@@ -69,19 +70,15 @@ impl<'a> CliOptions<'a> {
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
             no_backup: args.get_flag("no-backup"),
-            schema: None,
         }
     }
+}
 
-    pub fn new_compare(args: &'a ArgMatches) -> Self {
+impl<'a> CompareOptions<'a> {
+    pub fn new(args: &'a ArgMatches) -> Self {
         Self {
             input: get_many_from_args::<PathBuf>(args, "input"),
             quiet: args.get_flag("quiet"),
-            skip: Default::default(),
-            exclude: Default::default(),
-            recursive: false,
-            schema: None,
-            no_backup: false,
         }
     }
 }

@@ -10,17 +10,18 @@ use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 struct ReadDotEnvSchema {
     pub version: String,
     pub allow_other_keys: bool,
-    pub entries: Vec<ReadSchemaEntry>,
+    pub entries: Vec<SchemaEntry>,
 }
 
 #[derive(Deserialize, Default)]
 #[serde(default)]
-pub struct ReadSchemaEntry {
+pub struct SchemaEntry {
     pub key: String,
     pub required: bool,
     #[serde(rename = "type")]
     pub value_type: SchemaValueType,
-    pub regex: Option<String>,
+    #[serde(with = "serde_regex")]
+    pub regex: Option<Regex>,
 }
 
 pub struct DotEnvSchema {
@@ -29,27 +30,27 @@ pub struct DotEnvSchema {
     pub entries: HashMap<String, SchemaEntry>,
 }
 
-pub struct SchemaEntry {
-    pub key: String,
-    pub required: bool,
-    pub value_type: SchemaValueType,
-    pub regex: Option<Regex>,
-}
+// pub struct SchemaEntry {
+//     pub key: String,
+//     pub required: bool,
+//     pub value_type: SchemaValueType,
+//     pub regex: Option<Regex>,
+// }
 
-impl SchemaEntry {
-    pub fn new(read_entry: ReadSchemaEntry) -> Result<Self, regex::Error> {
-        let mut se = SchemaEntry {
-            key: read_entry.key,
-            required: read_entry.required,
-            value_type: read_entry.value_type,
-            regex: None,
-        };
-        if let Some(reg) = read_entry.regex {
-            se.regex = Some(Regex::new(&reg)?);
-        }
-        Ok(se)
-    }
-}
+// impl SchemaEntry {
+//     pub fn new(read_entry: ReadSchemaEntry) -> Result<Self, regex::Error> {
+//         let mut se = SchemaEntry {
+//             key: read_entry.key,
+//             required: read_entry.required,
+//             value_type: read_entry.value_type,
+//             regex: None,
+//         };
+//         if let Some(reg) = read_entry.regex {
+//             se.regex = Some(Regex::new(&reg)?);
+//         }
+//         Ok(se)
+//     }
+// }
 
 #[derive(Deserialize, Default)]
 pub enum SchemaValueType {
@@ -67,34 +68,30 @@ impl DotEnvSchema {
         let file = File::open(path)?;
         let reader = BufReader::new(file);
         let read_schema: ReadDotEnvSchema = serde_json::from_reader(reader)?;
-        let mut schema = DotEnvSchema {
+        let schema = DotEnvSchema {
             version: read_schema.version,
             allow_other_keys: read_schema.allow_other_keys,
-            entries: HashMap::new(),
+            entries: read_schema
+                .entries
+                .into_iter()
+                .map(|e| (e.key.clone(), e))
+                .collect(),
         };
 
-        for e in read_schema.entries {
-            let se = SchemaEntry::new(e)
-                .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
-            schema.entries.insert(se.key.clone(), se);
-        }
         Ok(schema)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-    use std::fs::{self, File};
-    use std::io::Write;
-
     use dotenv_lookup::LineEntry;
     use regex::Regex;
+    use std::fs::{self, File};
+    use std::io::Write;
     use tempfile::tempdir;
 
-    use super::{DotEnvSchema, ReadDotEnvSchema, SchemaEntry};
+    use super::{DotEnvSchema, ReadDotEnvSchema};
 
-    use crate::cli::options::CliOptions;
     use crate::common::tests::*;
     use crate::{LintKind, Warning};
 
@@ -129,17 +126,15 @@ mod tests {
             ]
         }"#;
         let read_schema: ReadDotEnvSchema = serde_json::from_str(json).unwrap();
-        let mut schema = DotEnvSchema {
+        let schema = DotEnvSchema {
             version: read_schema.version,
             allow_other_keys: read_schema.allow_other_keys,
-            entries: HashMap::new(),
+            entries: read_schema
+                .entries
+                .into_iter()
+                .map(|e| (e.key.clone(), e))
+                .collect(),
         };
-
-        for e in read_schema.entries {
-            let se = SchemaEntry::new(e)
-                .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
-            schema.entries.insert(se.key.clone(), se);
-        }
         Ok(schema)
     }
 
@@ -148,9 +143,11 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
         let expected: Vec<Warning> = Vec::new();
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -162,9 +159,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The USER key is not defined in the schema",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -173,9 +172,11 @@ mod tests {
         schema.allow_other_keys = true;
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "USER=joe")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -183,9 +184,12 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=42")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -197,9 +201,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The PORT key is not an integer",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -211,9 +217,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The PORT key is not an integer",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -221,9 +229,11 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=2.4")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -231,9 +241,11 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=24")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -245,9 +257,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The PRICE key is not a valid float",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -255,9 +269,11 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "URL=https://example.com")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -269,9 +285,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The URL key is not a valid URL",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -279,9 +297,11 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=joe@gmail.com")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -293,9 +313,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The EMAIL key is not a valid email address",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -304,9 +326,11 @@ mod tests {
         schema.entries.get_mut("EMAIL").unwrap().required = true;
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=joe@gmail.com")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -319,9 +343,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The EMAIL key is required",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -331,9 +357,11 @@ mod tests {
             Some(Regex::new("^[ABCD]*$").expect("Bad regex"));
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=BAD")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -347,9 +375,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The NAME key does not match the regex",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -357,9 +387,11 @@ mod tests {
         let schema = load_schema().expect("failed to load schema");
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FLAG=true")];
         let expected: Vec<Warning> = vec![];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
@@ -371,9 +403,11 @@ mod tests {
             LintKind::SchemaViolation,
             "The FLAG key is not a valid boolean",
         )];
-        let mut opt = CliOptions::default();
-        opt.schema = Some(schema);
-        assert_eq!(expected, crate::checks::run(&lines, &opt));
+        let skip_checks: Vec<LintKind> = Vec::new();
+        assert_eq!(
+            expected,
+            crate::checks::run(&lines, &skip_checks, Some(&schema))
+        );
     }
 
     #[test]
