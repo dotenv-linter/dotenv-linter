@@ -8,13 +8,13 @@ use crate::{
 use dotenv_lookup::LineEntry;
 use email_address::EmailAddress;
 use url::Url;
-pub(crate) struct SchemaChecker<'a> {
+pub(crate) struct SchemaViolationChecker<'a> {
     schema: Option<&'a crate::schema::DotEnvSchema>,
     seen_keys: HashSet<String>,
     last_line_number: usize,
 }
 
-impl<'a> SchemaChecker<'a> {
+impl<'a> SchemaViolationChecker<'a> {
     pub fn new(opts: &'a crate::cli::options::CliOptions) -> Self {
         Self {
             schema: opts.schema.as_ref(),
@@ -24,7 +24,7 @@ impl<'a> SchemaChecker<'a> {
     }
 }
 
-impl Check for SchemaChecker<'_> {
+impl Check for SchemaViolationChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let schema = self.schema?;
         self.last_line_number = line.number;
@@ -36,7 +36,7 @@ impl Check for SchemaChecker<'_> {
                 match entry.value_type {
                     SchemaValueType::String => {
                         if let Some(regex) = &entry.regex {
-                            if !regex::Regex::new(regex).unwrap().is_match(value) {
+                            if !regex.is_match(value) {
                                 return Some(Warning::new(
                                     line.number,
                                     self.name(),
@@ -120,6 +120,7 @@ impl Check for SchemaChecker<'_> {
     fn name(&self) -> LintKind {
         LintKind::SchemaViolation
     }
+
     fn end(&mut self) -> Vec<Warning> {
         let mut warnings = Vec::new();
         if let Some(schema) = self.schema {

@@ -1,11 +1,10 @@
+use crate::common::*;
 use std::{
     fs::{remove_file, File},
     io::Write,
 };
-
 use tempfile::tempdir;
 
-use crate::common::*;
 #[test]
 fn load_good_schema() {
     let json = r#"{
@@ -38,7 +37,7 @@ fn load_good_schema() {
         ]
     }"#;
     // write the above json to a temp file
-    let temp_dir = tempdir().unwrap();
+    let temp_dir = tempdir().expect("create temp dir");
     let file_path = temp_dir.path().join("schema.json");
     {
         let mut file = File::create(&file_path).unwrap();
@@ -55,6 +54,7 @@ fn load_good_schema() {
     testdir.test_command_success_with_args(with_default_args(args), expected_output);
     let _ = remove_file(file_path);
 }
+
 #[test]
 fn load_bad_schema() {
     let json = r#"{
@@ -74,6 +74,7 @@ fn load_bad_schema() {
 
     testdir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
+
 #[test]
 fn load_missing_schema() {
     let content = "NAME=JOE\n";

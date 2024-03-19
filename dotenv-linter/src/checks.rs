@@ -11,7 +11,7 @@ mod key_without_value;
 mod leading_character;
 mod lowercase_key;
 mod quote_character;
-mod schema_validator;
+mod schema_violation;
 mod space_character;
 mod substitution_key;
 mod trailing_whitespace;
@@ -46,7 +46,7 @@ fn checklist<'a>(opts: &'a CliOptions) -> Vec<Box<dyn Check + 'a>> {
         Box::<trailing_whitespace::TrailingWhitespaceChecker>::default(),
         Box::<unordered_key::UnorderedKeyChecker>::default(),
         Box::<value_without_quotes::ValueWithoutQuotesChecker>::default(),
-        Box::new(schema_validator::SchemaChecker::new(opts)),
+        Box::new(schema_violation::SchemaViolationChecker::new(opts)),
     ]
 }
 
