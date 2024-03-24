@@ -15,9 +15,9 @@ jobs:
   check-all:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.7.3
       - run: cargo check --all-targets
       - run: cargo fmt --all --check
       - run: cargo clippy --all-features -- -D warnings
@@ -25,13 +25,13 @@ jobs:
   test-coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
       # https://github.com/dtolnay/rust-toolchain/issues/29
       - run: rustup override set nightly
       - name: Set grcov version
         run: echo "GRCOV_VERSION=$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)" >> $GITHUB_ENV
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.7.3
         with:
           key: ${{ env.GRCOV_VERSION }}
       - run: cargo install --version $GRCOV_VERSION grcov
@@ -45,29 +45,29 @@ jobs:
           RUSTFLAGS: |
             -Zprofile -Zpanic_abort_tests -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort
       - uses: actions-rs/grcov@v0.1
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           file: ./lcov.info
 
   cargo-sort:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.7.3
       - run: cargo install cargo-sort
       - run: cargo-sort --check
 
   linux_install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
-        run: $HOME/bin/dotenv-linter -v
+        run: $HOME/bin/dotenv-linter --version
 
   install_specific_versions:
     strategy:
@@ -76,13 +76,13 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter version ${{ matrix.version }}
         run: |
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin v${{ matrix.version }}
       - name: Verify successful installation
-        run: test "$($HOME/bin/dotenv-linter -v)" = "dotenv-linter ${{ matrix.version }}"
+        run: test "$($HOME/bin/dotenv-linter --version)" = "dotenv-linter ${{ matrix.version }}"
 
   install_specific_versions_wrong_input:
     strategy:
@@ -91,7 +91,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter with wrong tag ${{ matrix.tag }}
         id: setup_dotenv_linter
         continue-on-error: true
@@ -110,15 +110,15 @@ jobs:
     steps:
       - name: Disable EOL conversion
         run: git config --global core.autocrlf false
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.7.3
       - run: cargo test --all-features --no-fail-fast
 
   windows_install:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter
         shell: bash # it uses Git Bash, i.e. MinGW
         run: |
@@ -126,7 +126,7 @@ jobs:
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
         shell: bash
-        run: $HOME/bin/dotenv-linter.exe -v
+        run: $HOME/bin/dotenv-linter.exe --version
 
   windows_install_specific_versions:
     strategy:
@@ -134,7 +134,7 @@ jobs:
         version: [3.2.0, 2.2.1, 2.1.0]
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter version ${{ matrix.version }}
         shell: bash # it uses Git Bash, i.e. MinGW
         run: |
@@ -142,7 +142,7 @@ jobs:
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin v${{ matrix.version }}
       - name: Verify successful installation
         shell: bash # it uses Git Bash, i.e. MinGW
-        run: test "$($HOME/bin/dotenv-linter -v)" = "dotenv-linter ${{ matrix.version }}"
+        run: test "$($HOME/bin/dotenv-linter --version)" = "dotenv-linter ${{ matrix.version }}"
 
   windows_install_specific_versions_wrong_input:
     strategy:
@@ -150,7 +150,7 @@ jobs:
         tag: [hello, v2, vasd, /home/]
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter with wrong tag ${{ matrix.tag }}
         shell: bash # it uses Git Bash, i.e. MinGW
         id: setup_dotenv_linter_windows
@@ -169,13 +169,13 @@ jobs:
   macos_install:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
           sh "${GITHUB_WORKSPACE}/install.sh" -b $HOME/bin
       - name: Verify successful installation
-        run: $HOME/bin/dotenv-linter -v
+        run: $HOME/bin/dotenv-linter --version
 
   ###################
   ### Docker jobs ###
@@ -183,15 +183,15 @@ jobs:
   docker_build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # To build cross-platform images
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       - run: |
           docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter .
 
@@ -257,7 +257,7 @@ jobs:
             TARGET: aarch64-pc-windows-msvc
             BUILD_OPTIONS: '--no-default-features'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install musl-tools
         if: matrix.TARGET == 'x86_64-unknown-linux-musl'
         run: |
@@ -265,6 +265,7 @@ jobs:
       - name: Install aarch64 gnu linker
         if: matrix.TARGET == 'aarch64-unknown-linux-gnu' || matrix.TARGET == 'aarch64-unknown-linux-musl'
         run: |
+          sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu musl-tools
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
           echo "CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=aarch64-linux-gnu-gcc" >> $GITHUB_ENV
@@ -272,7 +273,7 @@ jobs:
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
           targets: ${{ matrix.TARGET }}
-      - uses: Swatinem/rust-cache@v2.2.0
+      - uses: Swatinem/rust-cache@v2.7.3
         with:
           key: ${{ matrix.TARGET }}
       - name: Build

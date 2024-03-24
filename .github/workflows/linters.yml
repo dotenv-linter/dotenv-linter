@@ -5,55 +5,59 @@ jobs:
   misspell:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-misspell@v1
         with:
           locale: "US"
+          fail_on_error: true
+          reporter: github-pr-review
 
   yamllint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-yamllint@v1
         with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
           fail_on_error: true
+          reporter: github-pr-review
           yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
 
   shellcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-shellcheck@v1
         with:
-          github_token: ${{ secrets.github_token }}
-          fail_on_error: true
           exclude: "./.git/*"
+          fail_on_error: true
+          reporter: github-pr-review
 
-  commitlint:
+  prlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: wagoid/commitlint-github-action@v5.3.0
+      - uses: CondeNast/conventional-pull-request-action@v0.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          ignoreCommits: "true"
 
   hadolint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: reviewdog/action-hadolint@v1
         with:
-          github_token: ${{ secrets.github_token }}
           fail_on_error: true
           reporter: github-pr-review
 
   links:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: lycheeverse/lychee-action@v1.5.4
+      - uses: actions/checkout@v4
+      - uses: lycheeverse/lychee-action@v1.9.3
         with:
           args: . --verbose --exclude-path CHANGELOG.md
           fail: true
@@ -63,5 +67,5 @@ jobs:
   style:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: dprint/check@v2.1
+      - uses: actions/checkout@v4
+      - uses: dprint/check@v2.2

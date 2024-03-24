@@ -6,21 +6,22 @@ if [ -z "$1" ]; then
     exit
 fi
 
+# shellcheck disable=SC2001
 branch_name=$(echo "${1}" | sed 's/\.//g')
-git checkout -b "release_${branch_name}"
+git checkout -b "release-${branch_name}"
 
 # Update the version
 msg="# managed by release.sh"
-sed -i '' "s/^version = .* $msg$/version = \"${1#v}\" $msg/" Cargo.toml
+sed -i '' "s/^version = .* $msg$/version = \"${1#v}\" $msg/" dotenv-linter/Cargo.toml
 
 # Update the changelog
-git-cliff -t "$1" -u -p CHANGELOG.md
+git-cliff --tag "$1" --unreleased --prepend CHANGELOG.md
 
 # Commit changes
 cargo check
-git add CHANGELOG.md Cargo.toml Cargo.lock
+git add CHANGELOG.md dotenv-linter/Cargo.toml Cargo.lock
 git commit -m "chore(release): $1"
-git tag "$1"
 
 echo "Done."
-echo "Now push the commit and tag to GitHub."
+echo "Now push the commit to GitHub."
+echo "And after review, create a tag and push it to GitHub."

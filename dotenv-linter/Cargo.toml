@@ -1,0 +1,57 @@
+[package]
+name = "dotenv-linter"
+version = "3.3.0" # managed by release.sh
+authors.workspace = true
+categories = ["command-line-utilities"]
+edition.workspace = true
+homepage = "https://dotenv-linter.github.io"
+include = ["/src", "/benches", "../README.md"]
+keywords = ["cli", "dotenv", "environment", "env", "linter"]
+license.workspace = true
+readme = "../README.md"
+repository.workspace = true
+description = "Lightning-fast linter for .env files"
+
+[dependencies]
+clap = { version = "4.5.3", features = ["cargo", "env"] }
+colored = "2.1.0"
+dotenv-lookup = { version = "1.0.0", path = "../dotenv-lookup" }
+
+[dependencies.update-informer]
+version = "1.1.0"
+optional = true
+
+[dev-dependencies]
+assert_cmd.workspace = true
+criterion = "0.5.1"
+tempfile.workspace = true
+
+[target.'cfg(windows)'.dev-dependencies]
+dunce.workspace = true
+
+[target.'cfg(not(windows))'.dev-dependencies]
+gag = "1.0.0"
+
+[features]
+default = ["update-informer"]
+stub_check_version = []
+
+[[bin]]
+name = "dotenv-linter"
+path = "src/main.rs"
+bench = false
+
+[lib]
+bench = false
+
+[[bench]]
+name = "check"
+harness = false
+
+[[bench]]
+name = "fix"
+harness = false
+
+[[bench]]
+name = "compare"
+harness = false
