@@ -1,0 +1,31 @@
+name: Release docker arm
+on:
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      # To build cross-platform images
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push image
+        run: |
+          GIT_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | sed "s/v//")
+
+          docker buildx build --push --platform linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:${GIT_TAG} .
+          docker buildx build --push --platform linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter:latest .
