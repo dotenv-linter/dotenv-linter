@@ -2,18 +2,7 @@ use regex::Regex;
 use serde::Deserialize;
 use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 
-// the Readxxx structs are used to deserialize via serde
-// they are then post processed into the xxx structs
-
-#[derive(Deserialize, Default)]
-#[serde(default)]
-struct ReadDotEnvSchema {
-    pub version: String,
-    pub allow_other_keys: bool,
-    pub entries: Vec<SchemaEntry>,
-}
-
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, Debug)]
 #[serde(default)]
 pub struct SchemaEntry {
     pub key: String,
@@ -23,36 +12,16 @@ pub struct SchemaEntry {
     #[serde(with = "serde_regex")]
     pub regex: Option<Regex>,
 }
-
+#[derive(Deserialize, Default, Debug)]
 pub struct DotEnvSchema {
     pub version: String,
+    #[serde(default)]
     pub allow_other_keys: bool,
+    #[serde(with = "::serde_with::rust::maps_duplicate_key_is_error")]
     pub entries: HashMap<String, SchemaEntry>,
 }
 
-// pub struct SchemaEntry {
-//     pub key: String,
-//     pub required: bool,
-//     pub value_type: SchemaValueType,
-//     pub regex: Option<Regex>,
-// }
-
-// impl SchemaEntry {
-//     pub fn new(read_entry: ReadSchemaEntry) -> Result<Self, regex::Error> {
-//         let mut se = SchemaEntry {
-//             key: read_entry.key,
-//             required: read_entry.required,
-//             value_type: read_entry.value_type,
-//             regex: None,
-//         };
-//         if let Some(reg) = read_entry.regex {
-//             se.regex = Some(Regex::new(&reg)?);
-//         }
-//         Ok(se)
-//     }
-// }
-
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, Debug)]
 pub enum SchemaValueType {
     #[default]
     String,
@@ -67,18 +36,8 @@ impl DotEnvSchema {
     pub fn load(path: &Path) -> Result<Self, std::io::Error> {
         let file = File::open(path)?;
         let reader = BufReader::new(file);
-        let read_schema: ReadDotEnvSchema = serde_json::from_reader(reader)?;
-        let schema = DotEnvSchema {
-            version: read_schema.version,
-            allow_other_keys: read_schema.allow_other_keys,
-            entries: read_schema
-                .entries
-                .into_iter()
-                .map(|e| (e.key.clone(), e))
-                .collect(),
-        };
-
-        Ok(schema)
+        let read_schema: DotEnvSchema = serde_json::from_reader(reader)?;
+        Ok(read_schema)
     }
 }
 
@@ -90,7 +49,7 @@ mod tests {
     use std::io::Write;
     use tempfile::tempdir;
 
-    use super::{DotEnvSchema, ReadDotEnvSchema};
+    use super::DotEnvSchema;
 
     use crate::common::tests::*;
     use crate::{LintKind, Warning};
@@ -98,43 +57,28 @@ mod tests {
     fn load_schema() -> Result<DotEnvSchema, std::io::Error> {
         let json = r#"{
             "version": "1.0.0",
-            "entries": [
-                {
-                    "key": "NAME",
+            "entries": {
+                "NAME": {               
                     "type": "String"
                 },
-                {
-                    "key": "PORT",
+                "PORT": {
                     "type": "Integer"
                 },
-                {
-                    "key": "PRICE",
+                "PRICE": {
                     "type": "Float"
                 },
-                {
-                    "key": "URL",
+                "URL": {               
                     "type": "Url"
                 },
-                {
-                    "key": "EMAIL",
+                "EMAIL":{
                     "type": "Email"
                 },
-                {
-                    "key": "FLAG",
+                "FLAG":{
                     "type": "Boolean"
                 }
-            ]
+            }
         }"#;
-        let read_schema: ReadDotEnvSchema = serde_json::from_str(json).unwrap();
-        let schema = DotEnvSchema {
-            version: read_schema.version,
-            allow_other_keys: read_schema.allow_other_keys,
-            entries: read_schema
-                .entries
-                .into_iter()
-                .map(|e| (e.key.clone(), e))
-                .collect(),
-        };
+        let schema: DotEnvSchema = serde_json::from_str(json).unwrap();
         Ok(schema)
     }
 
@@ -414,29 +358,26 @@ mod tests {
     fn create_file_schema() {
         let json = r#"{
             "version": "1.0.0",
-            "entries": [
-                {
-                    "key": "NAME",
-                    "type": "String",
-                    "regex": "^[ABCD]*$"
+            "entries": {
+                "NAME": {               
+                    "type": "String"
                 },
-                {
-                    "key": "PORT",
+                "PORT": {
                     "type": "Integer"
                 },
-                {
-                    "key": "URL",
+                "PRICE": {
+                    "type": "Float"
+                },
+                "URL": {               
                     "type": "Url"
                 },
-                {
-                    "key": "EMAIL",
+                "EMAIL":{
                     "type": "Email"
                 },
-                {
-                    "key": "FLAG",
+                "FLAG":{
                     "type": "Boolean"
                 }
-            ]
+            }
         }"#;
         // write the above json to a temp file
         let temp_dir = tempdir().unwrap();
@@ -460,29 +401,27 @@ mod tests {
     fn create_bad_regex_file_schema() {
         let json = r#"{
             "version": "1.0.0",
-            "entries": [
-                {
-                    "key": "NAME",
+            "entries": {
+                "NAME": {               
                     "type": "String",
-                    "regex": "^[ABCD*$"
+                    "regex": "~[.."
                 },
-                {
-                    "key": "PORT",
+                "PORT": {
                     "type": "Integer"
                 },
-                {
-                    "key": "URL",
+                "PRICE": {
+                    "type": "Float"
+                },
+                "URL": {               
                     "type": "Url"
                 },
-                {
-                    "key": "EMAIL",
+                "EMAIL":{
                     "type": "Email"
                 },
-                {
-                    "key": "FLAG",
+                "FLAG":{
                     "type": "Boolean"
                 }
-            ]
+            }
         }"#;
         // write the above json to a temp file
         let temp_dir = tempdir().unwrap();
@@ -514,5 +453,40 @@ mod tests {
         };
         fs::remove_file(&file_path).unwrap();
         assert!(schema.is_err());
+    }
+    #[test]
+    fn test_dup_schema() {
+        let json = r#"{
+            "version": "1.0.0",
+            "entries": {
+                "NAME": {               
+                    "type": "String"
+                },
+                "NAME": {               
+                    "type": "String"
+                },
+                "PORT": {
+                    "type": "Integer"
+                },
+                "PRICE": {
+                    "type": "Float"
+                },
+                "URL": {               
+                    "type": "Url"
+                },
+                "EMAIL":{
+                    "type": "Email"
+                },
+                "FLAG":{
+                    "type": "Boolean"
+                }
+            }
+        }"#;
+        let schema: serde_json::Result<DotEnvSchema> = serde_json::from_str(json);
+        assert!(schema.is_err());
+        assert_eq!(
+            schema.unwrap_err().to_string(),
+            "invalid entry: found duplicate key at line 9 column 17"
+        );
     }
 }

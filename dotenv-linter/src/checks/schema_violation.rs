@@ -129,7 +129,7 @@ impl Check for SchemaViolationChecker<'_> {
                     warnings.push(Warning::new(
                         self.last_line_number,
                         self.name(),
-                        format!("The {} key is required", entry.key),
+                        format!("The {} key is required", key),
                     ));
                 }
             }

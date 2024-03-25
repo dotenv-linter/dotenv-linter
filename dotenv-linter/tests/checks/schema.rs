@@ -9,32 +9,26 @@ use tempfile::tempdir;
 fn load_good_schema() {
     let json = r#"{
         "version": "1.0.0",
-        "entries": [
-            {
-                "key": "NAME",
+        "entries": {
+            "NAME": {               
                 "type": "String"
             },
-            {
-                "key": "PORT",
+            "PORT": {
                 "type": "Integer"
             },
-            {
-                "key": "PRICE",
+            "PRICE": {
                 "type": "Float"
             },
-            {
-                "key": "URL",
+            "URL": {               
                 "type": "Url"
             },
-            {
-                "key": "EMAIL",
+            "EMAIL":{
                 "type": "Email"
             },
-            {
-                "key": "FLAG",
+            "FLAG":{
                 "type": "Boolean"
             }
-        ]
+        }
     }"#;
     // write the above json to a temp file
     let temp_dir = tempdir().expect("create temp dir");
