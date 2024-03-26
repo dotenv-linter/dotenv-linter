@@ -17,6 +17,7 @@ pub enum LintKind {
     TrailingWhitespace,
     UnorderedKey,
     ValueWithoutQuotes,
+    SchemaViolation,
 }
 
 impl ValueEnum for LintKind {
@@ -35,6 +36,7 @@ impl ValueEnum for LintKind {
             LintKind::TrailingWhitespace,
             LintKind::UnorderedKey,
             LintKind::ValueWithoutQuotes,
+            LintKind::SchemaViolation,
         ]
     }
 
@@ -53,6 +55,7 @@ impl ValueEnum for LintKind {
             LintKind::TrailingWhitespace => PossibleValue::new("TrailingWhitespace"),
             LintKind::UnorderedKey => PossibleValue::new("UnorderedKey"),
             LintKind::ValueWithoutQuotes => PossibleValue::new("ValueWithoutQuotes"),
+            LintKind::SchemaViolation => PossibleValue::new("SchemaViolation"),
         })
     }
 }

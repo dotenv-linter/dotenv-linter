@@ -6,6 +6,7 @@ mod key_without_value;
 mod leading_character;
 mod lowercase_key;
 mod quote_character;
+mod schema;
 mod space_character;
 mod substitution_key;
 mod trailing_whitespace;

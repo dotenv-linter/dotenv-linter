@@ -1,5 +1,6 @@
 use crate::common::comment::Comment;
 use crate::common::{LintKind, Warning};
+use crate::schema::DotEnvSchema;
 use dotenv_lookup::LineEntry;
 
 mod duplicated_key;
@@ -10,6 +11,7 @@ mod key_without_value;
 mod leading_character;
 mod lowercase_key;
 mod quote_character;
+mod schema_violation;
 mod space_character;
 mod substitution_key;
 mod trailing_whitespace;
@@ -23,10 +25,13 @@ pub trait Check {
     fn skip_comments(&self) -> bool {
         true
     }
+    fn end(&mut self) -> Vec<Warning> {
+        vec![]
+    }
 }
 
 // Checklist for checks which needs to know of only a single line
-fn checklist() -> Vec<Box<dyn Check>> {
+fn checklist<'a>(schema: Option<&'a DotEnvSchema>) -> Vec<Box<dyn Check + 'a>> {
     vec![
         Box::<duplicated_key::DuplicatedKeyChecker>::default(),
         Box::<ending_blank_line::EndingBlankLineChecker>::default(),
@@ -41,11 +46,16 @@ fn checklist() -> Vec<Box<dyn Check>> {
         Box::<trailing_whitespace::TrailingWhitespaceChecker>::default(),
         Box::<unordered_key::UnorderedKeyChecker>::default(),
         Box::<value_without_quotes::ValueWithoutQuotesChecker>::default(),
+        Box::new(schema_violation::SchemaViolationChecker::new(schema)),
     ]
 }
 
-pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
-    let mut checks = checklist();
+pub fn run(
+    lines: &[LineEntry],
+    skip_checks: &[LintKind],
+    schema: Option<&DotEnvSchema>,
+) -> Vec<Warning> {
+    let mut checks = checklist(schema);
 
     // Skip checks with the --skip argument (globally)
     checks.retain(|c| !skip_checks.contains(&c.name()));
@@ -81,6 +91,11 @@ pub fn run(lines: &[LineEntry], skip_checks: &[LintKind]) -> Vec<Warning> {
         }
     }
 
+    for ch in &mut checks {
+        let end_warns = ch.end();
+        warnings.extend(end_warns);
+    }
+
     warnings
 }
 
@@ -94,8 +109,7 @@ mod tests {
         let empty: Vec<LineEntry> = Vec::new();
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<LintKind> = Vec::new();
-
-        assert_eq!(expected, run(&empty, &skip_checks));
+        assert_eq!(expected, run(&empty, &skip_checks, None));
     }
 
     #[test]
@@ -103,8 +117,7 @@ mod tests {
         let lines: Vec<LineEntry> = vec![blank_line_entry(1, 1)];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<LintKind> = Vec::new();
-
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -115,8 +128,7 @@ mod tests {
         ];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<LintKind> = Vec::new();
-
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -124,8 +136,7 @@ mod tests {
         let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FOO=BAR"), blank_line_entry(2, 2)];
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<LintKind> = Vec::new();
-
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -139,8 +150,7 @@ mod tests {
         let lines: Vec<LineEntry> = vec![line, blank_line_entry(2, 2)];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<LintKind> = Vec::new();
-
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -154,8 +164,7 @@ mod tests {
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<LintKind> = Vec::new();
-
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -169,9 +178,9 @@ mod tests {
         );
         let lines: Vec<LineEntry> = vec![line1, line2, blank_line_entry(3, 3)];
         let expected: Vec<Warning> = vec![warning];
-        let skip_checks: Vec<LintKind> = vec![LintKind::KeyWithoutValue, LintKind::UnorderedKey];
+        let skip_checks = vec![LintKind::KeyWithoutValue, LintKind::UnorderedKey];
 
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -179,9 +188,9 @@ mod tests {
         let line = line_entry(1, 1, "FOO");
         let lines: Vec<LineEntry> = vec![line];
         let expected: Vec<Warning> = Vec::new();
-        let skip_checks: Vec<LintKind> = vec![LintKind::KeyWithoutValue, LintKind::EndingBlankLine];
+        let skip_checks = vec![LintKind::KeyWithoutValue, LintKind::EndingBlankLine];
 
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -196,9 +205,9 @@ mod tests {
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
         let expected: Vec<Warning> = vec![warning];
-        let skip_checks: Vec<LintKind> = vec![LintKind::UnorderedKey];
+        let skip_checks = vec![LintKind::UnorderedKey];
 
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -213,9 +222,8 @@ mod tests {
         );
         let lines: Vec<LineEntry> = vec![line1, line2, line3, blank_line_entry(4, 4)];
         let expected: Vec<Warning> = vec![warning];
-        let skip_checks: Vec<LintKind> = vec![LintKind::KeyWithoutValue, LintKind::UnorderedKey];
-
-        assert_eq!(expected, run(&lines, &skip_checks));
+        let skip_checks = vec![LintKind::KeyWithoutValue, LintKind::UnorderedKey];
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -237,7 +245,7 @@ mod tests {
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<LintKind> = Vec::new();
 
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -252,7 +260,7 @@ mod tests {
         let expected: Vec<Warning> = vec![warning];
         let skip_checks: Vec<LintKind> = Vec::new();
 
-        assert_eq!(expected, run(&lines, &skip_checks));
+        assert_eq!(expected, run(&lines, &skip_checks, None));
     }
 
     #[test]
@@ -270,6 +278,6 @@ mod tests {
         let expected: Vec<Warning> = Vec::new();
         let skip_checks: Vec<LintKind> = Vec::new();
 
-        assert_eq!(expected, run(&line_entries, &skip_checks));
+        assert_eq!(expected, run(&line_entries, &skip_checks, None));
     }
 }

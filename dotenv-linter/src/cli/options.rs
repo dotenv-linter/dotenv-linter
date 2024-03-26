@@ -1,4 +1,7 @@
-use crate::common::LintKind;
+use crate::{
+    common::LintKind,
+    schema::{self, DotEnvSchema},
+};
 use clap::ArgMatches;
 use std::path::PathBuf;
 
@@ -8,6 +11,7 @@ pub struct CheckOptions<'a> {
     pub exclude: Vec<&'a PathBuf>,
     pub quiet: bool,
     pub recursive: bool,
+    pub schema: Option<DotEnvSchema>,
 }
 
 pub struct FixOptions<'a> {
@@ -30,13 +34,24 @@ impl<'a> CheckOptions<'a> {
             .into_iter()
             .map(|l| l.to_owned())
             .collect();
-
+        let schema = if let Some(schema_path) = args.get_one::<PathBuf>("schema") {
+            match schema::DotEnvSchema::load(schema_path) {
+                Ok(schema) => Some(schema),
+                Err(err) => {
+                    println!("Error loading schema: {}", err);
+                    std::process::exit(1);
+                }
+            }
+        } else {
+            None
+        };
         Self {
             skip,
             input: get_many_from_args::<PathBuf>(args, "input"),
             exclude: get_many_from_args::<PathBuf>(args, "exclude"),
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
+            schema,
         }
     }
 }

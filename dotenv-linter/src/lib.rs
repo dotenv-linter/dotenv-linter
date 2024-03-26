@@ -8,6 +8,7 @@ mod checks;
 mod common;
 mod fixes;
 mod fs_utils;
+mod schema;
 
 pub mod cli;
 
@@ -33,7 +34,7 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .enumerate()
         .fold(0, |acc, (index, (fe, lines))| {
             output.print_processing_info(&fe);
-            let result = checks::run(&lines, &opts.skip);
+            let result = checks::run(&lines, &opts.skip, opts.schema.as_ref());
 
             output.print_warnings(&fe, &result, index);
             acc + result.len()
@@ -62,8 +63,7 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
-        // let mut lines = get_line_entries(strings);
-        let result = checks::run(&lines, &opts.skip);
+        let result = checks::run(&lines, &opts.skip, None);
         if result.is_empty() {
             continue;
         }

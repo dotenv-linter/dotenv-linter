@@ -1,10 +1,8 @@
-use crate::{
-    cli::options::{CheckOptions, CompareOptions, FixOptions},
-    common::LintKind,
-    Result,
-};
+use crate::{common::LintKind, Result};
 use clap::{command, value_parser, Arg, ArgAction, Command};
 use std::path::PathBuf;
+
+use self::options::{CheckOptions, CompareOptions, FixOptions};
 
 pub mod options;
 
@@ -130,6 +128,11 @@ fn common_args() -> Vec<Arg> {
             .long("recursive")
             .help("Recursively searches and checks .env files")
             .action(ArgAction::SetTrue),
+        Arg::new("schema")
+            .short('S')
+            .long("schema")
+            .help("Use schema file to check .env files")
+            .value_parser(value_parser!(PathBuf)),
         no_color_flag(),
         quiet_flag(),
     ]

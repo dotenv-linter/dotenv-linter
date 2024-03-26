@@ -19,7 +19,7 @@ pub fn compare_benchmark(c: &mut Criterion) {
             .to_str()
             .expect(".env.compare to str"),
     ]);
-    let opts = dotenv_linter::cli::options::CompareOptions::new(&args);
+    let opts = dotenv_linter::cli::options::CliOptions::new_compare(&args);
 
     fs::copy("benches/fixtures/simple.env", path.join(".env")).expect("copy .env file");
     fs::copy("benches/fixtures/compare.env", path.join(".env.compare"))
