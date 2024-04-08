@@ -71,7 +71,10 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
         if fixes_done != result.len() {
             output.print_not_all_warnings_fixed();
         }
-        if fixes_done > 0 {
+
+        if opts.dry_run {
+            output.print_dry_run(lines);
+        } else if fixes_done > 0 {
             let should_backup = !opts.no_backup;
             // create backup copy unless user specifies not to
             if should_backup {
