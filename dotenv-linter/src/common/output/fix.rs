@@ -96,7 +96,7 @@ impl FixOutput {
             "Dry run - not changing any files on disk.".yellow().bold()
         );
 
-        for line in lines[..lines.len()].iter() {
+        for line in lines {
             println!("{}", line.raw_string);
         }
     }
