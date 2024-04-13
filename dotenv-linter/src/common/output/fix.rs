@@ -86,12 +86,15 @@ impl FixOutput {
     }
 
     /// Prints dry run message
-    pub fn print_dry_run(&self, lines: Vec<LineEntry>) {
+    pub fn print_dry_run(&self, lines: &[LineEntry]) {
         if self.is_quiet_mode {
             return;
         }
 
-        println!("{}\n", "Dry run - not changing any files on disk.".yellow().bold());
+        println!(
+            "{}\n",
+            "Dry run - not changing any files on disk.".yellow().bold()
+        );
 
         for line in lines[..lines.len()].iter() {
             println!("{}", line.raw_string);

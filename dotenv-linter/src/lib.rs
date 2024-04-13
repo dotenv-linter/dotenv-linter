@@ -73,7 +73,7 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
         }
 
         if opts.dry_run {
-            output.print_dry_run(lines);
+            output.print_dry_run(&lines);
         } else if fixes_done > 0 {
             let should_backup = !opts.no_backup;
             // create backup copy unless user specifies not to
