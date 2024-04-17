@@ -21,6 +21,7 @@ pub struct FixOptions<'a> {
     pub quiet: bool,
     pub recursive: bool,
     pub no_backup: bool,
+    pub dry_run: bool,
 }
 
 pub struct CompareOptions<'a> {
@@ -70,6 +71,7 @@ impl<'a> FixOptions<'a> {
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
             no_backup: args.get_flag("no-backup"),
+            dry_run: args.get_flag("dry-run")
         }
     }
 }

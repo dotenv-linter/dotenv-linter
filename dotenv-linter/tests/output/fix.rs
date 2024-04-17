@@ -20,6 +20,40 @@ All warnings are fixed. Total: 1
 }
 
 #[test]
+fn warnings_dry_run() {
+    let test_dir = TestDir::new();
+    let test_str = "abc=DEF\nABC=DEF\nA=DEF\nABC=DEF\n";
+    test_dir.create_testfile(".env", test_str);
+
+    let args: &[&str] = &["--dry-run"];
+    let expected_output = r#"Fixing .env
+Dry run - not changing any files on disk.
+
+A=DEF
+ABC=DEF
+# ABC=DEF
+# ABC=DEF
+
+
+.env:1 LowercaseKey: The abc key should be in uppercase
+.env:2 UnorderedKey: The ABC key should go before the abc key
+.env:3 UnorderedKey: The A key should go before the ABC key
+.env:4 DuplicatedKey: The ABC key is duplicated
+.env:4 UnorderedKey: The ABC key should go before the ABC key
+
+All warnings are fixed. Total: 5
+"#;
+
+    test_dir.test_command_fix_success_with_args(expected_output, args);
+    assert_eq!(
+        test_str,
+        fs::read_to_string(test_dir.as_str().to_owned() + "/.env").unwrap(),
+        ".env file should be unmodified"
+    );
+    test_dir.close();
+}
+
+#[test]
 fn warnings_multiple_files() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "abc=DEF\n");

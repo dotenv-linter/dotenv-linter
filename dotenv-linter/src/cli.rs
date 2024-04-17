@@ -93,6 +93,12 @@ fn fix_command() -> Command {
                 .help("Prevents backing up .env files")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("dry-run")
+                .long("dry-run")
+                .help("Output the fixed file to stdout without writing it to disk")
+                .action(ArgAction::SetTrue),
+        )
         .override_usage("dotenv-linter fix [OPTIONS] <input>...")
         .about("Automatically fixes warnings")
 }

@@ -1,6 +1,6 @@
 use crate::common::Warning;
 use colored::*;
-use dotenv_lookup::FileEntry;
+use dotenv_lookup::{FileEntry, LineEntry};
 use std::path::Path;
 
 /// Prefix for the backup output
@@ -83,5 +83,21 @@ impl FixOutput {
         }
 
         println!("{}", "Could not fix all warnings".red().bold());
+    }
+
+    /// Prints dry run message
+    pub fn print_dry_run(&self, lines: &[LineEntry]) {
+        if self.is_quiet_mode {
+            return;
+        }
+
+        println!(
+            "{}\n",
+            "Dry run - not changing any files on disk.".yellow().bold()
+        );
+
+        for line in lines {
+            println!("{}", line.raw_string);
+        }
     }
 }
