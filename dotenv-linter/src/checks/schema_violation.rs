@@ -8,6 +8,7 @@ use crate::{
 use dotenv_lookup::LineEntry;
 use email_address::EmailAddress;
 use url::Url;
+
 pub(crate) struct SchemaViolationChecker<'a> {
     schema: Option<&'a crate::schema::DotEnvSchema>,
     seen_keys: HashSet<String>,
@@ -17,7 +18,7 @@ pub(crate) struct SchemaViolationChecker<'a> {
 impl<'a> SchemaViolationChecker<'a> {
     pub fn new(schema: Option<&'a DotEnvSchema>) -> Self {
         Self {
-            schema: schema,
+            schema,
             seen_keys: HashSet::new(),
             last_line_number: 0,
         }
