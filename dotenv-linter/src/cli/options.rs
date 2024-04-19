@@ -71,7 +71,7 @@ impl<'a> FixOptions<'a> {
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
             no_backup: args.get_flag("no-backup"),
-            dry_run: args.get_flag("dry-run")
+            dry_run: args.get_flag("dry-run"),
         }
     }
 }
