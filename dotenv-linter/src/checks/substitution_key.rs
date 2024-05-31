@@ -44,7 +44,11 @@ impl Check for SubstitutionKeyChecker<'_> {
             let is_incorrect_substitution = has_start_brace ^ has_end_brace
                 || end_brace_index
                     .map(|i| &initial_key[1..i])
-                    .filter(|key| key.contains(|c: char| !c.is_ascii_alphanumeric() && c != '_'))
+                    .filter(|key| {
+                        key.contains(|c: char| {
+                            !c.is_ascii_alphanumeric() && !":-+=?".contains(c) && c != '_'
+                        })
+                    })
                     .is_some();
 
             if is_incorrect_substitution && !is_escaped(prefix) {
@@ -136,6 +140,19 @@ mod tests {
                 ("FOO=\\$BAR}", None),
                 ("FOO=\"\\${BAR\"", None),
                 ("FOO=\"\\$BAR}", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn check_variable_alternate() {
+        check_test(
+            &mut SubstitutionKeyChecker::default(),
+            [
+                ("FOO=${NODE_ENV:development}", None),
+                ("BAR=${CI:+only}", None),
+                ("BUS=${var:=DEFAULT}", None),
+                ("FOOBAR=${var:?IS_UNSET}", None),
             ],
         );
     }
