@@ -153,6 +153,7 @@ mod tests {
                 ("BAR=${CI:+only}", None),
                 ("BUS=${var:=DEFAULT}", None),
                 ("FOOBAR=${var:?IS_UNSET}", None),
+                ("BUZZ=${BAR:-DEFAULT}", None),
             ],
         );
     }
