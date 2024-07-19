@@ -3,7 +3,9 @@ use crate::common::{comment::Comment, LintKind};
 use dotenv_lookup::LineEntry;
 
 #[derive(Default)]
-pub(crate) struct UnorderedKeyFixer {}
+pub(crate) struct UnorderedKeyFixer {
+    preserve_comments_position: bool,
+}
 
 // When we sort the keys, we handle a significant line (with key) with all previous comments
 // as a whole. E. g.:
@@ -77,7 +79,7 @@ impl Fix for UnorderedKeyFixer {
                         );
                     }
                     if let Some(end_index) = end {
-                        Self::sort_part(&mut lines[start_index..end_index]);
+                        self.sort_part(&mut lines[start_index..end_index]);
                         end = None;
                     }
                     start_index = i + 1;
@@ -99,11 +101,17 @@ impl Fix for UnorderedKeyFixer {
 }
 
 impl UnorderedKeyFixer {
-    fn sort_part(part: &mut [LineEntry]) {
+    pub fn new(preserve_comments_position: bool) -> Self {
+        Self {
+            preserve_comments_position,
+        }
+    }
+
+    fn sort_part(&self, part: &mut [LineEntry]) {
         // Each slice includes a significant line (with key) and previous comments (if present)
         let mut slices = Vec::with_capacity(part.len());
         part.iter().enumerate().fold(0, |acc, (i, line)| {
-            if !line.is_comment() {
+            if self.preserve_comments_position || !line.is_comment() {
                 slices.push(&part[acc..=i]);
                 i + 1
             } else {
@@ -810,6 +818,48 @@ mod tests {
                 "CD=33",
                 "\n",
                 "# end comment",
+                "\n",
+            ],
+        );
+    }
+
+    #[test]
+    fn preserve_comments_position() {
+        let mut lines = get_lines(vec![
+            "ENV2=bbb",
+            "ENV1=aaa",
+            "\n",
+            "###> group1 ###",
+            "ENV4=ddd",
+            "ENV5=eee",
+            "ENV3=ccc",
+            "###< group1 ###",
+            "\n",
+            "ENV7=ggg",
+            "ENV6=fff",
+            "\n",
+        ]);
+
+        let warning_lines = [2, 7, 11];
+        let fixer = UnorderedKeyFixer::new(true);
+
+        let fixed_len = fixer.fix_warnings(&warning_lines, &mut lines);
+        assert_eq!(Some(3), fixed_len);
+
+        assert_lines(
+            &lines,
+            vec![
+                "ENV1=aaa",
+                "ENV2=bbb",
+                "\n",
+                "###> group1 ###",
+                "ENV3=ccc",
+                "ENV4=ddd",
+                "ENV5=eee",
+                "###< group1 ###",
+                "\n",
+                "ENV6=fff",
+                "ENV7=ggg",
                 "\n",
             ],
         );

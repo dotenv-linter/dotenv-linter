@@ -22,6 +22,7 @@ pub struct FixOptions<'a> {
     pub recursive: bool,
     pub no_backup: bool,
     pub dry_run: bool,
+    pub preserve_comments_position: bool,
 }
 
 pub struct CompareOptions<'a> {
@@ -72,6 +73,7 @@ impl<'a> FixOptions<'a> {
             recursive: args.get_flag("recursive"),
             no_backup: args.get_flag("no-backup"),
             dry_run: args.get_flag("dry-run"),
+            preserve_comments_position: args.get_flag("preserve-comments-position"),
         }
     }
 }

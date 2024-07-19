@@ -42,7 +42,7 @@ trait Fix {
 }
 
 // Fix order matters
-fn fixlist() -> Vec<Box<dyn Fix>> {
+fn fixlist(preserve_comments_position: bool) -> Vec<Box<dyn Fix>> {
     vec![
         // At first we run the fixers that handle a single line entry (they use default
         // implementation of the fix_warnings() function)
@@ -57,17 +57,24 @@ fn fixlist() -> Vec<Box<dyn Fix>> {
         Box::<extra_blank_line::ExtraBlankLineFixer>::default(),
         Box::<substitution_key::SubstitutionKeyFixer>::default(),
         // Then we should run the fixers that handle the line entry collection at whole
-        Box::<unordered_key::UnorderedKeyFixer>::default(),
+        Box::new(unordered_key::UnorderedKeyFixer::new(
+            preserve_comments_position,
+        )),
         Box::<duplicated_key::DuplicatedKeyFixer>::default(),
         Box::<ending_blank_line::EndingBlankLineFixer>::default(),
     ]
 }
 
-pub fn run(warnings: &[Warning], lines: &mut Vec<LineEntry>, skip_checks: &[LintKind]) -> usize {
+pub fn run(
+    warnings: &[Warning],
+    lines: &mut Vec<LineEntry>,
+    skip_checks: &[LintKind],
+    preserve_comments_position: bool,
+) -> usize {
     if warnings.is_empty() {
         return 0;
     }
-    let mut fixes = fixlist();
+    let mut fixes = fixlist(preserve_comments_position);
 
     // Skip fixes for checks in --skip argument (globally)
     fixes.retain(|f| !skip_checks.contains(&f.name()));
@@ -108,7 +115,7 @@ mod tests {
         let mut lines = vec![line_entry(1, 2, "A=B"), blank_line_entry(2, 2)];
         let mut warnings: Vec<Warning> = Vec::new();
 
-        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(0, run(&mut warnings, &mut lines, &[], false));
     }
 
     #[test]
@@ -124,7 +131,7 @@ mod tests {
             "The c key should be in uppercase",
         )];
 
-        assert_eq!(1, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(1, run(&mut warnings, &mut lines, &[], false));
         assert_eq!("C=d", lines[1].raw_string);
     }
 
@@ -148,7 +155,7 @@ mod tests {
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(2, run(&mut warnings, &mut lines, &[], false));
     }
 
     #[test]
@@ -173,7 +180,7 @@ mod tests {
             ),
         ];
 
-        assert_eq!(2, run(&warnings, &mut lines, &[]));
+        assert_eq!(2, run(&warnings, &mut lines, &[], false));
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -203,7 +210,10 @@ mod tests {
             ),
         ];
 
-        assert_eq!(2, run(&warnings, &mut lines, &[LintKind::DuplicatedKey]));
+        assert_eq!(
+            2,
+            run(&warnings, &mut lines, &[LintKind::DuplicatedKey], false)
+        );
         assert_eq!("A0=0", lines[0].raw_string);
         assert_eq!("A1=1", lines[1].raw_string);
         assert_eq!("A2=2", lines[2].raw_string);
@@ -233,7 +243,10 @@ mod tests {
             ),
         ];
 
-        assert_eq!(2, run(&warnings, &mut lines, &[LintKind::UnorderedKey]));
+        assert_eq!(
+            2,
+            run(&warnings, &mut lines, &[LintKind::UnorderedKey], false)
+        );
         assert_eq!("A1=1", lines[0].raw_string);
         assert_eq!("A2=2", lines[1].raw_string);
         assert_eq!("A0=0", lines[2].raw_string);
