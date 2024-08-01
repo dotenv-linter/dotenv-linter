@@ -13,7 +13,7 @@ repository.workspace = true
 description = "Lightning-fast linter for .env files"
 
 [dependencies]
-clap = { version = "4.5.3", features = ["cargo", "env"] }
+clap = { version = "4.5.13", features = ["cargo", "env"] }
 colored = "2.1.0"
 dotenv-lookup = { version = "1.0.0", path = "../dotenv-lookup" }
 email_address = "0.2.4"
