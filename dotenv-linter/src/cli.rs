@@ -99,6 +99,12 @@ fn fix_command() -> Command {
                 .help("Output the fixed file to stdout without writing it to disk")
                 .action(ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("stdin")
+                .long("stdin")
+                .help("temp stdin description")
+                .action(ArgAction::SetTrue),
+        )
         .override_usage("dotenv-linter fix [OPTIONS] <input>...")
         .about("Automatically fixes warnings")
 }

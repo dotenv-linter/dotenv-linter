@@ -2,6 +2,8 @@ use crate::{
     cli::options::{CheckOptions, CompareOptions, FixOptions},
     common::*,
 };
+use dotenv_lookup::LineEntry;
+use std::io::{self, Write};
 use std::{collections::HashSet, path::PathBuf};
 
 mod checks;
@@ -45,52 +47,70 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
 }
 
 pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
-    let files = dotenv_lookup::new(current_dir, &opts.input)
-        .recursive(opts.recursive)
-        .exclude(&opts.exclude)
-        .lookup_files();
+    if opts.stdin {
+        // need peekable to determine if we are at the last line
+        let mut iter = io::stdin().lines().enumerate().peekable();
 
-    let output = FixOutput::new(opts.quiet);
+        let mut lines: Vec<LineEntry> = vec![];
 
-    if files.is_empty() {
-        output.print_nothing_to_fix();
-        return Ok(());
-    }
-
-    let output = output.files_count(files.len());
-
-    let mut warnings_count = 0;
-    for (index, (fe, mut lines)) in files.into_iter().enumerate() {
-        output.print_processing_info(&fe);
+        while let Some((i, line)) = iter.next() {
+            lines.push(LineEntry::new(i, line?, iter.peek().is_none()));
+        }
 
         let result = checks::run(&lines, &opts.skip, None);
-        if result.is_empty() {
-            continue;
+        fixes::run(&result, &mut lines, &opts.skip);
+
+        for line in lines[..lines.len() - 1].iter() {
+            writeln!(io::stdout(), "{}", line.raw_string)?;
         }
-        let fixes_done = fixes::run(&result, &mut lines, &opts.skip);
-        if fixes_done != result.len() {
-            output.print_not_all_warnings_fixed();
+    } else {
+        let files = dotenv_lookup::new(current_dir, &opts.input)
+            .recursive(opts.recursive)
+            .exclude(&opts.exclude)
+            .lookup_files();
+
+        let output = FixOutput::new(opts.quiet);
+
+        if files.is_empty() {
+            output.print_nothing_to_fix();
+            return Ok(());
         }
 
-        if opts.dry_run {
-            output.print_dry_run(&lines);
-        } else if fixes_done > 0 {
-            let should_backup = !opts.no_backup;
-            // create backup copy unless user specifies not to
-            if should_backup {
-                let backup_file = fs_utils::backup_file(&fe)?;
-                output.print_backup(&backup_file);
+        let output = output.files_count(files.len());
+
+        let mut warnings_count = 0;
+        for (index, (fe, mut lines)) in files.into_iter().enumerate() {
+            output.print_processing_info(&fe);
+
+            let result = checks::run(&lines, &opts.skip, None);
+            if result.is_empty() {
+                continue;
+            }
+            let fixes_done = fixes::run(&result, &mut lines, &opts.skip);
+            if fixes_done != result.len() {
+                output.print_not_all_warnings_fixed();
             }
 
-            // write corrected file
-            fs_utils::write_file(&fe.path, lines)?;
+            if opts.dry_run {
+                output.print_dry_run(&lines);
+            } else if fixes_done > 0 {
+                let should_backup = !opts.no_backup;
+                // create backup copy unless user specifies not to
+                if should_backup {
+                    let backup_file = fs_utils::backup_file(&fe)?;
+                    output.print_backup(&backup_file);
+                }
+
+                // write corrected file
+                fs_utils::write_file(&fe.path, lines)?;
+            }
+
+            output.print_warnings(&fe, &result, index);
+            warnings_count += result.len();
         }
 
-        output.print_warnings(&fe, &result, index);
-        warnings_count += result.len();
+        output.print_total(warnings_count);
     }
-
-    output.print_total(warnings_count);
     Ok(())
 }
 
