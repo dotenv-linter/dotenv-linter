@@ -99,12 +99,6 @@ fn fix_command() -> Command {
                 .help("Output the fixed file to stdout without writing it to disk")
                 .action(ArgAction::SetTrue),
         )
-        .arg(
-            Arg::new("stdin")
-                .long("stdin")
-                .help("temp stdin description")
-                .action(ArgAction::SetTrue),
-        )
         .override_usage("dotenv-linter fix [OPTIONS] <input>...")
         .about("Automatically fixes warnings")
 }
@@ -145,6 +139,15 @@ fn common_args() -> Vec<Arg> {
             .long("schema")
             .help("Use schema file to check .env files")
             .value_parser(value_parser!(PathBuf)),
+        Arg::new("stdin")
+            .long("stdin")
+            .help("Read and lint from stdin instead of files")
+            .action(ArgAction::SetTrue),
+        Arg::new("stdin-filename")
+            .long("stdin-filename")
+            .default_value("")
+            .help("Specify file name to process stdin as")
+            .action(ArgAction::Set),
         no_color_flag(),
         quiet_flag(),
     ]

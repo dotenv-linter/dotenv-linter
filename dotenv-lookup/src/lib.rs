@@ -95,6 +95,10 @@ fn lookup_dotenv_paths(
     file_paths
 }
 
+pub fn from_stdin(filename: String) -> Option<(FileEntry, Vec<LineEntry>)> {
+    FileEntry::from_stdin(filename)
+}
+
 pub fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }
