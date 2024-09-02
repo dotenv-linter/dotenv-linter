@@ -35,13 +35,15 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 }
 
 pub fn check_stdin(opts: &CheckOptions) -> Result<usize> {
-    let output = CheckOutput::new(opts.quiet);
+    let output = CheckOutput::new(opts.quiet).files_count(1);
     let file = dotenv_lookup::from_stdin(opts.stdin_filename.clone());
 
     match file {
         Some((fe, lines)) => {
             let result = checks::run(&lines, &opts.skip, opts.schema.as_ref());
+            output.print_processing_info(&fe);
             output.print_warnings(&fe, &result, 0);
+            output.print_total(result.len());
             return Ok(result.len());
         }
         None => return Ok(0),
@@ -134,6 +136,11 @@ pub fn fix_stdin(opts: &FixOptions) -> Result<()> {
         Some((_, mut lines)) => {
             let result = checks::run(&lines, &opts.skip, None);
             if result.is_empty() {
+                if lines.len() > 0 {
+                    for line in lines[..lines.len() - 1].iter() {
+                        writeln!(io::stdout(), "{}", line.raw_string)?;
+                    }
+                }
                 return Ok(());
             }
             fixes::run(&result, &mut lines, &opts.skip);
