@@ -13,7 +13,6 @@ pub struct CheckOptions<'a> {
     pub recursive: bool,
     pub schema: Option<DotEnvSchema>,
     pub stdin: bool,
-    pub stdin_filename: &'a String,
 }
 
 pub struct FixOptions<'a> {
@@ -25,7 +24,6 @@ pub struct FixOptions<'a> {
     pub no_backup: bool,
     pub dry_run: bool,
     pub stdin: bool,
-    pub stdin_filename: &'a String,
 }
 
 pub struct CompareOptions<'a> {
@@ -59,10 +57,6 @@ impl<'a> CheckOptions<'a> {
             recursive: args.get_flag("recursive"),
             schema,
             stdin: args.get_flag("stdin"),
-            // unwrap is ok here because a default value is set for the option
-            stdin_filename: args
-                .get_one::<String>("stdin-filename")
-                .expect("has default value therefor should always unwrap"),
         }
     }
 }
@@ -83,10 +77,6 @@ impl<'a> FixOptions<'a> {
             no_backup: args.get_flag("no-backup"),
             dry_run: args.get_flag("dry-run"),
             stdin: args.get_flag("stdin"),
-            // unwrap is ok here because a default value is set for the option
-            stdin_filename: args
-                .get_one::<String>("stdin-filename")
-                .expect("has default value therefor should always unwrap"),
         }
     }
 }

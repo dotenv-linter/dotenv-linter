@@ -36,7 +36,7 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 
 pub fn check_stdin(opts: &CheckOptions) -> Result<usize> {
     let output = CheckOutput::new(opts.quiet).files_count(1);
-    let file = dotenv_lookup::from_stdin(opts.stdin_filename.clone());
+    let file = dotenv_lookup::from_stdin();
 
     match file {
         Some((fe, lines)) => {
@@ -130,7 +130,7 @@ pub fn fix_dir(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 
 pub fn fix_stdin(opts: &FixOptions) -> Result<()> {
     // need peekable to determine if we are at the last line
-    let file = dotenv_lookup::from_stdin(opts.stdin_filename.clone());
+    let file = dotenv_lookup::from_stdin();
 
     match file {
         Some((_, mut lines)) => {

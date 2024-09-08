@@ -143,11 +143,6 @@ fn common_args() -> Vec<Arg> {
             .long("stdin")
             .help("Read and lint from stdin instead of files")
             .action(ArgAction::SetTrue),
-        Arg::new("stdin-filename")
-            .long("stdin-filename")
-            .default_value("")
-            .help("Specify file name to process stdin as")
-            .action(ArgAction::Set),
         no_color_flag(),
         quiet_flag(),
     ]

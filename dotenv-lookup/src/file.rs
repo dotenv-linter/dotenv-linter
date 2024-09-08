@@ -67,19 +67,15 @@ impl FileEntry {
         ))
     }
 
-    pub fn from_stdin(filename: String) -> Option<(Self, Vec<LineEntry>)> {
-        let path = PathBuf::from(filename);
-        let file_name = match get_file_name(&path) {
-            Some(name) => name.to_string(),
-            None => String::new(),
-        };
+    pub fn from_stdin() -> Option<(Self, Vec<LineEntry>)> {
+        let path = PathBuf::from("");
         let content = io::read_to_string(io::stdin()).ok()?;
         let lines = get_line_entries(content);
 
         Some((
             FileEntry {
                 path,
-                file_name,
+                file_name: String::new(),
                 total_lines: lines.len(),
             },
             lines,
