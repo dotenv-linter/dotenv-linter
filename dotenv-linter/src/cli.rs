@@ -69,7 +69,7 @@ pub fn command() -> Command {
 fn compare_command() -> Command {
     Command::new("compare")
         .visible_alias("c")
-        .args(&vec![
+        .args(vec![
             Arg::new("input")
                 .help("Files to compare")
                 .action(ArgAction::Append)

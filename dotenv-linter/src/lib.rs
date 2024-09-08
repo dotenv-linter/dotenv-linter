@@ -20,17 +20,17 @@ pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
     if opts.stdin {
-        return check_stdin(opts);
+        check_stdin(opts)
     } else {
-        return check_dir(opts, current_dir);
+        check_dir(opts, current_dir)
     }
 }
 
 pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
     if opts.stdin {
-        return fix_stdin(opts);
+        fix_stdin(opts)
     } else {
-        return fix_dir(opts, current_dir);
+        fix_dir(opts, current_dir)
     }
 }
 
@@ -44,9 +44,9 @@ pub fn check_stdin(opts: &CheckOptions) -> Result<usize> {
             output.print_processing_info(&fe);
             output.print_warnings(&fe, &result, 0);
             output.print_total(result.len());
-            return Ok(result.len());
+            Ok(result.len())
         }
-        None => return Ok(0),
+        None => Ok(0),
     }
 }
 
@@ -136,7 +136,7 @@ pub fn fix_stdin(opts: &FixOptions) -> Result<()> {
         Some((_, mut lines)) => {
             let result = checks::run(&lines, &opts.skip, None);
             if result.is_empty() {
-                if lines.len() > 0 {
+                if !lines.is_empty() {
                     for line in lines[..lines.len() - 1].iter() {
                         writeln!(io::stdout(), "{}", line.raw_string)?;
                     }

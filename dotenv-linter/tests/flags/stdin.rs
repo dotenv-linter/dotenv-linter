@@ -1,7 +1,7 @@
 use crate::common::*;
 
 #[test]
-fn check_output_in_stdin_mode_no_file_name_success() {
+fn check_output_in_stdin_mode_success() {
     let test_dir = TestDir::new();
     let testfile_to_check = test_dir.create_testfile(".env", "BAR=Baz\n");
 
@@ -13,26 +13,9 @@ No problems found
         a = ""
     );
 
-    test_dir.test_command_check_success_with_stdin_input(testfile_to_check, expected_output);
-}
-
-#[test]
-fn check_output_in_stdin_mode_with_file_name_success() {
-    let test_dir = TestDir::new();
-    let filename = ".env";
-    let testfile_to_check = test_dir.create_testfile(filename, "BAR=Baz\n");
-
-    let expected_output = format!(
-        "Checking {a}
-
-No problems found
-",
-        a = testfile_to_check.shortname_as_str()
-    );
-
-    test_dir.test_command_check_success_with_stdin_input_and_filename(
+    test_dir.test_command_success_with_args_and_stdin_input(
+        with_default_args(&[]),
         testfile_to_check,
-        filename,
         expected_output,
     );
 }
@@ -47,7 +30,11 @@ fn check_output_in_stdin_mode_failure() {
         a = ""
     );
 
-    test_dir.test_command_check_failed_with_stdin_input(testfile_to_check, expected_output);
+    test_dir.test_command_failed_with_args_and_stdin_input(
+        with_default_args(&[]),
+        testfile_to_check,
+        expected_output,
+    );
 }
 
 #[test]
@@ -63,7 +50,11 @@ No problems found
         a = ""
     );
 
-    test_dir.test_command_check_success_with_stdin_input(testfile_to_check, expected_output);
+    test_dir.test_command_success_with_args_and_stdin_input(
+        with_default_args(&[]),
+        testfile_to_check,
+        expected_output,
+    );
 }
 
 #[test]

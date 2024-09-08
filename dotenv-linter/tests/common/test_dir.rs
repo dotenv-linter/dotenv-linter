@@ -99,103 +99,6 @@ impl TestDir {
         self.close();
     }
 
-    /// Run the default CLI binary, with stdin input and filename
-    /// in this TestDir and check it succeeds.
-    ///
-    /// This method removes the TestDir when command has finished.
-    pub fn test_command_check_success_with_stdin_input_and_filename<P, T>(
-        self,
-        file: P,
-        filename: &str,
-        expected_output: T,
-    ) where
-        P: AsRef<Path>,
-        T: Into<String>,
-    {
-        let expected_output = expected_output.into();
-        let mut cmd = self.init_cmd();
-        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
-        cmd.current_dir(&canonical_current_dir)
-            .args(&["--stdin", "--stdin-filename", filename])
-            .pipe_stdin(file)
-            .expect("write file to stdin")
-            .assert()
-            .success()
-            .stdout(expected_output);
-
-        self.close();
-    }
-
-    /// Run the default CLI binary, with stdin input
-    /// in this TestDir and check it succeeds.
-    ///
-    /// This method removes the TestDir when command has finished.
-    pub fn test_command_check_success_with_stdin_input<P, T>(self, file: P, expected_output: T)
-    where
-        P: AsRef<Path>,
-        T: Into<String>,
-    {
-        let expected_output = expected_output.into();
-        let mut cmd = self.init_cmd();
-        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
-        cmd.current_dir(&canonical_current_dir)
-            .args(&["--stdin"])
-            .pipe_stdin(file)
-            .expect("write file to stdin")
-            .assert()
-            .success()
-            .stdout(expected_output);
-
-        self.close();
-    }
-
-    /// Run the default CLI binary, with stdin input,
-    /// in this TestDir and check it failed.
-    ///
-    /// This method removes the TestDir when command has finished.
-    pub fn test_command_check_failed_with_stdin_input<P, T>(self, file: P, expected_output: T)
-    where
-        P: AsRef<Path>,
-        T: Into<String>,
-    {
-        let expected_output = expected_output.into();
-        let mut cmd = self.init_cmd();
-        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
-        cmd.current_dir(&canonical_current_dir)
-            .args(&["--stdin"])
-            .pipe_stdin(file)
-            .expect("write file to stdin")
-            .assert()
-            .failure()
-            .code(1)
-            .stdout(expected_output);
-
-        self.close();
-    }
-
-    /// Run the default CLI binary, with "-f" and stdin input,
-    /// in this TestDir and check it succeeds.
-    ///
-    /// This method removes the TestDir when command has finished.
-    pub fn test_command_fix_success_with_stdin_input<P, T>(self, file: &P, expected_output: T)
-    where
-        P: AsRef<Path>,
-        T: Into<String>,
-    {
-        let expected_output = expected_output.into();
-        let mut cmd = self.init_cmd();
-        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
-        cmd.current_dir(&canonical_current_dir)
-            .args(&["fix", "--stdin"])
-            .pipe_stdin(file)
-            .expect("write file to stdin")
-            .assert()
-            .success()
-            .stdout(expected_output);
-
-        self.close()
-    }
-
     /// Run the default CLI binary, with command line arguments,
     /// in this TestDir and check it fails.
     ///
@@ -309,6 +212,114 @@ impl TestDir {
             )
             .expect("convert to &str"),
         )
+    }
+
+    /// Run the default CLI binary, with args and stdin input
+    /// in this TestDir and check it succeeds.
+    ///
+    /// This method removes the TestDir when command has finished.
+    pub fn test_command_success_with_args_and_stdin_input<I, P, S, T>(
+        self,
+        args: I,
+        file: P,
+        expected_output: T,
+    ) where
+        I: IntoIterator<Item = S>,
+        P: AsRef<Path>,
+        S: AsRef<OsStr>,
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
+        let mut cmd = self.init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(args)
+            .arg("--stdin")
+            .pipe_stdin(file)
+            .expect("write file to stdin")
+            .assert()
+            .success()
+            .stdout(expected_output);
+
+        self.close();
+    }
+
+    /// Run the default CLI binary, with args and stdin input
+    /// in this TestDir and check it failed.
+    ///
+    /// This method removes the TestDir when command has finished.
+    pub fn test_command_failed_with_args_and_stdin_input<I, P, S, T>(
+        self,
+        args: I,
+        file: P,
+        expected_output: T,
+    ) where
+        I: IntoIterator<Item = S>,
+        P: AsRef<Path>,
+        S: AsRef<OsStr>,
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
+        let mut cmd = self.init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(args)
+            .arg("--stdin")
+            .pipe_stdin(file)
+            .expect("write file to stdin")
+            .assert()
+            .failure()
+            .code(1)
+            .stdout(expected_output);
+
+        self.close();
+    }
+
+    /// Run the default CLI binary, with "-f" and stdin input
+    /// in this TestDir and check it succeeds.
+    ///
+    /// This method removes the TestDir when command has finished.
+    pub fn test_command_fix_success_with_stdin_input<P, T>(self, file: P, expected_output: T)
+    where
+        P: AsRef<Path>,
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
+        let mut cmd = self.init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(&["fix", "--stdin"])
+            .pipe_stdin(file)
+            .expect("write file to stdin")
+            .assert()
+            .success()
+            .stdout(expected_output);
+
+        self.close();
+    }
+
+    /// Run the default CLI binary, with "-f" and stdin input
+    /// in this TestDir and check it failed.
+    ///
+    /// This method removes the TestDir when command has finished.
+    pub fn test_command_fix_failed_with_stdin_input<P, T>(self, file: P, expected_output: T)
+    where
+        P: AsRef<Path>,
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
+        let mut cmd = self.init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(&["fix", "--stdin"])
+            .pipe_stdin(file)
+            .expect("write file to stdin")
+            .assert()
+            .failure()
+            .code(1)
+            .stdout(expected_output);
+
+        self.close();
     }
 
     fn init_cmd(&self) -> Command {
