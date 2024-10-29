@@ -48,13 +48,13 @@ jobs:
             BUILD_OPTIONS: '--no-default-features'
           # macOS
           - BUILD: x86_64-darwin
-            OS: macos-11
+            OS: macos-13
             TOOLCHAIN: stable
             TARGET: x86_64-apple-darwin
             ARCH_SUFFIX: darwin-x86_64
             BUILD_OPTIONS: ''
           - BUILD: aarch64-darwin
-            OS: macos-11
+            OS: macos-14
             TOOLCHAIN: stable
             TARGET: aarch64-apple-darwin
             ARCH_SUFFIX: darwin-arm64
