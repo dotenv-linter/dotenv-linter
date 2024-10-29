@@ -41,7 +41,7 @@ jobs:
           rm -f target/debug/deps/*.gcno
       - run: cargo test --all-features --no-fail-fast
         env:
-          CARGO_INCREMENTAL: '0'
+          CARGO_INCREMENTAL: "0"
           RUSTFLAGS: |
             -Zprofile -Zpanic_abort_tests -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort
       - uses: actions-rs/grcov@v0.1
@@ -74,6 +74,13 @@ jobs:
       matrix:
         version: [3.2.0, 2.2.1, 2.0.0, 1.1.1]
         os: [ubuntu-latest, macos-latest]
+        exclude:
+          - version: 2.2.1
+            os: macos-latest
+          - version: 2.0.0
+            os: macos-latest
+          - version: 1.1.1
+            os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -218,44 +225,44 @@ jobs:
             OS: ubuntu-latest
             TOOLCHAIN: stable
             TARGET: x86_64-unknown-linux-gnu
-            BUILD_OPTIONS: ''
+            BUILD_OPTIONS: ""
           - BUILD: x86_64-linux-musl
             OS: ubuntu-latest
             TOOLCHAIN: stable
             TARGET: x86_64-unknown-linux-musl
-            BUILD_OPTIONS: ''
+            BUILD_OPTIONS: ""
           - BUILD: aarch64-linux-gnu
             OS: ubuntu-latest
             TOOLCHAIN: stable
             TARGET: aarch64-unknown-linux-gnu
-            BUILD_OPTIONS: ''
+            BUILD_OPTIONS: ""
           - BUILD: aarch64-linux-musl
             OS: ubuntu-latest
             TOOLCHAIN: stable
             TARGET: aarch64-unknown-linux-musl
-            BUILD_OPTIONS: '--no-default-features'
+            BUILD_OPTIONS: "--no-default-features"
           # macOS
           - BUILD: x86_64-darwin
             OS: macos-13
             TOOLCHAIN: stable
             TARGET: x86_64-apple-darwin
-            BUILD_OPTIONS: ''
+            BUILD_OPTIONS: ""
           - BUILD: aarch64-darwin
             OS: macos-14
             TOOLCHAIN: stable
             TARGET: aarch64-apple-darwin
-            BUILD_OPTIONS: ''
+            BUILD_OPTIONS: ""
           # Windows
           - BUILD: x86_64-windows-msvc
             OS: windows-latest
             TOOLCHAIN: stable
             TARGET: x86_64-pc-windows-msvc
-            BUILD_OPTIONS: ''
+            BUILD_OPTIONS: ""
           - BUILD: aarch64-windows-msvc
             OS: windows-latest
             TOOLCHAIN: stable
             TARGET: aarch64-pc-windows-msvc
-            BUILD_OPTIONS: '--no-default-features'
+            BUILD_OPTIONS: "--no-default-features"
     steps:
       - uses: actions/checkout@v4
       - name: Install musl-tools
