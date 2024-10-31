@@ -3,6 +3,7 @@ use crate::line::LineEntry;
 use crate::quote_type::is_multiline_start;
 use std::collections::btree_map::IntoIter;
 use std::collections::BTreeMap;
+use std::io;
 use std::path::{Path, PathBuf};
 use std::{fmt, fs};
 
@@ -54,20 +55,27 @@ impl FileEntry {
     pub fn from(path: PathBuf) -> Option<(Self, Vec<LineEntry>)> {
         let file_name = get_file_name(&path)?.to_string();
         let content = fs::read_to_string(&path).ok()?;
-
-        let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
-
-        // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
-        if content.ends_with(LF) {
-            lines.push(LF.to_string());
-        }
-
-        let lines = get_line_entries(lines);
+        let lines = get_line_entries(content);
 
         Some((
             FileEntry {
                 path,
                 file_name,
+                total_lines: lines.len(),
+            },
+            lines,
+        ))
+    }
+
+    pub fn from_stdin() -> Option<(Self, Vec<LineEntry>)> {
+        let path = PathBuf::from("");
+        let content = io::read_to_string(io::stdin()).ok()?;
+        let lines = get_line_entries(content);
+
+        Some((
+            FileEntry {
+                path,
+                file_name: String::new(),
                 total_lines: lines.len(),
             },
             lines,
@@ -88,7 +96,14 @@ fn get_file_name(path: &Path) -> Option<&str> {
     path.file_name().and_then(|file_name| file_name.to_str())
 }
 
-fn get_line_entries(lines: Vec<String>) -> Vec<LineEntry> {
+fn get_line_entries(content: String) -> Vec<LineEntry> {
+    let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
+
+    // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
+    if content.ends_with(LF) {
+        lines.push(LF.to_string());
+    }
+
     let length = lines.len();
 
     let mut lines: Vec<LineEntry> = lines

@@ -69,7 +69,7 @@ pub fn command() -> Command {
 fn compare_command() -> Command {
     Command::new("compare")
         .visible_alias("c")
-        .args(&vec![
+        .args(vec![
             Arg::new("input")
                 .help("Files to compare")
                 .action(ArgAction::Append)
@@ -139,6 +139,10 @@ fn common_args() -> Vec<Arg> {
             .long("schema")
             .help("Use schema file to check .env files")
             .value_parser(value_parser!(PathBuf)),
+        Arg::new("stdin")
+            .long("stdin")
+            .help("Read and lint from stdin instead of files")
+            .action(ArgAction::SetTrue),
         no_color_flag(),
         quiet_flag(),
     ]

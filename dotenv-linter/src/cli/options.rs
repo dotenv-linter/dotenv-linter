@@ -12,6 +12,7 @@ pub struct CheckOptions<'a> {
     pub quiet: bool,
     pub recursive: bool,
     pub schema: Option<DotEnvSchema>,
+    pub stdin: bool,
 }
 
 pub struct FixOptions<'a> {
@@ -22,6 +23,7 @@ pub struct FixOptions<'a> {
     pub recursive: bool,
     pub no_backup: bool,
     pub dry_run: bool,
+    pub stdin: bool,
 }
 
 pub struct CompareOptions<'a> {
@@ -46,6 +48,7 @@ impl<'a> CheckOptions<'a> {
         } else {
             None
         };
+
         Self {
             skip,
             input: get_many_from_args::<PathBuf>(args, "input"),
@@ -53,6 +56,7 @@ impl<'a> CheckOptions<'a> {
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
             schema,
+            stdin: args.get_flag("stdin"),
         }
     }
 }
@@ -72,6 +76,7 @@ impl<'a> FixOptions<'a> {
             recursive: args.get_flag("recursive"),
             no_backup: args.get_flag("no-backup"),
             dry_run: args.get_flag("dry-run"),
+            stdin: args.get_flag("stdin"),
         }
     }
 }
