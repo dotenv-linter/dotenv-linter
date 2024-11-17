@@ -86,6 +86,12 @@ mod tests {
                 ("FOO=\'BAR BAR\'", None),
                 ("FOO=BAR # Some Comment", None),
                 ("FOO=BAR BAZ # Some Comment", Some(WARNING)),
+                ("FOO=\"Pas#word\"", None),
+                ("FOO=\"Pas #word\"", None),
+                ("FOO=\"Pas#word\" # Some Comment", None),
+                ("FOO=\"Pas #word\" # Some Comment", None),
+                ("FOO=\"Pas#word\"  Some Comment", Some(WARNING)),
+                ("FOO=\"Pas #word\"  Some Comment", Some(WARNING)),
             ],
         );
     }
