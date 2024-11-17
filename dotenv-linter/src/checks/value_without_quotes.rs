@@ -22,7 +22,13 @@ impl Default for ValueWithoutQuotesChecker<'_> {
 
 impl Check for ValueWithoutQuotesChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        let val = line.get_value()?.trim();
+        let mut val = line.get_value()?.trim();
+
+        // Remove anything after the '#' symbol (including the symbol itself)
+        val = val.find('#')
+            .map(|comment_index| &val[..comment_index])
+            .unwrap_or(val)
+            .trim();
 
         if val.contains(char::is_whitespace)
             && !(val.starts_with('\'') && val.ends_with('\''))
