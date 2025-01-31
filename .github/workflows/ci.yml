@@ -45,7 +45,7 @@ jobs:
           RUSTFLAGS: |
             -Zprofile -Zpanic_abort_tests -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort
       - uses: actions-rs/grcov@v0.1
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         with:
           file: ./lcov.info
 
