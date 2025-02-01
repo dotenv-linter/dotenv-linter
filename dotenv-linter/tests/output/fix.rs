@@ -199,7 +199,7 @@ fn backup() {
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != test_file.as_str())
-        .last()
+        .find(|e| e.path().is_file())
         .expect("get backup file");
     let backup_filename = backup_file.file_name();
     let backup_filename = backup_filename.to_str().expect("convert to string");
@@ -231,7 +231,7 @@ fn quiet_backup() {
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != test_file.as_str())
-        .last()
+        .find(|e| e.path().is_file())
         .expect("get backup file");
     let backup_filename = backup_file.file_name();
     let backup_filename = backup_filename.to_str().expect("convert to string");

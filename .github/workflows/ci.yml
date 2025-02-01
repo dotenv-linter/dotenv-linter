@@ -31,19 +31,17 @@ jobs:
           components: llvm-tools-preview
       # https://github.com/dtolnay/rust-toolchain/issues/29
       - run: rustup override set nightly
-      - name: Set grcov version
-        run: echo "GRCOV_VERSION=$(cargo search --limit 1 grcov | head -n1 | cut -d '"' -f2)" >> $GITHUB_ENV
-      - uses: Swatinem/rust-cache@v2.7.3
+      - uses: baptiste0928/cargo-install@v3
         with:
-          key: ${{ env.GRCOV_VERSION }}
-      - run: cargo install --version $GRCOV_VERSION grcov
+          crate: grcov
       - run: cargo clean
+      - uses: Swatinem/rust-cache@v2
       - run: cargo test --all-features --no-fail-fast
         env:
           CARGO_INCREMENTAL: '0'
           LLVM_PROFILE_FILE: 'target/debug/coverage/dotenv-linter-%p-%m.profraw'
           RUSTFLAGS: '-Cinstrument-coverage'
-      - uses: actions-rs/grcov@v0.1
+      - run: grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

@@ -15,7 +15,7 @@ fn output_backup_file() {
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != testfile.as_str())
-        .last()
+        .find(|e| e.path().is_file())
         .expect("get backup file");
 
     let backup_contents = fs::read_to_string(backup_file.path()).expect("read backup file");
