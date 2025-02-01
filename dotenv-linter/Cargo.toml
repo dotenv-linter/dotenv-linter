@@ -12,6 +12,10 @@ readme = "../README.md"
 repository.workspace = true
 description = "Lightning-fast linter for .env files"
 
+[features]
+default = ["update-informer"]
+stub_check_version = []
+
 [dependencies]
 clap = { version = "4.5.3", features = ["cargo", "env"] }
 colored = "2.1.0"
@@ -38,10 +42,6 @@ dunce.workspace = true
 
 [target.'cfg(not(windows))'.dev-dependencies]
 gag = "1.0.0"
-
-[features]
-default = ["update-informer"]
-stub_check_version = []
 
 [[bin]]
 name = "dotenv-linter"

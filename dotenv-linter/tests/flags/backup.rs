@@ -11,7 +11,7 @@ fn output_backup_file() {
 
     testdir.test_command_success_with_args_without_closing(args);
 
-    let backup_file = fs::read_dir(&testdir.as_str())
+    let backup_file = fs::read_dir(testdir.as_str())
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != testfile.as_str())

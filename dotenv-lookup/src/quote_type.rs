@@ -32,43 +32,31 @@ mod tests {
 
     #[test]
     fn check_single_quoted_value() {
-        assert_eq!(true, QuoteType::Single.is_quoted_value("\'some_quoted_str"))
+        assert!(QuoteType::Single.is_quoted_value("\'some_quoted_str"))
     }
 
     #[test]
     fn check_double_quoted_value() {
-        assert_eq!(true, QuoteType::Double.is_quoted_value("\"some_quoted_str"))
+        assert!(QuoteType::Double.is_quoted_value("\"some_quoted_str"))
     }
 
     #[test]
     fn check_non_single_quoted_value() {
-        assert_eq!(
-            false,
-            QuoteType::Single.is_quoted_value("some_non_quoted_str")
-        )
+        assert!(!QuoteType::Single.is_quoted_value("some_non_quoted_str"))
     }
 
     #[test]
     fn check_non_double_quoted_value() {
-        assert_eq!(
-            false,
-            QuoteType::Double.is_quoted_value("some_non_quoted_str")
-        )
+        assert!(!QuoteType::Double.is_quoted_value("some_non_quoted_str"))
     }
 
     #[test]
     fn check_single_quoted_value_for_double_quoted_str() {
-        assert_eq!(
-            false,
-            QuoteType::Single.is_quoted_value("\"some_double_quoted_str")
-        )
+        assert!(!QuoteType::Single.is_quoted_value("\"some_double_quoted_str"))
     }
 
     #[test]
     fn check_double_quoted_value_for_single_quoted_str() {
-        assert_eq!(
-            false,
-            QuoteType::Double.is_quoted_value("\'some_single_quoted_str")
-        )
+        assert!(!QuoteType::Double.is_quoted_value("\'some_single_quoted_str"))
     }
 }

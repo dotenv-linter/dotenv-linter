@@ -141,27 +141,27 @@ mod tests {
         fn run_with_empty_line_test() {
             let input = line_entry(1, 1, "");
 
-            assert_eq!(input.is_empty(), true);
-            assert_eq!(input.is_comment(), false);
-            assert_eq!(input.is_empty_or_comment(), true);
+            assert!(input.is_empty());
+            assert!(!input.is_comment());
+            assert!(input.is_empty_or_comment());
         }
 
         #[test]
         fn run_with_comment_line_test() {
             let input = line_entry(1, 1, "# Comment");
 
-            assert_eq!(input.is_empty(), false);
-            assert_eq!(input.is_comment(), true);
-            assert_eq!(input.is_empty_or_comment(), true);
+            assert!(!input.is_empty());
+            assert!(input.is_comment());
+            assert!(input.is_empty_or_comment());
         }
 
         #[test]
         fn run_with_not_comment_or_empty_line_test() {
             let input = line_entry(1, 1, "NotComment");
 
-            assert_eq!(input.is_empty(), false);
-            assert_eq!(input.is_comment(), false);
-            assert_eq!(input.is_empty_or_comment(), false);
+            assert!(!input.is_empty());
+            assert!(!input.is_comment());
+            assert!(!input.is_empty_or_comment());
         }
     }
 

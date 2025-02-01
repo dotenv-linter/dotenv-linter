@@ -2,7 +2,7 @@ use crate::common::*;
 
 #[test]
 fn correct_files() {
-    let contents = vec![
+    let contents = [
         "ABC=$BAR\nBAR=$ABC\n",
         "FOO=${BAR}\n",
         "A=B\nFOO=\"$BAR\"\n",
@@ -23,13 +23,13 @@ fn correct_files() {
 
 #[test]
 fn incorrect_files() {
-    let contents = vec![
+    let contents = [
         "ABV=TEST\nFOO=${BAR\n",
         "A=${BAR!}FOO=B4\n",
         "TEST=$BAR}\n",
         "FOO=${ABC-$BAR}\n",
     ];
-    let expected = vec![(2, "FOO"), (1, "A"), (1, "TEST"), (1, "FOO")];
+    let expected = [(2, "FOO"), (1, "A"), (1, "TEST"), (1, "FOO")];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();

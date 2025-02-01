@@ -121,7 +121,6 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
         let file_to_compare: CompareFileType = CompareFileType {
             path: fe.path,
             keys,
-            missing: Vec::new(),
         };
 
         files_to_compare.push(file_to_compare);
