@@ -1,0 +1,6 @@
+use_field_init_shorthand = true
+
+# Use with nighliy like `cargo +nightly fmt`
+imports_granularity = "Crate"
+group_imports = "StdExternalCrate"
+format_strings = true

@@ -28,9 +28,7 @@ impl Check for ExtraBlankLineChecker<'_> {
             return None;
         }
 
-        let is_extra = self
-            .last_blank_number
-            .map_or(false, |n| n + 1 == line.number);
+        let is_extra = self.last_blank_number.is_some_and(|n| n + 1 == line.number);
 
         self.last_blank_number = Some(line.number);
 

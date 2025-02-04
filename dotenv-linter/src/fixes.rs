@@ -106,9 +106,8 @@ mod tests {
     #[test]
     fn run_with_empty_warnings_test() {
         let mut lines = vec![line_entry(1, 2, "A=B"), blank_line_entry(2, 2)];
-        let mut warnings: Vec<Warning> = Vec::new();
 
-        assert_eq!(0, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(0, run(&[], &mut lines, &[]));
     }
 
     #[test]
@@ -118,13 +117,13 @@ mod tests {
             line_entry(2, 3, "c=d"),
             blank_line_entry(3, 3),
         ];
-        let mut warnings = vec![Warning::new(
+        let warnings = [Warning::new(
             lines[1].number,
             LintKind::LowercaseKey,
             "The c key should be in uppercase",
         )];
 
-        assert_eq!(1, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(1, run(&warnings, &mut lines, &[]));
         assert_eq!("C=d", lines[1].raw_string);
     }
 
@@ -135,7 +134,7 @@ mod tests {
             line_entry(4, 3, "c=D"),
             blank_line_entry(3, 3),
         ];
-        let mut warnings = vec![
+        let warnings = [
             Warning::new(
                 lines[0].number,
                 LintKind::LowercaseKey,
@@ -148,7 +147,7 @@ mod tests {
             ),
         ];
 
-        assert_eq!(2, run(&mut warnings, &mut lines, &[]));
+        assert_eq!(2, run(&warnings, &mut lines, &[]));
     }
 
     #[test]
@@ -160,7 +159,7 @@ mod tests {
             line_entry(4, 5, "a2=2"),
             blank_line_entry(5, 5),
         ];
-        let warnings = vec![
+        let warnings = [
             Warning::new(
                 lines[2].number,
                 LintKind::LowercaseKey,
@@ -190,7 +189,7 @@ mod tests {
             line_entry(4, 5, "a2=2"),
             blank_line_entry(5, 5),
         ];
-        let warnings = vec![
+        let warnings = [
             Warning::new(
                 lines[2].number,
                 LintKind::LowercaseKey,
@@ -220,7 +219,7 @@ mod tests {
             line_entry(4, 5, "a2=2"),
             blank_line_entry(5, 5),
         ];
-        let warnings = vec![
+        let warnings = [
             Warning::new(
                 lines[2].number,
                 LintKind::LowercaseKey,
@@ -239,23 +238,5 @@ mod tests {
         assert_eq!("A0=0", lines[2].raw_string);
         assert_eq!("# A2=2", lines[3].raw_string);
         assert_eq!("\n", lines[4].raw_string);
-    }
-
-    struct TestFixer {
-        name: LintKind,
-    }
-
-    impl Fix for TestFixer {
-        fn name(&self) -> LintKind {
-            self.name
-        }
-
-        fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
-            if line.raw_string.chars().count() > 5 {
-                Some(())
-            } else {
-                None
-            }
-        }
     }
 }

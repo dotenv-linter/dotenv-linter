@@ -43,7 +43,7 @@ fn skip_checks() {
 
     testdir.test_command_fix_success_with_args(
         expected_output,
-        &["--skip", "DuplicatedKey", "UnorderedKey"],
+        ["--skip", "DuplicatedKey", "UnorderedKey"],
     );
 
     assert_eq!(testfile.contents().as_str(), "A1=1\nA2=2\nA0=0\nA2=2\n");

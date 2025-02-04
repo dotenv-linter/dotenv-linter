@@ -51,7 +51,7 @@ parse_args() {
 
 # Returns 0 if $1 is a valid semantic version. For example 1.0.0
 check_semver() {
-    echo "$1" | grep -E '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$' > /dev/null
+    echo "$1" | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' > /dev/null
 }
 
 # Returns 0 if $1 is a valid semantic version prefixed by v. For example v1.0.0

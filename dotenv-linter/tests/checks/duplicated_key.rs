@@ -21,8 +21,8 @@ fn correct_files() {
 
 #[test]
 fn incorrect_files() {
-    let contents = vec!["A=B\nF=BAR\nFOO=BAR\nFOO=BAZ\n", "A=BAR\nA=Foo\n"];
-    let expected = vec![(4, "FOO"), (2, "A")];
+    let contents = ["A=B\nF=BAR\nFOO=BAR\nFOO=BAZ\n", "A=BAR\nA=Foo\n"];
+    let expected = [(4, "FOO"), (2, "A")];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();

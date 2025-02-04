@@ -8,7 +8,7 @@ enum Mode {
 /// # Arguments
 ///
 /// * `blocks` - A slice of tuples, each containing a file path and a slice of
-/// warnings for that file
+///   warnings for that file
 /// * `mode` - Mode in which the program is run.
 fn build_output(blocks: &[(&str, &[&str])], mode: Mode) -> String {
     let mut output = String::new();
@@ -67,7 +67,7 @@ fn build_output(blocks: &[(&str, &[&str])], mode: Mode) -> String {
 /// # Arguments
 ///
 /// * `blocks` - A slice of tuples, each containing a file path and a slice of
-/// warnings for that file
+///   warnings for that file
 pub fn fix_output(blocks: &[(&str, &[&str])]) -> String {
     build_output(blocks, Mode::Fix)
 }
@@ -77,7 +77,7 @@ pub fn fix_output(blocks: &[(&str, &[&str])]) -> String {
 /// # Arguments
 ///
 /// * `blocks` - A slice of tuples, each containing a file path and a slice of
-/// warnings for that file
+///   warnings for that file
 pub fn check_output(blocks: &[(&str, &[&str])]) -> String {
     build_output(blocks, Mode::Check)
 }

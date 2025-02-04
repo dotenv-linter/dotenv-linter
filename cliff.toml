@@ -37,26 +37,26 @@ filter_unconventional = true
 split_commits = false
 # regex for preprocessing the commit messages
 commit_preprocessors = [
-  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](https://github.com/dotenv-linter/dotenv-linter/pull/${2}))" },
+    { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](https://github.com/dotenv-linter/dotenv-linter/pull/${2}))" },
 ]
 # regex for parsing and grouping commits
 commit_parsers = [
-  { message = "^feat", group = "1Features" },
-  { message = "^fix\\(ci\\):", group = "CI" },
-  { message = "^fix", group = "2Fixes" },
-  { message = "^doc", group = "Documentation" },
-  { message = "^perf", group = "Performance" },
-  { message = "^refactor", group = "Refactor" },
-  { message = "^style", group = "Styling" },
-  { message = "^test", group = "Testing" },
-  { message = "^chore\\(release\\)", skip = true },
-  { message = "^chore\\(deps\\):", group = "Update dependencies" },
-  { message = "^chore\\(ci\\):", group = "CI" },
-  { message = "^chore: bump", group = "Update dependencies" },
-  { message = "^chore: update dependency", group = "Update dependencies" },
-  { message = "^chore", group = "Miscellaneous Tasks" },
-  { message = "^ci:", group = "CI" },
-  { body = ".*security", group = "Security" },
+    { message = "^feat", group = "1Features" },
+    { message = "^fix\\(ci\\):", group = "CI" },
+    { message = "^fix", group = "2Fixes" },
+    { message = "^doc", group = "Documentation" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactor" },
+    { message = "^style", group = "Styling" },
+    { message = "^test", group = "Testing" },
+    { message = "^chore\\(release\\)", skip = true },
+    { message = "^chore\\(deps\\):", group = "Update dependencies" },
+    { message = "^chore\\(ci\\):", group = "CI" },
+    { message = "^chore: bump", group = "Update dependencies" },
+    { message = "^chore: update dependency", group = "Update dependencies" },
+    { message = "^chore", group = "Miscellaneous Tasks" },
+    { message = "^ci:", group = "CI" },
+    { body = ".*security", group = "Security" },
 ]
 # filter out the commits that are not matched by commit parsers
 filter_commits = true

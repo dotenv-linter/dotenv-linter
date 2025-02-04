@@ -195,11 +195,11 @@ fn backup() {
     let args = &["fix"];
     let output = test_dir.test_command_success_and_get_output(args);
 
-    let backup_file = fs::read_dir(&test_dir.as_str())
+    let backup_file = fs::read_dir(test_dir.as_str())
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != test_file.as_str())
-        .last()
+        .find(|e| e.path().is_file())
         .expect("get backup file");
     let backup_filename = backup_file.file_name();
     let backup_filename = backup_filename.to_str().expect("convert to string");
@@ -227,11 +227,11 @@ fn quiet_backup() {
     let args = &["fix", "-q"];
     let output = test_dir.test_command_success_and_get_output(args);
 
-    let backup_file = fs::read_dir(&test_dir.as_str())
+    let backup_file = fs::read_dir(test_dir.as_str())
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != test_file.as_str())
-        .last()
+        .find(|e| e.path().is_file())
         .expect("get backup file");
     let backup_filename = backup_file.file_name();
     let backup_filename = backup_filename.to_str().expect("convert to string");

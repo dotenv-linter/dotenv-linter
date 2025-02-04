@@ -5,7 +5,6 @@ use std::{fmt, path::PathBuf};
 pub struct CompareFileType {
     pub path: PathBuf,
     pub keys: Vec<String>,
-    pub missing: Vec<String>,
 }
 
 pub struct CompareWarning {

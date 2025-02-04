@@ -2,10 +2,9 @@ use crate::common::*;
 use std::collections::HashMap;
 
 fn new_version_output() -> String {
-    format!(
-        "A new release of dotenv-linter is available: v3.0.0 -> v3.1.1\n\
-        https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.1.1"
-    )
+    "A new release of dotenv-linter is available: v3.0.0 -> v3.1.1\n\
+    https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.1.1"
+        .to_string()
 }
 
 #[test]
@@ -39,7 +38,6 @@ fn do_not_print_new_version() {
     let test_dir = TestDir::with_envs(envs);
     test_dir.create_testfile(".env", "FOO=bar\n");
     let expected_output = check_output(&[(".env", &[])]);
-    let expected_output = format!("{}", expected_output);
 
     let args: &[&str; 0] = &[];
     test_dir.test_command_success_with_args(args, expected_output);

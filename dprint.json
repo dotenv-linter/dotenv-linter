@@ -5,9 +5,15 @@
   "markdown": {
   },
   "toml": {
+    "indentWidth": 4
   },
-  "includes": ["**/*.{json,md,toml}", "Dockerfile"],
-  "excludes": ["target/"],
+  "includes": [
+    "**/*.{json,md,toml}",
+    "Dockerfile"
+  ],
+  "excludes": [
+    "target/"
+  ],
   "plugins": [
     "https://plugins.dprint.dev/json-0.15.0.wasm",
     "https://plugins.dprint.dev/markdown-0.13.0.wasm",

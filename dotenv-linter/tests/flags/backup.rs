@@ -11,11 +11,11 @@ fn output_backup_file() {
 
     testdir.test_command_success_with_args_without_closing(args);
 
-    let backup_file = fs::read_dir(&testdir.as_str())
+    let backup_file = fs::read_dir(testdir.as_str())
         .expect("read dir")
         .filter_map(|e| e.ok())
         .filter(|e| e.path().as_os_str() != testfile.as_str())
-        .last()
+        .find(|e| e.path().is_file())
         .expect("get backup file");
 
     let backup_contents = fs::read_to_string(backup_file.path()).expect("read backup file");
