@@ -20,7 +20,7 @@ stub_check_version = []
 clap = { version = "4.5.3", features = ["cargo", "env"] }
 colored = "2.1.0"
 dotenv-lookup = { version = "1.0.0", path = "../dotenv-lookup" }
-email_address = "0.2.4"
+email_address = "0.2.9"
 regex = "1.10.3"
 serde = "1.0.197"
 serde_json = "1.0.114"
