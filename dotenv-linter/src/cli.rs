@@ -139,6 +139,10 @@ fn common_args() -> Vec<Arg> {
             .long("schema")
             .help("Use schema file to check .env files")
             .value_parser(value_parser!(PathBuf)),
+        Arg::new("stdin")
+            .long("stdin")
+            .help("Read and lint from stdin instead of files")
+            .action(ArgAction::SetTrue),
         no_color_flag(),
         quiet_flag(),
     ]

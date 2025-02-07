@@ -2,7 +2,11 @@ use crate::{
     cli::options::{CheckOptions, CompareOptions, FixOptions},
     common::*,
 };
-use std::{collections::HashSet, path::PathBuf};
+use std::{
+    collections::HashSet,
+    io::{self, Write},
+    path::PathBuf,
+};
 
 mod checks;
 mod common;
@@ -15,12 +19,43 @@ pub mod cli;
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
+    if opts.stdin {
+        check_stdin(opts)
+    } else {
+        check_dir(opts, current_dir)
+    }
+}
+
+pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
+    if opts.stdin {
+        fix_stdin(opts)
+    } else {
+        fix_dir(opts, current_dir)
+    }
+}
+
+pub fn check_stdin(opts: &CheckOptions) -> Result<usize> {
+    let output = CheckOutput::new(opts.quiet).files_count(1);
+    let file = dotenv_lookup::from_stdin();
+
+    match file {
+        Some((fe, lines)) => {
+            let result = checks::run(&lines, &opts.skip, opts.schema.as_ref());
+            output.print_processing_info(&fe);
+            output.print_warnings(&fe, &result, 0);
+            output.print_total(result.len());
+            Ok(result.len())
+        }
+        None => Ok(0),
+    }
+}
+
+pub fn check_dir(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
+    let output = CheckOutput::new(opts.quiet);
     let files = dotenv_lookup::new(current_dir, &opts.input)
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
         .lookup_files();
-
-    let output = CheckOutput::new(opts.quiet);
 
     if files.is_empty() {
         output.print_nothing_to_check();
@@ -44,13 +79,13 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
     Ok(warnings_count)
 }
 
-pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
+pub fn fix_dir(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
+    let output = FixOutput::new(opts.quiet);
+    let mut warnings_count = 0;
     let files = dotenv_lookup::new(current_dir, &opts.input)
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
         .lookup_files();
-
-    let output = FixOutput::new(opts.quiet);
 
     if files.is_empty() {
         output.print_nothing_to_fix();
@@ -59,7 +94,6 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 
     let output = output.files_count(files.len());
 
-    let mut warnings_count = 0;
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
@@ -89,8 +123,34 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
         output.print_warnings(&fe, &result, index);
         warnings_count += result.len();
     }
-
     output.print_total(warnings_count);
+
+    Ok(())
+}
+
+pub fn fix_stdin(opts: &FixOptions) -> Result<()> {
+    // need peekable to determine if we are at the last line
+    let file = dotenv_lookup::from_stdin();
+
+    match file {
+        Some((_, mut lines)) => {
+            let result = checks::run(&lines, &opts.skip, None);
+            if result.is_empty() {
+                if !lines.is_empty() {
+                    for line in lines[..lines.len() - 1].iter() {
+                        writeln!(io::stdout(), "{}", line.raw_string)?;
+                    }
+                }
+                return Ok(());
+            }
+            fixes::run(&result, &mut lines, &opts.skip);
+            for line in lines[..lines.len() - 1].iter() {
+                writeln!(io::stdout(), "{}", line.raw_string)?;
+            }
+        }
+        None => return Ok(()),
+    }
+
     Ok(())
 }
 
