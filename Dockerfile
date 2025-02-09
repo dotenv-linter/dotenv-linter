@@ -14,7 +14,10 @@ COPY dotenv-linter ./dotenv-linter
 
 RUN if [ "${TARGETARCH}" = "amd64" ]; \
   then export TARGET="x86_64-unknown-linux-musl"; \
-  else export TARGET="aarch64-unknown-linux-musl"; \
+  else \
+    export TARGET="aarch64-unknown-linux-musl"; \
+    export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="aarch64-linux-gnu-gcc"; \
+    export CC="aarch64-linux-gnu-gcc"; \
   fi \
   && cargo install --target "${TARGET}" --path dotenv-linter
 
