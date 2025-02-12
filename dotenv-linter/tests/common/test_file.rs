@@ -1,10 +1,11 @@
 use std::fs;
 use std::fs::File;
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tempfile::TempDir;
 
 /// Use as a temporary file to act on in a TestDir
+#[derive(Debug)]
 pub struct TestFile {
     file_path: PathBuf,
 }
@@ -36,5 +37,11 @@ impl TestFile {
     /// Get file contents
     pub fn contents(&self) -> String {
         fs::read_to_string(self.as_str()).expect("read file")
+    }
+}
+
+impl AsRef<Path> for TestFile {
+    fn as_ref(&self) -> &Path {
+        self.file_path.as_ref()
     }
 }
