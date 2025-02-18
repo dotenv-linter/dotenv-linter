@@ -1,0 +1,7 @@
+- id: dotenv-linter
+  name: dotenv-linter
+  entry: dotenv-linter
+  language: rust
+  types:
+    - text
+  files: '\.env*'
