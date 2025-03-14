@@ -14,7 +14,7 @@ repository = "https://github.com/dotenv-linter/dotenv-linter"
 [workspace.dependencies]
 assert_cmd = "2.0.16"
 dunce = "1.0.5"
-tempfile = "3.16.0"
+tempfile = "3.19.0"
 
 [profile.release]
 opt-level = 'z' # Optimize for size
