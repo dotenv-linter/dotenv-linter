@@ -17,7 +17,7 @@ default = ["update-informer"]
 stub_check_version = []
 
 [dependencies]
-clap = { version = "4.5.29", features = ["cargo", "env"] }
+clap = { version = "4.5.35", features = ["cargo", "env"] }
 colored = "3.0.0"
 dotenv-lookup = { version = "1.0.0", path = "../dotenv-lookup" }
 email_address = "0.2.9"
