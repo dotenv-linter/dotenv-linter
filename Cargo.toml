@@ -12,7 +12,7 @@ license = "MIT"
 repository = "https://github.com/dotenv-linter/dotenv-linter"
 
 [workspace.dependencies]
-assert_cmd = "2.0.16"
+assert_cmd = "2.0.17"
 dunce = "1.0.5"
 tempfile = "3.16.0"
 
