@@ -1,23 +1,23 @@
-[workspace]
-members = ["dotenv-linter", "dotenv-lookup"]
-resolver = "2"
-
-[workspace.package]
-authors = [
-    "Mikhail Grachev <work@mgrachev.com>",
-    "dotenv-linter core team & contributors",
+[package]
+name        = "dotenv-linter"
+version     = "3.3.0"
+edition     = "2021"
+authors     = [
+  "Mikhail Grachev <work@mgrachev.com>",
+  "dotenv-linter core team & contributors",
 ]
-edition = "2021"
-license = "MIT"
-repository = "https://github.com/dotenv-linter/dotenv-linter"
+license     = "MIT"
+repository  = "https://github.com/dotenv-linter/dotenv-linter"
+description = "CLI tool to lint .env files for common mistakes"
+readme      = "README.md"
+keywords    = ["dotenv", "lint", "cli", "rust"]
+categories  = ["command-line-utilities", "lint"]
 
-[workspace.dependencies]
-assert_cmd = "2.0.16"
-dunce = "1.0.5"
+[dependencies]
+clap     = { version = "4.5.29", features = ["derive"] }
+dunce    = "1.0.5"
 tempfile = "3.16.0"
 
-[profile.release]
-opt-level = 'z' # Optimize for size
-lto = true
-codegen-units = 1
-panic = 'abort'
+[dev-dependencies]
+assert_cmd = "2.0.16"
+predicates  = "2"
