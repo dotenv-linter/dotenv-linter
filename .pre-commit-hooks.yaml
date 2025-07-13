@@ -1,0 +1,7 @@
+-   id: dotenv-linter
+    name: dotenv-linter
+    description: "Checks the style of Dotenv files."
+    language: docker
+    entry: /dotenv-linter
+    types: [text]
+    files: '\.env*'
