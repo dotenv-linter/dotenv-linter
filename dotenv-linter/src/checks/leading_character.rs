@@ -1,6 +1,7 @@
+use dotenv_lookup::LineEntry;
+
 use super::Check;
 use crate::common::{LintKind, Warning};
-use dotenv_lookup::LineEntry;
 
 pub(crate) struct LeadingCharacterChecker<'a> {
     template: &'a str,

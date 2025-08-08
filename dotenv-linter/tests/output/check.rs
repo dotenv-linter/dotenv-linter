@@ -43,7 +43,8 @@ fn valid_multiline_value_test() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(
         ".env",
-        "FOO=bar\nMULTILINE_1='{\n\"first\": 1,\n\"second\": 1\n}'\nMULTILINE_2='multiline \\'escaped\\' \n value'\nZAC=baz\n",
+        "FOO=bar\nMULTILINE_1='{\n\"first\": 1,\n\"second\": 1\n}'\nMULTILINE_2='multiline \
+         \\'escaped\\' \n value'\nZAC=baz\n",
     );
     test_dir.create_testfile(".env1", "MULTILINE=\"\n{\n'key':'value'\n}\n\"\n");
     test_dir.create_testfile(".env2", "MULTILINE=\"[\nkey=value\n]\"\n");
@@ -63,7 +64,8 @@ fn valid_double_quoted_multiline_value_test() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(
         ".env",
-        "FOO=bar\nMULTILINE_1=\"#yml example \n first: 1 \n second: 1 \n\"\nMULTILINE_2=\"multiline \\\"escaped\\\" \n value\"\nZAC=baz\n",
+        "FOO=bar\nMULTILINE_1=\"#yml example \n first: 1 \n second: 1 \
+         \n\"\nMULTILINE_2=\"multiline \\\"escaped\\\" \n value\"\nZAC=baz\n",
     );
 
     let expected_output = r#"Checking .env

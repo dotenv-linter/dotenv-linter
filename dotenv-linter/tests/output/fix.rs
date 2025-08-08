@@ -1,7 +1,8 @@
 //! Tests that output from fixes are correct. Mainly needed to ensure that
 //! newlines are printed correctly.
-use crate::common::*;
 use std::fs;
+
+use crate::common::*;
 
 #[test]
 fn warnings() {
@@ -205,14 +206,13 @@ fn backup() {
     let backup_filename = backup_filename.to_str().expect("convert to string");
     let expected_output = format!(
         r#"Fixing .env
-Original file was backed up to: "{}"
+Original file was backed up to: "{backup_filename}"
 
 .env:1 LowercaseKey: The abc key should be in uppercase
 .env:4 UnorderedKey: The B key should go before the F key
 
 All warnings are fixed. Total: 2
-"#,
-        backup_filename
+"#
     );
     assert_eq!(output, expected_output);
 
@@ -236,11 +236,10 @@ fn quiet_backup() {
     let backup_filename = backup_file.file_name();
     let backup_filename = backup_filename.to_str().expect("convert to string");
     let expected_output = format!(
-        r#"Original file was backed up to: "{}"
+        r#"Original file was backed up to: "{backup_filename}"
 
 All warnings are fixed. Total: 2
-"#,
-        backup_filename
+"#
     );
     assert_eq!(output, expected_output);
 

@@ -1,7 +1,5 @@
-use std::fs;
-use std::fs::File;
-use std::io::Write;
-use std::path::PathBuf;
+use std::{fs, fs::File, io::Write, path::PathBuf};
+
 use tempfile::TempDir;
 
 /// Use as a temporary file to act on in a TestDir

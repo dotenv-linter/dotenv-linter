@@ -1,5 +1,6 @@
-use crate::common::*;
 use std::path::Path;
+
+use crate::common::*;
 
 #[test]
 fn checks_one_specific_path() {
@@ -17,11 +18,10 @@ fn checks_one_specific_path() {
     let args = &[subdir.as_str()];
     let expected_output = check_output(&[(
         testfile_2_path,
-        &[format!(
-            "{}:1 LeadingCharacter: Invalid leading character detected",
-            testfile_2_path
-        )
-        .as_str()],
+        &[
+            format!("{testfile_2_path}:1 LeadingCharacter: Invalid leading character detected")
+                .as_str(),
+        ],
     )]);
 
     testdir.test_command_fail_with_args(with_default_args(args), expected_output);
@@ -52,19 +52,17 @@ fn checks_two_specific_paths() {
     let expected_output = check_output(&[
         (
             testfile_2_path,
-            &[format!(
-                "{}:1 LeadingCharacter: Invalid leading character detected",
-                testfile_2_path
-            )
-            .as_str()],
+            &[
+                format!("{testfile_2_path}:1 LeadingCharacter: Invalid leading character detected")
+                    .as_str(),
+            ],
         ),
         (
             testfile_3_path,
-            &[format!(
-                "{}:1 LeadingCharacter: Invalid leading character detected",
-                testfile_3_path
-            )
-            .as_str()],
+            &[
+                format!("{testfile_3_path}:1 LeadingCharacter: Invalid leading character detected")
+                    .as_str(),
+            ],
         ),
     ]);
 
@@ -108,11 +106,7 @@ fn checks_two_specific_files() {
     let expected_output = check_output(&[
         (
             testfile_3_path,
-            &[format!(
-                "{}:2 DuplicatedKey: The FOO key is duplicated",
-                testfile_3_path
-            )
-            .as_str()],
+            &[format!("{testfile_3_path}:2 DuplicatedKey: The FOO key is duplicated").as_str()],
         ),
         (
             testfile_2.shortname_as_str(),
@@ -150,17 +144,15 @@ fn checks_each_file_only_once_when_listing_same_path_twice() {
     let expected_output = check_output(&[
         (
             testfile_1_path,
-            &[format!(
-                "{}:1 LeadingCharacter: Invalid leading character detected",
-                testfile_1_path
-            )
-            .as_str()],
+            &[
+                format!("{testfile_1_path}:1 LeadingCharacter: Invalid leading character detected")
+                    .as_str(),
+            ],
         ),
         (
             testfile_2_path,
             &[format!(
-                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
-                testfile_2_path
+                "{testfile_2_path}:2 UnorderedKey: The BAR key should go before the FOO key"
             )
             .as_str()],
         ),
@@ -191,17 +183,15 @@ fn checks_each_file_only_once_when_listing_one_path_and_one_file() {
     let expected_output = check_output(&[
         (
             testfile_1_path,
-            &[format!(
-                "{}:1 LeadingCharacter: Invalid leading character detected",
-                testfile_1_path
-            )
-            .as_str()],
+            &[
+                format!("{testfile_1_path}:1 LeadingCharacter: Invalid leading character detected")
+                    .as_str(),
+            ],
         ),
         (
             testfile_2_path,
             &[format!(
-                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
-                testfile_2_path
+                "{testfile_2_path}:2 UnorderedKey: The BAR key should go before the FOO key"
             )
             .as_str()],
         ),
@@ -228,11 +218,7 @@ fn checks_one_specific_file_and_one_path() {
     let expected_output = check_output(&[
         (
             testfile_3_path,
-            &[format!(
-                "{}:2 DuplicatedKey: The FOO key is duplicated",
-                testfile_3_path
-            )
-            .as_str()],
+            &[format!("{testfile_3_path}:2 DuplicatedKey: The FOO key is duplicated").as_str()],
         ),
         (
             testfile_2.shortname_as_str(),

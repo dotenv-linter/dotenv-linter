@@ -32,7 +32,7 @@ fn build_output(blocks: &[(&str, &[&str])], mode: Mode) -> String {
             // Print using `b.1` which is a slice of warnings
             for w in b.1 {
                 count += 1;
-                output.push_str(&format!("{}\n", w));
+                output.push_str(&format!("{w}\n"));
             }
             if i != blocks.len() - 1 {
                 output.push('\n');
@@ -43,7 +43,7 @@ fn build_output(blocks: &[(&str, &[&str])], mode: Mode) -> String {
     match mode {
         Mode::Fix => {
             if count > 0 {
-                output.push_str(&format!("\nAll warnings are fixed. Total: {}\n", count));
+                output.push_str(&format!("\nAll warnings are fixed. Total: {count}\n"));
             } else {
                 output.push_str("\nNo warnings found\n");
             }
@@ -52,9 +52,9 @@ fn build_output(blocks: &[(&str, &[&str])], mode: Mode) -> String {
             if count == 0 {
                 output.push_str("\nNo problems found\n");
             } else if count == 1 {
-                output.push_str(&format!("\nFound {} problem\n", count));
+                output.push_str(&format!("\nFound {count} problem\n"));
             } else {
-                output.push_str(&format!("\nFound {} problems\n", count));
+                output.push_str(&format!("\nFound {count} problems\n"));
             }
         }
     }

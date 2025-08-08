@@ -1,13 +1,13 @@
-use crate::file::Files;
 use std::path::PathBuf;
+
+use crate::file::Files;
 
 mod file;
 mod fs_utils;
 mod line;
 mod quote_type;
 
-pub use crate::file::FileEntry;
-pub use crate::line::LineEntry;
+pub use crate::{file::FileEntry, line::LineEntry};
 
 pub struct Dotenv<'a> {
     dir: &'a PathBuf,

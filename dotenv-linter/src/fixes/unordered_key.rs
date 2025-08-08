@@ -1,6 +1,7 @@
+use dotenv_lookup::LineEntry;
+
 use super::Fix;
 use crate::common::{comment::Comment, LintKind};
-use dotenv_lookup::LineEntry;
 
 #[derive(Default)]
 pub(crate) struct UnorderedKeyFixer {}

@@ -1,5 +1,6 @@
-use crate::common::TestDir;
 use std::fs;
+
+use crate::common::TestDir;
 
 #[test]
 fn output_backup_file() {

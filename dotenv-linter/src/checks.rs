@@ -1,7 +1,9 @@
-use crate::common::comment::Comment;
-use crate::common::{LintKind, Warning};
-use crate::schema::DotEnvSchema;
 use dotenv_lookup::LineEntry;
+
+use crate::{
+    common::{comment::Comment, LintKind, Warning},
+    schema::DotEnvSchema,
+};
 
 mod duplicated_key;
 mod ending_blank_line;

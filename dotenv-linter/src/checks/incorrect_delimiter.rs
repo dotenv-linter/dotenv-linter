@@ -1,6 +1,7 @@
+use dotenv_lookup::LineEntry;
+
 use super::Check;
 use crate::common::{remove_invalid_leading_chars, LintKind, Warning};
-use dotenv_lookup::LineEntry;
 
 pub(crate) struct IncorrectDelimiterChecker<'a> {
     template: &'a str,

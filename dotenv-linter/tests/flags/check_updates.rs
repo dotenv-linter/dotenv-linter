@@ -1,5 +1,6 @@
-use crate::common::*;
 use std::collections::HashMap;
+
+use crate::common::*;
 
 fn new_version_output() -> String {
     "A new release of dotenv-linter is available: v3.0.0 -> v3.1.1\n\

@@ -1,9 +1,9 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use std::{env, fs};
-use tempfile::tempdir;
 
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 #[cfg(not(windows))]
 use gag::Gag;
+use tempfile::tempdir;
 
 pub fn check_benchmark(c: &mut Criterion) {
     let temp = tempdir().expect("create tempdir");

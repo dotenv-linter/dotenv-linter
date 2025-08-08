@@ -1,5 +1,5 @@
-use std::os;
-use std::path::Path;
+use std::{os, path::Path};
+
 use tempfile::TempDir;
 
 /// Create a new symlink within a TempDir

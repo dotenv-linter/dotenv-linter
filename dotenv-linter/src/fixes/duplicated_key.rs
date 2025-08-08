@@ -1,7 +1,9 @@
+use std::collections::HashSet;
+
+use dotenv_lookup::LineEntry;
+
 use super::Fix;
 use crate::common::{comment::Comment, LintKind};
-use dotenv_lookup::LineEntry;
-use std::collections::HashSet;
 
 #[derive(Default)]
 pub(crate) struct DuplicatedKeyFixer {}

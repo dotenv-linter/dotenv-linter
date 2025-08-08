@@ -1,11 +1,13 @@
-use crate::Result;
-use dotenv_lookup::{FileEntry, LineEntry};
 use std::{
     fs::{copy, File},
     io::{self, Write},
     path::{Path, PathBuf},
     time::SystemTime,
 };
+
+use dotenv_lookup::{FileEntry, LineEntry};
+
+use crate::Result;
 
 /// In the future versions we should create a backup copy, or at least notify the user about it
 pub fn write_file(path: &Path, lines: Vec<LineEntry>) -> io::Result<()> {

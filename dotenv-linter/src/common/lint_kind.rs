@@ -1,6 +1,6 @@
-use clap::builder::PossibleValue;
-use clap::ValueEnum;
 use std::{fmt, str::FromStr};
+
+use clap::{builder::PossibleValue, ValueEnum};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LintKind {
@@ -85,7 +85,7 @@ impl FromStr for LintKind {
 
 impl fmt::Display for LintKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", format!("{:?}", self).replace("LintKind", ""))
+        write!(f, "{}", format!("{self:?}").replace("LintKind", ""))
     }
 }
 
@@ -112,7 +112,7 @@ mod tests {
 
         assert_eq!(
             "EndingBlankLine DuplicatedKey SubstitutionKey",
-            format!("{} {} {}", one, two, three)
+            format!("{one} {two} {three}")
         );
     }
 }

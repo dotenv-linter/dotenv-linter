@@ -1,6 +1,6 @@
+use std::{ffi::OsStr, fs};
+
 use crate::common::*;
-use std::ffi::OsStr;
-use std::fs;
 
 mod duplicated_key;
 mod ending_blank_line;
