@@ -1,7 +1,7 @@
-use std::{env, fs};
+use std::{env, fs, hint::black_box};
 
 use clap::{ArgMatches, Command};
-use criterion::{black_box, criterion_group, criterion_main, BatchSize, Criterion};
+use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
 #[cfg(not(windows))]
 use gag::Gag;
 use tempfile::tempdir;
@@ -10,7 +10,7 @@ use tempfile::tempdir;
 fn generate_arg_matches(app: &Command, with_backup: bool) -> ArgMatches {
     // Prepare the temporary Files
     let temp = tempdir().expect("create tempdir");
-    let path = temp.into_path();
+    let path = temp.keep();
     let simple_fix_path = path.join("simple_fix.env");
     fs::copy("benches/fixtures/simple_fix.env", simple_fix_path.clone()).expect("copy .env file");
 

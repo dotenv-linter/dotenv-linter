@@ -1,13 +1,13 @@
-use std::{env, fs};
+use std::{env, fs, hint::black_box};
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion};
 #[cfg(not(windows))]
 use gag::Gag;
 use tempfile::tempdir;
 
 pub fn compare_benchmark(c: &mut Criterion) {
     let temp = tempdir().expect("create tempdir");
-    let path = temp.into_path();
+    let path = temp.keep();
 
     let current_dir = env::current_dir().expect("get current dir");
     let app = dotenv_linter::cli::command();
