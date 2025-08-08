@@ -1,9 +1,11 @@
+use std::path::PathBuf;
+
+use clap::ArgMatches;
+
 use crate::{
     common::LintKind,
     schema::{self, DotEnvSchema},
 };
-use clap::ArgMatches;
-use std::path::PathBuf;
 
 pub struct CheckOptions<'a> {
     pub input: Vec<&'a PathBuf>,
@@ -39,7 +41,7 @@ impl<'a> CheckOptions<'a> {
             match schema::DotEnvSchema::load(schema_path) {
                 Ok(schema) => Some(schema),
                 Err(err) => {
-                    println!("Error loading schema: {}", err);
+                    println!("Error loading schema: {err}");
                     std::process::exit(1);
                 }
             }

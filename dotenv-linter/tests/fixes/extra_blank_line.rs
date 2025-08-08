@@ -20,7 +20,8 @@ fn extra_blank_line_with_control_comments() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(
         ".env",
-        "FOO=BAR\n\n# dotenv-linter:off ExtraBlankLine\n\n\n# dotenv-linter:on ExtraBlankLine\nBAR=FOO\n\n\n",
+        "FOO=BAR\n\n# dotenv-linter:off ExtraBlankLine\n\n\n# dotenv-linter:on \
+         ExtraBlankLine\nBAR=FOO\n\n\n",
     );
     let expected_output = fix_output(&[(
         ".env",
@@ -31,7 +32,11 @@ fn extra_blank_line_with_control_comments() {
     )]);
     testdir.test_command_fix_success(expected_output);
 
-    assert_eq!(testfile.contents().as_str(), "FOO=BAR\n\n# dotenv-linter:off ExtraBlankLine\n\n\n# dotenv-linter:on ExtraBlankLine\nBAR=FOO\n");
+    assert_eq!(
+        testfile.contents().as_str(),
+        "FOO=BAR\n\n# dotenv-linter:off ExtraBlankLine\n\n\n# dotenv-linter:on \
+         ExtraBlankLine\nBAR=FOO\n"
+    );
 
     testdir.close();
 }

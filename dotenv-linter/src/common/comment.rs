@@ -1,5 +1,6 @@
-use super::LintKind;
 use std::str::FromStr;
+
+use super::LintKind;
 
 const PREFIX: &str = "dotenv-linter";
 const ON: &str = "on";
@@ -18,7 +19,7 @@ impl Comment {
 
         // Getting the right side of the comment ["off", "UnorderedKey,", "DuplicatedKey"]
         let flag_with_checks: Vec<&str> = line_comment
-            .strip_prefix(format!("{}:", PREFIX).as_str())?
+            .strip_prefix(format!("{PREFIX}:").as_str())?
             .split_whitespace()
             .collect();
 

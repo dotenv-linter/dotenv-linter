@@ -1,7 +1,9 @@
-use crate::common::Warning;
+use std::path::Path;
+
 use colored::*;
 use dotenv_lookup::{FileEntry, LineEntry};
-use std::path::Path;
+
+use crate::common::Warning;
 
 /// Prefix for the backup output
 const BACKUP_PREFIX: &str = "Original file was backed up to: ";
@@ -31,13 +33,13 @@ impl FixOutput {
     /// Prints information about a file in process
     pub fn print_processing_info(&self, file: &FileEntry) {
         if !self.is_quiet_mode {
-            println!("Fixing {}", file);
+            println!("Fixing {file}");
         }
     }
 
     pub fn print_total(&self, total: usize) {
         if total != 0 {
-            println!("\nAll warnings are fixed. Total: {}", total);
+            println!("\nAll warnings are fixed. Total: {total}");
         } else {
             println!("\nNo warnings found");
         }
@@ -45,7 +47,7 @@ impl FixOutput {
 
     /// Prints the backup file's path
     pub fn print_backup(&self, backup_path: &Path) {
-        println!("{}{:?}", BACKUP_PREFIX, backup_path);
+        println!("{BACKUP_PREFIX}{backup_path:?}");
         if !self.is_quiet_mode {
             println!();
         }
@@ -59,7 +61,7 @@ impl FixOutput {
 
         warnings
             .iter()
-            .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
+            .for_each(|w| println!("{}{}", format!("{file}:").italic(), w));
 
         let is_last_file = file_index == self.files_count - 1;
         if !warnings.is_empty() && !is_last_file {

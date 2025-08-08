@@ -1,6 +1,8 @@
-use super::LintKind;
-use colored::*;
 use std::fmt;
+
+use colored::*;
+
+use super::LintKind;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Warning {

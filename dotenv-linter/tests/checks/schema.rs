@@ -1,9 +1,11 @@
-use crate::common::*;
 use std::{
     fs::{remove_file, File},
     io::Write,
 };
+
 use tempfile::tempdir;
+
+use crate::common::*;
 
 #[test]
 fn load_good_schema() {

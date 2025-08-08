@@ -1,5 +1,6 @@
-use crate::common::CompareWarning;
 use dotenv_lookup::FileEntry;
+
+use crate::common::CompareWarning;
 
 pub struct CompareOutput {
     // Quiet program output mode
@@ -14,13 +15,13 @@ impl CompareOutput {
     /// Prints information about a file in process
     pub fn print_processing_info(&self, file: &FileEntry) {
         if !self.is_quiet_mode {
-            println!("Comparing {}", file);
+            println!("Comparing {file}");
         }
     }
 
     /// Prints warnings without any additional information
     pub fn print_warnings(&self, warnings: &[CompareWarning]) {
-        warnings.iter().for_each(|w| println!("{}", w))
+        warnings.iter().for_each(|w| println!("{w}"))
     }
 
     /// Prints 'Nothing to compare' in the absence of '.env' files for compare

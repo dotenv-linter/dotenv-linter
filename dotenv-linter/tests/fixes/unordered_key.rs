@@ -5,27 +5,8 @@ fn unordered_key() {
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(
         ".env",
-        "# comment\n\
-        \n\
-        C=B\n\
-        # A comment\n\
-        A=B\n\
-        X=Y\n\
-        # more comments\n\
-        \n\
-        # middle comment\n\
-        \n\
-        M=123\n\
-        # K comment\n\
-        K=123\n\
-        # I comment\n\
-        # I comment\n\
-        I=123\n\
-        \n\
-        A1=1\n\
-        B1=1\n\
-        \n\
-        # end comment\n",
+        "# comment\n\nC=B\n# A comment\nA=B\nX=Y\n# more comments\n\n# middle comment\n\nM=123\n# \
+         K comment\nK=123\n# I comment\n# I comment\nI=123\n\nA1=1\nB1=1\n\n# end comment\n",
     );
     let expected_output = fix_output(&[(
         ".env",
@@ -39,27 +20,8 @@ fn unordered_key() {
 
     assert_eq!(
         testfile.contents().as_str(),
-        "# comment\n\
-        \n\
-        # A comment\n\
-        A=B\n\
-        C=B\n\
-        X=Y\n\
-        # more comments\n\
-        \n\
-        # middle comment\n\
-        \n\
-        # I comment\n\
-        # I comment\n\
-        I=123\n\
-        # K comment\n\
-        K=123\n\
-        M=123\n\
-        \n\
-        A1=1\n\
-        B1=1\n\
-        \n\
-        # end comment\n",
+        "# comment\n\n# A comment\nA=B\nC=B\nX=Y\n# more comments\n\n# middle comment\n\n# I \
+         comment\n# I comment\nI=123\n# K comment\nK=123\nM=123\n\nA1=1\nB1=1\n\n# end comment\n",
     );
 
     testdir.close();

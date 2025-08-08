@@ -1,12 +1,11 @@
+/// For other platforms - continue use `std:fs`
+#[cfg(not(windows))]
+pub use std::fs::canonicalize;
 use std::path::{Path, PathBuf};
 
 /// For the Windows platform, we need to remove the UNC prefix.
 #[cfg(windows)]
 pub use dunce::canonicalize;
-
-/// For other platforms - continue use `std:fs`
-#[cfg(not(windows))]
-pub use std::fs::canonicalize;
 
 /// Returns the relative path for `target_path` relative to `base_path`
 pub fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf> {
@@ -30,8 +29,9 @@ pub fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::fs::File;
+
+    use super::*;
 
     fn run_relative_path_asserts(assertions: Vec<(&str, &str, &str)>) {
         for (target, base, relative) in assertions {

@@ -1,5 +1,6 @@
-use crate::common::*;
 use std::path::Path;
+
+use crate::common::*;
 
 #[test]
 fn checks_one_in_subdir() {
@@ -17,11 +18,10 @@ fn checks_one_in_subdir() {
     let expected_output = check_output(&[
         (
             testfile_2_path,
-            &[format!(
-                "{}:1 LeadingCharacter: Invalid leading character detected",
-                testfile_2_path
-            )
-            .as_str()],
+            &[
+                format!("{testfile_2_path}:1 LeadingCharacter: Invalid leading character detected")
+                    .as_str(),
+            ],
         ),
         ("correct.env", &[]),
     ]);
@@ -51,25 +51,24 @@ fn checks_files_in_deep_subdirs() {
         .expect("multi-platform path to test .env file");
 
     let args = &["--recursive"];
-    let expected_output = check_output(&[
-        (
-            testfile_3_path,
-            &[format!(
-                "{}:1 EndingBlankLine: No blank line at the end of the file",
-                testfile_3_path
-            )
-            .as_str()],
-        ),
-        (
-            testfile_2_path,
-            &[format!(
-                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
-                testfile_2_path
-            )
-            .as_str()],
-        ),
-        ("correct.env", &[]),
-    ]);
+    let expected_output =
+        check_output(&[
+            (
+                testfile_3_path,
+                &[format!(
+                    "{testfile_3_path}:1 EndingBlankLine: No blank line at the end of the file"
+                )
+                .as_str()],
+            ),
+            (
+                testfile_2_path,
+                &[format!(
+                    "{testfile_2_path}:2 UnorderedKey: The BAR key should go before the FOO key"
+                )
+                .as_str()],
+            ),
+            ("correct.env", &[]),
+        ]);
 
     test_dir.test_command_fail_with_args(with_default_args(args), expected_output);
 }
@@ -108,8 +107,7 @@ fn checks_recursive_with_exclude_subdir() {
         (
             testfile_2_path,
             &[format!(
-                "{}:2 UnorderedKey: The BAR key should go before the FOO key",
-                testfile_2_path,
+                "{testfile_2_path}:2 UnorderedKey: The BAR key should go before the FOO key",
             )
             .as_str()],
         ),
@@ -135,11 +133,10 @@ fn checks_nofollow_subdir_symlinks() {
     let args = &["-r"];
     let expected_output = check_output(&[(
         testfile_path,
-        &[format!(
-            "{}:1 LeadingCharacter: Invalid leading character detected",
-            testfile_path
-        )
-        .as_str()],
+        &[
+            format!("{testfile_path}:1 LeadingCharacter: Invalid leading character detected")
+                .as_str(),
+        ],
     )]);
 
     test_dir.test_command_fail_with_args(with_default_args(args), expected_output);

@@ -1,8 +1,9 @@
+use std::{collections::HashSet, path::PathBuf};
+
 use crate::{
     cli::options::{CheckOptions, CompareOptions, FixOptions},
     common::*,
 };
-use std::{collections::HashSet, path::PathBuf};
 
 mod checks;
 mod common;
@@ -180,13 +181,9 @@ pub(crate) fn check_for_updates() {
             new_version = version.to_string().green()
         );
 
-        let release_url = format!(
-            "https://github.com/{pkg_name}/{pkg_name}/releases/tag/{version}",
-            pkg_name = pkg_name,
-            version = version
-        )
-        .yellow();
+        let release_url =
+            format!("https://github.com/{pkg_name}/{pkg_name}/releases/tag/{version}").yellow();
 
-        println!("\n{msg}\n{url}", msg = msg, url = release_url);
+        println!("\n{msg}\n{release_url}");
     }
 }

@@ -1,6 +1,7 @@
+use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
+
 use regex::Regex;
 use serde::Deserialize;
-use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 
 #[derive(Deserialize, Default, Debug)]
 #[serde(default)]
@@ -43,16 +44,17 @@ impl DotEnvSchema {
 
 #[cfg(test)]
 mod tests {
+    use std::{
+        fs::{self, File},
+        io::Write,
+    };
+
     use dotenv_lookup::LineEntry;
     use regex::Regex;
-    use std::fs::{self, File};
-    use std::io::Write;
     use tempfile::tempdir;
 
     use super::DotEnvSchema;
-
-    use crate::common::tests::*;
-    use crate::{LintKind, Warning};
+    use crate::{common::tests::*, LintKind, Warning};
 
     fn load_schema() -> Result<DotEnvSchema, std::io::Error> {
         let json = r#"{

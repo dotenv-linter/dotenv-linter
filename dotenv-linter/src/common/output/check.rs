@@ -1,6 +1,7 @@
-use crate::common::Warning;
 use colored::*;
 use dotenv_lookup::FileEntry;
+
+use crate::common::Warning;
 
 pub struct CheckOutput {
     // Quiet program output mode
@@ -34,7 +35,7 @@ impl CheckOutput {
     /// Prints information about a file in process
     pub fn print_processing_info(&self, file: &FileEntry) {
         if !self.is_quiet_mode {
-            println!("Checking {}", file);
+            println!("Checking {file}");
         }
     }
 
@@ -42,7 +43,7 @@ impl CheckOutput {
     pub fn print_warnings(&self, file: &FileEntry, warnings: &[Warning], file_index: usize) {
         warnings
             .iter()
-            .for_each(|w| println!("{}{}", format!("{}:", file).italic(), w));
+            .for_each(|w| println!("{}{}", format!("{file}:").italic(), w));
 
         if self.is_quiet_mode {
             return;

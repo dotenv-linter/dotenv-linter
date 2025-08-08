@@ -1,10 +1,10 @@
-use crate::is_escaped;
-use crate::line::LineEntry;
-use crate::quote_type::is_multiline_start;
-use std::collections::btree_map::IntoIter;
-use std::collections::BTreeMap;
-use std::path::{Path, PathBuf};
-use std::{fmt, fs};
+use std::{
+    collections::{btree_map::IntoIter, BTreeMap},
+    fmt, fs,
+    path::{Path, PathBuf},
+};
+
+use crate::{is_escaped, line::LineEntry, quote_type::is_multiline_start};
 
 const PATTERN: &str = ".env";
 const EXCLUDED_FILES: &[&str] = &[".envrc"];
@@ -206,9 +206,7 @@ mod tests {
             assert_eq!(
                 expected,
                 is_dotenv_file(&PathBuf::from(file_name)),
-                "Expected {} for the file name {}",
-                expected,
-                file_name
+                "Expected {expected} for the file name {file_name}"
             )
         }
     }

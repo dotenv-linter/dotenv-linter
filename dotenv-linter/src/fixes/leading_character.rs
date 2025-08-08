@@ -1,6 +1,7 @@
+use dotenv_lookup::LineEntry;
+
 use super::Fix;
 use crate::common::{remove_invalid_leading_chars, LintKind};
-use dotenv_lookup::LineEntry;
 
 #[derive(Default)]
 pub(crate) struct LeadingCharacterFixer {}

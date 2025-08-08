@@ -1,13 +1,14 @@
 use std::collections::HashSet;
 
+use dotenv_lookup::LineEntry;
+use email_address::EmailAddress;
+use url::Url;
+
 use super::Check;
 use crate::{
     common::{LintKind, Warning},
     schema::{DotEnvSchema, SchemaValueType},
 };
-use dotenv_lookup::LineEntry;
-use email_address::EmailAddress;
-use url::Url;
 
 pub(crate) struct SchemaViolationChecker<'a> {
     schema: Option<&'a crate::schema::DotEnvSchema>,
@@ -41,7 +42,7 @@ impl Check for SchemaViolationChecker<'_> {
                                 return Some(Warning::new(
                                     line.number,
                                     self.name(),
-                                    format!("The {} key does not match the regex", key),
+                                    format!("The {key} key does not match the regex"),
                                 ));
                             }
                         }
@@ -65,7 +66,7 @@ impl Check for SchemaViolationChecker<'_> {
                             return Some(Warning::new(
                                 line.number,
                                 self.name(),
-                                format!("The {} key is not a valid boolean", key),
+                                format!("The {key} key is not a valid boolean"),
                             ));
                         }
                     }
@@ -74,7 +75,7 @@ impl Check for SchemaViolationChecker<'_> {
                             return Some(Warning::new(
                                 line.number,
                                 self.name(),
-                                format!("The {} key is not an integer", key),
+                                format!("The {key} key is not an integer"),
                             ));
                         }
                     }
@@ -83,7 +84,7 @@ impl Check for SchemaViolationChecker<'_> {
                             return Some(Warning::new(
                                 line.number,
                                 self.name(),
-                                format!("The {} key is not a valid float", key),
+                                format!("The {key} key is not a valid float"),
                             ));
                         }
                     }
@@ -92,7 +93,7 @@ impl Check for SchemaViolationChecker<'_> {
                             return Some(Warning::new(
                                 line.number,
                                 self.name(),
-                                format!("The {} key is not a valid email address", key),
+                                format!("The {key} key is not a valid email address"),
                             ));
                         }
                     }
@@ -101,7 +102,7 @@ impl Check for SchemaViolationChecker<'_> {
                             return Some(Warning::new(
                                 line.number,
                                 self.name(),
-                                format!("The {} key is not a valid URL", key),
+                                format!("The {key} key is not a valid URL"),
                             ));
                         }
                     }
@@ -111,7 +112,7 @@ impl Check for SchemaViolationChecker<'_> {
             return Some(Warning::new(
                 line.number,
                 self.name(),
-                format!("The {} key is not defined in the schema", key),
+                format!("The {key} key is not defined in the schema"),
             ));
         }
 
@@ -130,7 +131,7 @@ impl Check for SchemaViolationChecker<'_> {
                     warnings.push(Warning::new(
                         self.last_line_number,
                         self.name(),
-                        format!("The {} key is required", key),
+                        format!("The {key} key is required"),
                     ));
                 }
             }

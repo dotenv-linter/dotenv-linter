@@ -1,16 +1,13 @@
-use assert_cmd::Command;
-use std::collections::HashMap;
-use std::{borrow::Cow, ffi::OsStr};
-use tempfile::{tempdir, tempdir_in, TempDir};
-
-#[cfg(windows)]
-use dunce::canonicalize;
-
-use crate::common::test_file::TestFile;
-use crate::common::test_link::create_test_symlink;
 #[cfg(not(windows))]
 use std::fs::canonicalize;
-use std::str::from_utf8;
+use std::{borrow::Cow, collections::HashMap, ffi::OsStr, str::from_utf8};
+
+use assert_cmd::Command;
+#[cfg(windows)]
+use dunce::canonicalize;
+use tempfile::{tempdir, tempdir_in, TempDir};
+
+use crate::common::{test_file::TestFile, test_link::create_test_symlink};
 
 /// Use to test commands in temporary directories
 pub struct TestDir {

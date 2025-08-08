@@ -1,8 +1,9 @@
-use crate::{common::LintKind, Result};
-use clap::{command, value_parser, Arg, ArgAction, Command};
 use std::path::PathBuf;
 
+use clap::{command, value_parser, Arg, ArgAction, Command};
+
 use self::options::{CheckOptions, CompareOptions, FixOptions};
+use crate::{common::LintKind, Result};
 
 pub mod options;
 

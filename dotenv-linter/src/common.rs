@@ -5,12 +5,9 @@ pub(crate) mod comment;
 pub(crate) mod lint_kind;
 pub(crate) mod output;
 
-pub use compare::CompareFileType;
-pub use compare::CompareWarning;
+pub use compare::{CompareFileType, CompareWarning};
 pub use lint_kind::LintKind;
-pub use output::check::CheckOutput;
-pub use output::compare::CompareOutput;
-pub use output::fix::FixOutput;
+pub use output::{check::CheckOutput, compare::CompareOutput, fix::FixOutput};
 pub use warning::Warning;
 
 pub const LF: &str = "\n";
@@ -25,9 +22,10 @@ pub fn is_escaped(prefix: &str) -> bool {
 
 #[cfg(test)]
 pub(crate) mod tests {
+    use dotenv_lookup::LineEntry;
+
     use super::*;
     use crate::checks::Check;
-    use dotenv_lookup::LineEntry;
 
     /**
         Helper function for testing `Check` implementations.

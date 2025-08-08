@@ -1,10 +1,10 @@
+use std::{env, fs};
+
 use clap::{ArgMatches, Command};
 use criterion::{black_box, criterion_group, criterion_main, BatchSize, Criterion};
-use std::{env, fs};
-use tempfile::tempdir;
-
 #[cfg(not(windows))]
 use gag::Gag;
+use tempfile::tempdir;
 
 /// Generates clap::ArgMatches for the fix Benchmarks and Copies the needed temporary Files
 fn generate_arg_matches(app: &Command, with_backup: bool) -> ArgMatches {

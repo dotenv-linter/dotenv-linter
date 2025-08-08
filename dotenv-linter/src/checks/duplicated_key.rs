@@ -1,7 +1,9 @@
+use std::collections::HashSet;
+
+use dotenv_lookup::LineEntry;
+
 use super::Check;
 use crate::common::{LintKind, Warning};
-use dotenv_lookup::LineEntry;
-use std::collections::HashSet;
 
 pub(crate) struct DuplicatedKeyChecker<'a> {
     template: &'a str,
