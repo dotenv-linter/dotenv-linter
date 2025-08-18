@@ -50,9 +50,49 @@ impl LineEntry {
             return None;
         }
 
-        self.raw_string
+        let value = self.raw_string
             .find('=')
-            .map(|idx| &self.raw_string[(idx + 1)..])
+            .map(|idx| &self.raw_string[(idx + 1)..])?;
+        
+        Some(self.strip_inline_comment(value))
+    }
+
+    /// Strips inline comments from a value, respecting quoted strings
+    fn strip_inline_comment<'a>(&self, value: &'a str) -> &'a str {
+        let mut in_single_quotes = false;
+        let mut in_double_quotes = false;
+        let mut escaped = false;
+        
+        for (i, ch) in value.char_indices() {
+            match ch {
+                '\\' => {
+                    escaped = !escaped;
+                }
+                '\'' => {
+                    if !escaped && !in_double_quotes {
+                        in_single_quotes = !in_single_quotes;
+                    }
+                    escaped = false;
+                }
+                '"' => {
+                    if !escaped && !in_single_quotes {
+                        in_double_quotes = !in_double_quotes;
+                    }
+                    escaped = false;
+                }
+                '#' => {
+                    if !escaped && !in_single_quotes && !in_double_quotes {
+                        return &value[..i];
+                    }
+                    escaped = false;
+                }
+                _ => {
+                    escaped = false;
+                }
+            }
+        }
+        
+        value
     }
 
     pub fn trimmed_string(&self) -> &str {
@@ -132,6 +172,76 @@ mod tests {
 
     pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
         LineEntry::new(number, raw_string, total_lines == number)
+    }
+
+    mod inline_comment_handling {
+        use super::*;
+
+        #[test]
+        fn test_simple_inline_comment() {
+            let line = line_entry(1, 1, "FOO=bar # this is a comment");
+            assert_eq!(line.get_value(), Some("bar "));
+        }
+
+        #[test]
+        fn test_inline_comment_with_quotes() {
+            let line = line_entry(1, 1, "FOO=\"bar # not a comment\"");
+            assert_eq!(line.get_value(), Some("\"bar # not a comment\""));
+        }
+
+        #[test]
+        fn test_inline_comment_with_single_quotes() {
+            let line = line_entry(1, 1, "FOO='bar # not a comment'");
+            assert_eq!(line.get_value(), Some("'bar # not a comment'"));
+        }
+
+        #[test]
+        fn test_inline_comment_with_escaped_hash() {
+            let line = line_entry(1, 1, "FOO=bar \\# not a comment");
+            assert_eq!(line.get_value(), Some("bar \\# not a comment"));
+        }
+
+        #[test]
+        fn test_inline_comment_with_mixed_quotes() {
+            let line = line_entry(1, 1, "FOO=\"bar 'inside' # comment\"");
+            assert_eq!(line.get_value(), Some("\"bar 'inside' # comment\""));
+        }
+
+        #[test]
+        fn test_inline_comment_with_escaped_quotes() {
+            let line = line_entry(1, 1, "FOO=\"bar \\\"inside\\\" # comment\"");
+            assert_eq!(line.get_value(), Some("\"bar \\\"inside\\\" # comment\""));
+        }
+
+        #[test]
+        fn test_no_inline_comment() {
+            let line = line_entry(1, 1, "FOO=bar");
+            assert_eq!(line.get_value(), Some("bar"));
+        }
+
+        #[test]
+        fn test_inline_comment_at_start() {
+            let line = line_entry(1, 1, "FOO= # this is a comment");
+            assert_eq!(line.get_value(), Some(" "));
+        }
+
+        #[test]
+        fn test_inline_comment_with_whitespace() {
+            let line = line_entry(1, 1, "FOO=bar baz # this is a comment");
+            assert_eq!(line.get_value(), Some("bar baz "));
+        }
+
+        #[test]
+        fn test_inline_comment_with_multiple_hashes() {
+            let line = line_entry(1, 1, "FOO=bar # comment # another comment");
+            assert_eq!(line.get_value(), Some("bar "));
+        }
+
+        #[test]
+        fn test_inline_comment_with_unicode() {
+            let line = line_entry(1, 1, "FOO=bar # 这是注释");
+            assert_eq!(line.get_value(), Some("bar "));
+        }
     }
 
     mod is_empty_or_comment {

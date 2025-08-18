@@ -56,3 +56,42 @@ fn multiline_value() {
 
     testdir.test_command_success_with_args(with_default_args(args), expected_output);
 }
+
+#[test]
+fn inline_comment_no_warning() {
+    let content = "FOO=bar # this is a comment\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &[testfile.as_str()];
+    let expected_output = check_output(&[(".env", &[])]);
+
+    testdir.test_command_success_with_args(with_default_args(args), expected_output);
+}
+
+#[test]
+fn inline_comment_in_quotes_no_warning() {
+    let content = "FOO=\"bar # not a comment\"\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &[testfile.as_str()];
+    let expected_output = check_output(&[(".env", &[])]);
+
+    testdir.test_command_success_with_args(with_default_args(args), expected_output);
+}
+
+#[test]
+fn inline_comment_whitespace_warning() {
+    let content = "FOO=bar baz # this is a comment\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &[testfile.as_str()];
+    let expected_output = check_output(&[(
+        ".env",
+        &[".env:1 ValueWithoutQuotes: This value needs to be surrounded in quotes"],
+    )]);
+
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
+}

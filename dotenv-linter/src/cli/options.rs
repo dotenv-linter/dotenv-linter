@@ -14,6 +14,7 @@ pub struct CheckOptions<'a> {
     pub quiet: bool,
     pub recursive: bool,
     pub schema: Option<DotEnvSchema>,
+    pub ignore_file: PathBuf,
 }
 
 pub struct FixOptions<'a> {
@@ -24,6 +25,7 @@ pub struct FixOptions<'a> {
     pub recursive: bool,
     pub no_backup: bool,
     pub dry_run: bool,
+    pub ignore_file: PathBuf,
 }
 
 pub struct CompareOptions<'a> {
@@ -48,6 +50,7 @@ impl<'a> CheckOptions<'a> {
         } else {
             None
         };
+        let ignore_file = args.get_one::<PathBuf>("ignore-file").cloned().unwrap_or_else(|| PathBuf::from(".envignore"));
         Self {
             skip,
             input: get_many_from_args::<PathBuf>(args, "input"),
@@ -55,6 +58,7 @@ impl<'a> CheckOptions<'a> {
             quiet: args.get_flag("quiet"),
             recursive: args.get_flag("recursive"),
             schema,
+            ignore_file,
         }
     }
 }
@@ -65,7 +69,7 @@ impl<'a> FixOptions<'a> {
             .into_iter()
             .map(|l| l.to_owned())
             .collect();
-
+        let ignore_file = args.get_one::<PathBuf>("ignore-file").cloned().unwrap_or_else(|| PathBuf::from(".envignore"));
         Self {
             skip,
             input: get_many_from_args::<PathBuf>(args, "input"),
@@ -74,6 +78,7 @@ impl<'a> FixOptions<'a> {
             recursive: args.get_flag("recursive"),
             no_backup: args.get_flag("no-backup"),
             dry_run: args.get_flag("dry-run"),
+            ignore_file,
         }
     }
 }
