@@ -42,11 +42,57 @@ impl Check for SubstitutionKeyChecker<'_> {
             let end_brace_index = initial_key.find('}');
             let has_start_brace = initial_key.starts_with('{');
             let has_end_brace = end_brace_index.is_some();
-            let is_incorrect_substitution = has_start_brace ^ has_end_brace
-                || end_brace_index
-                    .map(|i| &initial_key[1..i])
-                    .filter(|key| key.contains(|c: char| !c.is_ascii_alphanumeric() && c != '_'))
-                    .is_some();
+
+            let incorrect_due_to_unbalanced = has_start_brace ^ has_end_brace;
+
+            let incorrect_due_to_content = if has_start_brace && has_end_brace {
+                let inner = &initial_key[1..end_brace_index.unwrap()];
+                if let Some(colon_idx) = inner.find(':') {
+                    let name = &inner[..colon_idx];
+                    let rest = &inner[colon_idx + 1..];
+                    let op = rest.chars().next();
+                    let name_valid = !name.is_empty()
+                        && name
+                            .chars()
+                            .all(|c| c.is_ascii_alphanumeric() || c == '_');
+                    let op_valid = matches!(op, Some('-' | '+' | '=' | '?'));
+                    !(name_valid && op_valid)
+                } else {
+                    // No operator, must be a pure NAME
+                    let name = inner;
+                    !( !name.is_empty()
+                        && name
+                            .chars()
+                            .all(|c| c.is_ascii_alphanumeric() || c == '_') )
+                }
+            } else {
+                false
+            };
+
+            let incorrect_missing_braces_with_operator = if !has_start_brace {
+                // Scan variable name prefix
+                let mut name_len = 0;
+                for ch in initial_key.chars() {
+                    if ch.is_ascii_alphanumeric() || ch == '_' {
+                        name_len += ch.len_utf8();
+                    } else {
+                        break;
+                    }
+                }
+                if name_len > 0 {
+                    let remainder = &initial_key[name_len..];
+                    // Any use of ':' operator after $NAME without braces is invalid
+                    remainder.starts_with(':')
+                } else {
+                    false
+                }
+            } else {
+                false
+            };
+
+            let is_incorrect_substitution = incorrect_due_to_unbalanced
+                || incorrect_due_to_content
+                || (incorrect_missing_braces_with_operator && !is_escaped(prefix));
 
             if is_incorrect_substitution && !is_escaped(prefix) {
                 return Some(Warning::new(
@@ -79,6 +125,10 @@ mod tests {
                 ("ABC=$BAR", None),
                 ("FOO=${BAR}", None),
                 ("FOO=\"$BAR\"", None),
+                ("FOO=${VAR:-def}", None),
+                ("FOO=${VAR:=def}", None),
+                ("FOO=${VAR:+alt}", None),
+                ("FOO=${VAR:?err}", None),
             ],
         );
     }
@@ -123,6 +173,10 @@ mod tests {
                 (
                     "XYZ=${FOO${BAR}",
                     Some("The XYZ key is not assigned properly"),
+                ),
+                (
+                    "FOO=$BAR:default",
+                    Some("The FOO key is not assigned properly"),
                 ),
             ],
         );
