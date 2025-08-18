@@ -1,13 +1,16 @@
 use std::path::PathBuf;
 
-use crate::file::Files;
+use crate::file::{Files};
+pub use crate::file::FileEntry;
+pub use crate::file::read_envignore;
+pub use crate::file::filter_ignored_files;
+pub use crate::line::LineEntry;
 
 mod file;
 mod fs_utils;
 mod line;
 mod quote_type;
 
-pub use crate::{file::FileEntry, line::LineEntry};
 
 pub struct Dotenv<'a> {
     dir: &'a PathBuf,

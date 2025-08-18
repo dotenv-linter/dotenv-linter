@@ -140,6 +140,11 @@ fn common_args() -> Vec<Arg> {
             .long("schema")
             .help("Use schema file to check .env files")
             .value_parser(value_parser!(PathBuf)),
+        Arg::new("ignore-file")
+            .long("ignore-file")
+            .help("Path to a file listing .env files/patterns to ignore (default: .envignore)")
+            .value_name("IGNORE_FILE")
+            .value_parser(value_parser!(PathBuf)),
         no_color_flag(),
         quiet_flag(),
     ]

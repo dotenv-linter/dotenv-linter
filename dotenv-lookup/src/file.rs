@@ -5,6 +5,8 @@ use std::{
 };
 
 use crate::{is_escaped, line::LineEntry, quote_type::is_multiline_start};
+use glob::Pattern;
+use std::io::{BufRead, BufReader};
 
 const PATTERN: &str = ".env";
 const EXCLUDED_FILES: &[&str] = &[".envrc"];
@@ -146,6 +148,33 @@ fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
     });
 
     multiline_ranges
+}
+
+/// Reads ignore patterns from a .envignore file or a user-specified ignore file.
+pub fn read_envignore<P: AsRef<Path>>(ignore_file: P) -> std::io::Result<Vec<String>> {
+    let file = fs::File::open(ignore_file)?;
+    let reader = BufReader::new(file);
+    let mut patterns = Vec::new();
+    for line in reader.lines() {
+        let line = line?;
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        patterns.push(trimmed.to_string());
+    }
+    Ok(patterns)
+}
+
+/// Returns true if the file path matches any of the ignore patterns.
+pub fn is_ignored<P: AsRef<Path>>(file_path: P, patterns: &[String]) -> bool {
+    let file_str = file_path.as_ref().to_string_lossy();
+    patterns.iter().any(|pat| Pattern::new(pat).map_or(false, |p| p.matches(&file_str)))
+}
+
+/// Filters out files that match any ignore pattern.
+pub fn filter_ignored_files<'a>(files: &'a [PathBuf], ignore_patterns: &[String]) -> Vec<&'a PathBuf> {
+    files.iter().filter(|file| !is_ignored(file, ignore_patterns)).collect()
 }
 
 #[cfg(test)]

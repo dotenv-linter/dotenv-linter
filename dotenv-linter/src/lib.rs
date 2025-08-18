@@ -5,6 +5,8 @@ use crate::{
     common::*,
 };
 
+use dotenv_lookup::{read_envignore, filter_ignored_files};
+
 mod checks;
 mod common;
 mod fixes;
@@ -20,6 +22,13 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
         .lookup_files();
+
+    // Read ignore patterns and filter files
+    let ignore_patterns = read_envignore(&opts.ignore_file).unwrap_or_default();
+    let files_vec: Vec<_> = files.into_iter().collect();
+    let file_paths: Vec<_> = files_vec.iter().map(|(fe, _)| fe.path.clone()).collect();
+    let filtered_paths = filter_ignored_files(&file_paths, &ignore_patterns);
+    let files: Vec<_> = files_vec.into_iter().filter(|(fe, _)| filtered_paths.contains(&&fe.path)).collect();
 
     let output = CheckOutput::new(opts.quiet);
 
@@ -50,6 +59,13 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
         .lookup_files();
+
+    // Read ignore patterns and filter files
+    let ignore_patterns = read_envignore(&opts.ignore_file).unwrap_or_default();
+    let files_vec: Vec<_> = files.into_iter().collect();
+    let file_paths: Vec<_> = files_vec.iter().map(|(fe, _)| fe.path.clone()).collect();
+    let filtered_paths = filter_ignored_files(&file_paths, &ignore_patterns);
+    let files: Vec<_> = files_vec.into_iter().filter(|(fe, _)| filtered_paths.contains(&&fe.path)).collect();
 
     let output = FixOutput::new(opts.quiet);
 
