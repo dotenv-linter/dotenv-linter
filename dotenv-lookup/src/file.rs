@@ -9,7 +9,7 @@ use glob::Pattern;
 use std::io::{BufRead, BufReader};
 
 const PATTERN: &str = ".env";
-const EXCLUDED_FILES: &[&str] = &[".envrc"];
+const EXCLUDED_FILES: &[&str] = &[".envrc", ".envignore"];
 const BACKUP_EXTENSION: &str = ".bak";
 pub const LF: &str = "\n";
 
@@ -168,8 +168,16 @@ pub fn read_envignore<P: AsRef<Path>>(ignore_file: P) -> std::io::Result<Vec<Str
 
 /// Returns true if the file path matches any of the ignore patterns.
 pub fn is_ignored<P: AsRef<Path>>(file_path: P, patterns: &[String]) -> bool {
-    let file_str = file_path.as_ref().to_string_lossy();
-    patterns.iter().any(|pat| Pattern::new(pat).map_or(false, |p| p.matches(&file_str)))
+    let file_path_ref = file_path.as_ref();
+    let file_str = file_path_ref.to_string_lossy();
+    let file_name = file_path_ref
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap_or("");
+    patterns.iter().any(|pat| {
+        Pattern::new(pat)
+            .map_or(false, |p| p.matches(&file_str) || p.matches(file_name))
+    })
 }
 
 /// Filters out files that match any ignore pattern.
