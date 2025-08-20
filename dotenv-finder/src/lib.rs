@@ -95,6 +95,6 @@ fn lookup_dotenv_paths(
     file_paths
 }
 
-pub fn is_escaped(prefix: &str) -> bool {
+fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }
