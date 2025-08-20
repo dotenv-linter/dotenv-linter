@@ -1,17 +1,13 @@
 use std::collections::HashSet;
 
 use dotenv_finder::LineEntry;
-use email_address::EmailAddress;
-use url::Url;
+use dotenv_schema::{DotEnvSchema, SchemaValueType, ValidateResult};
 
 use super::Check;
-use crate::{
-    common::{LintKind, Warning},
-    schema::{DotEnvSchema, SchemaValueType},
-};
+use crate::common::{LintKind, Warning};
 
 pub(crate) struct SchemaViolationChecker<'a> {
-    schema: Option<&'a crate::schema::DotEnvSchema>,
+    schema: Option<&'a DotEnvSchema>,
     seen_keys: HashSet<String>,
     last_line_number: usize,
 }
@@ -32,91 +28,46 @@ impl Check for SchemaViolationChecker<'_> {
         self.last_line_number = line.number;
         let key = line.get_key()?;
         self.seen_keys.insert(key.to_string());
+        let value = line.get_value()?;
 
-        if let Some(entry) = schema.entries.get(key) {
-            if let Some(value) = line.get_value() {
-                match entry.value_type {
-                    SchemaValueType::String => {
-                        if let Some(regex) = &entry.regex {
-                            if !regex.is_match(value) {
-                                return Some(Warning::new(
-                                    line.number,
-                                    self.name(),
-                                    format!("The {key} key does not match the regex"),
-                                ));
-                            }
-                        }
-                    }
-                    SchemaValueType::Boolean => {
-                        if matches!(
-                            value,
-                            "true"
-                                | "false"
-                                | "TRUE"
-                                | "FALSE"
-                                | "yes"
-                                | "no"
-                                | "YES"
-                                | "NO"
-                                | "1"
-                                | "0"
-                        ) {
-                            return None;
-                        } else {
-                            return Some(Warning::new(
-                                line.number,
-                                self.name(),
-                                format!("The {key} key is not a valid boolean"),
-                            ));
-                        }
-                    }
-                    SchemaValueType::Integer => {
-                        if value.parse::<i32>().is_err() {
-                            return Some(Warning::new(
-                                line.number,
-                                self.name(),
-                                format!("The {key} key is not an integer"),
-                            ));
-                        }
-                    }
-                    SchemaValueType::Float => {
-                        if value.parse::<f32>().is_err() {
-                            return Some(Warning::new(
-                                line.number,
-                                self.name(),
-                                format!("The {key} key is not a valid float"),
-                            ));
-                        }
-                    }
-                    SchemaValueType::Email => {
-                        if !EmailAddress::is_valid(value) {
-                            return Some(Warning::new(
-                                line.number,
-                                self.name(),
-                                format!("The {key} key is not a valid email address"),
-                            ));
-                        }
-                    }
-                    SchemaValueType::Url => {
-                        if Url::parse(value).is_err() {
-                            return Some(Warning::new(
-                                line.number,
-                                self.name(),
-                                format!("The {key} key is not a valid URL"),
-                            ));
-                        }
-                    }
-                }
+        let Some(entry) = schema.entries.get(key) else {
+            if schema.allow_other_keys {
+                return None;
             }
-        } else if !schema.allow_other_keys {
+
             return Some(Warning::new(
                 line.number,
                 self.name(),
                 format!("The {key} key is not defined in the schema"),
             ));
-        }
+        };
 
-        None
+        let ValidateResult::Invalid(ty) = entry.is_valid(value) else {
+            return None;
+        };
+
+        let message = match ty {
+            SchemaValueType::String => {
+                format!("The {key} key does not match the regex")
+            }
+            SchemaValueType::Integer => {
+                format!("The {key} key is not an integer")
+            }
+            SchemaValueType::Float => {
+                format!("The {key} key is not a valid float")
+            }
+            SchemaValueType::Boolean => {
+                format!("The {key} key is not a valid boolean")
+            }
+            SchemaValueType::Url => {
+                format!("The {key} key is not a valid URL")
+            }
+            SchemaValueType::Email => {
+                format!("The {key} key is not a valid email address")
+            }
+        };
+
+        Some(Warning::new(line.number, self.name(), message))
     }
 
     fn name(&self) -> LintKind {

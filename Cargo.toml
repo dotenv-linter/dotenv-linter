@@ -1,5 +1,5 @@
 [workspace]
-members = ["dotenv-finder", "dotenv-linter"]
+members = ["dotenv-finder", "dotenv-linter", "dotenv-schema"]
 resolver = "2"
 
 [workspace.package]
