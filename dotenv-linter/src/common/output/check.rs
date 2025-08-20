@@ -1,5 +1,5 @@
 use colored::*;
-use dotenv_lookup::FileEntry;
+use dotenv_finder::FileEntry;
 
 use crate::common::Warning;
 

@@ -49,7 +49,7 @@ mod tests {
         io::Write,
     };
 
-    use dotenv_lookup::LineEntry;
+    use dotenv_finder::LineEntry;
     use regex::Regex;
     use tempfile::tempdir;
 

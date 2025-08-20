@@ -1,4 +1,4 @@
-use dotenv_lookup::LineEntry;
+use dotenv_finder::LineEntry;
 
 use super::Check;
 use crate::common::{remove_invalid_leading_chars, LintKind, Warning};

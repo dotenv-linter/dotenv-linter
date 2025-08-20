@@ -1,4 +1,4 @@
-use dotenv_lookup::LineEntry;
+use dotenv_finder::LineEntry;
 
 use super::Fix;
 use crate::common::LintKind;

@@ -487,6 +487,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "dotenv-finder"
+version = "0.1.0"
+dependencies = [
+ "dunce",
+ "tempfile",
+]
+
+[[package]]
 name = "dotenv-linter"
 version = "3.3.0"
 dependencies = [
@@ -494,7 +502,7 @@ dependencies = [
  "clap",
  "colored",
  "criterion",
- "dotenv-lookup",
+ "dotenv-finder",
  "dunce",
  "email_address",
  "gag",
@@ -506,15 +514,6 @@ dependencies = [
  "tempfile",
  "update-informer",
  "url",
-]
-
-[[package]]
-name = "dotenv-lookup"
-version = "1.0.0"
-dependencies = [
- "assert_cmd",
- "dunce",
- "tempfile",
 ]
 
 [[package]]
