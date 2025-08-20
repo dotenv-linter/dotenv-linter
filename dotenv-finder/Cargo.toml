@@ -1,6 +1,6 @@
 [package]
-name = "dotenv-lookup"
-version = "1.0.0"
+name = "dotenv-finder"
+version = "0.1.0"
 authors.workspace = true
 edition.workspace = true
 include = ["/src"]
@@ -9,7 +9,6 @@ repository.workspace = true
 description = "A crate to find and parse .env files"
 
 [dev-dependencies]
-assert_cmd.workspace = true
 tempfile.workspace = true
 
 [target.'cfg(windows)'.dependencies]

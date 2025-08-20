@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use dotenv_lookup::LineEntry;
+use dotenv_finder::LineEntry;
 use email_address::EmailAddress;
 use url::Url;
 

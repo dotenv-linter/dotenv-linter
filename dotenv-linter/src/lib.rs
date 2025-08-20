@@ -16,7 +16,7 @@ pub mod cli;
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
-    let files = dotenv_lookup::new(current_dir, &opts.input)
+    let files = dotenv_finder::new(current_dir, &opts.input)
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
         .lookup_files();
@@ -46,7 +46,7 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
 }
 
 pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
-    let files = dotenv_lookup::new(current_dir, &opts.input)
+    let files = dotenv_finder::new(current_dir, &opts.input)
         .recursive(opts.recursive)
         .exclude(&opts.exclude)
         .lookup_files();
@@ -97,7 +97,7 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 
 // Compares if different environment files contains the same variables and returns warnings if not
 pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
-    let files = dotenv_lookup::new(current_dir, &opts.input).lookup_files();
+    let files = dotenv_finder::new(current_dir, &opts.input).lookup_files();
     let output = CompareOutput::new(opts.quiet);
 
     if files.is_empty() {

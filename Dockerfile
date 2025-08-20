@@ -9,7 +9,7 @@ ARG TARGETARCH
 WORKDIR /
 
 COPY Cargo.toml Cargo.lock ./
-COPY dotenv-lookup ./dotenv-lookup
+COPY dotenv-finder ./dotenv-finder
 COPY dotenv-linter ./dotenv-linter
 
 RUN if [ "${TARGETARCH}" = "amd64" ]; \

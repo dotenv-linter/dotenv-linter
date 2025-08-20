@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use dotenv_lookup::LineEntry;
+use dotenv_finder::LineEntry;
 
 use super::Check;
 use crate::common::{LintKind, Warning};
