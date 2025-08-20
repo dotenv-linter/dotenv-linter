@@ -14,7 +14,7 @@ pub const LF: &str = "\n";
 pub struct Files(BTreeMap<FileEntry, Vec<LineEntry>>);
 
 impl Files {
-    pub fn new(files: BTreeMap<FileEntry, Vec<LineEntry>>) -> Self {
+    pub(crate) fn new(files: BTreeMap<FileEntry, Vec<LineEntry>>) -> Self {
         Self(files)
     }
 
@@ -51,7 +51,7 @@ impl fmt::Display for FileEntry {
 
 impl FileEntry {
     /// Converts `PathBuf` to tuple of `(FileEntry, Vec<LineEntry>)`
-    pub fn from(path: PathBuf) -> Option<(Self, Vec<LineEntry>)> {
+    pub(crate) fn from(path: PathBuf) -> Option<(Self, Vec<LineEntry>)> {
         let file_name = get_file_name(&path)?.to_string();
         let content = fs::read_to_string(&path).ok()?;
 

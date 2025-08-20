@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 pub use dunce::canonicalize;
 
 /// Returns the relative path for `target_path` relative to `base_path`
-pub fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf> {
+pub(crate) fn get_relative_path(target_path: &Path, base_path: &Path) -> Option<PathBuf> {
     let comp_target: Vec<_> = target_path.components().collect();
     let comp_base: Vec<_> = base_path.components().collect();
 

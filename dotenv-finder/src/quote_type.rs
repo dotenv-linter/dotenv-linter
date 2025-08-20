@@ -1,26 +1,26 @@
 use super::is_escaped;
 
-pub enum QuoteType {
+pub(crate) enum QuoteType {
     Single,
     Double,
 }
 
 impl QuoteType {
-    pub fn char(&self) -> char {
+    pub(crate) fn char(&self) -> char {
         match self {
             QuoteType::Single => '\'',
             QuoteType::Double => '\"',
         }
     }
 
-    pub fn is_quoted_value(&self, val: &str) -> bool {
+    fn is_quoted_value(&self, val: &str) -> bool {
         val.starts_with(self.char())
             && (val.len() == 1 || !val.ends_with(self.char()) || is_escaped(&val[..val.len() - 1]))
     }
 }
 
 /// Returns the `QuoteType` for a `&str` starting with a quote-char
-pub fn is_multiline_start(val: &str) -> Option<QuoteType> {
+pub(crate) fn is_multiline_start(val: &str) -> Option<QuoteType> {
     [QuoteType::Single, QuoteType::Double]
         .into_iter()
         .find(|quote_type| quote_type.is_quoted_value(val))

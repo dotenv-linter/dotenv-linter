@@ -55,7 +55,7 @@ impl LineEntry {
             .map(|idx| &self.raw_string[(idx + 1)..])
     }
 
-    pub fn trimmed_string(&self) -> &str {
+    fn trimmed_string(&self) -> &str {
         self.raw_string.trim()
     }
 
