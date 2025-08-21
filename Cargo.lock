@@ -503,16 +503,26 @@ dependencies = [
  "colored",
  "criterion",
  "dotenv-finder",
+ "dotenv-schema",
  "dunce",
- "email_address",
  "gag",
+ "regex",
+ "serde_json",
+ "tempfile",
+ "update-informer",
+]
+
+[[package]]
+name = "dotenv-schema"
+version = "0.1.0"
+dependencies = [
+ "email_address",
  "regex",
  "serde",
  "serde_json",
  "serde_regex",
  "serde_with",
  "tempfile",
- "update-informer",
  "url",
 ]
 

@@ -9,7 +9,6 @@ mod checks;
 mod common;
 mod fixes;
 mod fs_utils;
-mod schema;
 
 pub mod cli;
 

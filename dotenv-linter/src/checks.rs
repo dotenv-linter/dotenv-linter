@@ -1,9 +1,7 @@
 use dotenv_finder::LineEntry;
+use dotenv_schema::DotEnvSchema;
 
-use crate::{
-    common::{comment::Comment, LintKind, Warning},
-    schema::DotEnvSchema,
-};
+use crate::common::{comment::Comment, LintKind, Warning};
 
 mod duplicated_key;
 mod ending_blank_line;
@@ -281,5 +279,313 @@ mod tests {
         let skip_checks: Vec<LintKind> = Vec::new();
 
         assert_eq!(expected, run(&line_entries, &skip_checks, None));
+    }
+
+    mod schema {
+        use dotenv_finder::LineEntry;
+        use dotenv_schema::DotEnvSchema;
+        use regex::Regex;
+
+        use crate::common::{tests::line_entry, LintKind, Warning};
+
+        fn load_schema() -> Result<DotEnvSchema, std::io::Error> {
+            let json = r#"{
+            "version": "1.0.0",
+            "entries": {
+                "NAME": {
+                    "type": "String"
+                },
+                "PORT": {
+                    "type": "Integer"
+                },
+                "PRICE": {
+                    "type": "Float"
+                },
+                "URL": {
+                    "type": "Url"
+                },
+                "EMAIL":{
+                    "type": "Email"
+                },
+                "FLAG":{
+                    "type": "Boolean"
+                }
+            }
+        }"#;
+            let schema: DotEnvSchema = serde_json::from_str(json).unwrap();
+            Ok(schema)
+        }
+
+        #[test]
+        fn string_good() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
+            let expected: Vec<Warning> = Vec::new();
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn string_unknown() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "USER=joe")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The USER key is not defined in the schema",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn string_unknown_allowed() {
+            let mut schema = load_schema().expect("failed to load schema");
+            schema.allow_other_keys = true;
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "USER=joe")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn integer_good() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=42")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn integer_bad() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=p")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The PORT key is not an integer",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn integer_is_float() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PORT=2.4")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The PORT key is not an integer",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn float_good() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=2.4")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn float_good2() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=24")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn float_bad() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "PRICE=price")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The PRICE key is not a valid float",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn url_good() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "URL=https://example.com")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn url_bad() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "URL=not_a_url")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The URL key is not a valid URL",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn email_good() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=joe@gmail.com")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn email_bad() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=not_an_eamil")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The EMAIL key is not a valid email address",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn required_present() {
+            let mut schema = load_schema().expect("failed to load schema");
+            schema.entries.get_mut("EMAIL").unwrap().required = true;
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=joe@gmail.com")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn required_missing() {
+            let mut schema = load_schema().expect("failed to load schema");
+            schema.entries.get_mut("EMAIL").unwrap().required = true;
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The EMAIL key is required",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn regex_good() {
+            let mut schema = load_schema().expect("failed to load schema");
+            schema.entries.get_mut("NAME").unwrap().regex =
+                Some(Regex::new("^[ABCD]*$").expect("Bad regex"));
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=BAD")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn regex_bad() {
+            let mut schema = load_schema().expect("failed to load schema");
+            schema.entries.get_mut("NAME").unwrap().regex =
+                Some(Regex::new("^[ABCD]*$").expect("Bad regex"));
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The NAME key does not match the regex",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn boolean_good() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FLAG=true")];
+            let expected: Vec<Warning> = vec![];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
+
+        #[test]
+        fn boolean_bad() {
+            let schema = load_schema().expect("failed to load schema");
+            let lines: Vec<LineEntry> = vec![line_entry(1, 2, "FLAG=joe")];
+            let expected: Vec<Warning> = vec![Warning::new(
+                1,
+                LintKind::SchemaViolation,
+                "The FLAG key is not a valid boolean",
+            )];
+            let skip_checks: Vec<LintKind> = Vec::new();
+            assert_eq!(
+                expected,
+                crate::checks::run(&lines, &skip_checks, Some(&schema))
+            );
+        }
     }
 }

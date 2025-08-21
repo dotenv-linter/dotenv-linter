@@ -1,11 +1,9 @@
 use std::path::PathBuf;
 
 use clap::ArgMatches;
+use dotenv_schema::{self, DotEnvSchema};
 
-use crate::{
-    common::LintKind,
-    schema::{self, DotEnvSchema},
-};
+use crate::common::LintKind;
 
 pub struct CheckOptions<'a> {
     pub input: Vec<&'a PathBuf>,
@@ -38,7 +36,7 @@ impl<'a> CheckOptions<'a> {
             .map(|l| l.to_owned())
             .collect();
         let schema = if let Some(schema_path) = args.get_one::<PathBuf>("schema") {
-            match schema::DotEnvSchema::load(schema_path) {
+            match DotEnvSchema::load(schema_path) {
                 Ok(schema) => Some(schema),
                 Err(err) => {
                     println!("Error loading schema: {err}");
