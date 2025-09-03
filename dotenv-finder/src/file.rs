@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::{is_escaped, line::LineEntry, quote_type::is_multiline_start};
+use crate::{is_escaped, line::LineEntry, quote::get_quote};
 
 const PATTERN: &str = ".env";
 const EXCLUDED_FILES: &[&str] = &[".envrc"];
@@ -138,8 +138,8 @@ fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
                 }
             }
         } else if let Some(trimmed_value) = entry.get_value().map(|val| val.trim()) {
-            if let Some(quote_type) = is_multiline_start(trimmed_value) {
-                quote_char = Some(quote_type.char());
+            if let Some(quote) = get_quote(trimmed_value) {
+                quote_char = Some(quote.as_char());
                 start_number = Some(entry.number);
             }
         }
