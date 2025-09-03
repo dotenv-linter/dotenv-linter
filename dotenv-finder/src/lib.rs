@@ -3,56 +3,78 @@ use std::path::PathBuf;
 use crate::file::Files;
 
 mod file;
-mod fs_utils;
+mod fs;
 mod line;
-mod quote_type;
+mod quote;
 
 pub use crate::{file::FileEntry, line::LineEntry};
 
-pub struct Dotenv<'a> {
+pub struct Finder<'a> {
     dir: &'a PathBuf,
     paths: Vec<PathBuf>,
-    recursive: bool,
     excluded: Vec<PathBuf>,
+    recursive: bool,
 }
 
-pub fn new<'a>(dir: &'a PathBuf, paths: &'a [&'a PathBuf]) -> Dotenv<'a> {
-    let mut paths = paths
-        .iter()
-        .filter_map(|f| fs_utils::canonicalize(f).ok())
-        .collect::<Vec<_>>();
-
-    if paths.is_empty() {
-        paths.push(dir.to_path_buf());
-    }
-
-    Dotenv {
-        dir,
-        paths,
-        recursive: false,
-        excluded: vec![],
-    }
+pub struct FinderBuilder<'a> {
+    dir: &'a PathBuf,
+    paths: Vec<PathBuf>,
+    excluded: Vec<PathBuf>,
+    recursive: bool,
 }
 
-impl<'a> Dotenv<'a> {
-    pub fn exclude(self, exclude: &'a [&'a PathBuf]) -> Self {
-        let excluded = exclude
+impl<'a> FinderBuilder<'a> {
+    pub fn new(dir: &'a PathBuf) -> Self {
+        Self {
+            dir,
+            paths: vec![],
+            excluded: vec![],
+            recursive: false,
+        }
+    }
+
+    pub fn with_paths(mut self, paths: &'a [&'a PathBuf]) -> Self {
+        self.paths = paths
             .iter()
-            .filter_map(|f| fs_utils::canonicalize(f).ok())
-            .collect::<Vec<_>>();
+            .filter_map(|f| fs::canonicalize(f).ok())
+            .collect();
 
-        Self { excluded, ..self }
+        if self.paths.is_empty() {
+            self.paths.push(self.dir.clone());
+        }
+
+        self
     }
 
-    pub fn recursive(self, recursive: bool) -> Self {
-        Self { recursive, ..self }
+    pub fn exclude(mut self, exclude: &'a [&'a PathBuf]) -> Self {
+        self.excluded = exclude
+            .iter()
+            .filter_map(|f| fs::canonicalize(f).ok())
+            .collect();
+        self
     }
 
-    pub fn lookup_files(self) -> Files {
-        let files = lookup_dotenv_paths(self.paths, self.excluded.as_slice(), self.recursive)
+    pub fn recursive(mut self, recursive: bool) -> Self {
+        self.recursive = recursive;
+        self
+    }
+
+    pub fn build(self) -> Finder<'a> {
+        Finder {
+            dir: self.dir,
+            paths: self.paths,
+            excluded: self.excluded,
+            recursive: self.recursive,
+        }
+    }
+}
+
+impl<'a> Finder<'a> {
+    pub fn find(&self) -> Files {
+        let files = find_dotenv_paths(self.paths.clone(), self.excluded.as_slice(), self.recursive)
             .iter()
             .filter_map(|path: &PathBuf| -> Option<(FileEntry, Vec<LineEntry>)> {
-                fs_utils::get_relative_path(path, self.dir).and_then(FileEntry::from)
+                fs::get_relative_path(path, self.dir).and_then(FileEntry::from)
             })
             .collect();
 
@@ -60,7 +82,7 @@ impl<'a> Dotenv<'a> {
     }
 }
 
-fn lookup_dotenv_paths(
+fn find_dotenv_paths(
     dir_entries: Vec<PathBuf>,
     excludes: &[PathBuf],
     is_recursive: bool,
@@ -80,7 +102,7 @@ fn lookup_dotenv_paths(
                 })
                 .collect()
         })
-        .flat_map(|dir_entries| lookup_dotenv_paths(dir_entries, excludes, is_recursive))
+        .flat_map(|dir_entries| find_dotenv_paths(dir_entries, excludes, is_recursive))
         .collect();
 
     let mut file_paths: Vec<PathBuf> = dir_entries

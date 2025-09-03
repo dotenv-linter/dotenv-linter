@@ -29,6 +29,8 @@ pub struct CompareOptions<'a> {
     pub quiet: bool,
 }
 
+// todo use trait From
+
 impl<'a> CheckOptions<'a> {
     pub fn new(args: &'a ArgMatches) -> Self {
         let skip = get_many_from_args::<LintKind>(args, "skip")
