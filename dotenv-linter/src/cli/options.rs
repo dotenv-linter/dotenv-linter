@@ -1,9 +1,8 @@
 use std::path::PathBuf;
 
 use clap::ArgMatches;
+use dotenv_analyzer::LintKind;
 use dotenv_schema::{self, DotEnvSchema};
-
-use crate::common::LintKind;
 
 pub struct CheckOptions<'a> {
     pub input: Vec<&'a PathBuf>,

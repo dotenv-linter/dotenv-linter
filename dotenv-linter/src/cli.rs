@@ -1,9 +1,10 @@
 use std::path::PathBuf;
 
 use clap::{command, value_parser, Arg, ArgAction, Command};
+use dotenv_analyzer::LintKind;
 
 use self::options::{CheckOptions, CompareOptions, FixOptions};
-use crate::{common::LintKind, Result};
+use crate::Result;
 
 pub mod options;
 

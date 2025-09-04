@@ -2,15 +2,15 @@ use std::{collections::HashSet, path::PathBuf};
 
 use crate::{
     cli::options::{CheckOptions, CompareOptions, FixOptions},
-    common::*,
+    compare::{CompareFileType, CompareWarning},
+    output::{check::CheckOutput, compare::CompareOutput, fix::FixOutput},
 };
 
-mod checks;
-mod common;
-mod fixes;
 mod fs_utils;
 
 pub mod cli;
+mod compare;
+mod output;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -36,10 +36,10 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .enumerate()
         .fold(0, |acc, (index, (fe, lines))| {
             output.print_processing_info(&fe);
-            let result = checks::run(&lines, &opts.skip, opts.schema.as_ref());
 
-            output.print_warnings(&fe, &result, index);
-            acc + result.len()
+            let warnings = dotenv_analyzer::check(&lines, &opts.skip, opts.schema.as_ref());
+            output.print_warnings(&fe, &warnings, index);
+            acc + warnings.len()
         });
 
     output.print_total(warnings_count);
@@ -67,13 +67,13 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
-        let result = checks::run(&lines, &opts.skip, None);
-        if result.is_empty() {
+        let warnings = dotenv_analyzer::check(&lines, &opts.skip, None);
+        if warnings.is_empty() {
             continue;
         }
 
-        let fixes_done = fixes::run(&result, &mut lines, &opts.skip);
-        if fixes_done != result.len() {
+        let fixes_done = dotenv_analyzer::fix(&warnings, &mut lines, &opts.skip);
+        if fixes_done != warnings.len() {
             output.print_not_all_warnings_fixed();
         }
 
@@ -91,8 +91,8 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
             fs_utils::write_file(&fe.path, lines)?;
         }
 
-        output.print_warnings(&fe, &result, index);
-        warnings_count += result.len();
+        output.print_warnings(&fe, &warnings, index);
+        warnings_count += warnings.len();
     }
 
     output.print_total(warnings_count);
@@ -117,6 +117,7 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
     let mut files_to_compare: Vec<CompareFileType> = Vec::new();
     for (fe, lines) in files.into_iter() {
         output.print_processing_info(&fe);
+
         let mut keys: Vec<String> = Vec::new();
 
         for line in lines {
@@ -126,10 +127,7 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
             }
         }
 
-        let file_to_compare: CompareFileType = CompareFileType {
-            path: fe.path,
-            keys,
-        };
+        let file_to_compare: CompareFileType = CompareFileType::new(fe.path, keys);
 
         files_to_compare.push(file_to_compare);
     }
@@ -139,15 +137,12 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
     for file in files_to_compare {
         let missing_keys: Vec<_> = all_keys
             .iter()
-            .filter(|key| !file.keys.contains(key))
+            .filter(|key| !file.keys().contains(key))
             .map(|key| key.to_owned())
             .collect();
 
         if !missing_keys.is_empty() {
-            let warning = CompareWarning {
-                path: file.path,
-                missing_keys,
-            };
+            let warning = CompareWarning::new(file.path().clone(), missing_keys);
 
             warnings.push(warning)
         }

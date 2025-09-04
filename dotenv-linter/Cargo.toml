@@ -19,6 +19,7 @@ stub_check_version = []
 [dependencies]
 clap = { version = "4.5", features = ["cargo", "env"] }
 colored = "3.0"
+dotenv-analyzer = { version = "0.1", path = "../dotenv-analyzer", features = ["clap"] }
 dotenv-core = { version = "0.1", path = "../dotenv-core" }
 dotenv-finder = { version = "0.1", path = "../dotenv-finder" }
 dotenv-schema = { version = "0.1", path = "../dotenv-schema" }
