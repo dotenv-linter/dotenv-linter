@@ -487,6 +487,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "dotenv-analyzer"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "dotenv-core",
+ "dotenv-schema",
+ "regex",
+ "serde_json",
+]
+
+[[package]]
 name = "dotenv-core"
 version = "0.1.0"
 
@@ -507,6 +518,7 @@ dependencies = [
  "clap",
  "colored",
  "criterion",
+ "dotenv-analyzer",
  "dotenv-core",
  "dotenv-finder",
  "dotenv-schema",

@@ -9,6 +9,7 @@ ARG TARGETARCH
 WORKDIR /
 
 COPY Cargo.toml Cargo.lock ./
+COPY dotenv-analyzer ./dotenv-analyzer
 COPY dotenv-core ./dotenv-core
 COPY dotenv-finder ./dotenv-finder
 COPY dotenv-schema ./dotenv-schema

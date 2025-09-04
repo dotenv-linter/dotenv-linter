@@ -132,6 +132,21 @@ pub fn is_escaped(prefix: &str) -> bool {
 mod tests {
     use super::*;
 
+    #[test]
+    fn is_escaped_value_test() {
+        let escaped = "\\";
+        assert!(is_escaped(escaped));
+
+        let escaped = "\\\\\\";
+        assert!(is_escaped(escaped));
+
+        let non_escaped = "\\\\";
+        assert!(!is_escaped(non_escaped));
+
+        let random_string = "text without escaping";
+        assert!(!is_escaped(random_string));
+    }
+
     pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
         LineEntry::new(number, raw_string, total_lines == number)
     }
