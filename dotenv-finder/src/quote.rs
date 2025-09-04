@@ -1,4 +1,4 @@
-use super::is_escaped;
+use dotenv_core::is_escaped;
 
 pub(crate) enum Quote {
     Single,

@@ -8,6 +8,9 @@ license.workspace = true
 repository.workspace = true
 description = "A crate to find and parse .env files"
 
+[dependencies]
+dotenv-core = { version = "0.1", path = "../dotenv-core" }
+
 [dev-dependencies]
 tempfile.workspace = true
 

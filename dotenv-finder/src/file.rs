@@ -4,7 +4,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::{is_escaped, line::LineEntry, quote::get_quote};
+use dotenv_core::{is_escaped, LineEntry};
+
+use crate::quote::get_quote;
 
 const PATTERN: &str = ".env";
 const EXCLUDED_FILES: &[&str] = &[".envrc"];

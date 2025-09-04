@@ -22,7 +22,7 @@ pub fn is_escaped(prefix: &str) -> bool {
 
 #[cfg(test)]
 pub(crate) mod tests {
-    use dotenv_finder::LineEntry;
+    use dotenv_core::LineEntry;
 
     use super::*;
     use crate::checks::Check;

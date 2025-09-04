@@ -1,7 +1,8 @@
 use std::path::Path;
 
 use colored::*;
-use dotenv_finder::{FileEntry, LineEntry};
+use dotenv_core::LineEntry;
+use dotenv_finder::FileEntry;
 
 use crate::common::Warning;
 

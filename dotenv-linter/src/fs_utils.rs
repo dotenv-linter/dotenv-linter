@@ -5,7 +5,8 @@ use std::{
     time::SystemTime,
 };
 
-use dotenv_finder::{FileEntry, LineEntry};
+use dotenv_core::LineEntry;
+use dotenv_finder::FileEntry;
 
 use crate::Result;
 
