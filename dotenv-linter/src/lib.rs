@@ -36,14 +36,6 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .enumerate()
         .fold(0, |acc, (index, (fe, lines))| {
             output.print_processing_info(&fe);
-
-            // move LineEntry => dotenv_core
-
-            //     lines: &[LineEntry],
-            //     skip_checks: &[LintKind],
-            //     schema: Option<&DotEnvSchema>,
-            // dotenv_analyzer::check()
-
             let result = checks::run(&lines, &opts.skip, opts.schema.as_ref());
 
             output.print_warnings(&fe, &result, index);
@@ -75,14 +67,10 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
-        // dotenv_analyzer::check()
-
         let result = checks::run(&lines, &opts.skip, None);
         if result.is_empty() {
             continue;
         }
-
-        // dotenv_analyzer::fix()
 
         let fixes_done = fixes::run(&result, &mut lines, &opts.skip);
         if fixes_done != result.len() {
@@ -123,8 +111,6 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
         output.print_nothing_to_compare();
         return Ok(0);
     }
-
-    // dotenv_analyzer::compare()
 
     // Create CompareFileType structures for each file
     let mut all_keys: HashSet<String> = HashSet::new();
