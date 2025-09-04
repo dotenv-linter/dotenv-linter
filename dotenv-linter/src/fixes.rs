@@ -1,4 +1,4 @@
-use dotenv_finder::LineEntry;
+use dotenv_core::LineEntry;
 
 use crate::common::{LintKind, Warning};
 

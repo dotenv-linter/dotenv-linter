@@ -1,5 +1,3 @@
-use crate::is_escaped;
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct LineEntry {
     pub number: usize,
@@ -124,6 +122,10 @@ impl LineEntry {
         }
         keys
     }
+}
+
+pub fn is_escaped(prefix: &str) -> bool {
+    prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }
 
 #[cfg(test)]

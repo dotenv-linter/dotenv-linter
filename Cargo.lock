@@ -487,9 +487,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "dotenv-core"
+version = "0.1.0"
+
+[[package]]
 name = "dotenv-finder"
 version = "0.1.0"
 dependencies = [
+ "dotenv-core",
  "dunce",
  "tempfile",
 ]
@@ -502,6 +507,7 @@ dependencies = [
  "clap",
  "colored",
  "criterion",
+ "dotenv-core",
  "dotenv-finder",
  "dotenv-schema",
  "dunce",

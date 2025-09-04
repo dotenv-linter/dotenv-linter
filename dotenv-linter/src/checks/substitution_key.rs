@@ -1,4 +1,4 @@
-use dotenv_finder::LineEntry;
+use dotenv_core::LineEntry;
 
 use super::Check;
 use crate::common::{is_escaped, LintKind, Warning};

@@ -1,4 +1,4 @@
-use dotenv_finder::LineEntry;
+use dotenv_core::LineEntry;
 use dotenv_schema::DotEnvSchema;
 
 use crate::common::{comment::Comment, LintKind, Warning};
@@ -282,7 +282,7 @@ mod tests {
     }
 
     mod schema {
-        use dotenv_finder::LineEntry;
+        use dotenv_core::LineEntry;
         use dotenv_schema::DotEnvSchema;
         use regex::Regex;
 

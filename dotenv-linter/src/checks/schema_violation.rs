@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use dotenv_finder::LineEntry;
+use dotenv_core::LineEntry;
 use dotenv_schema::{DotEnvSchema, SchemaValueType, ValidateResult};
 
 use super::Check;

@@ -1,13 +1,14 @@
 use std::path::PathBuf;
 
+use dotenv_core::LineEntry;
+
 use crate::file::Files;
 
 mod file;
 mod fs;
-mod line;
 mod quote;
 
-pub use crate::{file::FileEntry, line::LineEntry};
+pub use crate::file::FileEntry;
 
 pub struct Finder<'a> {
     dir: &'a PathBuf,
@@ -115,8 +116,4 @@ fn find_dotenv_paths(
     file_paths.sort();
     file_paths.dedup();
     file_paths
-}
-
-fn is_escaped(prefix: &str) -> bool {
-    prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }

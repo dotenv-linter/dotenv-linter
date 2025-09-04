@@ -71,6 +71,7 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
         if result.is_empty() {
             continue;
         }
+
         let fixes_done = fixes::run(&result, &mut lines, &opts.skip);
         if fixes_done != result.len() {
             output.print_not_all_warnings_fixed();
