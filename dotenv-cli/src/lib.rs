@@ -1,7 +1,8 @@
 use std::{collections::HashSet, path::PathBuf};
 
+use options::{CheckOptions, CompareOptions, FixOptions};
+
 use crate::{
-    cli::options::{CheckOptions, CompareOptions, FixOptions},
     compare::{CompareFileType, CompareWarning},
     output::{check::CheckOutput, compare::CompareOutput, fix::FixOutput},
 };
@@ -10,6 +11,7 @@ mod fs_utils;
 
 pub mod cli;
 mod compare;
+pub mod options;
 mod output;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;

@@ -4,6 +4,7 @@ version = "0.1.0"
 authors.workspace = true
 edition.workspace = true
 include = ["/src"]
+keywords = ["dotenv", "environment", "env", "core"]
 license.workspace = true
 repository.workspace = true
 description = "Common crate for dotenv-linter crates"

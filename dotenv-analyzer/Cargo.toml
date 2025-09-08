@@ -4,6 +4,7 @@ version = "0.1.0"
 authors.workspace = true
 edition.workspace = true
 include = ["/src"]
+keywords = ["dotenv", "environment", "env", "analyzer"]
 license.workspace = true
 repository.workspace = true
 description = "A crate to check and fix .env files"

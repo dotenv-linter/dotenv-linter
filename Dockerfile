@@ -10,16 +10,16 @@ WORKDIR /
 
 COPY Cargo.toml Cargo.lock ./
 COPY dotenv-analyzer ./dotenv-analyzer
+COPY dotenv-cli ./dotenv-cli
 COPY dotenv-core ./dotenv-core
 COPY dotenv-finder ./dotenv-finder
 COPY dotenv-schema ./dotenv-schema
-COPY dotenv-linter ./dotenv-linter
 
 RUN if [ "${TARGETARCH}" = "amd64" ]; \
   then export TARGET="x86_64-unknown-linux-musl"; \
   else export TARGET="aarch64-unknown-linux-musl"; \
   fi \
-  && cargo install --target "${TARGET}" --path dotenv-linter
+  && cargo install --target "${TARGET}" --path dotenv-cli
 
 FROM scratch
 COPY --from=builder /root/.cargo/bin/dotenv-linter /

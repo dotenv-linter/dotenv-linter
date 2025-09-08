@@ -524,8 +524,6 @@ dependencies = [
  "dotenv-schema",
  "dunce",
  "gag",
- "regex",
- "serde_json",
  "tempfile",
  "update-informer",
 ]
