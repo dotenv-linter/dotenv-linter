@@ -41,7 +41,7 @@ pub fn fix_benchmark(c: &mut Criterion) {
         b.iter_batched(
             || generate_arg_matches(&app, false),
             |args| {
-                let opts = dotenv_linter::cli::options::FixOptions::new(&args);
+                let opts = dotenv_linter::options::FixOptions::new(&args);
                 dotenv_linter::fix(black_box(&opts), black_box(&current_dir))
             },
             BatchSize::SmallInput,
@@ -60,7 +60,7 @@ pub fn fix_benchmark_with_backup(c: &mut Criterion) {
         b.iter_batched(
             || generate_arg_matches(&app, true),
             |args| {
-                let opts = dotenv_linter::cli::options::FixOptions::new(&args);
+                let opts = dotenv_linter::options::FixOptions::new(&args);
                 dotenv_linter::fix(black_box(&opts), black_box(&current_dir))
             },
             BatchSize::SmallInput,

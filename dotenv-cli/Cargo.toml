@@ -31,8 +31,6 @@ optional = true
 [dev-dependencies]
 assert_cmd.workspace = true
 criterion = "0.7"
-regex = "1.11"
-serde_json = "1.0"
 tempfile.workspace = true
 
 [target.'cfg(windows)'.dev-dependencies]

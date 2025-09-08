@@ -4,6 +4,7 @@ version = "0.1.0"
 authors.workspace = true
 edition.workspace = true
 include = ["/src"]
+keywords = ["dotenv", "environment", "env", "schema"]
 license.workspace = true
 repository.workspace = true
 description = "A crate to validate .env files against schemas"

@@ -3,10 +3,10 @@ use std::path::PathBuf;
 use clap::{Arg, ArgAction, Command, command, value_parser};
 use dotenv_analyzer::LintKind;
 
-use self::options::{CheckOptions, CompareOptions, FixOptions};
-use crate::Result;
-
-pub mod options;
+use crate::{
+    Result,
+    options::{CheckOptions, CompareOptions, FixOptions},
+};
 
 pub fn run() -> Result<i32> {
     #[cfg(windows)]
