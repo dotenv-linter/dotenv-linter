@@ -25,10 +25,10 @@ impl Check for SpaceCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let line_splitted = line.raw_string.split('=').collect::<Vec<&str>>();
 
-        if let [key, value] = &line_splitted[..] {
-            if key.ends_with(' ') || value.starts_with(' ') {
-                return Some(Warning::new(line.number, self.name(), self.message()));
-            }
+        if let [key, value] = &line_splitted[..]
+            && (key.ends_with(' ') || value.starts_with(' '))
+        {
+            return Some(Warning::new(line.number, self.name(), self.message()));
         }
 
         None

@@ -1,7 +1,7 @@
 use std::{env, fs, hint::black_box};
 
 use clap::{ArgMatches, Command};
-use criterion::{criterion_group, criterion_main, BatchSize, Criterion};
+use criterion::{BatchSize, Criterion, criterion_group, criterion_main};
 #[cfg(not(windows))]
 use gag::Gag;
 use tempfile::tempdir;

@@ -1,4 +1,4 @@
-use dotenv_core::{is_escaped, LineEntry};
+use dotenv_core::{LineEntry, is_escaped};
 
 use super::Fix;
 use crate::LintKind;

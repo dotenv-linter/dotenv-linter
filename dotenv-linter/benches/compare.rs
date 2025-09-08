@@ -1,6 +1,6 @@
 use std::{env, fs, hint::black_box};
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 #[cfg(not(windows))]
 use gag::Gag;
 use tempfile::tempdir;

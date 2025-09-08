@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use dotenv_core::LineEntry;
 
 use super::Fix;
-use crate::{comment::Comment, LintKind};
+use crate::{LintKind, comment::Comment};
 
 #[derive(Default)]
 pub(crate) struct DuplicatedKeyFixer {}
@@ -18,11 +18,12 @@ impl Fix for DuplicatedKeyFixer {
         let mut is_disabled = false;
 
         for line in lines {
-            if let Some(comment) = line.get_comment().and_then(Comment::parse) {
-                if comment.checks.contains(&self.name()) {
-                    is_disabled = comment.is_disabled();
-                }
+            if let Some(comment) = line.get_comment().and_then(Comment::parse)
+                && comment.checks.contains(&self.name())
+            {
+                is_disabled = comment.is_disabled();
             }
+
             if is_disabled {
                 continue;
             }

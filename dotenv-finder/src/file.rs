@@ -1,10 +1,10 @@
 use std::{
-    collections::{btree_map::IntoIter, BTreeMap},
+    collections::{BTreeMap, btree_map::IntoIter},
     fmt, fs,
     path::{Path, PathBuf},
 };
 
-use dotenv_core::{is_escaped, LineEntry};
+use dotenv_core::{LineEntry, is_escaped};
 
 use crate::quote::get_quote;
 
@@ -131,19 +131,18 @@ fn find_multiline_ranges(lines: &[LineEntry]) -> Vec<(usize, usize)> {
     // here we find ranges of multi-line values
     lines.iter().for_each(|entry| {
         if let Some(start) = start_number {
-            if let Some(quote_char) = quote_char {
-                if let Some(idx) = entry.raw_string.find(quote_char) {
-                    if !is_escaped(&entry.raw_string[..idx]) {
-                        multiline_ranges.push((start, entry.number));
-                        start_number = None;
-                    }
-                }
+            if let Some(quote_char) = quote_char
+                && let Some(idx) = entry.raw_string.find(quote_char)
+                && !is_escaped(&entry.raw_string[..idx])
+            {
+                multiline_ranges.push((start, entry.number));
+                start_number = None;
             }
-        } else if let Some(trimmed_value) = entry.get_value().map(|val| val.trim()) {
-            if let Some(quote) = get_quote(trimmed_value) {
-                quote_char = Some(quote.as_char());
-                start_number = Some(entry.number);
-            }
+        } else if let Some(trimmed_value) = entry.get_value().map(|val| val.trim())
+            && let Some(quote) = get_quote(trimmed_value)
+        {
+            quote_char = Some(quote.as_char());
+            start_number = Some(entry.number);
         }
     });
 

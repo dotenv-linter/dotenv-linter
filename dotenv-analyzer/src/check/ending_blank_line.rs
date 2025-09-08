@@ -1,7 +1,7 @@
 use dotenv_core::LineEntry;
 
 use super::Check;
-use crate::{LintKind, Warning, LF};
+use crate::{LF, LintKind, Warning};
 
 pub(crate) struct EndingBlankLineChecker<'a> {
     template: &'a str,
