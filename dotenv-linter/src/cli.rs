@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use clap::{command, value_parser, Arg, ArgAction, Command};
+use clap::{Arg, ArgAction, Command, command, value_parser};
 use dotenv_analyzer::LintKind;
 
 use self::options::{CheckOptions, CompareOptions, FixOptions};

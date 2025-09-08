@@ -162,7 +162,7 @@ pub fn compare(opts: &CompareOptions, current_dir: &PathBuf) -> Result<usize> {
 #[cfg(feature = "update-informer")]
 pub(crate) fn check_for_updates() {
     use colored::*;
-    use update_informer::{registry, Check};
+    use update_informer::{Check, registry};
 
     let pkg_name = env!("CARGO_PKG_NAME");
     #[cfg(not(feature = "stub_check_version"))]

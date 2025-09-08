@@ -1,5 +1,5 @@
 use std::{
-    fs::{copy, File},
+    fs::{File, copy},
     io::{self, Write},
     path::{Path, PathBuf},
     time::SystemTime,

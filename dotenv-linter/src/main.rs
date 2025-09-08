@@ -1,4 +1,4 @@
-use dotenv_linter::{cli, Result};
+use dotenv_linter::{Result, cli};
 
 fn main() -> Result<()> {
     let code = cli::run()?;

@@ -1,7 +1,7 @@
 use dotenv_core::LineEntry;
 
 use super::Fix;
-use crate::{remove_invalid_leading_chars, LintKind};
+use crate::{LintKind, remove_invalid_leading_chars};
 
 #[derive(Default)]
 pub(crate) struct IncorrectDelimiterFixer {}

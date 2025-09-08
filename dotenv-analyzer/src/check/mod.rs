@@ -286,7 +286,7 @@ mod tests {
         use dotenv_schema::DotEnvSchema;
         use regex::Regex;
 
-        use crate::{tests::line_entry, LintKind, Warning};
+        use crate::{LintKind, Warning, tests::line_entry};
 
         fn load_schema() -> Result<DotEnvSchema, std::io::Error> {
             let json = r#"{

@@ -5,7 +5,7 @@ use std::{borrow::Cow, collections::HashMap, ffi::OsStr, str::from_utf8};
 use assert_cmd::Command;
 #[cfg(windows)]
 use dunce::canonicalize;
-use tempfile::{tempdir, tempdir_in, TempDir};
+use tempfile::{TempDir, tempdir, tempdir_in};
 
 use crate::common::{test_file::TestFile, test_link::create_test_symlink};
 
