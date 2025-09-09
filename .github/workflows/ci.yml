@@ -15,7 +15,7 @@ jobs:
   check-all:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.8.0
       - run: cargo check --all-targets --tests --examples --benches
@@ -25,7 +25,7 @@ jobs:
   test-coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@nightly
         with:
           components: llvm-tools-preview
@@ -50,7 +50,7 @@ jobs:
   cargo-sort:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.8.0
       - run: cargo install cargo-sort
@@ -59,7 +59,7 @@ jobs:
   linux_install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
@@ -81,7 +81,7 @@ jobs:
             os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter version ${{ matrix.version }}
         run: |
           mkdir -p $HOME/bin
@@ -96,7 +96,7 @@ jobs:
         os: [ ubuntu-latest, macos-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter with wrong tag ${{ matrix.tag }}
         id: setup_dotenv_linter
         continue-on-error: true
@@ -115,7 +115,7 @@ jobs:
     steps:
       - name: Disable EOL conversion
         run: git config --global core.autocrlf false
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2.8.0
       - run: cargo test --all-features --no-fail-fast
@@ -123,7 +123,7 @@ jobs:
   windows_install:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter
         shell: bash # it uses Git Bash, i.e. MinGW
         run: |
@@ -139,7 +139,7 @@ jobs:
         version: [ 3.2.0, 2.2.1, 2.1.0 ]
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter version ${{ matrix.version }}
         shell: bash # it uses Git Bash, i.e. MinGW
         run: |
@@ -155,7 +155,7 @@ jobs:
         tag: [ hello, v2, vasd, /home/ ]
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter with wrong tag ${{ matrix.tag }}
         shell: bash # it uses Git Bash, i.e. MinGW
         id: setup_dotenv_linter_windows
@@ -174,7 +174,7 @@ jobs:
   macos_install:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Setup dotenv-linter
         run: |
           mkdir -p $HOME/bin
@@ -188,7 +188,7 @@ jobs:
   docker_build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       # To build cross-platform images
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -262,7 +262,7 @@ jobs:
             TARGET: aarch64-pc-windows-msvc
             BUILD_OPTIONS: "--no-default-features"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install musl-tools
         if: matrix.TARGET == 'x86_64-unknown-linux-musl'
         run: |
