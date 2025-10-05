@@ -28,6 +28,8 @@ impl Check for QuoteCharacterChecker<'_> {
             || val.contains(char::is_whitespace)
             || val.contains('$')
             || val.contains('#')
+            || val.contains('&')
+            || val.contains('=')
         {
             return None;
         }
@@ -72,6 +74,28 @@ mod tests {
                 ("FOO=BAR", None),
                 ("FOO=\"Bar\"", Some(WARNING)),
                 ("FOO=\"BAR BAR\"", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn with_ampersand_char_test() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=\"TLS&SSL\"", None),
+                ("FOO='TLS&SSL'", None),
+            ],
+        );
+    }
+
+    #[test]
+    fn with_equals_char_test() {
+        check_test(
+            &mut QuoteCharacterChecker::default(),
+            [
+                ("FOO=\"authSource=admin\"", None),
+                ("FOO='authSource=admin'", None),
             ],
         );
     }
