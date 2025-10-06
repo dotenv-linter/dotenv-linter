@@ -82,10 +82,7 @@ mod tests {
     fn with_ampersand_char_test() {
         check_test(
             &mut QuoteCharacterChecker::default(),
-            [
-                ("FOO=\"TLS&SSL\"", None),
-                ("FOO='TLS&SSL'", None),
-            ],
+            [("FOO=\"TLS&SSL\"", None), ("FOO='TLS&SSL'", None)],
         );
     }
 
