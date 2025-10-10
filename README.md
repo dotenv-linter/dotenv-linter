@@ -145,6 +145,25 @@ Other use cases you can find on the documentation site (https://dotenv-linter.gi
 
 `dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/integrations/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/integrations/circleci).
 
+## 💻 Pre-commit
+
+To run `dotenv-linter` as part of a [pre-commit](https://pre-commit.com/) workflow, add something like the below to the `repos` list in the project's `.pre-commit-config.yaml`:
+
+```yaml
+# .pre-commit-config.yaml
+
+...
+repos:
+  ...
+  - repo: https://github.com/dotenv-linter/dotenv-linter
+    rev: 3.3.1
+    hooks:
+      - id: dotenv-linter
+  ...
+```
+
+
+
 ## 🚧 Benchmark
 
 Benchmarking [dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dotenv-linter) and [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) has done using the [hyperfine](https://github.com/sharkdp/hyperfine) utility:
