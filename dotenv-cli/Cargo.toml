@@ -12,17 +12,28 @@ readme = "../README.md"
 repository.workspace = true
 description = "Lightning-fast linter for .env files"
 
+[target.'cfg(windows)'.dev-dependencies]
+dunce.workspace = true
+
+[lib]
+bench = false
+
+[[bin]]
+name = "dotenv-linter"
+path = "src/main.rs"
+bench = false
+
 [features]
 default = ["update-informer"]
 stub_check_version = []
 
 [dependencies]
-clap = { version = "4.5", features = ["cargo", "env"] }
+clap.workspace = true
 colored = "3.0"
 dotenv-analyzer = { version = "0.1", path = "../dotenv-analyzer", features = ["clap"] }
 dotenv-core = { version = "0.1", path = "../dotenv-core" }
 dotenv-finder = { version = "0.1", path = "../dotenv-finder" }
-dotenv-schema = { version = "0.1", path = "../dotenv-schema" }
+dotenv-schema = { version = "0.1", path = "../dotenv-schema", features = ["clap"] }
 
 [dependencies.update-informer]
 version = "1.3"
@@ -33,19 +44,8 @@ assert_cmd.workspace = true
 criterion = "0.7"
 tempfile.workspace = true
 
-[target.'cfg(windows)'.dev-dependencies]
-dunce.workspace = true
-
 [target.'cfg(not(windows))'.dev-dependencies]
 gag = "1.0"
-
-[[bin]]
-name = "dotenv-linter"
-path = "src/main.rs"
-bench = false
-
-[lib]
-bench = false
 
 [[bench]]
 name = "check"
@@ -56,5 +56,5 @@ name = "fix"
 harness = false
 
 [[bench]]
-name = "compare"
+name = "diff"
 harness = false

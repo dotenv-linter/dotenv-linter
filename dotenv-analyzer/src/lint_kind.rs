@@ -94,7 +94,7 @@ mod tests {
 
     #[test]
     fn test_str_to_lint_variant_conversion() {
-        let expected = <LintKind as FromStr>::from_str("DuplicatedKey").unwrap();
+        let expected = <LintKind as FromStr>::from_str("DuplicatedKey").expect("parse lint");
         assert_eq!(expected, LintKind::DuplicatedKey);
     }
 

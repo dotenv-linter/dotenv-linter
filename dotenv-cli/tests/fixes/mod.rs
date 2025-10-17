@@ -43,7 +43,7 @@ fn skip_checks() {
 
     testdir.test_command_fix_success_with_args(
         expected_output,
-        ["--skip", "DuplicatedKey", "UnorderedKey"],
+        ["--ignore-checks", "DuplicatedKey,UnorderedKey"],
     );
 
     assert_eq!(testfile.contents().as_str(), "A1=1\nA2=2\nA0=0\nA2=2\n");
@@ -117,7 +117,9 @@ fn fixtures() {
         assert_eq!(testfile.contents(), expected_content);
 
         // Check the fixed file again and then clean up
-        testdir
-            .test_command_success_with_args(with_default_args(&[]), check_output(&[(".env", &[])]));
+        testdir.test_command_success_with_args(
+            with_default_args(&["check", "."]),
+            check_output(&[(".env", &[])]),
+        );
     }
 }

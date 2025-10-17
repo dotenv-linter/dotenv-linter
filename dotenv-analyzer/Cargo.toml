@@ -2,10 +2,13 @@
 name = "dotenv-analyzer"
 version = "0.1.0"
 authors.workspace = true
+documentation = "https://docs.rs/dotenv-analyzer"
 edition.workspace = true
-include = ["/src"]
+homepage = "https://github.com/dotenv-linter/dotenv-linter"
+include = ["/src", "../README.md"]
 keywords = ["dotenv", "environment", "env", "analyzer"]
 license.workspace = true
+readme = "../README.md"
 repository.workspace = true
 description = "A crate to check and fix .env files"
 
@@ -14,7 +17,7 @@ dotenv-core = { version = "0.1", path = "../dotenv-core" }
 dotenv-schema = { version = "0.1", path = "../dotenv-schema" }
 
 [dependencies.clap]
-version = "4.5"
+workspace = true
 optional = true
 
 [dev-dependencies]

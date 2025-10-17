@@ -312,7 +312,7 @@ mod tests {
                 }
             }
         }"#;
-            let schema: DotEnvSchema = serde_json::from_str(json).unwrap();
+            let schema: DotEnvSchema = serde_json::from_str(json)?;
             Ok(schema)
         }
 
@@ -501,7 +501,7 @@ mod tests {
         #[test]
         fn required_present() {
             let mut schema = load_schema().expect("failed to load schema");
-            schema.entries.get_mut("EMAIL").unwrap().required = true;
+            schema.entries.get_mut("EMAIL").expect("get email").required = true;
             let lines: Vec<LineEntry> = vec![line_entry(1, 2, "EMAIL=joe@gmail.com")];
             let expected: Vec<Warning> = vec![];
             let skip_checks: Vec<LintKind> = Vec::new();
@@ -514,7 +514,7 @@ mod tests {
         #[test]
         fn required_missing() {
             let mut schema = load_schema().expect("failed to load schema");
-            schema.entries.get_mut("EMAIL").unwrap().required = true;
+            schema.entries.get_mut("EMAIL").expect("get email").required = true;
             let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
             let expected: Vec<Warning> = vec![Warning::new(
                 1,
@@ -531,7 +531,7 @@ mod tests {
         #[test]
         fn regex_good() {
             let mut schema = load_schema().expect("failed to load schema");
-            schema.entries.get_mut("NAME").unwrap().regex =
+            schema.entries.get_mut("NAME").expect("get email").regex =
                 Some(Regex::new("^[ABCD]*$").expect("Bad regex"));
             let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=BAD")];
             let expected: Vec<Warning> = vec![];
@@ -545,7 +545,7 @@ mod tests {
         #[test]
         fn regex_bad() {
             let mut schema = load_schema().expect("failed to load schema");
-            schema.entries.get_mut("NAME").unwrap().regex =
+            schema.entries.get_mut("NAME").expect("get email").regex =
                 Some(Regex::new("^[ABCD]*$").expect("Bad regex"));
             let lines: Vec<LineEntry> = vec![line_entry(1, 2, "NAME=joe")];
             let expected: Vec<Warning> = vec![Warning::new(

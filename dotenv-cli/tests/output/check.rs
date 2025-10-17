@@ -13,7 +13,7 @@ fn problems() {
 Found 1 problem
 "#;
 
-    test_dir.test_command_fail_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -35,7 +35,7 @@ Checking .env_2
 Found 3 problems
 "#;
 
-    test_dir.test_command_fail_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -56,7 +56,7 @@ Checking .env2
 No problems found
 "#;
 
-    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -73,7 +73,7 @@ fn valid_double_quoted_multiline_value_test() {
 No problems found
 "#;
 
-    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -93,7 +93,7 @@ Checking .env_2
 Found 2 problems
 "#;
 
-    test_dir.test_command_fail_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -112,7 +112,7 @@ Checking .env_2
 Found 1 problem
 "#;
 
-    test_dir.test_command_fail_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_fail_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -125,7 +125,7 @@ fn no_problems() {
 No problems found
 "#;
 
-    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -142,7 +142,7 @@ Checking .env_2
 No problems found
 "#;
 
-    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -152,7 +152,7 @@ fn no_files() {
     let expected_output = r#"Nothing to check
 "#;
 
-    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -160,7 +160,7 @@ fn quiet() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
-    let args = &["--quiet"];
+    let args = &["check", ".", "--quiet"];
     let expected_output = r#".env:1 LowercaseKey: The abc key should be in uppercase
 .env:4 UnorderedKey: The B key should go before the F key
 "#;
@@ -173,7 +173,7 @@ fn quiet_no_problems() {
     let test_dir = TestDir::new();
     test_dir.create_testfile(".env", "ABC=DEF\nB=bbb\nF=BAR\n");
 
-    let args = &["--quiet"];
+    let args = &["check", ".", "--quiet"];
     let expected_output = "";
 
     test_dir.test_command_success_with_args(with_default_args(args), expected_output);
@@ -183,7 +183,7 @@ fn quiet_no_problems() {
 fn quiet_no_files() {
     let test_dir = TestDir::new();
 
-    let args = &["--quiet"];
+    let args = &["check", ".", "--quiet"];
     let expected_output = "";
 
     test_dir.test_command_success_with_args(with_default_args(args), expected_output);

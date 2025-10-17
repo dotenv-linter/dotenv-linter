@@ -36,14 +36,19 @@ fn load_good_schema() {
     let temp_dir = tempdir().expect("create temp dir");
     let file_path = temp_dir.path().join("schema.json");
     {
-        let mut file = File::create(&file_path).unwrap();
-        file.write_all(json.as_bytes()).unwrap();
+        let mut file = File::create(&file_path).expect("create temp file");
+        file.write_all(json.as_bytes()).expect("write file");
     }
     let content = "NAME=JOE\n";
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
-    let args = &["-S", file_path.to_str().unwrap(), testfile.as_str()];
+    let args = &[
+        "check",
+        "--schema",
+        file_path.to_str().expect("convert file path to string"),
+        testfile.as_str(),
+    ];
 
     let expected_output = check_output(&[(".env", &[])]);
 
@@ -64,7 +69,7 @@ fn load_bad_schema() {
 
     let content = "NAME=JOE\n";
     let testfile = testdir.create_testfile(".env", content);
-    let args = &["-S", test_schema.as_str(), testfile.as_str()];
+    let args = &["check", "--schema", test_schema.as_str(), testfile.as_str()];
 
     let expected_output = "Error loading schema: key must be a string at line 3 column 9\n";
 
@@ -77,7 +82,7 @@ fn load_missing_schema() {
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
-    let args = &["-S", "no_such_file", testfile.as_str()];
+    let args = &["check", "--schema", "no_such_file", testfile.as_str()];
     let expected_output = if cfg!(target_os = "windows") {
         "Error loading schema: The system cannot find the file specified. (os error 2)\n"
     } else {

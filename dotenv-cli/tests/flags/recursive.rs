@@ -14,7 +14,7 @@ fn checks_one_in_subdir() {
         .to_str()
         .expect("multi-platform path to test .env file");
 
-    let args = &["-r"];
+    let args = &["check", ".", "-r"];
     let expected_output = check_output(&[
         (
             testfile_2_path,
@@ -50,7 +50,7 @@ fn checks_files_in_deep_subdirs() {
         .to_str()
         .expect("multi-platform path to test .env file");
 
-    let args = &["--recursive"];
+    let args = &["check", ".", "--recursive"];
     let expected_output =
         check_output(&[
             (
@@ -83,7 +83,7 @@ fn checks_without_recursive_flag() {
     let expected_output = check_output(&[("correct.env", &[])]);
 
     // incorrect file located in a subdirectory should not be checked
-    test_dir.test_command_success_with_args(with_default_args(&[]), expected_output);
+    test_dir.test_command_success_with_args(with_default_args(&["check", "."]), expected_output);
 }
 
 #[test]
@@ -102,7 +102,13 @@ fn checks_recursive_with_exclude_subdir() {
     let test_subdir_3 = test_subdir_2.subdir();
     let testfile_to_exclude = test_subdir_3.create_testfile(".incorrect.env", "FOO=");
 
-    let args = &["--exclude", testfile_to_exclude.as_str(), "--recursive"];
+    let args = &[
+        "check",
+        ".",
+        "--exclude",
+        testfile_to_exclude.as_str(),
+        "--recursive",
+    ];
     let expected_output = check_output(&[
         (
             testfile_2_path,
@@ -130,7 +136,7 @@ fn checks_nofollow_subdir_symlinks() {
     // create a symbolic link to its containing directory
     test_subdir.create_symlink(&test_subdir, "symlink");
 
-    let args = &["-r"];
+    let args = &["check", ".", "-r"];
     let expected_output = check_output(&[(
         testfile_path,
         &[

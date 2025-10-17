@@ -2,9 +2,12 @@
 name = "dotenv-core"
 version = "0.1.0"
 authors.workspace = true
+documentation = "https://docs.rs/dotenv-core"
 edition.workspace = true
-include = ["/src"]
+homepage = "https://github.com/dotenv-linter/dotenv-linter"
+include = ["/src", "../README.md"]
 keywords = ["dotenv", "environment", "env", "core"]
 license.workspace = true
+readme = "../README.md"
 repository.workspace = true
 description = "Common crate for dotenv-linter crates"

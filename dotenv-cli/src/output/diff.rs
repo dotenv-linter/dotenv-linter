@@ -1,16 +1,16 @@
 use colored::Colorize;
 use dotenv_finder::FileEntry;
 
-use crate::compare::CompareWarning;
+use crate::diff::DiffWarning;
 
-pub struct CompareOutput {
+pub struct DiffOutput {
     // Quiet program output mode
     is_quiet_mode: bool,
 }
 
-impl CompareOutput {
+impl DiffOutput {
     pub fn new(is_quiet_mode: bool) -> Self {
-        CompareOutput { is_quiet_mode }
+        DiffOutput { is_quiet_mode }
     }
 
     /// Prints information about a file in process
@@ -21,7 +21,7 @@ impl CompareOutput {
     }
 
     /// Prints warnings without any additional information
-    pub fn print_warnings(&self, warnings: &[CompareWarning]) {
+    pub fn print_warnings(&self, warnings: &[DiffWarning]) {
         warnings.iter().for_each(|w| {
             println!(
                 "{} is missing keys: {}",
