@@ -502,7 +502,7 @@ dependencies = [
 
 [[package]]
 name = "dotenv-linter"
-version = "3.3.0"
+version = "4.0.0"
 dependencies = [
  "assert_cmd",
  "clap",

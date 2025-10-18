@@ -2,6 +2,148 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v4.0.0](https://github.com/dotenv-linter/dotenv-linter/releases/tag/v4.0.0) - 2025-10-18
+
+### Features
+
+- New CLI API ([#922](https://github.com/dotenv-linter/dotenv-linter/pull/922))
+- Allow & and = in quoted values ([#917](https://github.com/dotenv-linter/dotenv-linter/pull/917))
+- Add `--dry-run` option to fix subcommand ([#772](https://github.com/dotenv-linter/dotenv-linter/pull/772))
+- New schema based checker ([#761](https://github.com/dotenv-linter/dotenv-linter/pull/761))
+- Add "No difference found" message on successful
+  compare ([#648](https://github.com/dotenv-linter/dotenv-linter/pull/648))
+- Allow setting `skip_updates` flag via environment
+  variable ([#625](https://github.com/dotenv-linter/dotenv-linter/pull/625))
+- Add support for `DOTENV_LINTER_IGNORE_CHECKS` environment variable to skip
+  checks ([#623](https://github.com/dotenv-linter/dotenv-linter/pull/623))
+
+### Fixes
+
+- Docker image for `linux/arm64` ([#757](https://github.com/dotenv-linter/dotenv-linter/pull/757))
+
+### CI
+
+- Exclude installing v1 and v2 on macos ([#834](https://github.com/dotenv-linter/dotenv-linter/pull/834))
+- Use macos 13 and 14 as the OS ([#833](https://github.com/dotenv-linter/dotenv-linter/pull/833))
+- Fix benchmarks ([#774](https://github.com/dotenv-linter/dotenv-linter/pull/774))
+- Fix problem with installing linker ([#674](https://github.com/dotenv-linter/dotenv-linter/pull/674))
+- Get rid of `set-output` ([#632](https://github.com/dotenv-linter/dotenv-linter/pull/632))
+- Check PR name instead of commits ([#631](https://github.com/dotenv-linter/dotenv-linter/pull/631))
+
+### Miscellaneous Tasks
+
+- Fix release script ([#923](https://github.com/dotenv-linter/dotenv-linter/pull/923))
+- Add pre commit hook ([#878](https://github.com/dotenv-linter/dotenv-linter/pull/878))
+- Rename `dotenv-linter` with `dotenv-cli` ([#905](https://github.com/dotenv-linter/dotenv-linter/pull/905))
+- Update edition ([#904](https://github.com/dotenv-linter/dotenv-linter/pull/904))
+- Rename `dotenv-lookup` with `dotenv-finder` ([#892](https://github.com/dotenv-linter/dotenv-linter/pull/892))
+- Fix clippy warnings ([#880](https://github.com/dotenv-linter/dotenv-linter/pull/880))
+- Update dependencies ([#849](https://github.com/dotenv-linter/dotenv-linter/pull/849))
+- Fix CI and warnings ([#840](https://github.com/dotenv-linter/dotenv-linter/pull/840))
+- Fix clippy warnings ([#735](https://github.com/dotenv-linter/dotenv-linter/pull/735))
+- Remove `stale` action ([#680](https://github.com/dotenv-linter/dotenv-linter/pull/680))
+- Update `cargo-deny` config ([#644](https://github.com/dotenv-linter/dotenv-linter/pull/644))
+- Get rid of `orhun/git-cliff-action` ([#614](https://github.com/dotenv-linter/dotenv-linter/pull/614))
+
+### Refactor
+
+- Create new crate `dotenv-analyzer` ([#903](https://github.com/dotenv-linter/dotenv-linter/pull/903))
+- Create new crate `dotenv-core` ([#902](https://github.com/dotenv-linter/dotenv-linter/pull/902))
+- Use Builder pattern ([#900](https://github.com/dotenv-linter/dotenv-linter/pull/900))
+- Create new crate `dotenv-schema` ([#894](https://github.com/dotenv-linter/dotenv-linter/pull/894))
+- Change visibility of some functions ([#893](https://github.com/dotenv-linter/dotenv-linter/pull/893))
+- Remove `file_entry.rs` as not inluded in file tree ([#657](https://github.com/dotenv-linter/dotenv-linter/pull/657))
+- Move `cli/mod.rs` to `cli.rs` ([#656](https://github.com/dotenv-linter/dotenv-linter/pull/656))
+- Divide code into 2 crates ([#620](https://github.com/dotenv-linter/dotenv-linter/pull/620))
+- Get rid of `list` command ([#619](https://github.com/dotenv-linter/dotenv-linter/pull/619))
+- Don't display option `--skip-updates` if it's
+  disabled ([#617](https://github.com/dotenv-linter/dotenv-linter/pull/617))
+
+### Update dependencies
+
+- Bump tempfile from 3.21.0 to 3.22.0 ([#906](https://github.com/dotenv-linter/dotenv-linter/pull/906))
+- Bump clap from 4.5.43 to 4.5.47 ([#901](https://github.com/dotenv-linter/dotenv-linter/pull/901))
+- Bump lycheeverse/lychee-action from 2.4.1 to 2.6.1 ([#898](https://github.com/dotenv-linter/dotenv-linter/pull/898))
+- Bump regex from 1.11.1 to 1.11.2 ([#897](https://github.com/dotenv-linter/dotenv-linter/pull/897))
+- Bump tempfile from 3.20.0 to 3.21.0 ([#891](https://github.com/dotenv-linter/dotenv-linter/pull/891))
+- Bump serde_json from 1.0.142 to 1.0.143 ([#890](https://github.com/dotenv-linter/dotenv-linter/pull/890))
+- Bump dprint/check from 2.2 to 2.3 ([#883](https://github.com/dotenv-linter/dotenv-linter/pull/883))
+- Bump actions/checkout from 4 to 5 ([#887](https://github.com/dotenv-linter/dotenv-linter/pull/887))
+- Bump tokio from 1.29.1 to 1.44.2 ([#870](https://github.com/dotenv-linter/dotenv-linter/pull/870))
+- Bump Swatinem/rust-cache from 2.7.7 to 2.7.8 ([#865](https://github.com/dotenv-linter/dotenv-linter/pull/865))
+- Bump ring from 0.17.8 to 0.17.14 ([#882](https://github.com/dotenv-linter/dotenv-linter/pull/882))
+- Bump lycheeverse/lychee-action from 2.3.0 to 2.4.1 ([#874](https://github.com/dotenv-linter/dotenv-linter/pull/874))
+- Update dependencies ([#881](https://github.com/dotenv-linter/dotenv-linter/pull/881))
+- Bump clap from 4.5.28 to 4.5.29 ([#851](https://github.com/dotenv-linter/dotenv-linter/pull/851))
+- Bump rustls from 0.21.2 to 0.21.12 ([#850](https://github.com/dotenv-linter/dotenv-linter/pull/850))
+- Bump anstream from 0.6.7 to 0.6.15 ([#847](https://github.com/dotenv-linter/dotenv-linter/pull/847))
+- Bump h2 from 0.3.24 to 0.3.26 ([#771](https://github.com/dotenv-linter/dotenv-linter/pull/771))
+- Bump mio from 0.8.8 to 0.8.11 ([#760](https://github.com/dotenv-linter/dotenv-linter/pull/760))
+- Bump clap from 4.4.18 to 4.5.3 ([#767](https://github.com/dotenv-linter/dotenv-linter/pull/767))
+- Bump softprops/action-gh-release from 1 to 2 ([#766](https://github.com/dotenv-linter/dotenv-linter/pull/766))
+- Bump tempfile from 3.9.0 to 3.10.1 ([#755](https://github.com/dotenv-linter/dotenv-linter/pull/755))
+- Bump assert_cmd from 2.0.13 to 2.0.14 ([#754](https://github.com/dotenv-linter/dotenv-linter/pull/754))
+- Bump codecov/codecov-action from 3 to 4 ([#750](https://github.com/dotenv-linter/dotenv-linter/pull/750))
+- Bump lycheeverse/lychee-action from 1.9.2 to 1.9.3 ([#748](https://github.com/dotenv-linter/dotenv-linter/pull/748))
+- Bump lycheeverse/lychee-action from 1.9.1 to 1.9.2 ([#747](https://github.com/dotenv-linter/dotenv-linter/pull/747))
+- Bump h2 from 0.3.20 to 0.3.24 ([#746](https://github.com/dotenv-linter/dotenv-linter/pull/746))
+- Bump clap from 4.4.17 to 4.4.18 ([#745](https://github.com/dotenv-linter/dotenv-linter/pull/745))
+- Bump clap from 4.4.16 to 4.4.17 ([#744](https://github.com/dotenv-linter/dotenv-linter/pull/744))
+- Bump Swatinem/rust-cache from 2.7.2 to 2.7.3 ([#743](https://github.com/dotenv-linter/dotenv-linter/pull/743))
+- Bump assert_cmd from 2.0.12 to 2.0.13 ([#741](https://github.com/dotenv-linter/dotenv-linter/pull/741))
+- Bump clap from 4.4.14 to 4.4.16 ([#740](https://github.com/dotenv-linter/dotenv-linter/pull/740))
+- Bump Swatinem/rust-cache from 2.7.1 to 2.7.2 ([#739](https://github.com/dotenv-linter/dotenv-linter/pull/739))
+- Bump lycheeverse/lychee-action from 1.9.0 to 1.9.1 ([#738](https://github.com/dotenv-linter/dotenv-linter/pull/738))
+- Bump clap from 4.4.13 to 4.4.14 ([#737](https://github.com/dotenv-linter/dotenv-linter/pull/737))
+- Bump lycheeverse/lychee-action from 1.8.0 to 1.9.0 ([#736](https://github.com/dotenv-linter/dotenv-linter/pull/736))
+- Bump clap from 4.3.11 to 4.4.13 ([#733](https://github.com/dotenv-linter/dotenv-linter/pull/733))
+- Bump tempfile from 3.8.0 to 3.9.0 ([#732](https://github.com/dotenv-linter/dotenv-linter/pull/732))
+- Bump colored from 2.0.4 to 2.1.0 ([#731](https://github.com/dotenv-linter/dotenv-linter/pull/731))
+- Bump Swatinem/rust-cache from 2.5.1 to 2.7.1 ([#734](https://github.com/dotenv-linter/dotenv-linter/pull/734))
+- Bump rustix from 0.38.3 to 0.38.13 ([#730](https://github.com/dotenv-linter/dotenv-linter/pull/730))
+- Bump webpki from 0.22.0 to 0.22.2 ([#724](https://github.com/dotenv-linter/dotenv-linter/pull/724))
+- Bump docker/setup-qemu-action from 2 to 3 ([#718](https://github.com/dotenv-linter/dotenv-linter/pull/718))
+- Bump docker/login-action from 2 to 3 ([#717](https://github.com/dotenv-linter/dotenv-linter/pull/717))
+- Bump docker/setup-buildx-action from 2 to 3 ([#716](https://github.com/dotenv-linter/dotenv-linter/pull/716))
+- Bump actions/checkout from 3 to 4 ([#714](https://github.com/dotenv-linter/dotenv-linter/pull/714))
+- Bump rustls-webpki from 0.100.1 to 0.100.2 ([#709](https://github.com/dotenv-linter/dotenv-linter/pull/709))
+- Bump tempfile from 3.6.0 to 3.8.0 ([#707](https://github.com/dotenv-linter/dotenv-linter/pull/707))
+- Bump assert_cmd from 2.0.11 to 2.0.12 ([#695](https://github.com/dotenv-linter/dotenv-linter/pull/695))
+- Bump Swatinem/rust-cache from 2.5.0 to 2.5.1 ([#688](https://github.com/dotenv-linter/dotenv-linter/pull/688))
+- Bump `colored` and `criterion` ([#691](https://github.com/dotenv-linter/dotenv-linter/pull/691))
+- Bump update-informer from 1.0.0 to 1.1.0 ([#685](https://github.com/dotenv-linter/dotenv-linter/pull/685))
+- Bump clap from 4.3.5 to 4.3.8 ([#684](https://github.com/dotenv-linter/dotenv-linter/pull/684))
+- Bump clap from 4.3.4 to 4.3.5 ([#683](https://github.com/dotenv-linter/dotenv-linter/pull/683))
+- Bump Swatinem/rust-cache from 2.4.0 to 2.5.0 ([#682](https://github.com/dotenv-linter/dotenv-linter/pull/682))
+- Bump clap from 4.3.3 to 4.3.4 ([#681](https://github.com/dotenv-linter/dotenv-linter/pull/681))
+- Bump clap from 4.3.2 to 4.3.3 ([#679](https://github.com/dotenv-linter/dotenv-linter/pull/679))
+- Bump tempfile from 3.5.0 to 3.6.0 ([#677](https://github.com/dotenv-linter/dotenv-linter/pull/677))
+- Bump clap from 4.3.1 to 4.3.2 ([#676](https://github.com/dotenv-linter/dotenv-linter/pull/676))
+- Bump Swatinem/rust-cache from 2.3.0 to 2.4.0 ([#669](https://github.com/dotenv-linter/dotenv-linter/pull/669))
+- Bump clap from 4.2.7 to 4.3.1 ([#675](https://github.com/dotenv-linter/dotenv-linter/pull/675))
+- Bump lycheeverse/lychee-action from 1.6.1 to 1.8.0 ([#668](https://github.com/dotenv-linter/dotenv-linter/pull/668))
+- Bump Swatinem/rust-cache from 2.2.1 to 2.3.0 ([#667](https://github.com/dotenv-linter/dotenv-linter/pull/667))
+- Bump assert_cmd from 2.0.8 to 2.0.11 ([#659](https://github.com/dotenv-linter/dotenv-linter/pull/659))
+- Bump actions/stale from 7 to 8 ([#652](https://github.com/dotenv-linter/dotenv-linter/pull/652))
+- Bump tempfile from 3.4.0 to 3.5.0 ([#655](https://github.com/dotenv-linter/dotenv-linter/pull/655))
+- Bump dunce from 1.0.3 to 1.0.4 ([#663](https://github.com/dotenv-linter/dotenv-linter/pull/663))
+- Bump clap from 4.1.14 to 4.2.7 ([#666](https://github.com/dotenv-linter/dotenv-linter/pull/666))
+- Bump clap from 4.1.8 to 4.2.5 ([#664](https://github.com/dotenv-linter/dotenv-linter/pull/664))
+- Bump update-informer from 0.6.0 to 1.0.0 ([#665](https://github.com/dotenv-linter/dotenv-linter/pull/665))
+- Bump actions/checkout from 2 to 3 ([#638](https://github.com/dotenv-linter/dotenv-linter/pull/638))
+- Bump clap from 4.1.6 to 4.1.8 ([#642](https://github.com/dotenv-linter/dotenv-linter/pull/642))
+- Bump Swatinem/rust-cache from 2.2.0 to 2.2.1 ([#637](https://github.com/dotenv-linter/dotenv-linter/pull/637))
+- Bump lycheeverse/lychee-action from 1.5.4 to 1.6.1 ([#635](https://github.com/dotenv-linter/dotenv-linter/pull/635))
+- Bump clap from 4.1.4 to 4.1.6 ([#633](https://github.com/dotenv-linter/dotenv-linter/pull/633))
+- Bump dprint/check from 2.1 to 2.2 ([#629](https://github.com/dotenv-linter/dotenv-linter/pull/629))
+- Bump clap from 4.1.3 to 4.1.4 ([#630](https://github.com/dotenv-linter/dotenv-linter/pull/630))
+- Bump clap from 4.1.1 to 4.1.3 ([#628](https://github.com/dotenv-linter/dotenv-linter/pull/628))
+- Bump bumpalo from 3.8.0 to 3.12.0 ([#627](https://github.com/dotenv-linter/dotenv-linter/pull/627))
+- Bump clap from 4.0.32 to 4.1.1 ([#626](https://github.com/dotenv-linter/dotenv-linter/pull/626))
+- Bump assert_cmd from 2.0.7 to 2.0.8 ([#624](https://github.com/dotenv-linter/dotenv-linter/pull/624))
+- Bump assert_cmd from 2.0.5 to 2.0.7 ([#618](https://github.com/dotenv-linter/dotenv-linter/pull/618))
+- Bump `clap` from 3.1.10 to 4.0.32 ([#616](https://github.com/dotenv-linter/dotenv-linter/pull/616))
+
 ## [v3.3.0](https://github.com/dotenv-linter/dotenv-linter/releases/tag/v3.3.0) - 2022-12-24
 
 ### Features
@@ -16,7 +158,8 @@ All notable changes to this project will be documented in this file.
 ### CI
 
 - Fix arm docker build ([#609](https://github.com/dotenv-linter/dotenv-linter/pull/609))
-- Replace `actions-rs/toolchain` with `dtolnay/rust-toolchain` ([#573](https://github.com/dotenv-linter/dotenv-linter/pull/573))
+- Replace `actions-rs/toolchain` with
+  `dtolnay/rust-toolchain` ([#573](https://github.com/dotenv-linter/dotenv-linter/pull/573))
 - Add docker arm64 image ([#533](https://github.com/dotenv-linter/dotenv-linter/pull/533))
 - Fix release builds ([#531](https://github.com/dotenv-linter/dotenv-linter/pull/531))
 - Add job to check release builds ([#529](https://github.com/dotenv-linter/dotenv-linter/pull/529))
@@ -32,7 +175,8 @@ All notable changes to this project will be documented in this file.
 
 ### Miscellaneous Tasks
 
-- Use `Box::<T>::default()` instead of `Box::new(T::default())` ([#605](https://github.com/dotenv-linter/dotenv-linter/pull/605))
+- Use `Box::<T>::default()` instead of
+  `Box::new(T::default())` ([#605](https://github.com/dotenv-linter/dotenv-linter/pull/605))
 - Fix clippy warning ([#585](https://github.com/dotenv-linter/dotenv-linter/pull/585))
 - Generate a changelog and update release process ([#544](https://github.com/dotenv-linter/dotenv-linter/pull/544))
 - Update `criterion-compare` action ([#484](https://github.com/dotenv-linter/dotenv-linter/pull/484))
@@ -55,41 +199,52 @@ All notable changes to this project will be documented in this file.
 
 - Bump actions/stale from 6 to 7 ([#607](https://github.com/dotenv-linter/dotenv-linter/pull/607))
 - Bump update-informer from 0.5.0 to 0.6.0 ([#603](https://github.com/dotenv-linter/dotenv-linter/pull/603))
-- Bump wagoid/commitlint-github-action from 5.2.2 to 5.3.0 ([#595](https://github.com/dotenv-linter/dotenv-linter/pull/595))
+- Bump wagoid/commitlint-github-action from 5.2.2 to
+  5.3.0 ([#595](https://github.com/dotenv-linter/dotenv-linter/pull/595))
 - Bump Swatinem/rust-cache from 2.1.0 to 2.2.0 ([#588](https://github.com/dotenv-linter/dotenv-linter/pull/588))
 - Bump lycheeverse/lychee-action from 1.5.3 to 1.5.4 ([#587](https://github.com/dotenv-linter/dotenv-linter/pull/587))
 - Bump lycheeverse/lychee-action from 1.5.2 to 1.5.3 ([#586](https://github.com/dotenv-linter/dotenv-linter/pull/586))
 - Bump Swatinem/rust-cache from 2.0.1 to 2.1.0 ([#582](https://github.com/dotenv-linter/dotenv-linter/pull/582))
 - Bump lycheeverse/lychee-action from 1.5.1 to 1.5.2 ([#583](https://github.com/dotenv-linter/dotenv-linter/pull/583))
-- Bump wagoid/commitlint-github-action from 5.2.0 to 5.2.2 ([#581](https://github.com/dotenv-linter/dotenv-linter/pull/581))
-- Bump boa-dev/criterion-compare-action from 3.2.3 to 3.2.4 ([#580](https://github.com/dotenv-linter/dotenv-linter/pull/580))
+- Bump wagoid/commitlint-github-action from 5.2.0 to
+  5.2.2 ([#581](https://github.com/dotenv-linter/dotenv-linter/pull/581))
+- Bump boa-dev/criterion-compare-action from 3.2.3 to
+  3.2.4 ([#580](https://github.com/dotenv-linter/dotenv-linter/pull/580))
 - Bump assert_cmd from 2.0.4 to 2.0.5 ([#578](https://github.com/dotenv-linter/dotenv-linter/pull/578))
 - Bump criterion from 0.3.6 to 0.4.0 ([#575](https://github.com/dotenv-linter/dotenv-linter/pull/575))
 - Bump Swatinem/rust-cache from 2.0.0 to 2.0.1 ([#571](https://github.com/dotenv-linter/dotenv-linter/pull/571))
 - Bump dunce from 1.0.2 to 1.0.3 ([#564](https://github.com/dotenv-linter/dotenv-linter/pull/564))
-- Bump wagoid/commitlint-github-action from 5.0.2 to 5.2.0 ([#565](https://github.com/dotenv-linter/dotenv-linter/pull/565))
-- Bump boa-dev/criterion-compare-action from 3.2.2 to 3.2.3 ([#570](https://github.com/dotenv-linter/dotenv-linter/pull/570))
+- Bump wagoid/commitlint-github-action from 5.0.2 to
+  5.2.0 ([#565](https://github.com/dotenv-linter/dotenv-linter/pull/565))
+- Bump boa-dev/criterion-compare-action from 3.2.2 to
+  3.2.3 ([#570](https://github.com/dotenv-linter/dotenv-linter/pull/570))
 - Bump actions/stale from 5 to 6 ([#552](https://github.com/dotenv-linter/dotenv-linter/pull/552))
 - Bump lycheeverse/lychee-action from 1.5.0 to 1.5.1 ([#538](https://github.com/dotenv-linter/dotenv-linter/pull/538))
 - Bump Swatinem/rust-cache from 1.4.0 to 2.0.0 ([#534](https://github.com/dotenv-linter/dotenv-linter/pull/534))
 - Bump dprint/check from 2.0 to 2.1 ([#535](https://github.com/dotenv-linter/dotenv-linter/pull/535))
 - Bump criterion from 0.3.5 to 0.3.6 ([#532](https://github.com/dotenv-linter/dotenv-linter/pull/532))
-- Bump wagoid/commitlint-github-action from 5.0.1 to 5.0.2 ([#530](https://github.com/dotenv-linter/dotenv-linter/pull/530))
+- Bump wagoid/commitlint-github-action from 5.0.1 to
+  5.0.2 ([#530](https://github.com/dotenv-linter/dotenv-linter/pull/530))
 - Bump Swatinem/rust-cache from 1.3.0 to 1.4.0 ([#528](https://github.com/dotenv-linter/dotenv-linter/pull/528))
 - Bump actions/cache from 3.0.2 to 3.0.4 ([#522](https://github.com/dotenv-linter/dotenv-linter/pull/522))
-- Bump boa-dev/criterion-compare-action from 3.2.1 to 3.2.2 ([#518](https://github.com/dotenv-linter/dotenv-linter/pull/518))
+- Bump boa-dev/criterion-compare-action from 3.2.1 to
+  3.2.2 ([#518](https://github.com/dotenv-linter/dotenv-linter/pull/518))
 - Bump regex from 1.5.4 to 1.5.6 ([#520](https://github.com/dotenv-linter/dotenv-linter/pull/520))
 - Bump crossbeam-utils from 0.8.5 to 0.8.8 ([#519](https://github.com/dotenv-linter/dotenv-linter/pull/519))
-- Bump wagoid/commitlint-github-action from 4.1.11 to 5.0.1 ([#527](https://github.com/dotenv-linter/dotenv-linter/pull/527))
-- Bump boa-dev/criterion-compare-action from 3.2.0 to 3.2.1 ([#509](https://github.com/dotenv-linter/dotenv-linter/pull/509))
+- Bump wagoid/commitlint-github-action from 4.1.11 to
+  5.0.1 ([#527](https://github.com/dotenv-linter/dotenv-linter/pull/527))
+- Bump boa-dev/criterion-compare-action from 3.2.0 to
+  3.2.1 ([#509](https://github.com/dotenv-linter/dotenv-linter/pull/509))
 - Bump clap from 3.1.9 to 3.1.10 ([#506](https://github.com/dotenv-linter/dotenv-linter/pull/506))
 - Bump clap from 3.1.8 to 3.1.9 ([#505](https://github.com/dotenv-linter/dotenv-linter/pull/505))
 - Bump actions/stale from 4 to 5 ([#502](https://github.com/dotenv-linter/dotenv-linter/pull/502))
 - Bump actions/cache from 3.0.1 to 3.0.2 ([#501](https://github.com/dotenv-linter/dotenv-linter/pull/501))
 - Bump codecov/codecov-action from 2.1.0 to 3 ([#499](https://github.com/dotenv-linter/dotenv-linter/pull/499))
-- Bump wagoid/commitlint-github-action from 4.1.10 to 4.1.11 ([#500](https://github.com/dotenv-linter/dotenv-linter/pull/500))
+- Bump wagoid/commitlint-github-action from 4.1.10 to
+  4.1.11 ([#500](https://github.com/dotenv-linter/dotenv-linter/pull/500))
 - Bump clap from 3.1.6 to 3.1.8 ([#497](https://github.com/dotenv-linter/dotenv-linter/pull/497))
-- Bump wagoid/commitlint-github-action from 4.1.9 to 4.1.10 ([#495](https://github.com/dotenv-linter/dotenv-linter/pull/495))
+- Bump wagoid/commitlint-github-action from 4.1.9 to
+  4.1.10 ([#495](https://github.com/dotenv-linter/dotenv-linter/pull/495))
 - Bump actions/cache from 3.0.0 to 3.0.1 ([#494](https://github.com/dotenv-linter/dotenv-linter/pull/494))
 - Update dependency `update-informer` ([#493](https://github.com/dotenv-linter/dotenv-linter/pull/493))
 - Bump actions/cache from 2 to 3.0.0 ([#491](https://github.com/dotenv-linter/dotenv-linter/pull/491))
@@ -168,7 +323,8 @@ All notable changes to this project will be documented in this file.
 - Refactor check unit tests [#421] ([@mc1098](https://github.com/mc1098))
 - Add missing integration tests [#420] ([@gosolivs](https://github.com/gosolivs))
 - Add checker: Substitution Key [#414] ([@de-sh](https://github.com/de-sh))
-- Print a message if the amount of checks doesn't match the amount of fixes [#415] ([@marcel-baur](https://github.com/marcel-baur))
+- Print a message if the amount of checks doesn't match the amount of
+  fixes [#415] ([@marcel-baur](https://github.com/marcel-baur))
 - Print a message "Nothing to compare" [#398] ([@jakecorrenti](https://github.com/jakecorrenti))
 - Add action-hadolint [#400] ([@iovanom](https://github.com/iovanom))
 - Add method to get substitution keys to LineEntry [#391] ([@zotho](https://github.com/zotho))
@@ -225,21 +381,26 @@ All notable changes to this project will be documented in this file.
 ### 🚀 Added
 
 - Add `compare`-command [#282] ([@mstruebing](https://github.com/mstruebing))
-- Add colored output feature and `--no-color` flag to disable colors [#307] ([@Nikhil0487](https://github.com/Nikhil0487))
+- Add colored output feature and `--no-color` flag to disable
+  colors [#307] ([@Nikhil0487](https://github.com/Nikhil0487))
 - Display linted files when run [#311] ([@Anthuang](https://github.com/anthuang))
 - Add export prefix support [#340] ([@skonik](https://github.com/skonik))
 - Add colored output for compare command [#356] ([@mgrachev](https://github.com/mgrachev))
 
 ### 🔧 Changed
 
-- Refactoring to get rid of unnecessary heap allocations and some improvements in API ergonomics [#350] ([@vbrandl](https://github.com/vbrandl))
+- Refactoring to get rid of unnecessary heap allocations and some improvements in API
+  ergonomics [#350] ([@vbrandl](https://github.com/vbrandl))
 - Add benchmark to README [#351] ([@mgrachev](https://github.com/mgrachev))
-- Fix QuoteCharacterChecker to not raise warning when quote characters are used for values with whitespaces [#349] ([@sebastiantoh](https://github.com/sebastiantoh))
+- Fix QuoteCharacterChecker to not raise warning when quote characters are used for values with
+  whitespaces [#349] ([@sebastiantoh](https://github.com/sebastiantoh))
 - Find all problems on the first run for `KeyWithoutValue` [#348] ([@vbrandl](https://github.com/vbrandl))
-- Add [commitlint](https://github.com/conventional-changelog/commitlint) action [#347] ([@mgrachev](https://github.com/mgrachev))
+- Add [commitlint](https://github.com/conventional-changelog/commitlint)
+  action [#347] ([@mgrachev](https://github.com/mgrachev))
 - Add [cargo-deny](https://github.com/EmbarkStudios/cargo-deny) action [#346] ([@mgrachev](https://github.com/mgrachev))
 - Remade flags to subcommands [#342] ([@mgrachev](https://github.com/mgrachev))
-- Changed behavior of QuoteCharacterChecker for multiline values support [#341] ([@artem-russkikh](http://github.com/artem-russkikh))
+- Changed behavior of QuoteCharacterChecker for multiline values
+  support [#341] ([@artem-russkikh](http://github.com/artem-russkikh))
 - Make an output on-the-fly [#336] ([@DDtKey](https://github.com/DDtKey))
 
 [#356]: https://github.com/dotenv-linter/dotenv-linter/pull/356
@@ -302,7 +463,8 @@ All notable changes to this project will be documented in this file.
 - Add fixer: KeyWithoutValueFixer [#254] ([@unexge](https://github.com/unexge))
 - Add fixer: QuoteCharacterFixer [#257] ([@lensvol](https://github.com/lensvol))
 - Add fixer: SpaceCharacterFixer [#253] ([@DDtKey](https://github.com/DDtKey))
-- Add total problems to output and `--quiet` argument [#242] ([@wesleimp](https://github.com/wesleimp), [@mgrachev](https://github.com/mgrachev))
+- Add total problems to output and `--quiet`
+  argument [#242] ([@wesleimp](https://github.com/wesleimp), [@mgrachev](https://github.com/mgrachev))
 - Add autofix feature (for LowercaseKey check) [#228] ([@evgeniy-r](https://github.com/evgeniy-r))
 - Add installation CI test for Windows (via `install.sh`) [#235] ([@DDtKey](https://github.com/DDtKey))
 
@@ -389,7 +551,8 @@ All notable changes to this project will be documented in this file.
 ### 🔧 Changed
 
 - Add the field with a checker name to Warning [#234] ([@evgeniy-r](https://github.com/evgeniy-r))
-- Remove `FileEntry::get_content_by_path` in favor of `fs::read_to_string` [#233] ([@mstruebing](https://github.com/mstruebing))
+- Remove `FileEntry::get_content_by_path` in favor of
+  `fs::read_to_string` [#233] ([@mstruebing](https://github.com/mstruebing))
 - Move show-checks flag to main.rs [#227] ([@mgrachev](https://github.com/mgrachev))
 - Fix `total_lines` in some tests [#224] ([@DDtKey](https://github.com/DDtKey))
 - Consider blank lines in `UnorderedKey` check [#221] ([@mgrachev](https://github.com/mgrachev))
@@ -424,16 +587,20 @@ All notable changes to this project will be documented in this file.
 ### 🔧 Changed
 
 - Enable checks for outside current directory [#209] ([@tisorlawan](https://github.com/tisorlawan))
-- Refactor `EndingBlankLineChecker`: change last line check logic (add `total_lines` to `FileEntry`) [#207] ([@DDtKey](https://github.com/DDtKey))
+- Refactor `EndingBlankLineChecker`: change last line check logic (add `total_lines` to
+  `FileEntry`) [#207] ([@DDtKey](https://github.com/DDtKey))
 - Fix check (for several successive blank lines): ExtraBlankLine [#208] ([@evgeniy-r](https://github.com/evgeniy-r))
 - Replace `PathBuf` with `FileEntry` for `LineEntry` [#203] ([@mgrachev](https://github.com/mgrachev))
-- Replace `&'static str` with `&'a str` for `LeadingCharacterChecker` [#200] ([@rossjones](https://github.com/rossjones))
-- Replace `&'static str` with `&'a str` for `QuoteCharacterChecker` [#198] ([@duncandean](https://github.com/duncandean))
+- Replace `&'static str` with `&'a str` for
+  `LeadingCharacterChecker` [#200] ([@rossjones](https://github.com/rossjones))
+- Replace `&'static str` with `&'a str` for
+  `QuoteCharacterChecker` [#198] ([@duncandean](https://github.com/duncandean))
 - Replace `&'static str` with `&'a str` for `EndingBlankLineChecker` [#197] ([@rossjones](https://github.com/rossjones))
 - Replace `String` with `&'a str` for `UnorderedKeyChecker` [#196] ([@k0va1](https://github.com/k0va1))
 - Replace `String` with `&'a str` for `SpaceCharacterChecker` [#195] ([@k0va1](https://github.com/k0va1))
 - Replace `String` with `&'a str` for `LowercaseKeyChecker` [#194] ([@tisorlawan](https://github.com/tisorlawan))
-- Replace `&'static str` with `&'a str` for `ExtraBlankLineChecker` [#193] ([@vishalsodani](https://github.com/vishalsodani))
+- Replace `&'static str` with `&'a str` for
+  `ExtraBlankLineChecker` [#193] ([@vishalsodani](https://github.com/vishalsodani))
 - Replace `String` with `&'a str` for `DuplicatedKeyChecker` [#192] ([@iamsaquib](https://github.com/iamsaquib))
 - Replace `String` with `&'a str` for `KeyWithoutValueChecker` [#177] ([@mgrachev](https://github.com/mgrachev))
 - Fix docker image [#160] ([@mgrachev](https://github.com/mgrachev))
@@ -481,12 +648,15 @@ All notable changes to this project will be documented in this file.
 - Renamed check SpacesAroundEqual to SpaceCharacter [#134] ([@SaMuRa1ReM1X](https://github.com/SaMuRa1ReM1X))
 - Rename check DuplicatedKeys to DuplicatedKey [#133] ([@sonro](https://github.com/sonro))
 - Minimizing Rust Binary Size [#132] ([@akirill0v](https://github.com/akirill0v))
-- Remove the unwrap method and use platform native OsString to fetch the information about current directory [#115] ([@kanapuli](https://github.com/kanapuli))
+- Remove the unwrap method and use platform native OsString to fetch the information about current
+  directory [#115] ([@kanapuli](https://github.com/kanapuli))
 - Use HashSet for DuplicateKeyChecker [#113] ([@TamasFlorin](https://github.com/TamasFlorin))
-- Use reference for the LineEntry as part of the run method for checks [#111] ([@TamasFlorin](https://github.com/TamasFlorin))
+- Use reference for the LineEntry as part of the run method for
+  checks [#111] ([@TamasFlorin](https://github.com/TamasFlorin))
 - New CLI API: Ability to check multiple directories [#99] ([@mgrachev](https://github.com/mgrachev))
 - Add exit with the code 0 when there are no warnings [#105] ([@simPod](https://github.com/simPod))
-- Use `get` method to get result of item in `Vec` and use ? operator unwrap the result if it's `Some` [#108] ([@boybird](https://github.com/boybird))
+- Use `get` method to get result of item in `Vec` and use ? operator unwrap the result if it's
+  `Some` [#108] ([@boybird](https://github.com/boybird))
 
 [#149]: https://github.com/dotenv-linter/dotenv-linter/pull/149
 [#147]: https://github.com/dotenv-linter/dotenv-linter/pull/147
@@ -511,9 +681,11 @@ All notable changes to this project will be documented in this file.
 
 ### 🔧 Changed
 
-- Fix --path CLI parameter not canonizing filepaths from directory path passed as argument and not working as intended as a result [#97] ([@pineapplethief](https://github.com/pineapplethief))
+- Fix --path CLI parameter not canonizing filepaths from directory path passed as argument and not working as intended
+  as a result [#97] ([@pineapplethief](https://github.com/pineapplethief))
 - Fix incorrect delimiter check for keys contains numeric [#95] ([@alter369](https://github.com/alter369))
-- Add `LineEntry.is_empty_or_comment` method to DRY and simplify `Check.run` [#94] ([@pineapplethief](https://github.com/pineapplethief))
+- Add `LineEntry.is_empty_or_comment` method to DRY and simplify
+  `Check.run` [#94] ([@pineapplethief](https://github.com/pineapplethief))
 - Refactor `Github Actions` and reduce `Docker Image size` [#90] ([@Macbet](https://github.com/Macbet))
 - Use `Line.get_key` in all checks [#89] ([@pineapplethief](https://github.com/pineapplethief))
 
@@ -546,7 +718,8 @@ All notable changes to this project will be documented in this file.
 
 ### 🔧 Changed
 
-- Rename `leading_space` to `leading_character` and check for allowed chars [#63] ([@mstruebing](https://github.com/mstruebing))
+- Rename `leading_space` to `leading_character` and check for allowed
+  chars [#63] ([@mstruebing](https://github.com/mstruebing))
 - Remove multiple checks of the same file [#62] ([@mstruebing](https://github.com/mstruebing))
 - Add mutability support for checks [#52] ([@mgrachev](https://github.com/mgrachev))
 
