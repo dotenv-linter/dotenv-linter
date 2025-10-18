@@ -21,7 +21,7 @@ repository = "https://github.com/dotenv-linter/dotenv-linter"
 assert_cmd = "2.0"
 clap = { version = "4.5", features = ["cargo", "env", "derive"] }
 dunce = "1.0"
-tempfile = "3.22"
+tempfile = "3.23"
 
 [profile.release]
 opt-level = 'z' # Optimize for size
