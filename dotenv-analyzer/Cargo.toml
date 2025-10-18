@@ -5,10 +5,10 @@ authors.workspace = true
 documentation = "https://docs.rs/dotenv-analyzer"
 edition.workspace = true
 homepage = "https://github.com/dotenv-linter/dotenv-linter"
-include = ["/src", "../README.md"]
+include = ["/src", "README.md"]
 keywords = ["dotenv", "environment", "env", "analyzer"]
 license.workspace = true
-readme = "../README.md"
+readme = "README.md"
 repository.workspace = true
 description = "A crate to check and fix .env files"
 
