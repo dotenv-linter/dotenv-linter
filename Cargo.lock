@@ -478,7 +478,7 @@ dependencies = [
 
 [[package]]
 name = "dotenv-analyzer"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "dotenv-core",
@@ -489,11 +489,11 @@ dependencies = [
 
 [[package]]
 name = "dotenv-core"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "dotenv-finder"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dotenv-core",
  "dunce",
@@ -520,7 +520,7 @@ dependencies = [
 
 [[package]]
 name = "dotenv-schema"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "email_address",
