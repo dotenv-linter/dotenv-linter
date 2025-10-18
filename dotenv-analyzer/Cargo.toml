@@ -1,6 +1,6 @@
 [package]
 name = "dotenv-analyzer"
-version = "0.1.0"
+version = "0.1.1"
 authors.workspace = true
 documentation = "https://docs.rs/dotenv-analyzer"
 edition.workspace = true
