@@ -2,18 +2,21 @@
 name = "dotenv-finder"
 version = "0.1.0"
 authors.workspace = true
+documentation = "https://docs.rs/dotenv-finder"
 edition.workspace = true
-include = ["/src"]
+homepage = "https://github.com/dotenv-linter/dotenv-linter"
+include = ["/src", "../README.md"]
 keywords = ["dotenv", "environment", "env", "finder"]
 license.workspace = true
+readme = "../README.md"
 repository.workspace = true
 description = "A crate to find and parse .env files"
+
+[target.'cfg(windows)'.dependencies]
+dunce.workspace = true
 
 [dependencies]
 dotenv-core = { version = "0.1", path = "../dotenv-core" }
 
 [dev-dependencies]
 tempfile.workspace = true
-
-[target.'cfg(windows)'.dependencies]
-dunce.workspace = true

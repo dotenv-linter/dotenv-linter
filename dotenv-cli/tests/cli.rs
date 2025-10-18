@@ -1,7 +1,7 @@
 mod args;
 mod checks;
 mod common;
-mod compare;
+mod diff;
 mod fixes;
 mod flags;
 mod options;

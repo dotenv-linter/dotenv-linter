@@ -1,12 +1,12 @@
 use std::path::PathBuf;
 
 // A structure used to compare environment files
-pub struct CompareFileType {
+pub struct DiffFileType {
     path: PathBuf,
     keys: Vec<String>,
 }
 
-impl CompareFileType {
+impl DiffFileType {
     pub fn new(path: PathBuf, keys: Vec<String>) -> Self {
         Self { path, keys }
     }
@@ -20,12 +20,12 @@ impl CompareFileType {
     }
 }
 
-pub struct CompareWarning {
+pub struct DiffWarning {
     path: PathBuf,
     missing_keys: Vec<String>,
 }
 
-impl CompareWarning {
+impl DiffWarning {
     pub fn new(path: PathBuf, missing_keys: Vec<String>) -> Self {
         Self { path, missing_keys }
     }

@@ -48,7 +48,7 @@ All warnings are fixed. Total: 5
     test_dir.test_command_fix_success_with_args(expected_output, args);
     assert_eq!(
         test_str,
-        fs::read_to_string(test_dir.as_str().to_owned() + "/.env").unwrap(),
+        fs::read_to_string(test_dir.as_str().to_owned() + "/.env").expect("convert dir to string"),
         ".env file should be unmodified"
     );
     test_dir.close();
@@ -193,7 +193,7 @@ fn backup() {
     let test_dir = TestDir::new();
     let test_file = test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
-    let args = &["fix"];
+    let args = &["fix", "."];
     let output = test_dir.test_command_success_and_get_output(args);
 
     let backup_file = fs::read_dir(test_dir.as_str())
@@ -224,7 +224,7 @@ fn quiet_backup() {
     let test_dir = TestDir::new();
     let test_file = test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
-    let args = &["fix", "-q"];
+    let args = &["fix", "-q", "."];
     let output = test_dir.test_command_success_and_get_output(args);
 
     let backup_file = fs::read_dir(test_dir.as_str())

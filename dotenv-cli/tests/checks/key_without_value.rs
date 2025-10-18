@@ -7,7 +7,7 @@ fn also_detect_lowercase_key() {
     for contents in contents {
         let testdir = TestDir::new();
         let testfile = testdir.create_testfile(".env", contents);
-        let args = &[testfile.as_str()];
+        let args = &["check", testfile.as_str()];
         let expected_output = check_output(&[(
             ".env",
             &[

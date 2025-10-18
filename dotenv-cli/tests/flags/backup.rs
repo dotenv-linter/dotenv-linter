@@ -23,7 +23,10 @@ fn output_backup_file() {
 
     assert_eq!(backup_contents, content);
     assert_eq!(testfile.contents(), "FOO=bar\n");
-    assert_eq!(backup_file.path().extension().unwrap(), "bak");
+    assert_eq!(
+        backup_file.path().extension().expect("get extension"),
+        "bak"
+    );
 
     testdir.close()
 }

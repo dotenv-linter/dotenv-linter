@@ -9,7 +9,7 @@ fn exclude_one_file() {
 "#;
 
     test_dir.test_command_success_with_args(
-        with_default_args(&["--exclude", testfile.as_str()]),
+        with_default_args(&["check", ".", "--exclude", testfile.as_str()]),
         expected_output,
     );
 }
@@ -24,7 +24,14 @@ fn exclude_two_files() {
 "#;
 
     test_dir.test_command_success_with_args(
-        with_default_args(&["-e", testfile_1.as_str(), "-e", testfile_2.as_str()]),
+        with_default_args(&[
+            "check",
+            ".",
+            "-e",
+            testfile_1.as_str(),
+            "-e",
+            testfile_2.as_str(),
+        ]),
         expected_output,
     );
 }
@@ -35,7 +42,7 @@ fn exclude_one_file_check_one_file() {
     let testfile_to_check = test_dir.create_testfile(".env", " FOO=\n");
     let testfile_to_exclude = test_dir.create_testfile(".exclude-me.env", " BAR=\n");
 
-    let args = &["--exclude", testfile_to_exclude.as_str()];
+    let args = &["check", ".", "--exclude", testfile_to_exclude.as_str()];
     let expected_output = check_output(&[(
         testfile_to_check.shortname_as_str(),
         &[format!(

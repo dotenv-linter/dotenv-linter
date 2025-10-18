@@ -1,3 +1,3 @@
 mod check;
-mod compare;
+mod diff;
 mod fix;

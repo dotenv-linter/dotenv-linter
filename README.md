@@ -25,7 +25,8 @@
   </a>
 </p>
 
-`dotenv-linter` can **[check](#-check)** / **[fix](#-fix)** / **[compare](#-compare)** `.env` files for problems that may cause the application to malfunction.
+`dotenv-linter` can **[check](#-check)** / **[fix](#-fix)** / **[diff](#-diff)** `.env` files for problems that may
+cause the application to malfunction.
 
 **Available checks**:
 
@@ -38,6 +39,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/leading_character">Leading character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/lowercase_key">Lowercase key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/quote_character">Quote character</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/schema_violation">Schema violation</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/space_character">Space character</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/substitution_key">Substitution key</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;✅&nbsp;<a href="https://dotenv-linter.github.io/#/checks/trailing_whitespace">Trailing whitespace</a><br />
@@ -94,10 +96,10 @@ You can find other installation methods here: https://dotenv-linter.github.io/#/
 
 #### ✅ Check
 
-By default, `dotenv-linter` checks all `.env` files in the current directory:
+`dotenv-linter` can check all `.env` files in the current directory:
 
 ```shell
-$ dotenv-linter
+$ dotenv-linter check .
 Checking .env
 .env:2 DuplicatedKey: The FOO key is duplicated
 .env:3 UnorderedKey: The BAR key should go before the FOO key
@@ -113,7 +115,7 @@ Found 3 problems
 It can also fix the found warnings with the `fix` command:
 
 ```shell
-$ dotenv-linter fix
+$ dotenv-linter fix .
 Fixing .env
 Original file was backed up to: ".env_1601378896"
 
@@ -123,12 +125,12 @@ Original file was backed up to: ".env_1601378896"
 All warnings are fixed. Total: 2
 ```
 
-#### 🤲 Compare
+#### 🤲 Diff
 
 In addition, `dotenv-linter` can compare `.env` files with each other and output the difference between them:
 
 ```shell
-$ dotenv-linter compare .env .env.example
+$ dotenv-linter diff .env .env.example
 Comparing .env
 Comparing .env.example
 .env is missing keys: BAR
@@ -139,34 +141,37 @@ Other use cases you can find on the documentation site (https://dotenv-linter.gi
 
 - [Check](https://dotenv-linter.github.io/#/usage/check)
 - [Fix](https://dotenv-linter.github.io/#/usage/fix)
-- [Compare](https://dotenv-linter.github.io/#/usage/compare)
+- [Diff](https://dotenv-linter.github.io/#/usage/diff)
 
 ## 🚦 Continuous Integration
 
-`dotenv-linter` can also be used with CI services such as: [GitHub Actions](https://dotenv-linter.github.io/#/integrations/github_actions) and [Circle CI](https://dotenv-linter.github.io/#/integrations/circleci).
+`dotenv-linter` can also be used with CI services such
+as: [GitHub Actions](https://dotenv-linter.github.io/#/integrations/github_actions)
+and [Circle CI](https://dotenv-linter.github.io/#/integrations/circleci).
 
 ## 💻 Pre-commit
 
-To run `dotenv-linter` as part of a [pre-commit](https://pre-commit.com/) workflow, add something like the below to the `repos` list in the project's `.pre-commit-config.yaml`:
+To run `dotenv-linter` as part of a [pre-commit](https://pre-commit.com/) workflow, add something like the below to the
+`repos` list in the project's `.pre-commit-config.yaml`:
 
 ```yaml
 # .pre-commit-config.yaml
 
 ...
 repos:
-  ...
-  - repo: https://github.com/dotenv-linter/dotenv-linter
-    rev: 3.3.1
-    hooks:
-      - id: dotenv-linter
-  ...
+    ...
+      - repo: https://github.com/dotenv-linter/dotenv-linter
+      rev: 3.3.1
+      hooks:
+        - id: dotenv-linter
+      ...
 ```
-
-
 
 ## 🚧 Benchmark
 
-Benchmarking [dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dotenv-linter) and [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) has done using the [hyperfine](https://github.com/sharkdp/hyperfine) utility:
+Benchmarking [dotenv-linter/dotenv-linter](https://github.com/dotenv-linter/dotenv-linter)
+and [wemake-services/dotenv-linter](https://github.com/wemake-services/dotenv-linter) has done using
+the [hyperfine](https://github.com/sharkdp/hyperfine) utility:
 
 | Command                              |    Mean [ms] | Min [ms] | Max [ms] |      Relative |
 | :----------------------------------- | -----------: | -------: | -------: | ------------: |
@@ -193,11 +198,14 @@ snake_case_name=2
 
 ## ✌️ Mentorship
 
-`dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with the purpose of helping others learn Rust using a simple, but useful tool. 😊
+`dotenv-linter` is not just a linter for `.env` files — it is also a **contributor-friendly open-source project** with
+the purpose of helping others learn Rust using a simple, but useful tool. 😊
 
-In addition to studying Rust, this project has another goal — to **promote love for open-source**, help you with the first steps in it and give an opportunity to contribute to the open-source project written in Rust. ❤️
+In addition to studying Rust, this project has another goal — to **promote love for open-source**, help you with the
+first steps in it and give an opportunity to contribute to the open-source project written in Rust. ❤️
 
-We act [as a mentor](https://rustbeginners.github.io/awesome-rust-mentors) within this project and **help developers** follow the path of a novice contributor from start to the top. 🤗
+We act [as a mentor](https://rustbeginners.github.io/awesome-rust-mentors) within this project and **help developers**
+follow the path of a novice contributor from start to the top. 🤗
 
 ## 🤝 Contributing
 
@@ -220,7 +228,9 @@ This project exists thanks to all the people who contribute. [[Contribute](/CONT
 
 ## ♥️ Sponsors
 
-[dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
+[dotenv-linter](https://evrone.com/dotenv-linter?utm_source=github&utm_campaign=dotenv-linter) is created & supported
+by [Evrone](https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter). What else we develop
+with [Rust](https://evrone.com/rust?utm_source=github&utm_campaign=dotenv-linter).
 
 <p>
   <a href="https://evrone.com/?utm_source=github&utm_campaign=dotenv-linter">

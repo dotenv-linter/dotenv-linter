@@ -8,7 +8,7 @@ fn files_with_same_environment_variables() {
     let expected_output = "Comparing .env1\nComparing .env2\nNo difference found\n";
 
     test_dir.test_command_success_with_args(
-        ["compare", testfile_one.as_str(), testfile_two.as_str()],
+        ["diff", testfile_one.as_str(), testfile_two.as_str()],
         expected_output,
     );
 }
@@ -22,7 +22,7 @@ fn files_with_same_environment_variables_in_quiet_mode() {
 
     test_dir.test_command_success_with_args(
         [
-            "compare",
+            "diff",
             "--quiet",
             testfile_one.as_str(),
             testfile_two.as_str(),
@@ -39,7 +39,7 @@ fn files_with_different_environment_variables() {
     let expected_output = "Comparing .env1\nComparing .env2\n.env1 is missing keys: BAR\n";
 
     test_dir.test_command_fail_with_args(
-        ["compare", testfile_one.as_str(), testfile_two.as_str()],
+        ["diff", testfile_one.as_str(), testfile_two.as_str()],
         expected_output,
     )
 }
@@ -53,7 +53,7 @@ fn files_with_different_environment_variables_in_quiet_mode() {
 
     test_dir.test_command_fail_with_args(
         [
-            "compare",
+            "diff",
             "--quiet",
             testfile_one.as_str(),
             testfile_two.as_str(),

@@ -3,7 +3,19 @@ use std::{collections::HashMap, fs::File, io::BufReader, path::Path};
 use regex::Regex;
 use serde::Deserialize;
 
-#[derive(Deserialize, Default, Debug)]
+#[cfg(feature = "clap")]
+pub mod clap;
+
+#[derive(Deserialize, Default, Debug, Clone)]
+pub struct DotEnvSchema {
+    pub version: String,
+    #[serde(default)]
+    pub allow_other_keys: bool,
+    #[serde(with = "::serde_with::rust::maps_duplicate_key_is_error")]
+    pub entries: HashMap<String, SchemaEntry>,
+}
+
+#[derive(Deserialize, Default, Debug, Clone)]
 #[serde(default)]
 pub struct SchemaEntry {
     pub key: String,
@@ -13,16 +25,8 @@ pub struct SchemaEntry {
     #[serde(with = "serde_regex")]
     pub regex: Option<Regex>,
 }
-#[derive(Deserialize, Default, Debug)]
-pub struct DotEnvSchema {
-    pub version: String,
-    #[serde(default)]
-    pub allow_other_keys: bool,
-    #[serde(with = "::serde_with::rust::maps_duplicate_key_is_error")]
-    pub entries: HashMap<String, SchemaEntry>,
-}
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Deserialize, Default, Debug, Clone)]
 pub enum SchemaValueType {
     #[default]
     String,
@@ -34,7 +38,7 @@ pub enum SchemaValueType {
 }
 
 impl DotEnvSchema {
-    pub fn load(path: &Path) -> Result<Self, std::io::Error> {
+    pub fn load<P: AsRef<Path>>(path: P) -> Result<Self, std::io::Error> {
         let file = File::open(path)?;
         let reader = BufReader::new(file);
         let read_schema: DotEnvSchema = serde_json::from_reader(reader)?;
@@ -130,15 +134,15 @@ mod tests {
             }
         }"#;
         // write the above json to a temp file
-        let temp_dir = tempdir().unwrap();
+        let temp_dir = tempdir().expect("create temp dir");
         let file_path = temp_dir.path().join("schema.json");
         let schema = {
-            let mut file = File::create(&file_path).unwrap();
-            file.write_all(json.as_bytes()).unwrap();
+            let mut file = File::create(&file_path).expect("create file");
+            file.write_all(json.as_bytes()).expect("write file");
             // load the schema from the file
             DotEnvSchema::load(&file_path)
         };
-        fs::remove_file(&file_path).unwrap();
+        fs::remove_file(&file_path).expect("remove file");
         assert!(schema.is_ok());
     }
 
@@ -174,15 +178,15 @@ mod tests {
             }
         }"#;
         // write the above json to a temp file
-        let temp_dir = tempdir().unwrap();
+        let temp_dir = tempdir().expect("create temp dir");
         let file_path = temp_dir.path().join("schema.json");
         let schema = {
-            let mut file = File::create(&file_path).unwrap();
-            file.write_all(json.as_bytes()).unwrap();
+            let mut file = File::create(&file_path).expect("create file");
+            file.write_all(json.as_bytes()).expect("write file");
             // load the schema from the file
             DotEnvSchema::load(&file_path)
         };
-        fs::remove_file(&file_path).unwrap();
+        fs::remove_file(&file_path).expect("remove file");
         assert!(schema.is_err());
     }
 
@@ -193,15 +197,15 @@ mod tests {
             bad:json
         }"#;
         // write the above json to a temp file
-        let temp_dir = tempdir().unwrap();
+        let temp_dir = tempdir().expect("create temp dir");
         let file_path = temp_dir.path().join("schema.json");
         let schema = {
-            let mut file = File::create(&file_path).unwrap();
-            file.write_all(json.as_bytes()).unwrap();
+            let mut file = File::create(&file_path).expect("create file");
+            file.write_all(json.as_bytes()).expect("write file");
             // load the schema from the file
             DotEnvSchema::load(&file_path)
         };
-        fs::remove_file(&file_path).unwrap();
+        fs::remove_file(&file_path).expect("remove file");
         assert!(schema.is_err());
     }
     #[test]
@@ -235,7 +239,7 @@ mod tests {
         let schema: serde_json::Result<DotEnvSchema> = serde_json::from_str(json);
         assert!(schema.is_err());
         assert_eq!(
-            schema.unwrap_err().to_string(),
+            schema.expect_err("deserializing schema").to_string(),
             "invalid entry: found duplicate key at line 9 column 17"
         );
     }

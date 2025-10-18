@@ -146,7 +146,7 @@ jobs:
       - name: Build and publish to crates.io
         run: |
           cargo login ${{ secrets.CRATES_TOKEN }}
-          cargo publish
+          cargo publish --workspace
 
   release-aur:
     runs-on: ubuntu-latest

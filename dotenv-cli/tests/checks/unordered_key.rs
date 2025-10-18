@@ -11,7 +11,7 @@ fn correct_files() {
     for content in contents {
         let testdir = TestDir::new();
         let testfile = testdir.create_testfile(".env", content);
-        let args = &[testfile.as_str()];
+        let args = &["check", testfile.as_str()];
 
         let expected_output = check_output(&[(".env", &[])]);
 
@@ -27,7 +27,7 @@ fn incorrect_files() {
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();
         let testfile = testdir.create_testfile(".env", content);
-        let args = &[testfile.as_str()];
+        let args = &["check", testfile.as_str()];
         let expected_output = check_output(&[(
             ".env",
             &[format!(
@@ -47,7 +47,7 @@ fn many_incorrect_variables() {
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
-    let args = &[testfile.as_str()];
+    let args = &["check", testfile.as_str()];
     let expected_output = check_output(&[(
         ".env",
         &[

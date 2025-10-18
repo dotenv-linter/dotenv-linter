@@ -10,9 +10,14 @@ pub fn check_benchmark(c: &mut Criterion) {
     let path = temp.keep();
 
     let current_dir = env::current_dir().expect("get current dir");
-    let app = dotenv_linter::cli::command();
-    let args = app.get_matches_from(vec!["dotenv-linter", path.to_str().expect("path to str")]);
-    let opts = dotenv_linter::options::CheckOptions::new(&args);
+    let opts = dotenv_linter::CheckOptions {
+        files: vec![&path],
+        ignore_checks: vec![],
+        exclude: vec![],
+        quiet: false,
+        recursive: false,
+        schema: None,
+    };
 
     fs::copy("benches/fixtures/simple.env", path.join(".env")).expect("copy .env file");
 

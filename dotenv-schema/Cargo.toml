@@ -2,10 +2,13 @@
 name = "dotenv-schema"
 version = "0.1.0"
 authors.workspace = true
+documentation = "https://docs.rs/dotenv-schema"
 edition.workspace = true
-include = ["/src"]
+homepage = "https://github.com/dotenv-linter/dotenv-linter"
+include = ["/src", "../README.md"]
 keywords = ["dotenv", "environment", "env", "schema"]
 license.workspace = true
+readme = "../README.md"
 repository.workspace = true
 description = "A crate to validate .env files against schemas"
 
@@ -17,6 +20,10 @@ serde_json = "1.0"
 serde_regex = "1.1"
 serde_with = "3.14"
 url = "2.5"
+
+[dependencies.clap]
+workspace = true
+optional = true
 
 [dev-dependencies]
 tempfile.workspace = true

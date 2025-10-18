@@ -1,29 +1,164 @@
 use std::path::PathBuf;
 
-use clap::{Arg, ArgAction, Command, command, value_parser};
+use clap::{Args, Parser, Subcommand, command};
 use dotenv_analyzer::LintKind;
+use dotenv_schema::DotEnvSchema;
 
-use crate::{
-    Result,
-    options::{CheckOptions, CompareOptions, FixOptions},
-};
+use crate::{CheckOptions, DiffOptions, FixOptions, Result};
+
+const HELP_TEMPLATE: &str = "
+{before-help}{name} {version}
+{author-with-newline}{about-with-newline}
+{usage-heading} {usage}
+
+{all-args}{after-help}
+";
+
+#[derive(Parser)]
+#[command(
+    version,
+    about,
+    author,
+    help_template = HELP_TEMPLATE,
+    styles = clap::builder::Styles::styled()
+        .header(clap::builder::styling::AnsiColor::Yellow.on_default())
+        .usage(clap::builder::styling::AnsiColor::Yellow.on_default())
+        .literal(clap::builder::styling::AnsiColor::Cyan.on_default())
+        .placeholder(clap::builder::styling::AnsiColor::Blue.on_default())
+        .context(clap::builder::styling::AnsiColor::Green.on_default())
+)]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+
+    /// Switch to plain text output without colors
+    #[arg(long, global = true)]
+    plain: bool,
+
+    /// Display only critical results, suppressing extra details
+    #[arg(short, long, global = true)]
+    quiet: bool,
+}
+
+#[derive(Subcommand)]
+enum Command {
+    /// Check .env files for errors such as duplicate keys or invalid syntax
+    Check {
+        /// .env files or directories to check (one or more required)
+        #[arg(
+            num_args(1..),
+            required = true,
+        )]
+        files: Vec<PathBuf>,
+
+        #[command(flatten)]
+        common: CommonArgs,
+
+        /// Schema file to validate .env file contents
+        #[arg(short('s'), long, value_name = "PATH")]
+        schema: Option<PathBuf>,
+
+        /// Disable checking for application updates
+        #[cfg(feature = "update-informer")]
+        #[arg(long, env = "DOTENV_LINTER_SKIP_UPDATES")]
+        skip_updates: bool,
+    },
+    /// Automatically fix issues in .env files
+    Fix {
+        /// .env files or directories to fix (one or more required)
+        #[arg(
+            num_args(1..),
+            required = true,
+        )]
+        files: Vec<PathBuf>,
+
+        #[command(flatten)]
+        common: CommonArgs,
+
+        /// Prevent creating backups before applying fixes
+        #[arg(long)]
+        no_backup: bool,
+
+        /// Print fixed .env content to stdout without saving changes
+        #[arg(long)]
+        dry_run: bool,
+    },
+    /// Compare .env files to ensure matching key sets
+    Diff {
+        /// .env files or directories to compare (one or more required)
+        #[arg(
+            num_args(1..),
+            required = true,
+        )]
+        files: Vec<PathBuf>,
+    },
+}
+
+#[derive(Args)]
+struct CommonArgs {
+    /// Files or directories to exclude from linting or fixing
+    #[arg(short = 'e', long, value_name = "PATH")]
+    exclude: Vec<PathBuf>,
+
+    /// Lint checks to bypass
+    #[arg(
+        short,
+        long,
+        value_name = "CHECK_NAME",
+        value_delimiter = ',',
+        env = "DOTENV_LINTER_IGNORE_CHECKS"
+    )]
+    ignore_checks: Vec<LintKind>,
+
+    /// Recursively scan directories for .env files
+    #[arg(short, long)]
+    recursive: bool,
+}
 
 pub fn run() -> Result<i32> {
     #[cfg(windows)]
     colored::control::set_virtual_terminal(true).ok();
 
+    let cli = Cli::parse();
     let current_dir = std::env::current_dir()?;
-    let args = command().get_matches();
 
-    disable_color_output(&args);
+    if cli.plain {
+        colored::control::set_override(false);
+    }
 
-    match args.subcommand() {
-        None => {
-            let opts = CheckOptions::new(&args);
-            let total_warnings = crate::check(&opts, &current_dir)?;
+    match cli.command {
+        Command::Check {
+            files,
+            common,
+            schema,
+            #[cfg(feature = "update-informer")]
+                skip_updates: not_check_updates,
+        } => {
+            let mut dotenv_schema = None;
+            if let Some(path) = schema {
+                dotenv_schema = match DotEnvSchema::load(path) {
+                    Ok(schema) => Some(schema),
+                    Err(err) => {
+                        println!("Error loading schema: {err}");
+                        std::process::exit(1);
+                    }
+                };
+            }
+
+            let total_warnings = crate::check(
+                &CheckOptions {
+                    files: files.iter().collect(),
+                    ignore_checks: common.ignore_checks,
+                    exclude: common.exclude.iter().collect(),
+                    recursive: common.recursive,
+                    quiet: cli.quiet,
+                    schema: dotenv_schema,
+                },
+                &current_dir,
+            )?;
 
             #[cfg(feature = "update-informer")]
-            if !args.get_flag("not-check-updates") && !args.get_flag("quiet") {
+            if !not_check_updates && !cli.quiet {
                 crate::check_for_updates();
             }
 
@@ -31,149 +166,44 @@ pub fn run() -> Result<i32> {
                 return Ok(0);
             }
         }
-        Some(("fix", fix_args)) => {
-            let opts = FixOptions::new(fix_args);
-            crate::fix(&opts, &current_dir)?;
+        Command::Fix {
+            files,
+            common,
+            no_backup,
+            dry_run,
+        } => {
+            crate::fix(
+                &FixOptions {
+                    files: files.iter().collect(),
+                    ignore_checks: common.ignore_checks,
+                    exclude: common.exclude.iter().collect(),
+                    recursive: common.recursive,
+                    quiet: cli.quiet,
+
+                    no_backup,
+                    dry_run,
+                },
+                &current_dir,
+            )?;
 
             return Ok(0);
         }
-        Some(("compare", compare_args)) => {
-            disable_color_output(compare_args);
-
-            let opts = CompareOptions::new(compare_args);
-            let total_warnings = crate::compare(&opts, &current_dir)?;
+        Command::Diff { files } => {
+            let total_warnings = crate::diff(
+                &DiffOptions {
+                    files: files.iter().collect(),
+                    quiet: cli.quiet,
+                },
+                &current_dir,
+            )?;
 
             if total_warnings == 0 {
                 return Ok(0);
             }
         }
-        _ => {
-            eprintln!("unknown command");
-        }
     }
 
     Ok(1)
-}
-
-pub fn command() -> Command {
-    let mut cmd = command!()
-        .disable_help_subcommand(true)
-        .args(common_args())
-        .subcommands([compare_command(), fix_command()]);
-
-    if cfg!(feature = "update-informer") {
-        cmd = cmd.arg(not_check_updates_flag());
-    }
-
-    cmd
-}
-
-fn compare_command() -> Command {
-    Command::new("compare")
-        .visible_alias("c")
-        .args(vec![
-            Arg::new("input")
-                .help("Files to compare")
-                .action(ArgAction::Append)
-                .required(true)
-                .num_args(2..)
-                .value_parser(value_parser!(PathBuf)),
-            no_color_flag(),
-            quiet_flag(),
-        ])
-        .about("Compares if files have the same keys")
-        .override_usage("dotenv-linter compare [OPTIONS] <input>...")
-}
-
-fn fix_command() -> Command {
-    Command::new("fix")
-        .visible_alias("f")
-        .args(common_args())
-        .arg(
-            Arg::new("no-backup")
-                .long("no-backup")
-                .help("Prevents backing up .env files")
-                .action(ArgAction::SetTrue),
-        )
-        .arg(
-            Arg::new("dry-run")
-                .long("dry-run")
-                .help("Output the fixed file to stdout without writing it to disk")
-                .action(ArgAction::SetTrue),
-        )
-        .override_usage("dotenv-linter fix [OPTIONS] <input>...")
-        .about("Automatically fixes warnings")
-}
-
-fn common_args() -> Vec<Arg> {
-    vec![
-        Arg::new("input")
-            .help("files or paths")
-            .index(1)
-            .action(ArgAction::Append)
-            .num_args(0..)
-            .value_parser(value_parser!(PathBuf)),
-        Arg::new("exclude")
-            .short('e')
-            .long("exclude")
-            .value_name("FILE_NAME")
-            .help("Excludes files from check")
-            .action(ArgAction::Append)
-            .num_args(0..)
-            .value_parser(value_parser!(PathBuf)),
-        Arg::new("skip")
-            .short('s')
-            .long("skip")
-            .value_name("CHECK_NAME")
-            .help("Skips checks")
-            .action(ArgAction::Append)
-            .num_args(0..)
-            .value_parser(value_parser!(LintKind))
-            .env("DOTENV_LINTER_SKIP")
-            .value_delimiter(','),
-        Arg::new("recursive")
-            .short('r')
-            .long("recursive")
-            .help("Recursively searches and checks .env files")
-            .action(ArgAction::SetTrue),
-        Arg::new("schema")
-            .short('S')
-            .long("schema")
-            .help("Use schema file to check .env files")
-            .value_parser(value_parser!(PathBuf)),
-        no_color_flag(),
-        quiet_flag(),
-    ]
-}
-
-fn quiet_flag() -> Arg {
-    Arg::new("quiet")
-        .short('q')
-        .long("quiet")
-        .help("Doesn't display additional information")
-        .action(ArgAction::SetTrue)
-}
-
-fn no_color_flag() -> Arg {
-    Arg::new("no-color")
-        .long("no-color")
-        .help("Turns off the colored output")
-        .action(ArgAction::SetTrue)
-}
-
-fn not_check_updates_flag() -> Arg {
-    Arg::new("not-check-updates")
-        .long("not-check-updates")
-        .help("Doesn't check for updates")
-        .value_parser(clap::builder::BoolishValueParser::new())
-        .env("DOTENV_LINTER_NOT_CHECK_UPDATES")
-        .action(ArgAction::SetTrue)
-}
-
-fn disable_color_output(args: &clap::ArgMatches) {
-    if args.get_flag("no-color") {
-        colored::control::set_override(false);
-    }
 }
 
 #[cfg(test)]
@@ -181,7 +211,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn verify_app() {
-        command().debug_assert();
+    fn verify_cli() {
+        use clap::CommandFactory;
+        Cli::command().debug_assert();
     }
 }

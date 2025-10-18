@@ -11,7 +11,7 @@ fn correct_files() {
     for content in contents {
         let testdir = TestDir::new();
         let testfile = testdir.create_testfile(".env", content);
-        let args = &[testfile.as_str()];
+        let args = &["check", testfile.as_str()];
 
         let expected_output = check_output(&[(".env", &[])]);
 
@@ -25,7 +25,7 @@ fn two_blank_lines_at_the_beginning() {
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
-    let args = &[testfile.as_str()];
+    let args = &["check", testfile.as_str()];
     let expected_output = check_output(&[(
         ".env",
         &[".env:2 ExtraBlankLine: Extra blank line detected"],
@@ -40,7 +40,7 @@ fn two_blank_lines_in_the_middle() {
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
-    let args = &[testfile.as_str()];
+    let args = &["check", testfile.as_str()];
     let expected_output = check_output(&[(
         ".env",
         &[".env:4 ExtraBlankLine: Extra blank line detected"],
@@ -55,7 +55,7 @@ fn two_blank_lines_at_the_end() {
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
-    let args = &[testfile.as_str()];
+    let args = &["check", testfile.as_str()];
     let expected_output = check_output(&[(
         ".env",
         &[".env:5 ExtraBlankLine: Extra blank line detected"],
