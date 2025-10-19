@@ -7,6 +7,11 @@ updates:
     commit-message:
       prefix: "chore:"
     open-pull-requests-limit: 10
+    groups:
+      cargo-dependencies:
+        # group minor and patch updates for dependencies
+        # major updates will open their own PR
+        update-types: ["minor", "patch"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -15,3 +20,8 @@ updates:
     commit-message:
       prefix: "chore:"
     open-pull-requests-limit: 10
+    groups:
+      github-actions:
+        # group minor and patch updates for dependencies
+        # major updates will open their own PR
+        update-types: ["minor", "patch"]
