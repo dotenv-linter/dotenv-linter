@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.8.0
+      - uses: Swatinem/rust-cache@v2.8.1
       - run: cargo check --all-targets --tests --examples --benches
       - run: cargo fmt --all --check
       - run: cargo clippy --all-features --tests --examples --benches -- -D warnings
@@ -35,7 +35,7 @@ jobs:
         with:
           crate: grcov
       - run: cargo clean
-      - uses: Swatinem/rust-cache@v2.8.0
+      - uses: Swatinem/rust-cache@v2.8.1
       - run: cargo test --all-features --no-fail-fast
         env:
           CARGO_INCREMENTAL: '0'
@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.8.0
+      - uses: Swatinem/rust-cache@v2.8.1
       - run: cargo install cargo-sort
       - run: cargo-sort --check
 
@@ -117,7 +117,7 @@ jobs:
         run: git config --global core.autocrlf false
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2.8.0
+      - uses: Swatinem/rust-cache@v2.8.1
       - run: cargo test --all-features --no-fail-fast
 
   windows_install:
@@ -278,7 +278,7 @@ jobs:
         with:
           toolchain: ${{ matrix.TOOLCHAIN }}
           targets: ${{ matrix.TARGET }}
-      - uses: Swatinem/rust-cache@v2.8.0
+      - uses: Swatinem/rust-cache@v2.8.1
         with:
           key: ${{ matrix.TARGET }}
       - name: Build
