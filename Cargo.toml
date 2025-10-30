@@ -18,7 +18,7 @@ license = "MIT"
 repository = "https://github.com/dotenv-linter/dotenv-linter"
 
 [workspace.dependencies]
-assert_cmd = "2.0"
+assert_cmd = "2.1"
 clap = { version = "4.5", features = ["cargo", "env", "derive"] }
 dunce = "1.0"
 tempfile = "3.23"
