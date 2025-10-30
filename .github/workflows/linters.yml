@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: lycheeverse/lychee-action@v2.6.1
+      - uses: lycheeverse/lychee-action@v2.7.0
         with:
           args: . --verbose --exclude-path CHANGELOG.md
           fail: true
