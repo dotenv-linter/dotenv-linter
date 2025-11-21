@@ -213,10 +213,8 @@ impl TestDir {
     }
 
     fn init_cmd(&self) -> Command {
-        let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name");
-
+        let mut cmd = assert_cmd::cargo::cargo_bin_cmd!(env!("CARGO_PKG_NAME"));
         cmd.envs(&self.envs);
-
         cmd
     }
 }
