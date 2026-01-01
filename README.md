@@ -96,7 +96,7 @@ You can find other installation methods here: https://dotenv-linter.github.io/#/
 
 #### ✅ Check
 
-`dotenv-linter` can check all `.env` files in the current directory:
+`dotenv-linter` can check all `.env` files in a directory:
 
 ```shell
 $ dotenv-linter check .
