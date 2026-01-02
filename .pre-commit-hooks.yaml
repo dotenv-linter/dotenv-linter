@@ -5,3 +5,17 @@
     entry: /dotenv-linter
     types: [text]
     files: '\.env*'
+-   id: dotenv-linter-check
+    name: dotenv-linter-check
+    description: "Checks the style of Dotenv files."
+    language: rust
+    entry: dotenv-linter check
+    types: [text]
+    files: '\.env*'
+-   id: dotenv-linter-fix
+    name: dotenv-linter-fix
+    description: "Fix the style of Dotenv files."
+    language: rust
+    entry: dotenv-linter fix --no-backup
+    types: [text]
+    files: '\.env*'
