@@ -29,7 +29,7 @@ stub_check_version = []
 
 [dependencies]
 clap.workspace = true
-colored = "3.0"
+colored = "3.1"
 dotenv-analyzer = { version = "0.1", path = "../dotenv-analyzer", features = ["clap"] }
 dotenv-core = { version = "0.1", path = "../dotenv-core" }
 dotenv-finder = { version = "0.1", path = "../dotenv-finder" }
