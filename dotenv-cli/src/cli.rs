@@ -47,9 +47,13 @@ enum Command {
         /// .env files or directories to check (one or more required)
         #[arg(
             num_args(1..),
-            required = true,
+            required_unless_present = "stdin",
         )]
         files: Vec<PathBuf>,
+
+        /// Read .env content from stdin instead of files
+        #[arg(long)]
+        stdin: bool,
 
         #[command(flatten)]
         common: CommonArgs,
@@ -129,6 +133,7 @@ pub fn run() -> Result<i32> {
     match cli.command {
         Command::Check {
             files,
+            stdin,
             common,
             schema,
             #[cfg(feature = "update-informer")]
@@ -145,17 +150,30 @@ pub fn run() -> Result<i32> {
                 };
             }
 
-            let total_warnings = crate::check(
-                &CheckOptions {
-                    files: files.iter().collect(),
-                    ignore_checks: common.ignore_checks,
-                    exclude: common.exclude.iter().collect(),
-                    recursive: common.recursive,
-                    quiet: cli.quiet,
-                    schema: dotenv_schema,
-                },
-                &current_dir,
-            )?;
+            let total_warnings = if stdin {
+                crate::check_stdin(
+                    &CheckOptions {
+                        files: vec![],
+                        ignore_checks: common.ignore_checks,
+                        exclude: vec![],
+                        recursive: false,
+                        quiet: cli.quiet,
+                        schema: dotenv_schema,
+                    },
+                )?
+            } else {
+                crate::check(
+                    &CheckOptions {
+                        files: files.iter().collect(),
+                        ignore_checks: common.ignore_checks,
+                        exclude: common.exclude.iter().collect(),
+                        recursive: common.recursive,
+                        quiet: cli.quiet,
+                        schema: dotenv_schema,
+                    },
+                    &current_dir,
+                )?
+            };
 
             #[cfg(feature = "update-informer")]
             if !not_check_updates && !cli.quiet {

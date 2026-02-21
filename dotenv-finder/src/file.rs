@@ -75,6 +75,26 @@ impl FileEntry {
             lines,
         ))
     }
+
+    // Creates a FileEntry and line entries from raw string content 
+    pub fn from_content(name: String, content: &str) -> (Self, Vec<LineEntry>) {
+        let mut lines: Vec<String> = content.lines().map(|l| l.to_string()).collect();
+
+        if content.ends_with(LF) {
+            lines.push(LF.to_string());
+        }
+
+        let lines = get_line_entries(lines);
+
+        (
+            FileEntry {
+                path: PathBuf::from(&name),
+                file_name: name,
+                total_lines: lines.len(),
+            },
+            lines,
+        )
+    }
 }
 
 /// Checks a file name with the `.env` pattern
