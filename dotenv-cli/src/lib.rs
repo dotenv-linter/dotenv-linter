@@ -1,4 +1,4 @@
-use std::{collections::HashSet, path::PathBuf};
+use std::{collections::HashSet, io::Read, path::PathBuf};
 
 use dotenv_analyzer::LintKind;
 use dotenv_schema::DotEnvSchema;
@@ -56,6 +56,29 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
 
     output.print_total(warnings_count);
     Ok(warnings_count)
+}
+
+pub fn check_stdin(opts: &CheckOptions) -> Result<usize> {
+    let mut input = String::new();
+    std::io::stdin().read_to_string(&mut input)?;
+
+    let (fe, lines) = dotenv_finder::FileEntry::from_content("stdin".to_string(), &input);
+
+    let output = CheckOutput::new(opts.quiet);
+
+    if lines.is_empty() {
+        output.print_nothing_to_check();
+        return Ok(0);
+    }
+
+    let output = output.files_count(1);
+    output.print_processing_info(&fe);
+
+    let warnings = dotenv_analyzer::check(&lines, &opts.ignore_checks, opts.schema.as_ref());
+    output.print_warnings(&fe, &warnings, 0);
+    output.print_total(warnings.len());
+
+    Ok(warnings.len())
 }
 
 pub struct FixOptions<'a> {
