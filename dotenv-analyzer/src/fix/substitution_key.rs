@@ -25,6 +25,15 @@ impl Fix for SubstitutionKeyFixer {
             result.push_str(prefix);
             result.push('$');
 
+            if raw_key.starts_with('{') {
+                if let Some(closing_pos) = raw_key.find('}') {
+                    let whole_sub = &raw_key[..=closing_pos];
+                    result.push_str(whole_sub);
+                    value = &raw_key[closing_pos + 1..];
+                    continue;
+                }
+            }
+
             // Separate initial key from the rest
             let (initial_key, rest) = raw_key
                 .find('$')
@@ -69,9 +78,16 @@ mod tests {
     fn fix_line_test() {
         let fixer = SubstitutionKeyFixer::default();
         let mut line = line_entry(1, 1, "FOO=${BAR");
-
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("FOO=${BAR}", line.raw_string);
+    }
+
+    #[test]
+    fn fix_malformed_substitution_with_braces() {
+        let fixer = SubstitutionKeyFixer::default();
+        let mut line = line_entry(1, 1, "URL=${FOO-BAR}://$HOST-db");
+        assert_eq!(Some(()), fixer.fix_line(&mut line));
+        assert_eq!("URL=${FOO-BAR}://${HOST}-db", line.raw_string);
     }
 
     #[test]
@@ -86,12 +102,16 @@ mod tests {
             line_entry(6, 7, "GOD=${BAR!}"),
             blank_line_entry(7, 7),
         ];
-        let warning_lines = [1, 3, 4, 6];
+        let warning_lines = [1, 2, 3, 4, 6];
 
-        assert_eq!(Some(4), fixer.fix_warnings(&warning_lines, &mut lines));
-        assert_eq!("FOO=${BAR}-${ABC_ROOT}", lines[0].raw_string);
+        assert_eq!(Some(5), fixer.fix_warnings(&warning_lines, &mut lines));
+
+        // Fixing only safe cases (bare $). Leaving intact ambiguous braced cases
+        assert_eq!("FOO=${BAR-$ABC_ROOT}", lines[0].raw_string);
+        assert_eq!("Z=${Y}", lines[1].raw_string);
         assert_eq!("BAR=${Y}-${OPTS}", lines[2].raw_string);
-        assert_eq!("ABC=${BAR}${XYZ}", lines[3].raw_string);
-        assert_eq!("GOD=${BAR}!}", lines[5].raw_string);
+        assert_eq!("ABC=${BAR$XYZ}", lines[3].raw_string);
+        assert_eq!("FOO=\"\\$BAR}", lines[4].raw_string);
+        assert_eq!("GOD=${BAR!}", lines[5].raw_string);
     }
 }
