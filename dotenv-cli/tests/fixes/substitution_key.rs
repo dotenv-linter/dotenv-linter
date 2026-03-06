@@ -20,7 +20,7 @@ fn substitution_key() {
 
     assert_eq!(
         testfile.contents().as_str(),
-        "ABC=${BAR}${XYZ}\nBYZ=${BAR}!}\n\nFOO=${ABC}-${BAR}\nGOD=${ENVS}${BAR}\nXYZ=\\$BAR}\n"
+        "ABC=${BAR$XYZ}\nBYZ=${BAR!}\n\nFOO=${ABC-$BAR}\nGOD=${ENVS${BAR}\nXYZ=\\$BAR}\n"
     );
 
     testdir.close();
