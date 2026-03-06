@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use clap::{Args, Parser, Subcommand, command};
+use clap::{Args, Parser, Subcommand};
 use dotenv_analyzer::LintKind;
 use dotenv_schema::DotEnvSchema;
 
