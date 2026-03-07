@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(cargo *)",
+      "Bash(rustup *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)"
+    ],
+    "deny": [
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(nc *)",
+      "Bash(ssh *)",
+      "Bash(scp *)",
+      "Read(.env)",
+      "Read(*credentials*)",
+      "Read(*secret*)",
+      "Read(*password*)"
+    ],
+    "ask": [
+      "Write",
+      "Edit",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ]
+  }
+}
