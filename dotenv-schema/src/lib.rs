@@ -66,7 +66,7 @@ impl SchemaEntry {
             SchemaValueType::Boolean => {
                 if !matches!(
                     value,
-                    "true" | "false" | "TRUE" | "FALSE" | "yes" | "no" | "YES" | "NO" | "1" | "0"
+                    "true" | "false" | "True" | "False" | "TRUE" | "FALSE" | "yes" | "no" | "YES" | "NO" | "1" | "0"
                 ) {
                     return ValidateResult::Invalid(SchemaValueType::Boolean);
                 }
