@@ -22,5 +22,7 @@ RUN if [ "${TARGETARCH}" = "amd64" ]; \
   && cargo install --target "${TARGET}" --path dotenv-cli
 
 FROM scratch
+LABEL org.opencontainers.image.source="https://github.com/dotenv-linter/dotenv-linter"
+LABEL org.opencontainers.image.licenses="MIT"
 COPY --from=builder /root/.cargo/bin/dotenv-linter /
 ENTRYPOINT ["/dotenv-linter"]
