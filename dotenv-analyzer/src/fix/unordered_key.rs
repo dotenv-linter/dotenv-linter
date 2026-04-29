@@ -101,9 +101,26 @@ impl Fix for UnorderedKeyFixer {
 
 impl UnorderedKeyFixer {
     fn sort_part(part: &mut [LineEntry]) {
+        let mut sorted_lines = Vec::with_capacity(part.len());
+        let mut start_index = 0;
+
+        for (index, line) in part.iter().enumerate() {
+            if Self::is_group_comment(line) {
+                sorted_lines.extend(Self::sort_slices(&part[start_index..index]));
+                sorted_lines.push(line.clone());
+                start_index = index + 1;
+            }
+        }
+
+        sorted_lines.extend(Self::sort_slices(&part[start_index..]));
+
+        part.clone_from_slice(sorted_lines.as_slice());
+    }
+
+    fn sort_slices(part: &[LineEntry]) -> Vec<LineEntry> {
         // Each slice includes a significant line (with key) and previous comments (if present)
         let mut slices = Vec::with_capacity(part.len());
-        part.iter().enumerate().fold(0, |acc, (i, line)| {
+        let trailing_comments_start = part.iter().enumerate().fold(0, |acc, (i, line)| {
             if !line.is_comment() {
                 slices.push(&part[acc..=i]);
                 i + 1
@@ -114,9 +131,36 @@ impl UnorderedKeyFixer {
 
         slices.sort_by_cached_key(|slice| slice.last()?.get_key());
 
-        let sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
+        let mut sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
+        sorted_lines.extend(part[trailing_comments_start..].iter().cloned());
+        sorted_lines
+    }
 
-        part.clone_from_slice(sorted_lines.as_slice());
+    fn is_group_comment(line: &LineEntry) -> bool {
+        let Some(comment) = line.get_comment() else {
+            return false;
+        };
+
+        let trimmed = comment.trim();
+        let Some(stripped) = trimmed.strip_prefix('#') else {
+            return false;
+        };
+
+        let stripped = stripped.trim_start_matches('#').trim_start();
+        let Some(direction) = stripped.chars().next() else {
+            return false;
+        };
+
+        if direction != '>' && direction != '<' {
+            return false;
+        }
+
+        let name = stripped[direction.len_utf8()..]
+            .trim()
+            .trim_end_matches('#')
+            .trim();
+
+        !name.is_empty()
     }
 }
 
@@ -812,6 +856,43 @@ mod tests {
                 "\n",
                 "# end comment",
                 "\n",
+            ],
+        );
+    }
+
+    #[test]
+    fn comment_group_markers_stay_in_place_test() {
+        let mut lines = get_lines(vec![
+            "ENV2=bbb",
+            "ENV1=aaa",
+            "",
+            "###> group1 ###",
+            "ENV4=ddd",
+            "ENV5=eee",
+            "ENV3=ccc",
+            "###< group1 ###",
+            "",
+            "ENV7=ggg",
+            "ENV6=fff",
+        ]);
+        let warning_lines = [1, 6, 10];
+
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "ENV1=aaa",
+                "ENV2=bbb",
+                "",
+                "###> group1 ###",
+                "ENV3=ccc",
+                "ENV4=ddd",
+                "ENV5=eee",
+                "###< group1 ###",
+                "",
+                "ENV6=fff",
+                "ENV7=ggg",
             ],
         );
     }
