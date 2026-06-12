@@ -6,6 +6,7 @@ pub enum LintKind {
     EndingBlankLine,
     ExtraBlankLine,
     IncorrectDelimiter,
+    InvisibleCharacter,
     KeyWithoutValue,
     LeadingCharacter,
     LowercaseKey,
@@ -19,11 +20,12 @@ pub enum LintKind {
 }
 
 impl LintKind {
-    pub const ALL: [LintKind; 14] = [
+    pub const ALL: [LintKind; 15] = [
         LintKind::DuplicatedKey,
         LintKind::EndingBlankLine,
         LintKind::ExtraBlankLine,
         LintKind::IncorrectDelimiter,
+        LintKind::InvisibleCharacter,
         LintKind::KeyWithoutValue,
         LintKind::LeadingCharacter,
         LintKind::LowercaseKey,
@@ -42,6 +44,7 @@ impl LintKind {
             LintKind::EndingBlankLine => "EndingBlankLine",
             LintKind::ExtraBlankLine => "ExtraBlankLine",
             LintKind::IncorrectDelimiter => "IncorrectDelimiter",
+            LintKind::InvisibleCharacter => "InvisibleCharacter",
             LintKind::KeyWithoutValue => "KeyWithoutValue",
             LintKind::LeadingCharacter => "LeadingCharacter",
             LintKind::LowercaseKey => "LowercaseKey",
