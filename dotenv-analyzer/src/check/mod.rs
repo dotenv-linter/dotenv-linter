@@ -7,6 +7,7 @@ mod duplicated_key;
 mod ending_blank_line;
 mod extra_blank_line;
 mod incorrect_delimiter;
+mod invisible_character;
 mod key_without_value;
 mod leading_character;
 mod lowercase_key;
@@ -37,6 +38,7 @@ fn checklist<'a>(schema: Option<&'a DotEnvSchema>) -> Vec<Box<dyn Check + 'a>> {
         Box::<ending_blank_line::EndingBlankLineChecker>::default(),
         Box::<extra_blank_line::ExtraBlankLineChecker>::default(),
         Box::<incorrect_delimiter::IncorrectDelimiterChecker>::default(),
+        Box::<invisible_character::InvisibleCharacter>::default(),
         Box::<key_without_value::KeyWithoutValueChecker>::default(),
         Box::<leading_character::LeadingCharacterChecker>::default(),
         Box::<lowercase_key::LowercaseKeyChecker>::default(),
