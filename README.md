@@ -161,7 +161,7 @@ To run `dotenv-linter` as part of a [pre-commit](https://pre-commit.com/) workfl
 repos:
     ...
       - repo: https://github.com/dotenv-linter/dotenv-linter
-      rev: 3.3.1
+      rev: v4.0.0
       hooks:
         - id: dotenv-linter
       ...
