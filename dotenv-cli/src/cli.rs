@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use clap::{Args, Parser, Subcommand, command};
+use clap::{Args, Parser, Subcommand};
 use dotenv_analyzer::LintKind;
 use dotenv_schema::DotEnvSchema;
 
@@ -44,12 +44,21 @@ struct Cli {
 enum Command {
     /// Check .env files for errors such as duplicate keys or invalid syntax
     Check {
-        /// .env files or directories to check (one or more required)
+        /// .env files or directories to check (omit when using --stdin)
         #[arg(
             num_args(1..),
-            required = true,
+            required_unless_present = "stdin",
+            conflicts_with = "stdin",
         )]
         files: Vec<PathBuf>,
+
+        /// Read .env content from STDIN instead of from files
+        #[arg(long)]
+        stdin: bool,
+
+        /// Display name to use for STDIN content in output (used with --stdin)
+        #[arg(long, requires = "stdin", value_name = "NAME", default_value = ".env")]
+        stdin_filename: String,
 
         #[command(flatten)]
         common: CommonArgs,
@@ -65,12 +74,21 @@ enum Command {
     },
     /// Automatically fix issues in .env files
     Fix {
-        /// .env files or directories to fix (one or more required)
+        /// .env files or directories to fix (omit when using --stdin)
         #[arg(
             num_args(1..),
-            required = true,
+            required_unless_present = "stdin",
+            conflicts_with = "stdin",
         )]
         files: Vec<PathBuf>,
+
+        /// Read .env content from STDIN instead of from files (implies --dry-run)
+        #[arg(long)]
+        stdin: bool,
+
+        /// Display name to use for STDIN content in output (used with --stdin)
+        #[arg(long, requires = "stdin", value_name = "NAME", default_value = ".env")]
+        stdin_filename: String,
 
         #[command(flatten)]
         common: CommonArgs,
@@ -129,6 +147,8 @@ pub fn run() -> Result<i32> {
     match cli.command {
         Command::Check {
             files,
+            stdin,
+            stdin_filename,
             common,
             schema,
             #[cfg(feature = "update-informer")]
@@ -145,6 +165,12 @@ pub fn run() -> Result<i32> {
                 };
             }
 
+            let stdin_source = if stdin {
+                Some(read_stdin_to_string()?)
+            } else {
+                None
+            };
+
             let total_warnings = crate::check(
                 &CheckOptions {
                     files: files.iter().collect(),
@@ -153,6 +179,7 @@ pub fn run() -> Result<i32> {
                     recursive: common.recursive,
                     quiet: cli.quiet,
                     schema: dotenv_schema,
+                    stdin: stdin_source.map(|content| (content, stdin_filename)),
                 },
                 &current_dir,
             )?;
@@ -168,10 +195,22 @@ pub fn run() -> Result<i32> {
         }
         Command::Fix {
             files,
+            stdin,
+            stdin_filename,
             common,
             no_backup,
             dry_run,
         } => {
+            let stdin_source = if stdin {
+                Some(read_stdin_to_string()?)
+            } else {
+                None
+            };
+
+            // Fixing STDIN content can't be written back to a file, so it
+            // always behaves as a dry run.
+            let dry_run = dry_run || stdin_source.is_some();
+
             crate::fix(
                 &FixOptions {
                     files: files.iter().collect(),
@@ -182,6 +221,7 @@ pub fn run() -> Result<i32> {
 
                     no_backup,
                     dry_run,
+                    stdin: stdin_source.map(|content| (content, stdin_filename)),
                 },
                 &current_dir,
             )?;
@@ -204,6 +244,15 @@ pub fn run() -> Result<i32> {
     }
 
     Ok(1)
+}
+
+/// Reads the whole content of STDIN into a `String`.
+fn read_stdin_to_string() -> Result<String> {
+    use std::io::Read;
+
+    let mut buf = String::new();
+    std::io::stdin().read_to_string(&mut buf)?;
+    Ok(buf)
 }
 
 #[cfg(test)]

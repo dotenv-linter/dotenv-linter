@@ -32,6 +32,7 @@ pub fn fix_benchmark(c: &mut Criterion) {
                     recursive: false,
                     no_backup: true,
                     dry_run: false,
+                    stdin: None,
                 };
                 dotenv_linter::fix(black_box(&opts), black_box(&current_dir))
             },
@@ -67,6 +68,7 @@ pub fn fix_benchmark_with_backup(c: &mut Criterion) {
                     recursive: false,
                     no_backup: false,
                     dry_run: false,
+                    stdin: None,
                 };
                 dotenv_linter::fix(black_box(&opts), black_box(&current_dir))
             },

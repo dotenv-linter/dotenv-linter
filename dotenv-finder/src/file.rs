@@ -57,6 +57,19 @@ impl FileEntry {
         let file_name = get_file_name(&path)?.to_string();
         let content = fs::read_to_string(&path).ok()?;
 
+        Some(Self::from_content(path, file_name, &content))
+    }
+
+    /// Builds a `(FileEntry, Vec<LineEntry>)` from content read on `STDIN`.
+    ///
+    /// `display_name` is used purely for display purposes (e.g. `--stdin-filename`)
+    /// and does not need to point at a real file on disk.
+    pub fn from_stdin(content: &str, display_name: String) -> (Self, Vec<LineEntry>) {
+        let path = PathBuf::from(&display_name);
+        Self::from_content(path, display_name, content)
+    }
+
+    fn from_content(path: PathBuf, file_name: String, content: &str) -> (Self, Vec<LineEntry>) {
         let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
 
         // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
@@ -66,14 +79,14 @@ impl FileEntry {
 
         let lines = get_line_entries(lines);
 
-        Some((
+        (
             FileEntry {
                 path,
                 file_name,
                 total_lines: lines.len(),
             },
             lines,
-        ))
+        )
     }
 }
 
@@ -211,4 +224,4 @@ mod tests {
             )
         }
     }
-}
+            }

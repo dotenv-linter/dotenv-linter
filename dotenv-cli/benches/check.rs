@@ -17,6 +17,7 @@ pub fn check_benchmark(c: &mut Criterion) {
         quiet: false,
         recursive: false,
         schema: None,
+        stdin: None,
     };
 
     fs::copy("benches/fixtures/simple.env", path.join(".env")).expect("copy .env file");

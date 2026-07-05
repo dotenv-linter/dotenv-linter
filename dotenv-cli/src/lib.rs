@@ -23,9 +23,25 @@ pub struct CheckOptions<'a> {
     pub quiet: bool,
     pub recursive: bool,
     pub schema: Option<DotEnvSchema>,
+    /// When set, check this (content, display_name) pair read from STDIN
+    /// instead of searching `files` on disk.
+    pub stdin: Option<(String, String)>,
 }
 
 pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
+    if let Some((content, display_name)) = &opts.stdin {
+        let (fe, lines) = dotenv_finder::FileEntry::from_stdin(content, display_name.clone());
+        let output = CheckOutput::new(opts.quiet).files_count(1);
+
+        output.print_processing_info(&fe);
+        let warnings = dotenv_analyzer::check(&lines, &opts.ignore_checks, opts.schema.as_ref());
+        output.print_warnings(&fe, &warnings, 0);
+
+        let warnings_count = warnings.len();
+        output.print_total(warnings_count);
+        return Ok(warnings_count);
+    }
+
     let files = dotenv_finder::FinderBuilder::new(current_dir)
         .with_paths(&opts.files)
         .exclude(&opts.exclude)
@@ -66,9 +82,38 @@ pub struct FixOptions<'a> {
     pub recursive: bool,
     pub no_backup: bool,
     pub dry_run: bool,
+    /// When set, fix this (content, display_name) pair read from STDIN
+    /// instead of searching `files` on disk. Always behaves as a dry run,
+    /// since there is no source file to write the result back to.
+    pub stdin: Option<(String, String)>,
 }
 
 pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
+    if let Some((content, display_name)) = &opts.stdin {
+        let (fe, mut lines) = dotenv_finder::FileEntry::from_stdin(content, display_name.clone());
+        let output = FixOutput::new(opts.quiet).files_count(1);
+
+        output.print_processing_info(&fe);
+
+        let warnings = dotenv_analyzer::check(&lines, &opts.ignore_checks, None);
+        if warnings.is_empty() {
+            output.print_total(0);
+            return Ok(());
+        }
+
+        let fixes_done = dotenv_analyzer::fix(&warnings, &mut lines, &opts.ignore_checks);
+        if fixes_done != warnings.len() {
+            output.print_not_all_warnings_fixed();
+        }
+
+        // STDIN input has no backing file, so always print the result
+        // instead of writing anything to disk.
+        output.print_dry_run(&lines);
+        output.print_warnings(&fe, &warnings, 0);
+        output.print_total(warnings.len());
+        return Ok(());
+    }
+
     let files = dotenv_finder::FinderBuilder::new(current_dir)
         .with_paths(&opts.files)
         .exclude(&opts.exclude)
@@ -215,4 +260,4 @@ pub(crate) fn check_for_updates() {
 
         println!("\n{msg}\n{release_url}");
     }
-}
+                          }
