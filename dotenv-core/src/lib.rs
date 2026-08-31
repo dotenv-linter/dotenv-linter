@@ -105,14 +105,20 @@ impl LineEntry {
             } else {
                 let (key, rest) = raw_key
                     .strip_prefix('{')
-                    .and_then(|raw_key| raw_key.find('}').map(|i| raw_key.split_at(i)))
+                    .and_then(|raw_key| {
+                        raw_key.find('}').and_then(|i| {
+                            let (raw_key, rest) = raw_key.split_at(i);
+                            substitution_key_name(raw_key).map(|key| (key, rest))
+                        })
+                    })
                     .or_else(|| {
                         raw_key
                             .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
                             .map(|i| raw_key.split_at(i))
                     })
                     .unwrap_or((raw_key, ""));
-                if key.is_empty() {
+                if key.is_empty() || key.contains(|c: char| !c.is_ascii_alphanumeric() && c != '_')
+                {
                     return keys;
                 }
 
@@ -121,6 +127,25 @@ impl LineEntry {
             }
         }
         keys
+    }
+}
+
+fn substitution_key_name(key: &str) -> Option<&str> {
+    let mut operator_index = None;
+
+    for operator in [":-", ":+", ":=", ":?"] {
+        for (index, _) in key.match_indices(operator) {
+            if operator_index.is_some() {
+                return None;
+            }
+            operator_index = Some((index, operator));
+        }
+    }
+
+    match operator_index {
+        Some((index, ":-" | ":+")) => Some(&key[..index]),
+        Some(_) => None,
+        None => Some(key),
     }
 }
 
@@ -364,6 +389,30 @@ mod tests {
             assert_eq!(input.get_substitution_keys(), vec!["BAR"]);
 
             let input = line_entry(1, 1, "FOO=${BAR");
+            assert!(input.get_substitution_keys().is_empty());
+        }
+
+        #[test]
+        fn run_with_default_and_alternate_values() {
+            let input = line_entry(1, 1, "FOO=${NODE_ENV:-development if not set}");
+            assert_eq!(input.get_substitution_keys(), vec!["NODE_ENV"]);
+
+            let input = line_entry(1, 1, "BAR=${CI:+only when running in CI}");
+            assert_eq!(input.get_substitution_keys(), vec!["CI"]);
+
+            let input = line_entry(1, 1, "BAZ=${NODE_ENV:-development}${CI:+only}");
+            assert_eq!(input.get_substitution_keys(), vec!["NODE_ENV", "CI"]);
+        }
+
+        #[test]
+        fn run_with_invalid_default_and_alternate_values() {
+            let input = line_entry(1, 1, "FOO=${NODE_ENV:development}");
+            assert!(input.get_substitution_keys().is_empty());
+
+            let input = line_entry(1, 1, "BAR=${SOME_VALUE--$$++???_END}");
+            assert!(input.get_substitution_keys().is_empty());
+
+            let input = line_entry(1, 1, "BAZ=${CI:+only:?IS_UNSET:other}");
             assert!(input.get_substitution_keys().is_empty());
         }
 

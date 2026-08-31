@@ -8,6 +8,10 @@ fn correct_files() {
         "A=B\nFOO=\"$BAR\"\n",
         "FOO=$ABC{${BAR}\nBIZ=$FOO-$ABC\n",
         "ABC=\\${BAR\n",
+        "FOO=\"${NODE_ENV:-development if not set}\"\n",
+        "BAR=\"${CI:+only when running in CI}\"\n",
+        "BAZ=${APP_ENV:-$NODE_ENV}\n",
+        "FOO=${NODE_ENV:-development}${CI:+only}\n",
     ];
 
     for content in contents {
@@ -28,8 +32,17 @@ fn incorrect_files() {
         "A=${BAR!}FOO=B4\n",
         "TEST=$BAR}\n",
         "FOO=${ABC-$BAR}\n",
+        "BAR=${SOME_VALUE--$$++???_END}\n",
+        "BAZ=${CI:+only:?IS_UNSET:other}\n",
     ];
-    let expected = [(2, "FOO"), (1, "A"), (1, "TEST"), (1, "FOO")];
+    let expected = [
+        (2, "FOO"),
+        (1, "A"),
+        (1, "TEST"),
+        (1, "FOO"),
+        (1, "BAR"),
+        (1, "BAZ"),
+    ];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();
