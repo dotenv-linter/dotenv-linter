@@ -39,6 +39,8 @@ impl Fix for UnorderedKeyFixer {
             let mut controls_this_check = false;
             let mut is_off = false;
 
+            let is_group_boundary_comment = Self::is_group_boundary_comment(line);
+
             if let Some(comment) = line.get_comment().and_then(Comment::parse) {
                 is_control_comment = true;
                 controls_this_check = comment.checks.contains(&self.name());
@@ -67,6 +69,7 @@ impl Fix for UnorderedKeyFixer {
                 if line.is_empty()
                     || lines.len() == i + 1 // Is this the last line?
                     || is_control_comment
+                    || is_group_boundary_comment
                     || has_substitution_variables
                 {
                     if has_substitution_variables {
@@ -117,6 +120,15 @@ impl UnorderedKeyFixer {
         let sorted_lines: Vec<_> = slices.into_iter().flat_map(|s| s.iter().cloned()).collect();
 
         part.clone_from_slice(sorted_lines.as_slice());
+    }
+
+    fn is_group_boundary_comment(line: &LineEntry) -> bool {
+        let Some(comment) = line.get_comment() else {
+            return false;
+        };
+
+        let trimmed = comment.trim_start();
+        trimmed.starts_with("###>") || trimmed.starts_with("###<")
     }
 }
 
@@ -259,6 +271,43 @@ mod tests {
                 "\n",
                 "# end comment",
                 "\n",
+            ],
+        );
+    }
+
+    #[test]
+    fn comment_delimited_groups_test() {
+        let mut lines = get_lines(vec![
+            "ENV2=bbb",
+            "ENV1=aaa",
+            "",
+            "###> group1 ###",
+            "ENV4=ddd",
+            "ENV5=eee",
+            "ENV3=ccc",
+            "###< group1 ###",
+            "",
+            "ENV7=ggg",
+            "ENV6=fff",
+        ]);
+        let warning_lines = [2, 7, 11];
+
+        assert_eq!(Some(3), run_fixer(&warning_lines, &mut lines));
+
+        assert_lines(
+            &lines,
+            vec![
+                "ENV1=aaa",
+                "ENV2=bbb",
+                "",
+                "###> group1 ###",
+                "ENV3=ccc",
+                "ENV4=ddd",
+                "ENV5=eee",
+                "###< group1 ###",
+                "",
+                "ENV6=fff",
+                "ENV7=ggg",
             ],
         );
     }

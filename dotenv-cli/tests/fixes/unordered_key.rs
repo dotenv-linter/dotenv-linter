@@ -26,3 +26,28 @@ fn unordered_key() {
 
     testdir.close();
 }
+
+#[test]
+fn unordered_key_with_comment_delimited_groups() {
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(
+        ".env",
+        "ENV2=bbb\nENV1=aaa\n\n###> group1 ###\nENV4=ddd\nENV5=eee\nENV3=ccc\n###< group1 ###\n\nENV7=ggg\nENV6=fff\n",
+    );
+    let expected_output = fix_output(&[(
+        ".env",
+        &[
+            ".env:2 UnorderedKey: The ENV1 key should go before the ENV2 key",
+            ".env:7 UnorderedKey: The ENV3 key should go before the ENV4 key",
+            ".env:11 UnorderedKey: The ENV6 key should go before the ENV7 key",
+        ],
+    )]);
+    testdir.test_command_fix_success(expected_output);
+
+    assert_eq!(
+        testfile.contents().as_str(),
+        "ENV1=aaa\nENV2=bbb\n\n###> group1 ###\nENV3=ccc\nENV4=ddd\nENV5=eee\n###< group1 ###\n\nENV6=fff\nENV7=ggg\n",
+    );
+
+    testdir.close();
+}
