@@ -9,6 +9,12 @@ use tempfile::{TempDir, tempdir, tempdir_in};
 
 use crate::common::{test_file::TestFile, test_link::create_test_symlink};
 
+/// Windows only grants `SeCreateSymbolicLinkPrivilege` to administrators, or to
+/// any user when Developer Mode is enabled. Without it `symlink_dir` fails with
+/// `ERROR_PRIVILEGE_NOT_HELD`.
+#[cfg(windows)]
+const ERROR_PRIVILEGE_NOT_HELD: i32 = 1314;
+
 /// Use to test commands in temporary directories
 pub struct TestDir {
     current_dir: TempDir,
@@ -61,10 +67,18 @@ impl TestDir {
         TestFile::new(&self.current_dir, name, contents)
     }
 
-    /// Create a new TestLink to a TestDir within the TestDir
-    pub fn create_symlink(&self, source_test_dir: &Self, name: &str) {
+    /// Create a new TestLink to a TestDir within the TestDir.
+    ///
+    /// Returns `false` when the platform refuses to create a symlink for an
+    /// unprivileged user, which is the default on Windows.
+    pub fn create_symlink(&self, source_test_dir: &Self, name: &str) -> bool {
         let dest = &self.current_dir.path().join(name);
-        create_test_symlink(&source_test_dir.current_dir, dest);
+        match create_test_symlink(&source_test_dir.current_dir, dest) {
+            Ok(()) => true,
+            #[cfg(windows)]
+            Err(err) if err.raw_os_error() == Some(ERROR_PRIVILEGE_NOT_HELD) => false,
+            Err(err) => panic!("create symlink: {err}"),
+        }
     }
 
     /// Get full path of TestDir as a &str
