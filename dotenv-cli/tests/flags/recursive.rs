@@ -134,7 +134,10 @@ fn checks_nofollow_subdir_symlinks() {
         .to_str()
         .expect("multi-platform path to test .env file");
     // create a symbolic link to its containing directory
-    test_subdir.create_symlink(&test_subdir, "symlink");
+    if !test_subdir.create_symlink(&test_subdir, "symlink") {
+        eprintln!("skipping: creating a symlink needs elevation or Developer Mode on Windows");
+        return;
+    }
 
     let args = &["check", ".", "-r"];
     let expected_output = check_output(&[(
