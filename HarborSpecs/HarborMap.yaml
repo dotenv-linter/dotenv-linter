@@ -1,0 +1,11 @@
+project: dotenv-linter
+description: Lightning-fast linter for .env files. Written in Rust
+
+variants:
+  - type: url
+    url: https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh
+    command: curl -sSfL https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/master/install.sh | sh -s
+    version: 1.0.0
+    os: any
+    architecture: any
+    runtime:
