@@ -74,6 +74,11 @@ cause the application to malfunction.
 
 ## 👨‍💻 Installation
 
+### Install with [Harbor](https://github.com/kauanmezavila/harbor)
+```shell script
+$ harbor install dotenv-linter/dotenv-linter@latest
+```
+
 ### Pre-compiled binary
 
 ```shell script
