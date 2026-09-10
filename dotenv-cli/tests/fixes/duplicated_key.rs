@@ -21,3 +21,30 @@ fn duplicated_key() {
 
     testdir.close();
 }
+
+#[test]
+fn duplicated_key_with_multiline_value() {
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(
+        ".env",
+        "KEY=\"-----BEGIN-----\nabc\n-----END-----\"\n\
+         KEY=\"-----BEGIN-----\nxyz\n-----END-----\"\n",
+    );
+    let expected_output = fix_output(&[(
+        ".env",
+        &[".env:4 DuplicatedKey: The KEY key is duplicated"],
+    )]);
+
+    testdir.test_command_fix_success(expected_output);
+
+    assert_eq!(
+        testfile.contents().as_str(),
+        "KEY=\"-----BEGIN-----\nabc\n-----END-----\"\n\
+         # KEY=\"-----BEGIN-----\n# xyz\n# -----END-----\"\n"
+    );
+
+    testdir.test_command_success_with_args(
+        with_default_args(&["check", "."]),
+        check_output(&[(".env", &[])]),
+    );
+}

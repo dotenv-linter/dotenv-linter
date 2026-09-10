@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixes
+
+- Comment out every line of a multi-line value when fixing a duplicated key
+
 ## [v4.0.0](https://github.com/dotenv-linter/dotenv-linter/releases/tag/v4.0.0) - 2025-10-18
 
 ### Features
