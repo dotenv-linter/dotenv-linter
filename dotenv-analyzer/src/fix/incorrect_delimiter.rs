@@ -17,8 +17,7 @@ impl Fix for IncorrectDelimiterFixer {
         let cleaned_key = remove_invalid_leading_chars(key);
         let start_idx = key.len() - cleaned_key.len();
 
-        let cleaned_key = key[start_idx..].replace(|c: char| !c.is_alphanumeric(), "_");
-
+        let cleaned_key = key[start_idx..].replace(|c: char| !c.is_alphanumeric() && c != '.', "_");
         line.raw_string = format!("{}{}={}", &key[..start_idx], cleaned_key, line.get_value()?);
 
         Some(())
@@ -69,5 +68,20 @@ mod tests {
 
         assert_eq!(Some(1), fixer.fix_warnings(&warning_lines, &mut lines));
         assert_eq!("RAILS_ENV=development", lines[0].raw_string);
+    }
+    #[test]
+    fn fix_line_with_dot_test() {
+        let fixer = IncorrectDelimiterFixer::default();
+        let mut line = line_entry(
+            1,
+            1,
+            "Logging__Console__LogLevel__Microsoft.Hosting.Lifetime=Warning",
+        );
+
+        assert_eq!(Some(()), fixer.fix_line(&mut line));
+        assert_eq!(
+            "Logging__Console__LogLevel__Microsoft.Hosting.Lifetime=Warning",
+            line.raw_string
+        );
     }
 }
