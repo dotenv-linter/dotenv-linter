@@ -16,7 +16,7 @@ impl Fix for LeadingCharacterFixer {
 
         let cleaned_key = remove_invalid_leading_chars(key);
 
-        line.raw_string = format!("{}={}", cleaned_key, line.get_value()?);
+        line.raw_string = line.format_assignment(cleaned_key, line.get_value()?);
 
         Some(())
     }

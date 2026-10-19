@@ -43,6 +43,15 @@ impl LineEntry {
         Some(stripped.split('=').next().unwrap_or(stripped))
     }
 
+    pub fn format_assignment(&self, key: &str, value: &str) -> String {
+        let prefix = if self.trimmed_string().starts_with("export ") {
+            "export "
+        } else {
+            ""
+        };
+        format!("{prefix}{key}={value}")
+    }
+
     pub fn get_value(&self) -> Option<&str> {
         if self.is_empty_or_comment() {
             return None;
@@ -131,6 +140,14 @@ pub fn is_escaped(prefix: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn formatting_assignment_preserves_export() {
+        let exported = LineEntry::new(1, "export foo=bar", false);
+        assert_eq!(exported.format_assignment("FOO", "bar"), "export FOO=bar");
+        let plain = LineEntry::new(1, "foo=bar", false);
+        assert_eq!(plain.format_assignment("FOO", "bar"), "FOO=bar");
+    }
 
     #[test]
     fn is_escaped_value_test() {

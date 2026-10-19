@@ -14,7 +14,7 @@ impl Fix for SpaceCharacterFixer {
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
         let value = line.get_value()?;
-        line.raw_string = format!("{}={}", key.trim_end(), value.trim_start());
+        line.raw_string = line.format_assignment(key.trim_end(), value.trim_start());
 
         Some(())
     }

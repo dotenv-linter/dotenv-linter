@@ -55,7 +55,7 @@ impl Fix for SubstitutionKeyFixer {
             result.push_str(rest_part);
         }
 
-        line.raw_string = format!("{}={}", line.get_key()?, result);
+        line.raw_string = line.format_assignment(line.get_key()?, &result);
         Some(())
     }
 }

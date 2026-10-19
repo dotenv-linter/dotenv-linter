@@ -27,7 +27,7 @@ pub struct CheckOptions<'a> {
 
 pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
     let files = dotenv_finder::FinderBuilder::new(current_dir)
-        .with_paths(&opts.files)
+        .try_with_paths(&opts.files)?
         .exclude(&opts.exclude)
         .recursive(opts.recursive)
         .build()
@@ -70,7 +70,7 @@ pub struct FixOptions<'a> {
 
 pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
     let files = dotenv_finder::FinderBuilder::new(current_dir)
-        .with_paths(&opts.files)
+        .try_with_paths(&opts.files)?
         .exclude(&opts.exclude)
         .recursive(opts.recursive)
         .build()
@@ -129,7 +129,7 @@ pub struct DiffOptions<'a> {
 // Compares if different environment files contains the same variables and returns warnings if not
 pub fn diff(opts: &DiffOptions, current_dir: &PathBuf) -> Result<usize> {
     let files = dotenv_finder::FinderBuilder::new(current_dir)
-        .with_paths(&opts.files)
+        .try_with_paths(&opts.files)?
         .build()
         .find();
     let output = DiffOutput::new(opts.quiet);
