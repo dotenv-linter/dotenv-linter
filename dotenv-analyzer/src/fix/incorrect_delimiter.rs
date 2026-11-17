@@ -19,7 +19,10 @@ impl Fix for IncorrectDelimiterFixer {
 
         let cleaned_key = key[start_idx..].replace(|c: char| !c.is_alphanumeric(), "_");
 
-        line.raw_string = format!("{}{}={}", &key[..start_idx], cleaned_key, line.get_value()?);
+        line.raw_string = line.format_assignment(
+            &format!("{}{}", &key[..start_idx], cleaned_key),
+            line.get_value()?,
+        );
 
         Some(())
     }

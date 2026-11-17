@@ -37,7 +37,7 @@ fn fix_output_in_quiet_mode() {
     let test_dir = TestDir::new();
     let _ = test_dir.create_testfile(".env", "abc=DEF\n\nF=BAR\nB=bbb\n");
 
-    let args = &["check", ".", "--quiet"];
+    let args = &["--quiet"];
     let expected_output = format!("\nAll warnings are fixed. Total: {}\n", 2);
 
     test_dir.test_command_fix_success_with_args(expected_output, args);

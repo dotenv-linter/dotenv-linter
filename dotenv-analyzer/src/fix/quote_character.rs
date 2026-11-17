@@ -15,7 +15,7 @@ impl Fix for QuoteCharacterFixer {
         let value = line.get_value()?;
         let pure_val = value.replace(['\'', '\"'], "");
 
-        line.raw_string = format!("{}={}", line.get_key()?, pure_val);
+        line.raw_string = line.format_assignment(line.get_key()?, &pure_val);
 
         Some(())
     }

@@ -47,6 +47,18 @@ impl<'a> FinderBuilder<'a> {
         self
     }
 
+    /// Resolve explicitly requested paths without discarding input errors.
+    pub fn try_with_paths(mut self, paths: &'a [&'a PathBuf]) -> std::io::Result<Self> {
+        self.paths = paths
+            .iter()
+            .map(fs::canonicalize)
+            .collect::<std::io::Result<Vec<_>>>()?;
+        if paths.is_empty() {
+            self.paths.push(self.dir.clone());
+        }
+        Ok(self)
+    }
+
     pub fn exclude(mut self, exclude: &'a [&'a PathBuf]) -> Self {
         self.excluded = exclude
             .iter()

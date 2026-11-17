@@ -14,7 +14,7 @@ impl Fix for ValueWithoutQuotesFixer {
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let pure_val = format!("\"{}\"", line.get_value()?);
 
-        line.raw_string = format!("{}={}", line.get_key()?, pure_val);
+        line.raw_string = line.format_assignment(line.get_key()?, &pure_val);
 
         Some(())
     }

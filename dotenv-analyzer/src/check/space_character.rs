@@ -23,9 +23,7 @@ impl Default for SpaceCharacterChecker<'_> {
 
 impl Check for SpaceCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
-        let line_splitted = line.raw_string.split('=').collect::<Vec<&str>>();
-
-        if let [key, value] = &line_splitted[..]
+        if let Some((key, value)) = line.raw_string.split_once('=')
             && (key.ends_with(' ') || value.starts_with(' '))
         {
             return Some(Warning::new(line.number, self.name(), self.message()));
@@ -87,7 +85,11 @@ mod tests {
     fn failing_run() {
         check_test(
             &mut SpaceCharacterChecker::default(),
-            [("DEBUG_HTTP = true", Some(MESSAGE))],
+            [
+                ("DEBUG_HTTP = true", Some(MESSAGE)),
+                ("AUTH_TOKEN = \"abc==\"", Some(MESSAGE)),
+                ("AUTH_TOKEN=\"abc==\"", None),
+            ],
         );
     }
 

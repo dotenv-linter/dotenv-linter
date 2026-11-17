@@ -14,7 +14,7 @@ impl Fix for LowercaseKeyFixer {
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
         let key = line.get_key()?;
         let key = key.to_uppercase();
-        line.raw_string = format!("{}={}", key, line.get_value()?);
+        line.raw_string = line.format_assignment(&key, line.get_value()?);
 
         Some(())
     }
