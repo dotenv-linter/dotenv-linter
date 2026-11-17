@@ -4,7 +4,6 @@ version = "0.1.1"
 authors.workspace = true
 documentation = "https://docs.rs/dotenv-schema"
 edition.workspace = true
-homepage = "https://github.com/dotenv-linter/dotenv-linter"
 include = ["/src", "README.md"]
 keywords = ["dotenv", "environment", "env", "schema"]
 license.workspace = true
