@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use dotenv_core::LineEntry;
 
 use super::Fix;
-use crate::{LintKind, comment::Comment};
+use crate::{LF, LintKind, comment::Comment};
 
 #[derive(Default)]
 pub(crate) struct DuplicatedKeyFixer {}
@@ -41,7 +41,12 @@ impl Fix for DuplicatedKeyFixer {
     }
 
     fn fix_line(&self, line: &mut LineEntry) -> Option<()> {
-        line.raw_string = format!("# {}", line.raw_string);
+        line.raw_string = line
+            .raw_string
+            .split(LF)
+            .map(|line| format!("# {line}"))
+            .collect::<Vec<String>>()
+            .join(LF);
 
         Some(())
     }
@@ -76,6 +81,22 @@ mod tests {
             &lines[..2],
             &[line_entry(1, 4, "FOO=BAR"), line_entry(2, 4, "Z=Y")]
         );
+    }
+
+    #[test]
+    fn fix_warnings_with_multiline_value() {
+        let fixer = DuplicatedKeyFixer::default();
+        let mut lines = vec![
+            line_entry(1, 5, "FOO=BAR"),
+            line_entry(2, 5, "FOO=\"multi\nline\nvalue\""),
+            line_entry(5, 5, "\n"),
+        ];
+        let warning_lines = [lines[1].number];
+
+        assert_eq!(Some(1), fixer.fix_warnings(&warning_lines, &mut lines));
+        assert_eq!("# FOO=\"multi\n# line\n# value\"", lines[1].raw_string);
+        assert_eq!("FOO=BAR", lines[0].raw_string);
+        assert_eq!("\n", lines[2].raw_string);
     }
 
     #[test]
