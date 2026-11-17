@@ -8,6 +8,8 @@ fn correct_files() {
         "A=B\nFOO=\"$BAR\"\n",
         "FOO=$ABC{${BAR}\nBIZ=$FOO-$ABC\n",
         "ABC=\\${BAR\n",
+        "FOO=${BAR}suffix\n",
+        "FOO='${BAR'\n",
     ];
 
     for content in contents {
@@ -28,8 +30,17 @@ fn incorrect_files() {
         "A=${BAR!}FOO=B4\n",
         "TEST=$BAR}\n",
         "FOO=${ABC-$BAR}\n",
+        "A=${MY.VAR}\n",
+        "A=${BAR:-baz}\n",
     ];
-    let expected = [(2, "FOO"), (1, "A"), (1, "TEST"), (1, "FOO")];
+    let expected = [
+        (2, "FOO"),
+        (1, "A"),
+        (1, "TEST"),
+        (1, "FOO"),
+        (1, "A"),
+        (1, "A"),
+    ];
 
     for (i, content) in contents.iter().enumerate() {
         let testdir = TestDir::new();

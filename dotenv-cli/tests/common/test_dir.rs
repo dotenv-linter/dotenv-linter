@@ -137,6 +137,25 @@ impl TestDir {
             .stdout(expected_output);
     }
 
+    /// Run the default CLI binary, with "-f", in this TestDir and check it
+    /// fails because some warnings could not be fixed.
+    ///
+    /// This method does NOT remove TestDir when finished
+    pub fn test_command_fix_fail<T>(&self, expected_output: T)
+    where
+        T: Into<String>,
+    {
+        let expected_output = expected_output.into();
+        let mut cmd = self.init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(["fix", "--no-backup", "."])
+            .assert()
+            .failure()
+            .code(1)
+            .stdout(expected_output);
+    }
+
     /// Run the default CLI binary, with "-f", in this TestDir and check it succeeds.
     ///
     /// This method does NOT remove TestDir when finished

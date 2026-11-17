@@ -52,6 +52,29 @@ fn skip_checks() {
 }
 
 #[test]
+fn no_trailing_newline_keeps_last_line() {
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", "a=1\nb=2");
+
+    let expected_output = fix_output(&[(
+        ".env",
+        &[
+            ".env:1 LowercaseKey: The a key should be in uppercase",
+            ".env:2 LowercaseKey: The b key should be in uppercase",
+        ],
+    )]);
+
+    testdir.test_command_fix_success_with_args(
+        expected_output,
+        ["--ignore-checks", "EndingBlankLine"],
+    );
+
+    assert_eq!(testfile.contents().as_str(), "A=1\nB=2");
+
+    testdir.close();
+}
+
+#[test]
 fn multiple_files() {
     let testdir = TestDir::new();
 

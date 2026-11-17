@@ -1,6 +1,7 @@
 use std::{collections::HashSet, path::PathBuf};
 
 use dotenv_analyzer::LintKind;
+use dotenv_core::LineEntry;
 use dotenv_schema::DotEnvSchema;
 
 use crate::{
@@ -68,7 +69,7 @@ pub struct FixOptions<'a> {
     pub dry_run: bool,
 }
 
-pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
+pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<usize> {
     let files = dotenv_finder::FinderBuilder::new(current_dir)
         .with_paths(&opts.files)
         .exclude(&opts.exclude)
@@ -80,12 +81,13 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
 
     if files.is_empty() {
         output.print_nothing_to_fix();
-        return Ok(());
+        return Ok(0);
     }
 
     let output = output.files_count(files.len());
 
     let mut warnings_count = 0;
+    let mut unfixed_count = 0;
     for (index, (fe, mut lines)) in files.into_iter().enumerate() {
         output.print_processing_info(&fe);
 
@@ -94,14 +96,30 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
             continue;
         }
 
-        let fixes_done = dotenv_analyzer::fix(&warnings, &mut lines, &opts.ignore_checks);
-        if fixes_done != warnings.len() {
+        let original_content = file_content(&lines);
+        let _ = dotenv_analyzer::fix(&warnings, &mut lines, &opts.ignore_checks);
+        let fixed_content = file_content(&lines);
+        let changed = original_content != fixed_content;
+
+        // Re-check the content that is going to be written, so warnings that
+        // are still present after a partial fix are reported honestly.
+        let remaining = if changed {
+            dotenv_analyzer::check(
+                &dotenv_finder::parse(&fixed_content),
+                &opts.ignore_checks,
+                None,
+            )
+        } else {
+            // Nothing is going to be written, so the file keeps its warnings.
+            warnings.clone()
+        };
+        if !remaining.is_empty() {
             output.print_not_all_warnings_fixed();
         }
 
         if opts.dry_run {
             output.print_dry_run(&lines);
-        } else if fixes_done > 0 {
+        } else if changed {
             let should_backup = !opts.no_backup;
             // create backup copy unless user specifies not to
             if should_backup {
@@ -110,15 +128,40 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<()> {
             }
 
             // write corrected file
-            fs_utils::write_file(&fe.path, lines)?;
+            std::fs::write(&fe.path, &fixed_content)?;
         }
 
         output.print_warnings(&fe, &warnings, index);
         warnings_count += warnings.len();
+        unfixed_count += remaining.len();
     }
 
-    output.print_total(warnings_count);
-    Ok(())
+    output.print_total(warnings_count, unfixed_count);
+    Ok(unfixed_count)
+}
+
+/// Serializes line entries into the content of a dotenv file.
+///
+/// The parser adds a synthetic `"\n"` entry at the end when the file ends
+/// with a newline. It is not written separately, because a newline is already
+/// added after every preceding line. A real last line (a file without a
+/// trailing newline) is written as is.
+fn file_content(lines: &[LineEntry]) -> String {
+    let Some((last, rest)) = lines.split_last() else {
+        return String::new();
+    };
+
+    let mut content = String::new();
+    for line in rest {
+        content.push_str(&line.raw_string);
+        content.push('\n');
+    }
+
+    if last.raw_string != "\n" {
+        content.push_str(&last.raw_string);
+    }
+
+    content
 }
 
 pub struct DiffOptions<'a> {
