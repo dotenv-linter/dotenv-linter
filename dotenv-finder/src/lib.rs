@@ -8,7 +8,7 @@ mod file;
 mod fs;
 mod quote;
 
-pub use crate::file::FileEntry;
+pub use crate::file::{FileEntry, parse};
 
 pub struct Finder<'a> {
     dir: &'a PathBuf,

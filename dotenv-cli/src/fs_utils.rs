@@ -1,27 +1,8 @@
-use std::{
-    fs::{File, copy},
-    io::{self, Write},
-    path::{Path, PathBuf},
-    time::SystemTime,
-};
+use std::{fs::copy, path::PathBuf, time::SystemTime};
 
-use dotenv_core::LineEntry;
 use dotenv_finder::FileEntry;
 
 use crate::Result;
-
-/// In the future versions we should create a backup copy, or at least notify the user about it
-pub fn write_file(path: &Path, lines: Vec<LineEntry>) -> io::Result<()> {
-    let mut file = File::create(path)?;
-
-    // We don't write the last line, because it contains only LF (common::FileEntry::from)
-    // and writeln! already adds LF.
-    for line in lines[..lines.len() - 1].iter() {
-        writeln!(file, "{}", line.raw_string)?;
-    }
-
-    Ok(())
-}
 
 pub fn backup_file(fe: &FileEntry) -> Result<PathBuf> {
     let timestamp = SystemTime::now()

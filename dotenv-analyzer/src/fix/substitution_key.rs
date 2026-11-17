@@ -6,6 +6,29 @@ use crate::LintKind;
 #[derive(Default)]
 pub(crate) struct SubstitutionKeyFixer {}
 
+/// Returns the position of the `}` that closes the leading `{`.
+///
+/// Nested braces are counted, so `{A:-${B}}` is closed by the last brace,
+/// while `{A${B}` has no closing brace at all.
+fn closing_brace(raw: &str) -> Option<usize> {
+    let mut depth = 0;
+
+    for (index, c) in raw.char_indices() {
+        match c {
+            '{' => depth += 1,
+            '}' if depth > 0 => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(index);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    None
+}
+
 impl Fix for SubstitutionKeyFixer {
     fn name(&self) -> LintKind {
         LintKind::SubstitutionKey
@@ -26,7 +49,7 @@ impl Fix for SubstitutionKeyFixer {
             result.push('$');
 
             if raw_key.starts_with('{')
-                && let Some(closing_pos) = raw_key.find('}')
+                && let Some(closing_pos) = closing_brace(raw_key)
             {
                 let whole_sub = &raw_key[..=closing_pos];
                 result.push_str(whole_sub);
@@ -49,7 +72,7 @@ impl Fix for SubstitutionKeyFixer {
                 .unwrap_or(stripped_key.len());
 
             if is_escaped(prefix) || correct_end_index == 0 {
-                result.push_str(stripped_key);
+                result.push_str(initial_key);
                 continue;
             }
 
@@ -64,7 +87,14 @@ impl Fix for SubstitutionKeyFixer {
             result.push_str(rest_part);
         }
 
-        line.raw_string = format!("{}={}", line.get_key()?, result);
+        result.push_str(value);
+
+        let new_raw_string = format!("{}={}", line.get_key()?, result);
+        if new_raw_string == line.raw_string {
+            return None;
+        }
+
+        line.raw_string = new_raw_string;
         Some(())
     }
 }
@@ -80,6 +110,79 @@ mod tests {
         let mut line = line_entry(1, 1, "FOO=${BAR");
         assert_eq!(Some(()), fixer.fix_line(&mut line));
         assert_eq!("FOO=${BAR}", line.raw_string);
+    }
+
+    #[test]
+    fn fix_line_keeps_text_after_braced_substitution() {
+        let fixer = SubstitutionKeyFixer::default();
+
+        for raw_string in ["FOO=${BAR-BAZ}-suffix", "FOO=x${BAR-BAZ}y"] {
+            let mut line = line_entry(1, 1, raw_string);
+
+            assert_eq!(None, fixer.fix_line(&mut line), "input: {raw_string}");
+            assert_eq!(raw_string, line.raw_string, "input: {raw_string}");
+        }
+    }
+
+    #[test]
+    fn fix_line_closes_the_outer_brace_of_a_nested_substitution() {
+        let fixer = SubstitutionKeyFixer::default();
+
+        for (input, expected) in [
+            ("FOO=${ENVS${BAR}", "FOO=${ENVS}${BAR}"),
+            ("FOO=$ENVS}${BAR}", "FOO=${ENVS}${BAR}"),
+        ] {
+            let mut line = line_entry(1, 1, input);
+
+            assert_eq!(Some(()), fixer.fix_line(&mut line), "input: {input}");
+            assert_eq!(expected, line.raw_string, "input: {input}");
+        }
+    }
+
+    #[test]
+    fn fix_line_keeps_closed_nested_substitutions() {
+        let fixer = SubstitutionKeyFixer::default();
+
+        for raw_string in ["FOO=${A:-${B}}", "FOO=${A${B}}"] {
+            let mut line = line_entry(1, 1, raw_string);
+
+            assert_eq!(None, fixer.fix_line(&mut line), "input: {raw_string}");
+            assert_eq!(raw_string, line.raw_string, "input: {raw_string}");
+        }
+    }
+
+    #[test]
+    fn fix_line_keeps_balanced_braced_substitutions() {
+        let fixer = SubstitutionKeyFixer::default();
+
+        for raw_string in [
+            "FOO=${BAR:-baz}",
+            "FOO=${MY.VAR}",
+            "FOO=${BAR}suffix",
+            "FOO='${BAR'",
+        ] {
+            let mut line = line_entry(1, 1, raw_string);
+
+            assert_eq!(None, fixer.fix_line(&mut line), "input: {raw_string}");
+            assert_eq!(raw_string, line.raw_string, "input: {raw_string}");
+        }
+    }
+
+    #[test]
+    fn fix_line_keeps_escaped_and_empty_substitutions() {
+        let fixer = SubstitutionKeyFixer::default();
+
+        for raw_string in ["FOO=\\${BAR", "FOO=${"] {
+            let mut line = line_entry(1, 1, raw_string);
+
+            assert_eq!(None, fixer.fix_line(&mut line), "input: {raw_string}");
+            assert_eq!(raw_string, line.raw_string, "input: {raw_string}");
+        }
+
+        // The escaped substitution stays as is, the next one is fixed.
+        let mut line = line_entry(1, 1, "FOO=\\${BAR${BAZ");
+        assert_eq!(Some(()), fixer.fix_line(&mut line));
+        assert_eq!("FOO=\\${BAR${BAZ}", line.raw_string);
     }
 
     #[test]
@@ -104,9 +207,11 @@ mod tests {
         ];
         let warning_lines = [1, 2, 3, 4, 6];
 
-        assert_eq!(Some(5), fixer.fix_warnings(&warning_lines, &mut lines));
+        // Only lines that actually change are counted as fixed. Braced
+        // substitutions whose braces are balanced are left as is, so they must
+        // not be counted.
+        assert_eq!(Some(2), fixer.fix_warnings(&warning_lines, &mut lines));
 
-        // Fixing only safe cases (bare $). Leaving intact ambiguous braced cases
         assert_eq!("FOO=${BAR-$ABC_ROOT}", lines[0].raw_string);
         assert_eq!("Z=${Y}", lines[1].raw_string);
         assert_eq!("BAR=${Y}-${OPTS}", lines[2].raw_string);

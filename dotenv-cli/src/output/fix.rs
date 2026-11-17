@@ -37,11 +37,11 @@ impl FixOutput {
         }
     }
 
-    pub fn print_total(&self, total: usize) {
-        if total != 0 {
-            println!("\nAll warnings are fixed. Total: {total}");
-        } else {
+    pub fn print_total(&self, total: usize, unfixed: usize) {
+        if total == 0 {
             println!("\nNo warnings found");
+        } else if unfixed == 0 {
+            println!("\nAll warnings are fixed. Total: {total}");
         }
     }
 

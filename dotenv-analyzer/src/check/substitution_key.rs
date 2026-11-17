@@ -79,6 +79,8 @@ mod tests {
                 ("ABC=$BAR", None),
                 ("FOO=${BAR}", None),
                 ("FOO=\"$BAR\"", None),
+                ("FOO=${BAR}suffix", None),
+                ("FOO='${BAR'", None),
             ],
         );
     }
@@ -123,6 +125,14 @@ mod tests {
                 (
                     "XYZ=${FOO${BAR}",
                     Some("The XYZ key is not assigned properly"),
+                ),
+                (
+                    "FOO=${BAR:-baz}",
+                    Some("The FOO key is not assigned properly"),
+                ),
+                (
+                    "FOO=${MY.VAR}",
+                    Some("The FOO key is not assigned properly"),
                 ),
             ],
         );

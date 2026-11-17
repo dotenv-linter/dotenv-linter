@@ -2,7 +2,7 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
 
 env:
@@ -38,9 +38,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2.8.1
       - run: cargo test --all-features --no-fail-fast
         env:
-          CARGO_INCREMENTAL: '0'
-          LLVM_PROFILE_FILE: 'target/debug/coverage/dotenv-linter-%p-%m.profraw'
-          RUSTFLAGS: '-Cinstrument-coverage'
+          CARGO_INCREMENTAL: "0"
+          LLVM_PROFILE_FILE: "target/debug/coverage/dotenv-linter-%p-%m.profraw"
+          RUSTFLAGS: "-Cinstrument-coverage"
       - run: grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/
       - uses: codecov/codecov-action@v5
         with:
@@ -70,8 +70,8 @@ jobs:
   install_specific_versions:
     strategy:
       matrix:
-        version: [ 3.2.0, 2.2.1, 2.0.0, 1.1.1 ]
-        os: [ ubuntu-latest, macos-latest ]
+        version: [3.2.0, 2.2.1, 2.0.0, 1.1.1]
+        os: [ubuntu-latest, macos-latest]
         exclude:
           - version: 2.2.1
             os: macos-latest
@@ -92,8 +92,8 @@ jobs:
   install_specific_versions_wrong_input:
     strategy:
       matrix:
-        tag: [ hello, v2, vasd, /home/ ]
-        os: [ ubuntu-latest, macos-latest ]
+        tag: [hello, v2, vasd, /home/]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
@@ -136,7 +136,7 @@ jobs:
   windows_install_specific_versions:
     strategy:
       matrix:
-        version: [ 3.2.0, 2.2.1, 2.1.0 ]
+        version: [3.2.0, 2.2.1, 2.1.0]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
@@ -152,7 +152,7 @@ jobs:
   windows_install_specific_versions_wrong_input:
     strategy:
       matrix:
-        tag: [ hello, v2, vasd, /home/ ]
+        tag: [hello, v2, vasd, /home/]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
@@ -241,12 +241,12 @@ jobs:
             BUILD_OPTIONS: "--no-default-features"
           # macOS
           - BUILD: x86_64-darwin
-            OS: macos-13
+            OS: macos-15-intel
             TOOLCHAIN: stable
             TARGET: x86_64-apple-darwin
             BUILD_OPTIONS: ""
           - BUILD: aarch64-darwin
-            OS: macos-14
+            OS: macos-15
             TOOLCHAIN: stable
             TARGET: aarch64-apple-darwin
             BUILD_OPTIONS: ""

@@ -56,15 +56,7 @@ impl FileEntry {
     pub(crate) fn from(path: PathBuf) -> Option<(Self, Vec<LineEntry>)> {
         let file_name = get_file_name(&path)?.to_string();
         let content = fs::read_to_string(&path).ok()?;
-
-        let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
-
-        // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
-        if content.ends_with(LF) {
-            lines.push(LF.to_string());
-        }
-
-        let lines = get_line_entries(lines);
+        let lines = parse(&content);
 
         Some((
             FileEntry {
@@ -75,6 +67,18 @@ impl FileEntry {
             lines,
         ))
     }
+}
+
+/// Parses the contents of a dotenv file into line entries.
+pub fn parse(content: &str) -> Vec<LineEntry> {
+    let mut lines: Vec<String> = content.lines().map(|line| line.to_string()).collect();
+
+    // You must add a line, because [`Lines`] does not return the last empty row (excludes LF)
+    if content.ends_with(LF) {
+        lines.push(LF.to_string());
+    }
+
+    get_line_entries(lines)
 }
 
 /// Checks a file name with the `.env` pattern

@@ -172,7 +172,7 @@ pub fn run() -> Result<i32> {
             no_backup,
             dry_run,
         } => {
-            crate::fix(
+            let unfixed_warnings = crate::fix(
                 &FixOptions {
                     files: files.iter().collect(),
                     ignore_checks: common.ignore_checks,
@@ -186,7 +186,7 @@ pub fn run() -> Result<i32> {
                 &current_dir,
             )?;
 
-            return Ok(0);
+            return Ok(if unfixed_warnings == 0 { 0 } else { 1 });
         }
         Command::Diff { files } => {
             let total_warnings = crate::diff(
