@@ -25,13 +25,14 @@ impl Fix for SubstitutionKeyFixer {
             result.push_str(prefix);
             result.push('$');
 
-            if raw_key.starts_with('{') && let Some(closing_pos) = raw_key.find('}') {
+            if raw_key.starts_with('{')
+                && let Some(closing_pos) = raw_key.find('}')
+            {
                 let whole_sub = &raw_key[..=closing_pos];
                 result.push_str(whole_sub);
                 value = &raw_key[closing_pos + 1..];
                 continue;
             }
-
 
             // Separate initial key from the rest
             let (initial_key, rest) = raw_key

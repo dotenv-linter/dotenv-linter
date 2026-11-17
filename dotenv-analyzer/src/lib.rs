@@ -58,12 +58,10 @@ pub(crate) mod tests {
         U: AsRef<[(&'test str, Option<&'test str>)]>,
     {
         let asserts = asserts.as_ref();
-        let mut line_number = 1;
         let total = asserts.len();
 
-        for (input, expected) in asserts {
-            let line = line_entry(line_number, total, input);
-            line_number += 1;
+        for (index, (input, expected)) in asserts.iter().enumerate() {
+            let line = line_entry(index + 1, total, input);
 
             let result = checker.run(&line);
             let expected = expected.map(|e| Warning::new(line.number, checker.name(), e));
