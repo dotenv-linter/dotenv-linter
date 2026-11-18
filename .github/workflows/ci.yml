@@ -42,7 +42,7 @@ jobs:
           LLVM_PROFILE_FILE: "target/debug/coverage/dotenv-linter-%p-%m.profraw"
           RUSTFLAGS: "-Cinstrument-coverage"
       - run: grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/coverage/
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: target/debug/coverage/lcov
