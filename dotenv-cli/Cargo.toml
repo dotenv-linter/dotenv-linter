@@ -41,7 +41,7 @@ optional = true
 
 [dev-dependencies]
 assert_cmd.workspace = true
-criterion = "0.7"
+criterion = "0.8"
 tempfile.workspace = true
 
 [target.'cfg(not(windows))'.dev-dependencies]
