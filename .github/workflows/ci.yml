@@ -196,7 +196,7 @@ jobs:
           platforms: arm64
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - run: |
           docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t dotenvlinter/dotenv-linter .
 
