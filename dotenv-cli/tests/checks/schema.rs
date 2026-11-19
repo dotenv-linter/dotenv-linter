@@ -39,7 +39,7 @@ fn load_good_schema() {
         let mut file = File::create(&file_path).expect("create temp file");
         file.write_all(json.as_bytes()).expect("write file");
     }
-    let content = "NAME=JOE\n";
+    let content = "FLAG=True\nNAME=JOE\n";
 
     let testdir = TestDir::new();
     let testfile = testdir.create_testfile(".env", content);
