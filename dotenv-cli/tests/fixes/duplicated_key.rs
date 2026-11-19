@@ -30,10 +30,8 @@ fn duplicated_key_with_multiline_value() {
         "KEY=\"-----BEGIN-----\nabc\n-----END-----\"\n\
          KEY=\"-----BEGIN-----\nxyz\n-----END-----\"\n",
     );
-    let expected_output = fix_output(&[(
-        ".env",
-        &[".env:4 DuplicatedKey: The KEY key is duplicated"],
-    )]);
+    let expected_output =
+        fix_output(&[(".env", &[".env:4 DuplicatedKey: The KEY key is duplicated"])]);
 
     testdir.test_command_fix_success(expected_output);
 

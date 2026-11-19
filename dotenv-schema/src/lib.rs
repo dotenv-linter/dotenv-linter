@@ -66,7 +66,18 @@ impl SchemaEntry {
             SchemaValueType::Boolean => {
                 if !matches!(
                     value,
-                    "true" | "false" | "True" | "False" | "TRUE" | "FALSE" | "yes" | "no" | "YES" | "NO" | "1" | "0"
+                    "true"
+                        | "false"
+                        | "True"
+                        | "False"
+                        | "TRUE"
+                        | "FALSE"
+                        | "yes"
+                        | "no"
+                        | "YES"
+                        | "NO"
+                        | "1"
+                        | "0"
                 ) {
                     return ValidateResult::Invalid(SchemaValueType::Boolean);
                 }
@@ -106,7 +117,34 @@ mod tests {
 
     use tempfile::tempdir;
 
-    use super::DotEnvSchema;
+    use super::{DotEnvSchema, SchemaEntry, SchemaValueType, ValidateResult};
+
+    #[test]
+    fn boolean_values() {
+        let entry = SchemaEntry {
+            value_type: SchemaValueType::Boolean,
+            ..Default::default()
+        };
+
+        for value in [
+            "true", "false", "True", "False", "TRUE", "FALSE", "yes", "no", "YES", "NO", "1", "0",
+        ] {
+            assert!(
+                matches!(entry.is_valid(value), ValidateResult::Valid),
+                "value: {value}"
+            );
+        }
+
+        for value in ["tRuE", "y", "2", ""] {
+            assert!(
+                matches!(
+                    entry.is_valid(value),
+                    ValidateResult::Invalid(SchemaValueType::Boolean)
+                ),
+                "value: {value}"
+            );
+        }
+    }
 
     #[test]
     fn create_file_schema() {
