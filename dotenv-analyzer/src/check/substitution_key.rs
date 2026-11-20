@@ -84,6 +84,13 @@ mod tests {
                 ("FOO=\"$BAR\"", None),
                 ("FOO=${BAR}suffix", None),
                 ("FOO='${BAR'", None),
+                ("FOO=${BAR:-baz}", None),
+                ("FOO=${BAR:+baz}", None),
+                ("FOO=${BAR:=baz}", None),
+                ("FOO=${BAR:?baz}", None),
+                ("FOO=${BAR:-development if not set}", None),
+                ("FOO=${BAR:-${BAZ:-qux}}", None),
+                ("FOO=${BAR:-baz}${BAZ:+qux}", None),
             ],
         );
     }
@@ -94,6 +101,8 @@ mod tests {
             &mut SubstitutionKeyChecker::default(),
             [
                 ("ABC=${BAR", Some("The ABC key is not assigned properly")),
+                ("ABC=${}", Some("The ABC key is not assigned properly")),
+                ("ABC=${:-x}", Some("The ABC key is not assigned properly")),
                 ("FOO=${BAR!}", Some("The FOO key is not assigned properly")),
                 ("XYZ=$BAR}", Some("The XYZ key is not assigned properly")),
             ],
@@ -130,7 +139,11 @@ mod tests {
                     Some("The XYZ key is not assigned properly"),
                 ),
                 (
-                    "FOO=${BAR:-baz}",
+                    "FOO=${BAR:development}",
+                    Some("The FOO key is not assigned properly"),
+                ),
+                (
+                    "FOO=${SOME_VALUE--$$++???_END}",
                     Some("The FOO key is not assigned properly"),
                 ),
                 (

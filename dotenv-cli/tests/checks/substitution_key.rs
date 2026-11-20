@@ -10,6 +10,11 @@ fn correct_files() {
         "ABC=\\${BAR\n",
         "FOO=${BAR}suffix\n",
         "FOO='${BAR'\n",
+        "FOO=\"${NODE_ENV:-development if not set}\"\n",
+        "BAR=\"${CI:+only when running in CI}\"\n",
+        "A=${B:=x}\n",
+        "A=${B:?x}\n",
+        "A=${B:-${C:-x}}\n",
     ];
 
     for content in contents {
@@ -31,7 +36,8 @@ fn incorrect_files() {
         "TEST=$BAR}\n",
         "FOO=${ABC-$BAR}\n",
         "A=${MY.VAR}\n",
-        "A=${BAR:-baz}\n",
+        "BAZ=${NODE_ENV:development}\n",
+        "A=${SOME_VALUE--$$++???_END}\n",
     ];
     let expected = [
         (2, "FOO"),
@@ -39,6 +45,7 @@ fn incorrect_files() {
         (1, "TEST"),
         (1, "FOO"),
         (1, "A"),
+        (1, "BAZ"),
         (1, "A"),
     ];
 
