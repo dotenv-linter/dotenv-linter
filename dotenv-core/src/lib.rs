@@ -105,7 +105,7 @@ impl LineEntry {
             } else {
                 let (key, rest) = raw_key
                     .strip_prefix('{')
-                    .and_then(|raw_key| raw_key.find('}').map(|i| raw_key.split_at(i)))
+                    .and_then(|raw_key| raw_key.find(['}', ':']).map(|i| raw_key.split_at(i)))
                     .or_else(|| {
                         raw_key
                             .find(|c: char| !c.is_ascii_alphanumeric() && c != '_')
@@ -365,6 +365,18 @@ mod tests {
 
             let input = line_entry(1, 1, "FOO=${BAR");
             assert!(input.get_substitution_keys().is_empty());
+        }
+
+        #[test]
+        fn run_with_default_and_alternate_values() {
+            for (raw_string, expected) in [
+                ("FOO=${BAR:-baz}", vec!["BAR"]),
+                ("FOO=${BAR:+baz}", vec!["BAR"]),
+                ("FOO=${BAR:-${BAZ}}", vec!["BAR", "BAZ"]),
+            ] {
+                let input = line_entry(1, 1, raw_string);
+                assert_eq!(input.get_substitution_keys(), expected, "{raw_string}");
+            }
         }
 
         #[test]

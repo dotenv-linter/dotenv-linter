@@ -59,7 +59,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: lycheeverse/lychee-action@v2.9.0
         with:
-          args: . --verbose --exclude-path CHANGELOG.md
+          args: . --verbose --root-dir . --exclude-path CHANGELOG.md
           fail: true
         env:
           GITHUB_TOKEN: ${{ secrets.github_token }}

@@ -156,6 +156,14 @@ mod tests {
     }
 
     #[test]
+    fn substitution_with_default_value_test() {
+        check_test(
+            &mut UnorderedKeyChecker::default(),
+            [("A=1", None), ("C=${A:-x}", None), ("B=2", None)],
+        );
+    }
+
+    #[test]
     fn two_ordered_groups_with_two_substitution_keys_test() {
         check_test(
             &mut UnorderedKeyChecker::default(),
