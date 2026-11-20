@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::lint_kind::LintKind;
 
-const PREFIX: &str = "dotenv-linter";
+const PREFIX: &str = "dotenv-linter:";
 const ON: &str = "on";
 const OFF: &str = "off";
 
@@ -19,7 +19,7 @@ impl Comment {
 
         // Getting the right side of the comment ["off", "UnorderedKey,", "DuplicatedKey"]
         let flag_with_checks: Vec<&str> = line_comment
-            .strip_prefix(format!("{PREFIX}:").as_str())?
+            .strip_prefix(PREFIX)?
             .split_whitespace()
             .collect();
 
