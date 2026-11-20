@@ -32,7 +32,7 @@ impl Check for IncorrectDelimiterChecker<'_> {
         if cleaned_key
             .trim()
             .chars()
-            .any(|c| !c.is_alphanumeric() && c != '_')
+            .any(|c| !c.is_alphanumeric() && c != '_' && c != '.')
         {
             return Some(Warning::new(line.number, self.name(), self.message(key)));
         }
@@ -143,9 +143,19 @@ mod tests {
     fn empty_run() {
         check_test(&mut IncorrectDelimiterChecker::default(), [("", None)]);
     }
-
     #[test]
     fn short_run() {
         check_test(&mut IncorrectDelimiterChecker::default(), [("F=BAR", None)]);
+    }
+
+    #[test]
+    fn working_with_dotnet_log_category() {
+        check_test(
+            &mut IncorrectDelimiterChecker::default(),
+            [(
+                "Logging__Console__LogLevel__Microsoft.Hosting.Lifetime=Warning",
+                None,
+            )],
+        );
     }
 }
