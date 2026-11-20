@@ -1,33 +1,10 @@
-use dotenv_core::{LineEntry, is_escaped};
+use dotenv_core::{LineEntry, closing_brace, is_escaped};
 
 use super::Fix;
 use crate::LintKind;
 
 #[derive(Default)]
 pub(crate) struct SubstitutionKeyFixer {}
-
-/// Returns the position of the `}` that closes the leading `{`.
-///
-/// Nested braces are counted, so `{A:-${B}}` is closed by the last brace,
-/// while `{A${B}` has no closing brace at all.
-fn closing_brace(raw: &str) -> Option<usize> {
-    let mut depth = 0;
-
-    for (index, c) in raw.char_indices() {
-        match c {
-            '{' => depth += 1,
-            '}' if depth > 0 => {
-                depth -= 1;
-                if depth == 0 {
-                    return Some(index);
-                }
-            }
-            _ => {}
-        }
-    }
-
-    None
-}
 
 impl Fix for SubstitutionKeyFixer {
     fn name(&self) -> LintKind {
