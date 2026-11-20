@@ -1,4 +1,4 @@
-use dotenv_core::{LineEntry, is_escaped};
+use dotenv_core::{LineEntry, closing_brace, is_escaped, substitution_key_name};
 
 use super::Check;
 use crate::{LintKind, Warning};
@@ -33,20 +33,23 @@ impl Check for SubstitutionKeyChecker<'_> {
             let prefix = &value[..index];
             let raw_key = &value[index + 1..];
 
-            // Separate initial key from the rest
-            let (initial_key, rest) = raw_key
-                .find('$')
-                .map(|i| raw_key.split_at(i))
-                .unwrap_or_else(|| (raw_key, ""));
+            let (is_incorrect_substitution, rest) = if raw_key.starts_with('{') {
+                match closing_brace(raw_key) {
+                    Some(end) => (
+                        substitution_key_name(&raw_key[1..end]).is_none(),
+                        &raw_key[end + 1..],
+                    ),
+                    None => (true, ""),
+                }
+            } else {
+                // Separate initial key from the rest
+                let (initial_key, rest) = raw_key
+                    .find('$')
+                    .map(|i| raw_key.split_at(i))
+                    .unwrap_or((raw_key, ""));
 
-            let end_brace_index = initial_key.find('}');
-            let has_start_brace = initial_key.starts_with('{');
-            let has_end_brace = end_brace_index.is_some();
-            let is_incorrect_substitution = has_start_brace ^ has_end_brace
-                || end_brace_index
-                    .map(|i| &initial_key[1..i])
-                    .filter(|key| key.contains(|c: char| !c.is_ascii_alphanumeric() && c != '_'))
-                    .is_some();
+                (initial_key.contains('}'), rest)
+            };
 
             if is_incorrect_substitution && !is_escaped(prefix) {
                 return Some(Warning::new(
