@@ -1,6 +1,7 @@
 mod backup;
 mod quiet;
 mod recursive;
+mod stdin;
 mod version;
 
 #[cfg(feature = "stub_check_version")]
