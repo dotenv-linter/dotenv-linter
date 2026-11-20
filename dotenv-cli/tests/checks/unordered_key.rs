@@ -6,6 +6,7 @@ fn correct_files() {
         "A=B\nF=BAR\nFOO=BAR\n",
         "A=B\r\nF=BAR\r\nFOO=BAR\r\n",
         "# comment\nABC=DEF\n",
+        "A=1\nC=${A:-x}\nB=2\n",
     ];
 
     for content in contents {

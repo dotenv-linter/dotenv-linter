@@ -154,14 +154,20 @@ pub fn closing_brace(raw: &str) -> Option<usize> {
 /// Returns the variable name from the content of a braced substitution, without
 /// the surrounding braces.
 ///
-/// Returns `None` if the name contains characters other than ASCII
-/// alphanumerics and `_`. An empty name is returned as `Some("")`; callers
-/// decide whether it is valid.
+/// The word after an operator (`:-`, `:+`, `:=` or `:?`) is opaque, so operators
+/// and nested substitutions inside it do not affect the name.
+///
+/// Returns `None` if the name is empty or contains characters other than ASCII
+/// alphanumerics and `_`.
 pub fn substitution_key_name(content: &str) -> Option<&str> {
-    content
-        .chars()
-        .all(|c| c.is_ascii_alphanumeric() || c == '_')
-        .then_some(content)
+    let name = [":-", ":+", ":=", ":?"]
+        .iter()
+        .filter_map(|operator| content.find(operator))
+        .min()
+        .map_or(content, |index| &content[..index]);
+
+    (!name.is_empty() && name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_'))
+        .then_some(name)
 }
 
 #[cfg(test)]
@@ -195,9 +201,14 @@ mod tests {
     fn substitution_key_name_test() {
         assert_eq!(substitution_key_name("BAR"), Some("BAR"));
         assert_eq!(substitution_key_name("BAR_BAZ1"), Some("BAR_BAZ1"));
-        assert_eq!(substitution_key_name(""), Some(""));
-        assert_eq!(substitution_key_name("MY.VAR"), None);
-        assert_eq!(substitution_key_name("BAR:-baz"), None);
+        assert_eq!(substitution_key_name("BAR:-baz"), Some("BAR"));
+        assert_eq!(substitution_key_name("BAR:+baz"), Some("BAR"));
+        assert_eq!(substitution_key_name("BAR:=baz"), Some("BAR"));
+        assert_eq!(substitution_key_name("BAR:?baz"), Some("BAR"));
+        assert_eq!(substitution_key_name("BAR:-${BAZ:-qux}"), Some("BAR"));
+        assert_eq!(substitution_key_name("BAR:development"), None);
+        assert_eq!(substitution_key_name(""), None);
+        assert_eq!(substitution_key_name("SOME_VALUE--$$++???_END"), None);
     }
 
     pub fn line_entry(number: usize, total_lines: usize, raw_string: &str) -> LineEntry {
