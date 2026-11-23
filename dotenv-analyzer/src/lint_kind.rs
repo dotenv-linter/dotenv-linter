@@ -18,75 +18,69 @@ pub enum LintKind {
     SchemaViolation,
 }
 
+impl LintKind {
+    pub const ALL: [LintKind; 14] = [
+        LintKind::DuplicatedKey,
+        LintKind::EndingBlankLine,
+        LintKind::ExtraBlankLine,
+        LintKind::IncorrectDelimiter,
+        LintKind::KeyWithoutValue,
+        LintKind::LeadingCharacter,
+        LintKind::LowercaseKey,
+        LintKind::QuoteCharacter,
+        LintKind::SpaceCharacter,
+        LintKind::SubstitutionKey,
+        LintKind::TrailingWhitespace,
+        LintKind::UnorderedKey,
+        LintKind::ValueWithoutQuotes,
+        LintKind::SchemaViolation,
+    ];
+
+    pub const fn name(self) -> &'static str {
+        match self {
+            LintKind::DuplicatedKey => "DuplicatedKey",
+            LintKind::EndingBlankLine => "EndingBlankLine",
+            LintKind::ExtraBlankLine => "ExtraBlankLine",
+            LintKind::IncorrectDelimiter => "IncorrectDelimiter",
+            LintKind::KeyWithoutValue => "KeyWithoutValue",
+            LintKind::LeadingCharacter => "LeadingCharacter",
+            LintKind::LowercaseKey => "LowercaseKey",
+            LintKind::QuoteCharacter => "QuoteCharacter",
+            LintKind::SpaceCharacter => "SpaceCharacter",
+            LintKind::SubstitutionKey => "SubstitutionKey",
+            LintKind::TrailingWhitespace => "TrailingWhitespace",
+            LintKind::UnorderedKey => "UnorderedKey",
+            LintKind::ValueWithoutQuotes => "ValueWithoutQuotes",
+            LintKind::SchemaViolation => "SchemaViolation",
+        }
+    }
+}
+
 impl FromStr for LintKind {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "DuplicatedKey" => Ok(LintKind::DuplicatedKey),
-            "EndingBlankLine" => Ok(LintKind::EndingBlankLine),
-            "ExtraBlankLine" => Ok(LintKind::ExtraBlankLine),
-            "IncorrectDelimiter" => Ok(LintKind::IncorrectDelimiter),
-            "KeyWithoutValue" => Ok(LintKind::KeyWithoutValue),
-            "LeadingCharacter" => Ok(LintKind::LeadingCharacter),
-            "LowercaseKey" => Ok(LintKind::LowercaseKey),
-            "QuoteCharacter" => Ok(LintKind::QuoteCharacter),
-            "SpaceCharacter" => Ok(LintKind::SpaceCharacter),
-            "SubstitutionKey" => Ok(LintKind::SubstitutionKey),
-            "TrailingWhitespace" => Ok(LintKind::TrailingWhitespace),
-            "UnorderedKey" => Ok(LintKind::UnorderedKey),
-            "ValueWithoutQuotes" => Ok(LintKind::ValueWithoutQuotes),
-            _ => Err(()),
-        }
+        Self::ALL
+            .into_iter()
+            .find(|kind| kind.name() == s)
+            .ok_or(())
     }
 }
 
 impl fmt::Display for LintKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // Derived `Debug` for a fieldless enum is just the variant name.
-        // Write it directly to avoid allocating intermediate strings.
-        write!(f, "{self:?}")
+        f.write_str(self.name())
     }
 }
 
 #[cfg(feature = "clap")]
 impl clap::ValueEnum for LintKind {
     fn value_variants<'a>() -> &'a [Self] {
-        &[
-            LintKind::DuplicatedKey,
-            LintKind::EndingBlankLine,
-            LintKind::ExtraBlankLine,
-            LintKind::IncorrectDelimiter,
-            LintKind::KeyWithoutValue,
-            LintKind::LeadingCharacter,
-            LintKind::LowercaseKey,
-            LintKind::QuoteCharacter,
-            LintKind::SpaceCharacter,
-            LintKind::SubstitutionKey,
-            LintKind::TrailingWhitespace,
-            LintKind::UnorderedKey,
-            LintKind::ValueWithoutQuotes,
-            LintKind::SchemaViolation,
-        ]
+        &Self::ALL
     }
 
-    fn to_possible_value<'a>(&self) -> Option<clap::builder::PossibleValue> {
-        Some(match self {
-            LintKind::DuplicatedKey => clap::builder::PossibleValue::new("DuplicatedKey"),
-            LintKind::EndingBlankLine => clap::builder::PossibleValue::new("EndingBlankLine"),
-            LintKind::ExtraBlankLine => clap::builder::PossibleValue::new("ExtraBlankLine"),
-            LintKind::IncorrectDelimiter => clap::builder::PossibleValue::new("IncorrectDelimiter"),
-            LintKind::KeyWithoutValue => clap::builder::PossibleValue::new("KeyWithoutValue"),
-            LintKind::LeadingCharacter => clap::builder::PossibleValue::new("LeadingCharacter"),
-            LintKind::LowercaseKey => clap::builder::PossibleValue::new("LowercaseKey"),
-            LintKind::QuoteCharacter => clap::builder::PossibleValue::new("QuoteCharacter"),
-            LintKind::SpaceCharacter => clap::builder::PossibleValue::new("SpaceCharacter"),
-            LintKind::SubstitutionKey => clap::builder::PossibleValue::new("SubstitutionKey"),
-            LintKind::TrailingWhitespace => clap::builder::PossibleValue::new("TrailingWhitespace"),
-            LintKind::UnorderedKey => clap::builder::PossibleValue::new("UnorderedKey"),
-            LintKind::ValueWithoutQuotes => clap::builder::PossibleValue::new("ValueWithoutQuotes"),
-            LintKind::SchemaViolation => clap::builder::PossibleValue::new("SchemaViolation"),
-        })
+    fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
+        Some(clap::builder::PossibleValue::new(self.name()))
     }
 }
 
@@ -103,6 +97,13 @@ mod tests {
     #[test]
     fn test_invalid_lint_str_variant() {
         assert_eq!(Err(()), <LintKind as FromStr>::from_str("FooBarLint"));
+    }
+
+    #[test]
+    fn test_all_lint_kinds_roundtrip() {
+        for kind in LintKind::ALL {
+            assert_eq!(Ok(kind), LintKind::from_str(kind.name()), "{kind:?}");
+        }
     }
 
     #[test]
