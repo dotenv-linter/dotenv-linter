@@ -43,7 +43,9 @@ impl FromStr for LintKind {
 
 impl fmt::Display for LintKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", format!("{self:?}").replace("LintKind", ""))
+        // Derived `Debug` for a fieldless enum is just the variant name.
+        // Write it directly to avoid allocating intermediate strings.
+        write!(f, "{self:?}")
     }
 }
 
