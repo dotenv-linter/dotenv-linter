@@ -20,3 +20,27 @@ fn value_without_quotes() {
 
     testdir.close();
 }
+
+#[test]
+fn value_without_quotes_with_inline_comment() {
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(
+        ".env",
+        "ABC=DEF GHI # this is a comment\nFOO=BAR BAZ # it's a comment\n",
+    );
+    let expected_output = fix_output(&[(
+        ".env",
+        &[
+            ".env:1 ValueWithoutQuotes: This value needs to be surrounded in quotes",
+            ".env:2 ValueWithoutQuotes: This value needs to be surrounded in quotes",
+        ],
+    )]);
+    testdir.test_command_fix_success(expected_output);
+
+    assert_eq!(
+        testfile.contents().as_str(),
+        "ABC=\"DEF GHI\" # this is a comment\nFOO=\"BAR BAZ\" # it's a comment\n"
+    );
+
+    testdir.close();
+}
