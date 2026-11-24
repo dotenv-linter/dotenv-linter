@@ -128,6 +128,43 @@ pub fn is_escaped(prefix: &str) -> bool {
     prefix.chars().rev().take_while(|ch| *ch == '\\').count() % 2 == 1
 }
 
+/// Splits a value into the value itself and an optional inline comment.
+///
+/// A `#` starts a comment only when it is outside quotes, is not escaped, and
+/// follows a whitespace. The returned comment includes the leading `#`.
+pub fn split_inline_comment(value: &str) -> (&str, Option<&str>) {
+    let mut quote = None;
+    let mut escaped = false;
+    let mut is_after_whitespace = false;
+    let mut is_start = true;
+
+    for (index, ch) in value.char_indices() {
+        let was_escaped = escaped;
+        escaped = false;
+
+        if !was_escaped {
+            if ch == '\\' {
+                escaped = true;
+            } else if let Some(quote_char) = quote {
+                if ch == quote_char {
+                    quote = None;
+                }
+            } else if is_start && (ch == '\'' || ch == '"') {
+                quote = Some(ch);
+            } else if ch == '#' && is_after_whitespace {
+                return (value[..index].trim_end(), Some(&value[index..]));
+            }
+        }
+
+        is_after_whitespace = !was_escaped && ch.is_whitespace();
+        if !ch.is_whitespace() {
+            is_start = false;
+        }
+    }
+
+    (value, None)
+}
+
 /// Returns the position of the `}` that closes the leading `{` in `raw`.
 ///
 /// Nested braces are counted, so `{A:-${B}}` is closed by the last brace,
@@ -187,6 +224,55 @@ mod tests {
 
         let random_string = "text without escaping";
         assert!(!is_escaped(random_string));
+    }
+
+    #[test]
+    fn split_inline_comment_test() {
+        assert_eq!(
+            ("bar", Some("# comment")),
+            split_inline_comment("bar # comment")
+        );
+        assert_eq!(
+            ("bar", Some("# comment")),
+            split_inline_comment("bar   # comment")
+        );
+        assert_eq!(
+            ("bar", Some("# comment")),
+            split_inline_comment("bar\t# comment")
+        );
+        assert_eq!(("bar#baz", None), split_inline_comment("bar#baz"));
+        assert_eq!(("bar baz#qux", None), split_inline_comment("bar baz#qux"));
+        assert_eq!(
+            ("\"bar # baz\"", None),
+            split_inline_comment("\"bar # baz\"")
+        );
+        assert_eq!(("'bar # baz'", None), split_inline_comment("'bar # baz'"));
+        assert_eq!(
+            ("\"bar baz\"", Some("# comment")),
+            split_inline_comment("\"bar baz\" # comment")
+        );
+        assert_eq!(
+            ("  \"bar baz\"", Some("# comment")),
+            split_inline_comment("  \"bar baz\" # comment")
+        );
+        assert_eq!(
+            ("  \"bar # baz\"", None),
+            split_inline_comment("  \"bar # baz\"")
+        );
+        assert_eq!(("bar \\# baz", None), split_inline_comment("bar \\# baz"));
+        assert_eq!(
+            ("it's", Some("# comment")),
+            split_inline_comment("it's # comment")
+        );
+        assert_eq!(
+            ("тест", Some("# комментарий")),
+            split_inline_comment("тест # комментарий")
+        );
+        assert_eq!(
+            ("", Some("# comment")),
+            split_inline_comment("   # comment")
+        );
+        assert_eq!(("bar baz", None), split_inline_comment("bar baz"));
     }
 
     #[test]
