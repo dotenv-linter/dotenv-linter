@@ -56,3 +56,34 @@ fn multiline_value() {
 
     testdir.test_command_success_with_args(with_default_args(args), expected_output);
 }
+
+#[test]
+fn inline_comments() {
+    let content = "\
+DATABASE_HOST=test           # this is a comment
+DB_PASSWORD=password         # this is a comment
+RAILS_HOSTS=host             # this is a comment
+";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &["check", testfile.as_str()];
+    let expected_output = check_output(&[(".env", &[])]);
+
+    testdir.test_command_success_with_args(with_default_args(args), expected_output);
+}
+
+#[test]
+fn value_with_spaces_before_inline_comment() {
+    let content = "FOO=BAR BAZ # this is a comment\n";
+
+    let testdir = TestDir::new();
+    let testfile = testdir.create_testfile(".env", content);
+    let args = &["check", testfile.as_str()];
+    let expected_output = check_output(&[(
+        ".env",
+        &[".env:1 ValueWithoutQuotes: This value needs to be surrounded in quotes"],
+    )]);
+
+    testdir.test_command_fail_with_args(with_default_args(args), expected_output);
+}
