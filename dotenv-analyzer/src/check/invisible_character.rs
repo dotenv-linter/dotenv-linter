@@ -3,17 +3,17 @@ use dotenv_core::LineEntry;
 use super::Check;
 use crate::{LintKind, Warning};
 
-pub(crate) struct InvisibleCharacter<'a> {
+pub(crate) struct InvisibleCharacterChecker<'a> {
     template: &'a str,
 }
 
-impl InvisibleCharacter<'_> {
+impl InvisibleCharacterChecker<'_> {
     fn message(&self, c: char) -> String {
         self.template.replace("{}", &format!("U+{:04X}", c as u32))
     }
 }
 
-impl Default for InvisibleCharacter<'_> {
+impl Default for InvisibleCharacterChecker<'_> {
     fn default() -> Self {
         Self {
             template: "Invisible character {} detected",
@@ -31,7 +31,7 @@ const NON_ASCII_INVISIBLE: [char; 7] = [
     '\u{FEFF}', //&zwnbsp;
 ];
 
-impl Check for InvisibleCharacter<'_> {
+impl Check for InvisibleCharacterChecker<'_> {
     fn run(&mut self, line: &LineEntry) -> Option<Warning> {
         let chars = line.raw_string.chars();
 
@@ -56,38 +56,41 @@ mod tests {
 
     #[test]
     fn working_run_with_value() {
-        check_test(&mut InvisibleCharacter::default(), [("FOO=BAR", None)]);
+        check_test(
+            &mut InvisibleCharacterChecker::default(),
+            [("FOO=BAR", None)],
+        );
     }
 
     #[test]
     fn accented_e() {
-        check_test(&mut InvisibleCharacter::default(), [("é", None)]);
+        check_test(&mut InvisibleCharacterChecker::default(), [("é", None)]);
     }
 
     #[test]
     fn micro() {
-        check_test(&mut InvisibleCharacter::default(), [("µ", None)]);
+        check_test(&mut InvisibleCharacterChecker::default(), [("µ", None)]);
     }
 
     #[test]
     fn ae() {
-        check_test(&mut InvisibleCharacter::default(), [("Æ", None)]);
+        check_test(&mut InvisibleCharacterChecker::default(), [("Æ", None)]);
     }
 
     #[test]
     fn e() {
-        check_test(&mut InvisibleCharacter::default(), [("ë", None)]);
+        check_test(&mut InvisibleCharacterChecker::default(), [("ë", None)]);
     }
 
     #[test]
     fn space() {
-        check_test(&mut InvisibleCharacter::default(), [(" ", None)]);
+        check_test(&mut InvisibleCharacterChecker::default(), [(" ", None)]);
     }
 
     #[test]
     fn hello_world() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("FOO=hello world!", None)],
         );
     }
@@ -96,7 +99,7 @@ mod tests {
     #[test]
     fn non_breaking_space() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{00A0}", Some("Invisible character U+00A0 detected"))],
         );
     }
@@ -105,7 +108,7 @@ mod tests {
     #[test]
     fn soft_hyphen() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{00AD}", Some("Invisible character U+00AD detected"))],
         );
     }
@@ -114,7 +117,7 @@ mod tests {
     #[test]
     fn en_space() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{2002}", Some("Invisible character U+2002 detected"))],
         );
     }
@@ -123,7 +126,7 @@ mod tests {
     #[test]
     fn em_space() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{2003}", Some("Invisible character U+2003 detected"))],
         );
     }
@@ -132,7 +135,7 @@ mod tests {
     #[test]
     fn thin_space() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{2009}", Some("Invisible character U+2009 detected"))],
         );
     }
@@ -141,7 +144,7 @@ mod tests {
     #[test]
     fn zero_width_space() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{200B}", Some("Invisible character U+200B detected"))],
         );
     }
@@ -150,7 +153,7 @@ mod tests {
     #[test]
     fn zero_width_non_joiner() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{200C}", Some("Invisible character U+200C detected"))],
         );
     }
@@ -159,7 +162,7 @@ mod tests {
     #[test]
     fn zero_width_joiner() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{200D}", Some("Invisible character U+200D detected"))],
         );
     }
@@ -168,7 +171,7 @@ mod tests {
     #[test]
     fn left_to_right_mark() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{200E}", Some("Invisible character U+200E detected"))],
         );
     }
@@ -177,7 +180,7 @@ mod tests {
     #[test]
     fn right_to_left_mark() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{200F}", Some("Invisible character U+200F detected"))],
         );
     }
@@ -186,7 +189,7 @@ mod tests {
     #[test]
     fn zero_width_no_bsp() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [("\u{FEFF}", Some("Invisible character U+FEFF detected"))],
         );
     }
@@ -194,7 +197,7 @@ mod tests {
     #[test]
     fn non_breaking_space_end_of_text() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [(
                 "QWERTY=\u{00A0}",
                 Some("Invisible character U+00A0 detected"),
@@ -205,7 +208,7 @@ mod tests {
     #[test]
     fn non_breaking_space_in_text() {
         check_test(
-            &mut InvisibleCharacter::default(),
+            &mut InvisibleCharacterChecker::default(),
             [(
                 "QWERTY=ba\u{00A0}r",
                 Some("Invisible character U+00A0 detected"),

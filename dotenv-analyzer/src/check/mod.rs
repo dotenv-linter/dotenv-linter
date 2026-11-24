@@ -38,7 +38,7 @@ fn checklist<'a>(schema: Option<&'a DotEnvSchema>) -> Vec<Box<dyn Check + 'a>> {
         Box::<ending_blank_line::EndingBlankLineChecker>::default(),
         Box::<extra_blank_line::ExtraBlankLineChecker>::default(),
         Box::<incorrect_delimiter::IncorrectDelimiterChecker>::default(),
-        Box::<invisible_character::InvisibleCharacter>::default(),
+        Box::<invisible_character::InvisibleCharacterChecker>::default(),
         Box::<key_without_value::KeyWithoutValueChecker>::default(),
         Box::<leading_character::LeadingCharacterChecker>::default(),
         Box::<lowercase_key::LowercaseKeyChecker>::default(),
