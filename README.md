@@ -126,6 +126,18 @@ Original file was backed up to: ".env_1601378896"
 All warnings are fixed. Total: 2
 ```
 
+#### ⌨️ Standard input
+
+`check` accepts `-` as a file name to read from standard input:
+
+```shell
+$ cat .env | dotenv-linter check -
+Checking -
+-:1 LowercaseKey: The foo key should be in uppercase
+
+Found 1 problem
+```
+
 #### 🤲 Diff
 
 In addition, `dotenv-linter` can compare `.env` files with each other and output the difference between them:
