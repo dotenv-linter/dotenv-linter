@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use clap::{Args, Parser, Subcommand};
+use clap::{Args, CommandFactory, Parser, Subcommand};
 use dotenv_analyzer::LintKind;
 use dotenv_schema::DotEnvSchema;
 
@@ -44,7 +44,7 @@ struct Cli {
 enum Command {
     /// Check .env files for errors such as duplicate keys or invalid syntax
     Check {
-        /// .env files or directories to check (one or more required)
+        /// .env files or directories to check, or '-' to read from standard input
         #[arg(
             num_args(1..),
             required = true,
@@ -115,6 +115,21 @@ struct CommonArgs {
     recursive: bool,
 }
 
+fn has_stdin(files: &[PathBuf]) -> bool {
+    let has_stdin = files.iter().any(|path| crate::stdin::is_stdin(path));
+    if has_stdin && files.len() > 1 {
+        argument_error("standard input ('-') cannot be combined with other paths");
+    }
+
+    has_stdin
+}
+
+fn argument_error(message: impl Into<String>) -> ! {
+    Cli::command()
+        .error(clap::error::ErrorKind::ArgumentConflict, message.into())
+        .exit()
+}
+
 pub fn run() -> Result<i32> {
     #[cfg(windows)]
     colored::control::set_virtual_terminal(true).ok();
@@ -145,17 +160,27 @@ pub fn run() -> Result<i32> {
                 };
             }
 
-            let total_warnings = crate::check(
-                &CheckOptions {
-                    files: files.iter().collect(),
-                    ignore_checks: common.ignore_checks,
-                    exclude: common.exclude.iter().collect(),
-                    recursive: common.recursive,
-                    quiet: cli.quiet,
-                    schema: dotenv_schema,
-                },
-                &current_dir,
-            )?;
+            let total_warnings = if has_stdin(&files) {
+                let content = crate::stdin::read()?;
+                crate::check_stdin(
+                    &content,
+                    &common.ignore_checks,
+                    cli.quiet,
+                    dotenv_schema.as_ref(),
+                )
+            } else {
+                crate::check(
+                    &CheckOptions {
+                        files: files.iter().collect(),
+                        ignore_checks: common.ignore_checks,
+                        exclude: common.exclude.iter().collect(),
+                        recursive: common.recursive,
+                        quiet: cli.quiet,
+                        schema: dotenv_schema,
+                    },
+                    &current_dir,
+                )?
+            };
 
             #[cfg(feature = "update-informer")]
             if !not_check_updates && !cli.quiet {
@@ -189,6 +214,10 @@ pub fn run() -> Result<i32> {
             return Ok(if unfixed_warnings == 0 { 0 } else { 1 });
         }
         Command::Diff { files } => {
+            if files.iter().any(|path| crate::stdin::is_stdin(path)) {
+                argument_error("the diff command does not support standard input ('-')");
+            }
+
             let total_warnings = crate::diff(
                 &DiffOptions {
                     files: files.iter().collect(),

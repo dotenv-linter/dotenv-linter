@@ -2,6 +2,7 @@ use std::{collections::HashSet, path::PathBuf};
 
 use dotenv_analyzer::LintKind;
 use dotenv_core::LineEntry;
+use dotenv_finder::FileEntry;
 use dotenv_schema::DotEnvSchema;
 
 use crate::{
@@ -10,6 +11,7 @@ use crate::{
 };
 
 mod fs_utils;
+mod stdin;
 
 pub mod cli;
 mod diff;
@@ -32,13 +34,43 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .exclude(&opts.exclude)
         .recursive(opts.recursive)
         .build()
-        .find();
+        .find()
+        .into_iter()
+        .collect();
 
-    let output = CheckOutput::new(opts.quiet);
+    Ok(check_files(
+        files,
+        &opts.ignore_checks,
+        opts.quiet,
+        opts.schema.as_ref(),
+    ))
+}
+
+pub(crate) fn check_stdin(
+    content: &str,
+    ignore_checks: &[LintKind],
+    quiet: bool,
+    schema: Option<&DotEnvSchema>,
+) -> usize {
+    check_files(
+        vec![stdin_file_entry(content)],
+        ignore_checks,
+        quiet,
+        schema,
+    )
+}
+
+fn check_files(
+    files: Vec<(FileEntry, Vec<LineEntry>)>,
+    ignore_checks: &[LintKind],
+    quiet: bool,
+    schema: Option<&DotEnvSchema>,
+) -> usize {
+    let output = CheckOutput::new(quiet);
 
     if files.is_empty() {
         output.print_nothing_to_check();
-        return Ok(0);
+        return 0;
     }
 
     let output = output.files_count(files.len());
@@ -49,14 +81,13 @@ pub fn check(opts: &CheckOptions, current_dir: &PathBuf) -> Result<usize> {
         .fold(0, |acc, (index, (fe, lines))| {
             output.print_processing_info(&fe);
 
-            let warnings =
-                dotenv_analyzer::check(&lines, &opts.ignore_checks, opts.schema.as_ref());
+            let warnings = dotenv_analyzer::check(&lines, ignore_checks, schema);
             output.print_warnings(&fe, &warnings, index);
             acc + warnings.len()
         });
 
     output.print_total(warnings_count);
-    Ok(warnings_count)
+    warnings_count
 }
 
 pub struct FixOptions<'a> {
@@ -138,6 +169,19 @@ pub fn fix(opts: &FixOptions, current_dir: &PathBuf) -> Result<usize> {
 
     output.print_total(warnings_count, unfixed_count);
     Ok(unfixed_count)
+}
+
+fn stdin_file_entry(content: &str) -> (FileEntry, Vec<LineEntry>) {
+    let lines = dotenv_finder::parse(content);
+
+    (
+        FileEntry {
+            path: PathBuf::from(crate::stdin::STDIN_PATH),
+            file_name: crate::stdin::STDIN_PATH.to_string(),
+            total_lines: lines.len(),
+        },
+        lines,
+    )
 }
 
 /// Serializes line entries into the content of a dotenv file.

@@ -245,6 +245,22 @@ impl TestDir {
         )
     }
 
+    /// Run the default CLI binary with command line arguments and STDIN content.
+    ///
+    /// This method does NOT remove TestDir when finished.
+    pub fn test_command_with_stdin<I, S>(&self, args: I, stdin: &str) -> assert_cmd::assert::Assert
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<OsStr>,
+    {
+        let mut cmd = self.init_cmd();
+        let canonical_current_dir = canonicalize(&self.current_dir).expect("canonical current dir");
+        cmd.current_dir(&canonical_current_dir)
+            .args(args)
+            .write_stdin(stdin)
+            .assert()
+    }
+
     fn init_cmd(&self) -> Command {
         let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).expect("command from binary name");
 
